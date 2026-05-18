@@ -12,10 +12,12 @@ def sanitize_name(name: str, max_len: int = 60) -> str:
     - Converts to lowercase
     - Strips non-ASCII-word characters and hyphens
     - Replaces whitespace and hyphens with underscores
+    - Collapses consecutive underscores
     - Limits to max_len characters
     """
     name = re.sub(r'[^\w\s-]', '', name.lower(), flags=re.ASCII)
     name = re.sub(r'[\s\-]+', '_', name)
+    name = re.sub(r'_+', '_', name)
     name = name.strip('_')
     return name[:max_len]
 
@@ -65,6 +67,7 @@ def save_transcript(
 def merge_transcripts(channel_name: str) -> Path:
     """Merge all transcripts in a channel into merged.txt."""
     channel_dir = get_channel_dir(channel_name)
+    channel_dir.mkdir(parents=True, exist_ok=True)
     files = sorted(f for f in channel_dir.glob("*.txt") if f.name != "merged.txt")
     merged_path = channel_dir / "merged.txt"
     merged_path.write_text(

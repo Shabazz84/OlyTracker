@@ -65,3 +65,19 @@ def test_merge_excludes_itself(tmp_path, monkeypatch):
     merged = merge_transcripts("chan")
     content = merged.read_text(encoding="utf-8")
     assert content.count("text one") == 1
+
+
+def test_sanitize_name_all_special_chars_returns_empty():
+    assert sanitize_name("---") == ""
+
+
+def test_sanitize_name_collapses_underscores():
+    assert sanitize_name("hello___world") == "hello_world"
+
+
+def test_merge_empty_channel_does_not_crash(tmp_path, monkeypatch):
+    monkeypatch.setattr("config.TRANSCRIPT_DIR", str(tmp_path))
+    # Should not raise, should create empty merged.txt
+    merged = merge_transcripts("empty_chan")
+    assert merged.exists()
+    assert merged.read_text(encoding="utf-8") == ""
