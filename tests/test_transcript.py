@@ -29,17 +29,17 @@ def test_fetch_transcript_success():
 
     mock_snippets = [mock_snippet_1, mock_snippet_2]
 
-    # Mock the fetch result to be iterable (like a FetchedTranscript)
+    # Mock transcript.fetch() to return the list of snippets
     mock_transcript_list = MagicMock()
     mock_transcript = MagicMock()
-    mock_transcript.__iter__ = MagicMock(return_value=iter(mock_snippets))
+    mock_transcript.fetch.return_value = mock_snippets
 
     mock_transcript_list.find_transcript.return_value = mock_transcript
 
     with patch(
-        "extractor.transcript.YouTubeTranscriptApi.list",
-        return_value=mock_transcript_list,
-    ):
+        "extractor.transcript.YouTubeTranscriptApi",
+    ) as MockApi:
+        MockApi.return_value.list.return_value = mock_transcript_list
         result = fetch_transcript("vid123")
 
     assert result is not None
@@ -50,19 +50,15 @@ def test_fetch_transcript_success():
 def test_fetch_transcript_returns_none_when_disabled():
     from youtube_transcript_api import TranscriptsDisabled
 
-    with patch(
-        "extractor.transcript.YouTubeTranscriptApi.list",
-        side_effect=TranscriptsDisabled("vid123"),
-    ):
+    with patch("extractor.transcript.YouTubeTranscriptApi") as MockApi:
+        MockApi.return_value.list.side_effect = TranscriptsDisabled("vid123")
         result = fetch_transcript("vid123")
     assert result is None
 
 
 def test_fetch_transcript_returns_none_on_generic_error():
-    with patch(
-        "extractor.transcript.YouTubeTranscriptApi.list",
-        side_effect=Exception("network error"),
-    ):
+    with patch("extractor.transcript.YouTubeTranscriptApi") as MockApi:
+        MockApi.return_value.list.side_effect = Exception("network error")
         result = fetch_transcript("vid123")
     assert result is None
 
@@ -78,7 +74,7 @@ def test_fetch_transcript_falls_back_to_next_language():
 
     mock_transcript_list = MagicMock()
     mock_transcript = MagicMock()
-    mock_transcript.__iter__ = MagicMock(return_value=iter([mock_snippet]))
+    mock_transcript.fetch.return_value = [mock_snippet]
 
     # ru and uk fail, en succeeds
     mock_transcript_list.find_transcript.side_effect = [
@@ -87,10 +83,8 @@ def test_fetch_transcript_falls_back_to_next_language():
         mock_transcript,
     ]
 
-    with patch(
-        "extractor.transcript.YouTubeTranscriptApi.list",
-        return_value=mock_transcript_list,
-    ):
+    with patch("extractor.transcript.YouTubeTranscriptApi") as MockApi:
+        MockApi.return_value.list.return_value = mock_transcript_list
         result = fetch_transcript("vid123")
 
     assert result is not None
@@ -107,14 +101,14 @@ def test_fetch_transcript_skips_empty_transcript():
     mock_empty_snippet.text = ""
 
     mock_transcript_empty = MagicMock()
-    mock_transcript_empty.__iter__ = MagicMock(return_value=iter([mock_empty_snippet]))
+    mock_transcript_empty.fetch.return_value = [mock_empty_snippet]
 
     # Create successful en transcript
     mock_snippet_en = MagicMock()
     mock_snippet_en.text = "hello"
 
     mock_transcript_en = MagicMock()
-    mock_transcript_en.__iter__ = MagicMock(return_value=iter([mock_snippet_en]))
+    mock_transcript_en.fetch.return_value = [mock_snippet_en]
 
     mock_transcript_list = MagicMock()
     # ru returns empty, en returns content
@@ -124,10 +118,8 @@ def test_fetch_transcript_skips_empty_transcript():
         mock_transcript_en,
     ]
 
-    with patch(
-        "extractor.transcript.YouTubeTranscriptApi.list",
-        return_value=mock_transcript_list,
-    ):
+    with patch("extractor.transcript.YouTubeTranscriptApi") as MockApi:
+        MockApi.return_value.list.return_value = mock_transcript_list
         result = fetch_transcript("vid123")
 
     assert result is not None
@@ -135,32 +127,30 @@ def test_fetch_transcript_skips_empty_transcript():
     assert "hello" in result["text"]
 
 
-def test_fetch_transcript_handles_iteration_error():
-    """Iteration errors should be caught and next language tried."""
+def test_fetch_transcript_handles_fetch_error():
+    """Errors from transcript.fetch() should be caught and next language tried."""
     from youtube_transcript_api import NoTranscriptFound
 
     mock_transcript_bad = MagicMock()
-    mock_transcript_bad.__iter__ = MagicMock(side_effect=RuntimeError("corrupt data"))
+    mock_transcript_bad.fetch.side_effect = RuntimeError("corrupt data")
 
     # Create successful en transcript
     mock_snippet_en = MagicMock()
     mock_snippet_en.text = "hello"
 
     mock_transcript_en = MagicMock()
-    mock_transcript_en.__iter__ = MagicMock(return_value=iter([mock_snippet_en]))
+    mock_transcript_en.fetch.return_value = [mock_snippet_en]
 
     mock_transcript_list = MagicMock()
-    # ru fails with iteration error, en succeeds
+    # ru fails with fetch error, en succeeds
     mock_transcript_list.find_transcript.side_effect = [
         mock_transcript_bad,
         NoTranscriptFound("vid123", ["uk"], MagicMock()),
         mock_transcript_en,
     ]
 
-    with patch(
-        "extractor.transcript.YouTubeTranscriptApi.list",
-        return_value=mock_transcript_list,
-    ):
+    with patch("extractor.transcript.YouTubeTranscriptApi") as MockApi:
+        MockApi.return_value.list.return_value = mock_transcript_list
         result = fetch_transcript("vid123")
 
     assert result is not None

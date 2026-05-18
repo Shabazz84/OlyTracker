@@ -29,14 +29,15 @@ def fetch_transcript(video_id: str) -> dict | None:
         or None if transcript unavailable or error occurs.
     """
     try:
-        transcript_list = YouTubeTranscriptApi.list(video_id)
+        transcript_list = YouTubeTranscriptApi().list(video_id)
 
         # Try each language in priority order
         for lang in config.TRANSCRIPT_LANGUAGES:
             try:
                 transcript = transcript_list.find_transcript([lang])
-                # transcript is iterable of FetchedTranscriptSnippet objects
-                snippets = list(transcript)
+                # transcript.fetch() returns a FetchedTranscript iterable of
+                # FetchedTranscriptSnippet objects with a .text attribute
+                snippets = transcript.fetch()
                 text = clean_text(" ".join(s.text for s in snippets))
                 if not text:
                     continue
