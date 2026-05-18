@@ -24,11 +24,24 @@ def parse_export(json_path: str) -> list[dict]:
         logger.warning(f"Telegram export not found: {json_path}")
         return []
 
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        logger.error(f"Failed to read Telegram export {json_path}: {e}")
+        return []
+
+    if not isinstance(data, dict):
+        logger.error(f"Unexpected JSON structure in {json_path}: root is not a dict")
+        return []
+
+    raw_messages = data.get("messages", [])
+    if not isinstance(raw_messages, list):
+        logger.error(f"Unexpected JSON structure in {json_path}: 'messages' is not a list")
+        return []
 
     messages = []
-    for msg in data.get("messages", []):
+    for msg in raw_messages:
         if msg.get("type") != "message":
             continue
 

@@ -65,3 +65,17 @@ def test_save_telegram_transcript_creates_file(tmp_path, monkeypatch):
     content = files[0].read_text(encoding="utf-8")
     assert "Train hard" in content
     assert "2024-01-01" in content
+
+
+def test_parse_export_handles_malformed_json(tmp_path):
+    path = tmp_path / "bad.json"
+    path.write_text("this is not json", encoding="utf-8")
+    messages = parse_export(str(path))
+    assert messages == []
+
+
+def test_parse_export_handles_non_dict_root(tmp_path):
+    path = tmp_path / "bad.json"
+    path.write_text('["not", "a", "dict"]', encoding="utf-8")
+    messages = parse_export(str(path))
+    assert messages == []
