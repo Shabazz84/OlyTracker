@@ -74,7 +74,10 @@ def process_playlist(url: str, force: bool = False, max_videos: int | None = Non
         result = fetch_transcript(vid_id)
         time.sleep(config.REQUEST_DELAY)
         if result is None:
-            skipped += 1
+            if config.SKIP_MISSING:
+                skipped += 1
+            else:
+                errors += 1
             continue
         save_transcript(name, vid_id, title, result["language"], result["text"])
         _maybe_summarize(name, vid_id, title, result["text"])
@@ -154,8 +157,9 @@ def main() -> None:
             ]
         for url in channels:
             _add(*process_channel(url, force=args.force, max_videos=args.max))
-        for url in config.PLAYLISTS:
-            _add(*process_playlist(url, force=args.force, max_videos=args.max))
+        if not args.priority_oly:
+            for url in config.PLAYLISTS:
+                _add(*process_playlist(url, force=args.force, max_videos=args.max))
         process_web()
         process_telegram()
 
