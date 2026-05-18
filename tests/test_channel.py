@@ -1,4 +1,5 @@
 import pytest
+import subprocess as sp
 from unittest.mock import patch, MagicMock
 from extractor.channel import get_channel_videos, channel_name_from_url
 
@@ -55,3 +56,15 @@ def test_channel_name_from_url_channel_id():
 
 def test_channel_name_from_url_user():
     assert channel_name_from_url("https://www.youtube.com/user/sonnywebsterGB") == "sonnywebsterGB"
+
+
+def test_get_channel_videos_returns_empty_when_ytdlp_missing():
+    with patch("subprocess.run", side_effect=FileNotFoundError("yt-dlp not found")):
+        videos = get_channel_videos("https://youtube.com/@test")
+    assert videos == []
+
+
+def test_get_channel_videos_returns_empty_on_timeout():
+    with patch("subprocess.run", side_effect=sp.TimeoutExpired(["yt-dlp"], 120)):
+        videos = get_channel_videos("https://youtube.com/@test")
+    assert videos == []

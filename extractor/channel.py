@@ -4,6 +4,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class ChannelFetchError(Exception):
+    """Raised when channel video fetching fails."""
+    pass
+
+
 def channel_name_from_url(url: str) -> str:
     """Extract channel name from YouTube URL.
 
@@ -15,7 +20,7 @@ def channel_name_from_url(url: str) -> str:
     for part in url.rstrip("/").split("/"):
         if part.startswith("@"):
             return part[1:]
-        if part.startswith("UC") and len(part) > 20:
+        if part.startswith("UC") and len(part) == 24:
             return part
         if part and part not in ("", "youtube.com", "www.youtube.com", "https:", "http:", "channel", "user", "watch"):
             return part
@@ -38,13 +43,20 @@ def get_channel_videos(url: str, max_videos: int | None = None) -> list[dict]:
         "yt-dlp",
         "--flat-playlist",
         "--print", "%(id)s\t%(title)s",
-        "--no-warnings",
         url,
     ]
     if max_videos is not None:
         cmd += ["--playlist-end", str(max_videos)]
 
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    except FileNotFoundError:
+        logger.error("yt-dlp not found — install with: pip install yt-dlp")
+        return []
+    except subprocess.TimeoutExpired:
+        logger.error(f"yt-dlp timed out (120s) for {url}")
+        return []
+
     if result.returncode != 0:
         logger.error(f"yt-dlp failed for {url}: {result.stderr}")
         return []
