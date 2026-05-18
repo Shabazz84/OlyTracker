@@ -1,4 +1,5 @@
 import subprocess
+import sys
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ def get_channel_videos(url: str, max_videos: int | None = None) -> list[dict]:
         List of dicts with keys 'video_id' and 'title'. Empty list on error.
     """
     cmd = [
-        "yt-dlp",
+        sys.executable, "-m", "yt_dlp",
         "--flat-playlist",
         "--print", "%(id)s\t%(title)s",
         url,
@@ -51,7 +52,7 @@ def get_channel_videos(url: str, max_videos: int | None = None) -> list[dict]:
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
     except FileNotFoundError:
-        logger.error("yt-dlp not found — install with: pip install yt-dlp")
+        logger.error("yt-dlp not found — install with: pip install yt-dlp or python -m pip install yt-dlp")
         return []
     except subprocess.TimeoutExpired:
         logger.error(f"yt-dlp timed out (120s) for {url}")
