@@ -1,0 +1,9 @@
+transcripts/
+data/telegram_atletisty.json
+__pycache__/
+*.pyc
+.pytest_cache/
+extraction.log
+*.egg-info/
+dist/
+build/
