@@ -1,0 +1,7 @@
+yt-dlp
+youtube-transcript-api
+requests
+beautifulsoup4
+tiktoken
+tqdm
+pytest
