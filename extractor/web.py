@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 import config
@@ -37,10 +38,11 @@ def save_web_transcript(url: str, text: str) -> None:
         url: The source URL
         text: The extracted text content
     """
-    domain = url.split("//")[-1].split("/")[0].replace("www.", "")
+    parsed = urlparse(url)
+    domain = parsed.netloc.replace("www.", "") or sanitize_name(url)[:30]
     out_dir = Path(config.TRANSCRIPT_DIR) / "web" / sanitize_name(domain)
     out_dir.mkdir(parents=True, exist_ok=True)
-    slug = sanitize_name(url.replace("https://", "").replace("http://", ""))[:80]
+    slug = sanitize_name(url.replace("https://", "").replace("http://", ""), max_len=80)
     path = out_dir / f"{slug}.txt"
     content = f"Source: {url}\nType: web\n---\n{text}\n"
     path.write_text(content, encoding="utf-8")
