@@ -37,9 +37,14 @@ def fetch_transcript(video_id: str) -> dict | None:
                 transcript = transcript_list.find_transcript([lang])
                 # transcript is iterable of FetchedTranscriptSnippet objects
                 snippets = list(transcript)
-                text = " ".join(s.text for s in snippets)
-                return {"text": clean_text(text), "language": lang}
+                text = clean_text(" ".join(s.text for s in snippets))
+                if not text:
+                    continue
+                return {"text": text, "language": lang}
             except NoTranscriptFound:
+                continue
+            except Exception:
+                logger.debug(f"Failed to fetch {lang} transcript for {video_id}, trying next")
                 continue
 
         logger.warning(f"No transcript in preferred languages for {video_id}")

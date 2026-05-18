@@ -96,3 +96,73 @@ def test_fetch_transcript_falls_back_to_next_language():
     assert result is not None
     assert result["language"] == "en"
     assert "hello" in result["text"]
+
+
+def test_fetch_transcript_skips_empty_transcript():
+    """Empty transcripts (after cleaning) should be skipped and try next language."""
+    from youtube_transcript_api import NoTranscriptFound
+
+    # Create mock snippet that yields empty text after joining
+    mock_empty_snippet = MagicMock()
+    mock_empty_snippet.text = ""
+
+    mock_transcript_empty = MagicMock()
+    mock_transcript_empty.__iter__ = MagicMock(return_value=iter([mock_empty_snippet]))
+
+    # Create successful en transcript
+    mock_snippet_en = MagicMock()
+    mock_snippet_en.text = "hello"
+
+    mock_transcript_en = MagicMock()
+    mock_transcript_en.__iter__ = MagicMock(return_value=iter([mock_snippet_en]))
+
+    mock_transcript_list = MagicMock()
+    # ru returns empty, en returns content
+    mock_transcript_list.find_transcript.side_effect = [
+        mock_transcript_empty,
+        NoTranscriptFound("vid123", ["uk"], MagicMock()),
+        mock_transcript_en,
+    ]
+
+    with patch(
+        "extractor.transcript.YouTubeTranscriptApi.list",
+        return_value=mock_transcript_list,
+    ):
+        result = fetch_transcript("vid123")
+
+    assert result is not None
+    assert result["language"] == "en"
+    assert "hello" in result["text"]
+
+
+def test_fetch_transcript_handles_iteration_error():
+    """Iteration errors should be caught and next language tried."""
+    from youtube_transcript_api import NoTranscriptFound
+
+    mock_transcript_bad = MagicMock()
+    mock_transcript_bad.__iter__ = MagicMock(side_effect=RuntimeError("corrupt data"))
+
+    # Create successful en transcript
+    mock_snippet_en = MagicMock()
+    mock_snippet_en.text = "hello"
+
+    mock_transcript_en = MagicMock()
+    mock_transcript_en.__iter__ = MagicMock(return_value=iter([mock_snippet_en]))
+
+    mock_transcript_list = MagicMock()
+    # ru fails with iteration error, en succeeds
+    mock_transcript_list.find_transcript.side_effect = [
+        mock_transcript_bad,
+        NoTranscriptFound("vid123", ["uk"], MagicMock()),
+        mock_transcript_en,
+    ]
+
+    with patch(
+        "extractor.transcript.YouTubeTranscriptApi.list",
+        return_value=mock_transcript_list,
+    ):
+        result = fetch_transcript("vid123")
+
+    assert result is not None
+    assert result["language"] == "en"
+    assert "hello" in result["text"]
