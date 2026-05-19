@@ -1,4 +1,4 @@
-const CACHE = "olytracker-v2";
+const CACHE = "olytracker-v3";
 
 const APP_SHELL = [
   "./",

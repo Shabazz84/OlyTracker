@@ -309,7 +309,7 @@ function generateWeights(loadStr) {
 }
 
 // â”€â”€ Exercise Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function ExCard({ex, phase, sessionKey, onProgress}) {
+function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) {
   const [open, setOpen] = useState(false);
   const [sets, setSets] = useState(() => {
     const count = typeof ex.sets === "number" ? ex.sets :
@@ -338,11 +338,12 @@ function ExCard({ex, phase, sessionKey, onProgress}) {
       try {
         const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
         await storage.set(key, JSON.stringify(updated));
+        if (onSetsChange) onSetsChange();
       } catch {}
     }
   }
 
-  // Load persisted state on mount
+  // Load persisted state on mount or when forced by sync pull
   useEffect(() => {
     if (!sessionKey) return;
     const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
@@ -350,11 +351,11 @@ function ExCard({ex, phase, sessionKey, onProgress}) {
       if (result) {
         try {
           const saved = JSON.parse(result.value);
-          if (Array.isArray(saved) && saved.length === sets.length) setSets(saved);
+          if (Array.isArray(saved) && saved.length > 0) setSets(saved);
         } catch {}
       }
     }).catch(() => {});
-  }, [sessionKey]);
+  }, [sessionKey, forceReload]);
 
   return (
     <div style={{
@@ -1300,6 +1301,8 @@ function OlyTracker() {
   const [gistCfg,setGistCfg] = useState(()=>{try{return JSON.parse(localStorage.getItem("oly_gist")||"null")||{token:"",id:"",lastSync:null};}catch{return{token:"",id:"",lastSync:null};}});
   const [syncStatus,setSyncStatus] = useState("idle");
   const [gistToken,setGistToken] = useState("");
+  const [setsVersion,setSetsVersion] = useState(0);
+  const [syncRevision,setSyncRevision] = useState(0);
 
   const DAYS = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
   const phase = week<=3?0:1;
@@ -1354,7 +1357,9 @@ function OlyTracker() {
     const timer=setTimeout(async()=>{
       setSyncStatus("syncing");
       try{
-        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes};
+        const setsData={};
+        Object.keys(localStorage).filter(k=>k.startsWith("sets_")).forEach(k=>{setsData[k]=localStorage.getItem(k);});
+        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes,sets:setsData};
         await gist.write(cfg.token,cfg.id,data);
         const updated={...cfg,lastSync:new Date().toISOString()};
         setGistCfg(updated);
@@ -1363,7 +1368,7 @@ function OlyTracker() {
       }catch{setSyncStatus("error");}
     },3000);
     return()=>clearTimeout(timer);
-  },[prs,logs,week,isSummer,suppChecked,suppNotes,loading]);
+  },[prs,logs,week,isSummer,suppChecked,suppNotes,loading,setsVersion]);
 
   async function applyRemoteData(data){
     if(data.oly_prs){setPrs(data.oly_prs);await storage.set("oly_prs",JSON.stringify(data.oly_prs));}
@@ -1372,6 +1377,10 @@ function OlyTracker() {
     if(data.oly_summer!==undefined){setIsSummer(data.oly_summer);await storage.set("oly_summer",JSON.stringify(data.oly_summer));}
     if(data.oly_supp_checked){setSuppChecked(data.oly_supp_checked);await storage.set("oly_supp_checked",JSON.stringify(data.oly_supp_checked));}
     if(data.oly_supp_notes!==undefined){setSuppNotes(data.oly_supp_notes);await storage.set("oly_supp_notes",data.oly_supp_notes);}
+    if(data.sets){
+      Object.entries(data.sets).forEach(([k,v])=>localStorage.setItem(k,v));
+      setSyncRevision(r=>r+1);
+    }
   }
 
   async function connectGist(){
@@ -1687,7 +1696,7 @@ function OlyTracker() {
 
               {/* Exercises */}
               {day.exercises.map((ex,i)=>(
-                <ExCard key={`${week}_${day.id}_${ex.name}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`}
+                <ExCard key={`${week}_${day.id}_${ex.name}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
                   onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
                 />
               ))}
@@ -2082,7 +2091,8 @@ function OlyTracker() {
                       setSyncStatus("syncing");
                       try{
                         const cfg=JSON.parse(localStorage.getItem("oly_gist"));
-                        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes};
+                        const setsData={};Object.keys(localStorage).filter(k=>k.startsWith("sets_")).forEach(k=>{setsData[k]=localStorage.getItem(k);});
+                        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes,sets:setsData};
                         await gist.write(cfg.token,cfg.id,data);
                         const updated={...cfg,lastSync:new Date().toISOString()};
                         setGistCfg(updated);localStorage.setItem("oly_gist",JSON.stringify(updated));
