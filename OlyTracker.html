@@ -1764,6 +1764,7 @@ function OlyTracker() {
     const updated={...logs,[`${Date.now()}`]:{
       date:new Date().toISOString().slice(0,10),
       dayName:d?.name||logForm.dayId,
+      dayLabel:d?.label||"",
       week,notes:logForm.notes,weights:logForm.weights,
       backPain:logForm.backPain,nightShift:logForm.nightShift,
       techniqueFeel:logForm.techniqueFeel,
@@ -2160,6 +2161,7 @@ function OlyTracker() {
               <Card key={key} style={{marginBottom:10}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
                   <div>
+                    {entry.dayLabel&&<div style={{fontSize:9,color:"var(--gold)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:2}}>{entry.dayLabel}</div>}
                     <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,letterSpacing:0.3}}>{entry.dayName}</div>
                     {entry.rating&&<div style={{fontSize:14,marginTop:2}}>{entry.rating}</div>}
                   </div>
