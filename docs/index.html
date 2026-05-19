@@ -1438,6 +1438,310 @@ function PRCards({prs}) {
   );
 }
 
+function OverviewCards({logs,week,setsData,dateMap}){
+  const today=new Date().toISOString().slice(0,10);
+  const monthPfx=today.slice(0,7);
+
+  // Days this month
+  const daysThisMonth=Object.values(logs).filter(e=>e.date?.startsWith(monthPfx)).length;
+
+  // Current streak (consecutive days ending today)
+  const trainedSet=new Set(Object.values(logs).filter(e=>e.date).map(e=>e.date));
+  let streak=0;
+  const sd=new Date();
+  while(trainedSet.has(sd.toISOString().slice(0,10))){streak++;sd.setDate(sd.getDate()-1);}
+
+  // Back pain 7d avg
+  const cutoff=new Date();cutoff.setDate(cutoff.getDate()-7);
+  const cutStr=cutoff.toISOString().slice(0,10);
+  const bpLogs=Object.values(logs).filter(e=>e.date>=cutStr&&e.backPain!=null&&e.backPain!=='');
+  const bpAvg=bpLogs.length?(bpLogs.reduce((a,e)=>a+(parseFloat(e.backPain)||0),0)/bpLogs.length).toFixed(1):null;
+
+  // ATW last 30d vs prev 30d
+  const exRepsMap={};
+  DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{exRepsMap[ex.name]=parseRepsNum(ex.reps);}));
+  function calcATW(fromStr,toStr){
+    let ton=0,reps=0;
+    Object.entries(setsData).forEach(([key,setArr])=>{
+      const m=key.match(/^sets_(w\d+_d\d+)_(.+)$/);
+      if(!m||!Array.isArray(setArr))return;
+      const date=dateMap[m[1]];
+      if(!date||date<fromStr||date>toStr)return;
+      const exReps=exRepsMap[m[2].replace(/_/g,' ')]||3;
+      setArr.forEach(s=>{if(s.done&&parseFloat(s.weight)>0){ton+=parseFloat(s.weight)*exReps;reps+=exReps;}});
+    });
+    return reps>0?(ton/reps):null;
+  }
+  const d30=new Date();d30.setDate(d30.getDate()-30);
+  const d60=new Date();d60.setDate(d60.getDate()-60);
+  const atwNow=calcATW(d30.toISOString().slice(0,10),today);
+  const atwPrev=calcATW(d60.toISOString().slice(0,10),d30.toISOString().slice(0,10));
+  const atwDelta=atwNow&&atwPrev?((atwNow-atwPrev)/atwPrev*100).toFixed(1):null;
+
+  // Block info
+  const blockWeek=week<=6?week:week<=10?week-6:week-10;
+  const blockTotal=week<=6?6:week<=10?4:6;
+  const blockName=week<=6?'HYPERTROPHY':week<=10?'TECHNIQUE':'STRENGTH';
+
+  const card=(color,label,value,sub)=>(
+    <div style={{background:'var(--bg1)',border:`1px solid ${color}33`,borderRadius:8,padding:'12px 14px'}}>
+      <div style={{fontSize:8,color:'var(--text3)',letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:4}}>{label}</div>
+      <div style={{fontSize:24,fontWeight:700,color,lineHeight:1,fontFamily:"'Bebas Neue',sans-serif"}}>{value}</div>
+      {sub&&<div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:3}}>{sub}</div>}
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
+        {card('var(--gold)','BLOCK PROGRESS',`W${blockWeek} / ${blockTotal}`,`Block · ${blockName}`)}
+        {card('var(--blue)','DAYS THIS MONTH',daysThisMonth,'sessions logged')}
+        {card('var(--green)','CURRENT STREAK',streak>0?`${streak}d`:'0','consecutive days')}
+        {card('var(--red)','BACK PAIN (7D AVG)',bpAvg!=null?`${bpAvg}/10`:'—',bpLogs.length?`${bpLogs.length} sessions`:'no data')}
+      </div>
+      <div style={{background:'var(--bg1)',border:'1px solid #8b5cf633',borderRadius:8,padding:'12px 14px'}}>
+        <div style={{fontSize:8,color:'var(--text3)',letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:4}}>AVG TRAINING WEIGHT (LAST 30D)</div>
+        <div style={{display:'flex',alignItems:'baseline',gap:12}}>
+          <div style={{fontSize:24,fontWeight:700,color:'var(--purple)',lineHeight:1,fontFamily:"'Bebas Neue',sans-serif"}}>
+            {atwNow?`${(+atwNow).toFixed(1)} kg`:'—'}
+          </div>
+          {atwDelta&&(
+            <div style={{fontSize:11,color:atwDelta>0?'var(--green)':'var(--red)'}}>
+              {atwDelta>0?'↑':'↓'} {Math.abs(atwDelta)}% vs prev month
+            </div>
+          )}
+        </div>
+        <div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:3}}>
+          target: +4% for +10kg to total (Torokhtiy)
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoadDevelopment({setsData,dateMap}){
+  const exRepsMap=useMemo(()=>{
+    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.name]=parseRepsNum(ex.reps);}));return m;
+  },[]);
+
+  const sessions=useMemo(()=>{
+    const s={};
+    Object.entries(setsData).forEach(([key,setArr])=>{
+      const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
+      if(!m||!Array.isArray(setArr))return;
+      const[,sk,,, exRaw]=m;
+      const exName=exRaw.replace(/_/g,' ');
+      const exReps=exRepsMap[exName]||3;
+      if(!s[sk])s[sk]={key:sk,week:+m[2],dayId:m[3],tonnage:0,reps:0};
+      setArr.forEach(st=>{
+        if(st.done&&parseFloat(st.weight)>0){
+          s[sk].tonnage+=parseFloat(st.weight)*exReps;
+          s[sk].reps+=exReps;
+        }
+      });
+    });
+    return Object.values(s)
+      .map(s=>({...s,date:dateMap[s.key]||null,atw:s.reps>0?+(s.tonnage/s.reps).toFixed(1):null,label:`W${s.week} ${s.dayId.toUpperCase()}`}))
+      .filter(s=>s.reps>0)
+      .sort((a,b)=>(a.date||a.label).localeCompare(b.date||b.label));
+  },[setsData,dateMap,exRepsMap]);
+
+  const [tooltip,setTooltip]=useState(null);
+
+  if(sessions.length===0) return (
+    <div style={{color:'var(--text3)',fontSize:12,padding:'16px 0',fontFamily:"'DM Mono',monospace"}}>
+      No volume data yet — check off sets with weights to populate this.
+    </div>
+  );
+
+  function BarChart({data,valueKey,color,height=120,label}){
+    const max=Math.max(...data.map(d=>d[valueKey]||0),1);
+    const barW=Math.max(8,Math.min(28,Math.floor(320/data.length)-2));
+    return (
+      <div>
+        <div style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:6}}>{label}</div>
+        <div style={{position:'relative',display:'flex',alignItems:'flex-end',gap:2,height,background:'var(--bg)',borderRadius:4,padding:'8px 4px 4px'}}>
+          {data.map((d,i)=>{
+            const val=d[valueKey]||0;
+            const h=Math.max(2,(val/max)*(height-20));
+            const isHovered=tooltip?.key===d.key&&tooltip?.chart===valueKey;
+            return (
+              <div key={d.key} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',cursor:'pointer'}}
+                onMouseEnter={()=>setTooltip({key:d.key,chart:valueKey,val,date:d.date,label:d.label})}
+                onMouseLeave={()=>setTooltip(null)}
+                onTouchStart={e=>{e.preventDefault();setTooltip({key:d.key,chart:valueKey,val,date:d.date,label:d.label});}}
+                onTouchEnd={()=>setTimeout(()=>setTooltip(null),1500)}>
+                <div style={{width:'100%',height:h,background:isHovered?'#fff':color,borderRadius:'2px 2px 0 0',opacity:isHovered?1:0.85,transition:'all 0.1s'}}/>
+              </div>
+            );
+          })}
+          {tooltip&&(
+            <div style={{position:'absolute',top:4,left:'50%',transform:'translateX(-50%)',
+              background:'var(--bg2)',border:'1px solid var(--border2)',borderRadius:6,padding:'4px 8px',
+              fontSize:10,color:'var(--text)',fontFamily:"'DM Mono',monospace",pointerEvents:'none',whiteSpace:'nowrap',zIndex:10}}>
+              {tooltip.label}{tooltip.date?` · ${tooltip.date.slice(5)}`:''} · {tooltip.chart==='atw'?`ATW: ${tooltip.val} kg`:`${Math.round(tooltip.val)} kg`}
+            </div>
+          )}
+        </div>
+        <div style={{display:'flex',justifyContent:'space-between',marginTop:3}}>
+          {[0,Math.floor(data.length/2),data.length-1].filter((v,i,a)=>a.indexOf(v)===i).map(i=>(
+            <div key={i} style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>
+              {String(data[i]?.date||data[i]?.label||'').slice(-5)}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:16}}>
+      <BarChart data={sessions} valueKey="atw" color="var(--purple)" height={120} label="AVG TRAINING WEIGHT PER SESSION (kg)"/>
+      <BarChart data={sessions} valueKey="tonnage" color="var(--gold)" height={100} label="TONNAGE PER SESSION (kg × reps)"/>
+    </div>
+  );
+}
+
+function ExerciseBreakdown({setsData,dateMap}){
+  const [openEx,setOpenEx]=useState(null);
+
+  const exRepsMap=useMemo(()=>{
+    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.name]=parseRepsNum(ex.reps);}));return m;
+  },[]);
+
+  const exercises=useMemo(()=>{
+    const map={};
+    Object.entries(setsData).forEach(([key,setArr])=>{
+      const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
+      if(!m||!Array.isArray(setArr))return;
+      const[,sk,wk,dk,exRaw]=m;
+      const exName=exRaw.replace(/_/g,' ');
+      const exReps=exRepsMap[exName]||3;
+      const date=dateMap[sk]||null;
+      const doneSets=setArr.filter(s=>s.done&&parseFloat(s.weight)>0);
+      if(doneSets.length===0)return;
+      if(!map[exName])map[exName]={name:exName,sessions:[],best:0,totalTon:0,totalReps:0};
+      const maxW=Math.max(...doneSets.map(s=>parseFloat(s.weight)));
+      map[exName].sessions.push({sk,week:+wk,dayId:dk,date,label:`W${wk} ${dk.toUpperCase()}`,sets:setArr,maxW});
+      map[exName].best=Math.max(map[exName].best,maxW);
+      doneSets.forEach(s=>{map[exName].totalTon+=parseFloat(s.weight)*exReps;map[exName].totalReps+=exReps;});
+    });
+    return Object.values(map)
+      .map(ex=>({...ex,
+        atw:ex.totalReps>0?+(ex.totalTon/ex.totalReps).toFixed(1):null,
+        sessions:ex.sessions.sort((a,b)=>(a.date||a.label).localeCompare(b.date||b.label)),
+      }))
+      .sort((a,b)=>b.sessions.length-a.sessions.length);
+  },[setsData,dateMap,exRepsMap]);
+
+  if(exercises.length===0) return (
+    <div style={{color:'var(--text3)',fontSize:12,padding:'16px 0',fontFamily:"'DM Mono',monospace"}}>
+      No exercise data yet — log sets with weights to see breakdown.
+    </div>
+  );
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:1}}>
+      {exercises.map((ex,ei)=>{
+        const isOpen=openEx===ex.name;
+        const exReps=exRepsMap[ex.name]||3;
+        const sparkSessions=[...ex.sessions].slice(-12);
+        const sparkMax=Math.max(...sparkSessions.map(s=>s.maxW),1);
+        const sparkMin=Math.min(...sparkSessions.map(s=>s.maxW))*0.9;
+        const W=120,H=36,pad=4;
+        const xi=i=>sparkSessions.length===1?W/2:pad+i*(W-2*pad)/(sparkSessions.length-1);
+        const yi=w=>H-pad-((w-sparkMin)/(sparkMax-sparkMin||1))*(H-2*pad);
+        return (
+          <div key={ex.name} style={{background:'var(--bg1)',border:'1px solid var(--border)',
+            borderRadius:ei===0?'8px 8px 0 0':ei===exercises.length-1?'0 0 8px 8px':'0',borderTop:ei>0?'none':undefined}}>
+            <div onClick={()=>setOpenEx(isOpen?null:ex.name)}
+              style={{padding:'10px 14px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+              <div>
+                <div style={{fontSize:9,color:isOpen?'var(--gold)':'var(--text)',fontFamily:"'DM Mono',monospace",fontWeight:isOpen?600:400,letterSpacing:0.5}}>
+                  {ex.name.toUpperCase()}
+                </div>
+                <div style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:1}}>
+                  best: {ex.best} kg · {ex.sessions.length} session{ex.sessions.length!==1?'s':''}
+                </div>
+              </div>
+              <span style={{fontSize:10,color:'var(--text3)'}}>{isOpen?'▾':'▸'}</span>
+            </div>
+            {isOpen&&(
+              <div style={{padding:'0 14px 14px',borderTop:'1px solid var(--border)'}}>
+                {/* Summary cards */}
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6,margin:'12px 0 10px'}}>
+                  {[
+                    ['BEST',`${ex.best} kg`,'var(--gold)'],
+                    ['VOLUME',`${(ex.totalTon/1000).toFixed(1)} t`,'var(--text)'],
+                    ['ATW',ex.atw?`${ex.atw} kg`:'—','var(--purple)'],
+                  ].map(([lbl,val,col])=>(
+                    <div key={lbl} style={{background:'var(--bg)',borderRadius:6,padding:'8px',textAlign:'center'}}>
+                      <div style={{fontSize:7,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:2}}>{lbl}</div>
+                      <div style={{fontSize:16,fontWeight:700,color:col,fontFamily:"'Bebas Neue',sans-serif"}}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Sparkline */}
+                {sparkSessions.length>1&&(
+                  <div style={{marginBottom:10}}>
+                    <div style={{fontSize:7,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:4}}>MAX WEIGHT PER SESSION</div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%',height:'auto',display:'block',background:'var(--bg)',borderRadius:4}}>
+                      <polyline points={sparkSessions.map((s,i)=>`${xi(i)},${yi(s.maxW)}`).join(' ')}
+                        fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
+                      {sparkSessions.map((s,i)=>(
+                        <circle key={i} cx={xi(i)} cy={yi(s.maxW)} r={i===sparkSessions.length-1?2.5:1.5}
+                          fill="var(--gold)" opacity={i===sparkSessions.length-1?1:0.5}/>
+                      ))}
+                    </svg>
+                  </div>
+                )}
+                {/* Session history */}
+                <div style={{fontSize:7,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:6}}>SESSION HISTORY</div>
+                <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                  {[...ex.sessions].reverse().map((sess,si)=>{
+                    const isBest=sess.maxW===ex.best;
+                    const doneSets=sess.sets.filter(s=>s.done&&parseFloat(s.weight)>0);
+                    const sessReps=exRepsMap[ex.name]||3;
+                    const sessTon=doneSets.reduce((a,s)=>a+parseFloat(s.weight)*sessReps,0);
+                    const sessATW=doneSets.length>0?(sessTon/(doneSets.length*sessReps)).toFixed(1):null;
+                    return (
+                      <div key={si} style={{background:'var(--bg)',borderRadius:6,padding:'8px 10px',
+                        borderLeft:`2px solid ${isBest?'var(--gold)':'var(--border2)'}`,}}>
+                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                          <span style={{fontSize:9,color:isBest?'var(--gold)':'var(--text2)',fontFamily:"'DM Mono',monospace",fontWeight:isBest?600:400}}>
+                            {sess.date||sess.label}{sess.date?` · ${sess.label}`:''}
+                          </span>
+                          {isBest&&<span style={{fontSize:8,color:'var(--gold)',fontFamily:"'DM Mono',monospace"}}>★ best</span>}
+                        </div>
+                        <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                          {sess.sets.map((s,i)=>{
+                            const w=parseFloat(s.weight);
+                            const isMax=w===sess.maxW&&s.done;
+                            return s.done&&w>0?(
+                              <span key={i} style={{fontSize:10,fontFamily:"'DM Mono',monospace",padding:'2px 6px',borderRadius:3,
+                                background:isMax?'rgba(212,168,67,0.12)':'var(--bg1)',
+                                color:isMax?'var(--gold)':'var(--text2)'}}>
+                                {w}×{sessReps}
+                              </span>
+                            ):null;
+                          })}
+                        </div>
+                        {sessTon>0&&<div style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:4}}>
+                          vol: {Math.round(sessTon)} kg{sessATW?` · ATW: ${sessATW} kg`:''}
+                        </div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function CalendarHeatmap({logs}) {
   const entries = Object.values(logs).filter(e => e.date);
   const trainedSet = new Set(entries.map(e => e.date));
