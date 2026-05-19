@@ -1631,7 +1631,7 @@ function OlyTracker() {
   const [loading,setLoading] = useState(true);
   const [toast,setToast]     = useState(null);
   const [newPR,setNewPR]     = useState({lift:"Back Squat",weight:"",reps:"1"});
-  const [logForm,setLogForm] = useState({dayId:"d1",notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""});
+  const [logForm,setLogForm] = useState(()=>({dayId:"d1",date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
   const [prTab,setPrTab]     = useState("key");
   const [progTab,setProgTab] = useState("program");
   const [suppHistory,setSuppHistory] = useState({});
@@ -1788,7 +1788,7 @@ function OlyTracker() {
     if(!logForm.notes&&!logForm.weights&&!logForm.rating) return;
     const d=DAYS.find(d=>d.id===logForm.dayId);
     const updated={...logs,[`${Date.now()}`]:{
-      date:new Date().toISOString().slice(0,10),
+      date:logForm.date||new Date().toISOString().slice(0,10),
       dayName:d?.name||logForm.dayId,
       dayLabel:d?.label||"",
       week,notes:logForm.notes,weights:logForm.weights,
@@ -1800,7 +1800,7 @@ function OlyTracker() {
     }};
     setLogs(updated);
     try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
-    setLogForm(f=>({...f,notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
+    setLogForm(f=>({...f,date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
     showToast("Session logged ✓");
   }
 
@@ -2081,6 +2081,13 @@ function OlyTracker() {
           <div className="fade">
             <Label>LOG SESSION — WEEK {week}</Label>
             <Card style={{marginBottom:20}}>
+
+              {/* Date picker */}
+              <div style={{marginBottom:12}}>
+                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>DATE</label>
+                <Inp type="date" value={logForm.date} onChange={e=>setLogForm(f=>({...f,date:e.target.value}))}
+                  style={{colorScheme:"dark"}}/>
+              </div>
 
               {/* Session selector */}
               <div style={{marginBottom:12}}>
