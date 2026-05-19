@@ -488,6 +488,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) 
                 if(sessionKey) {
                   try {
                     await storage.set(`sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`, JSON.stringify(updated));
+                    if(onSetsChange) onSetsChange();
                   } catch {}
                 }
               }} style={{
@@ -504,6 +505,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) 
                   if(sessionKey) {
                     try {
                       await storage.set(`sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`, JSON.stringify(updated));
+                      if(onSetsChange) onSetsChange();
                     } catch {}
                   }
                 }} style={{
@@ -1378,8 +1380,12 @@ function OlyTracker() {
     if(data.oly_supp_checked){setSuppChecked(data.oly_supp_checked);await storage.set("oly_supp_checked",JSON.stringify(data.oly_supp_checked));}
     if(data.oly_supp_notes!==undefined){setSuppNotes(data.oly_supp_notes);await storage.set("oly_supp_notes",data.oly_supp_notes);}
     if(data.sets){
+      const count=Object.keys(data.sets).length;
       Object.entries(data.sets).forEach(([k,v])=>localStorage.setItem(k,v));
       setSyncRevision(r=>r+1);
+      showToast(`Pulled ${count} set records`);
+    } else {
+      showToast("Pulled â€” no set data in Gist");
     }
   }
 
