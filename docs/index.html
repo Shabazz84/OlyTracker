@@ -1662,8 +1662,20 @@ function OlyTracker() {
         storage.get("oly_week"),
         storage.get("oly_summer"),
       ]);
-      if(p.status==="fulfilled"&&p.value) setPrs(JSON.parse(p.value.value));
-      else{setPrs(SEED_PRS);await storage.set("oly_prs",JSON.stringify(SEED_PRS));}
+      if(p.status==="fulfilled"&&p.value){
+        const raw=JSON.parse(p.value.value);
+        const migrated={};
+        Object.entries(raw).forEach(([lift,entry])=>{
+          migrated[lift]=entry.history?entry:{...entry,history:[{weight:entry.weight,date:entry.date,reps:entry.reps}]};
+        });
+        setPrs(migrated);
+      }else{
+        const seeded={};
+        Object.entries(SEED_PRS).forEach(([lift,entry])=>{
+          seeded[lift]={...entry,history:[{weight:entry.weight,date:entry.date,reps:entry.reps}]};
+        });
+        setPrs(seeded);await storage.set("oly_prs",JSON.stringify(seeded));
+      }
       if(l.status==="fulfilled"&&l.value) setLogs(JSON.parse(l.value.value));
       if(w.status==="fulfilled"&&w.value) setWeek(JSON.parse(w.value.value));
       if(s.status==="fulfilled"&&s.value) setIsSummer(JSON.parse(s.value.value));
@@ -1776,12 +1788,21 @@ function OlyTracker() {
     if(!newPR.weight||isNaN(newPR.weight)) return;
     const existing=prs[newPR.lift];
     const nw=parseFloat(newPR.weight);
+    const nr=parseInt(newPR.reps)||1;
+    const today=new Date().toISOString().slice(0,10);
     const isNew=!existing||nw>existing.weight;
-    const updated={...prs,[newPR.lift]:{weight:nw,date:new Date().toISOString().slice(0,10),reps:parseInt(newPR.reps)||1}};
+    let entry;
+    if(isNew){
+      const history=[...(existing?.history||[]),{weight:nw,date:today,reps:nr}];
+      entry={weight:nw,date:today,reps:nr,history};
+    }else{
+      entry={...existing};
+    }
+    const updated={...prs,[newPR.lift]:entry};
     setPrs(updated);
     try{await storage.set("oly_prs",JSON.stringify(updated));}catch{}
     setNewPR(p=>({...p,weight:"",reps:"1"}));
-    showToast(isNew?`🏆 NEW PR — ${newPR.lift}: ${nw} kg!`:`Logged: ${newPR.lift} ${nw} kg`);
+    showToast(isNew?`🏆 NEW PR — ${newPR.lift}: ${nw} kg!`:`Already at ${existing?.weight} kg — no PR logged`);
   }
 
   async function handleLog(){
