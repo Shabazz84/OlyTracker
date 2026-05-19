@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0a">
+<title>OlyTracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html,body,#root{height:100%;width:100%}
+:root{--bg:#0a0a0a;--bg1:#111;--bg2:#161616;--bg3:#1c1c1c;--border:#222;--border2:#2a2a2a;--text:#e2e2e2;--text2:#888;--text3:#444;--gold:#d4a843;--red:#c94f3a;--blue:#4a90d9;--green:#5a9e45;--purple:#8b5cf6;}
+body{background:#0a0a0a;color:#e2e2e2;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0a0a0a}::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px}
+input,select,textarea{font-family:'DM Sans',sans-serif}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:#d4a843!important}
+.fade{animation:fadeIn 0.25s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.tab-scroll::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const storage={
+  get:async(key)=>{try{const val=localStorage.getItem(key);return val!==null?{value:val}:null;}catch(e){return null;}},
+  set:async(key,value)=>{try{const v=typeof value==='string'?value:JSON.stringify(value);localStorage.setItem(key,v);return{value:v};}catch(e){return null;}},
+  delete:async(key)=>{try{localStorage.removeItem(key);return{deleted:true};}catch(e){return null;}},
+  list:async(prefix)=>{try{const keys=Object.keys(localStorage).filter(k=>!prefix||k.startsWith(prefix));return{keys};}catch(e){return{keys:[]};}}
+};
+</script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const injectFonts = () => {
+  if (document.getElementById("oly-fonts")) return;
+  const l = document.createElement("link");
+  l.id = "oly-fonts"; l.rel = "stylesheet";
+  l.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap";
+  document.head.appendChild(l);
+};
+
+const injectStyles = () => {
+  if (document.getElementById("oly-styles")) return;
+  const s = document.createElement("style");
+  s.id = "oly-styles";
+  s.textContent = `
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0a;--bg1:#111;--bg2:#161616;--bg3:#1c1c1c;
+      --border:#222;--border2:#2a2a2a;
+      --text:#e2e2e2;--text2:#888;--text3:#444;
+      --gold:#d4a843;--red:#c94f3a;--blue:#4a90d9;--green:#5a9e45;--purple:#8b5cf6;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+    input,select,textarea{font-family:'DM Sans',sans-serif}
+    input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--gold)!important}
+    .fade{animation:fadeIn 0.25s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .tab-scroll::-webkit-scrollbar{display:none}
+  `;
+  document.head.appendChild(s);
+};
+
+// ── PRs from FitNotes ─────────────────────────────────────────────────────────
+const SEED_PRS = {
+  "Back Squat":        {weight:118,date:"2026-05-15",reps:1},
+  "Clean Pull":        {weight:120,date:"2025-11-05",reps:3},
+  "Deadlift":          {weight:115,date:"2025-08-25",reps:3},
+  "Klokov Squats":     {weight:107,date:"2025-11-28",reps:1},
+  "Front Squat":       {weight:102,date:"2025-10-03",reps:2},
+  "RDL Pull":          {weight:102,date:"2026-01-17",reps:3},
+  "Lat Pulldown":      {weight:105,date:"2025-08-25",reps:5},
+  "Snatch High Pull":  {weight:92, date:"2025-09-27",reps:4},
+  "Snatch Deadlift":   {weight:92, date:"2025-11-18",reps:4},
+  "Klokov Deadlift":   {weight:92, date:"2025-10-15",reps:4},
+  "T-Bar Row":         {weight:77, date:"2025-10-17",reps:5},
+  "Good Morning":      {weight:75, date:"2025-11-05",reps:5},
+  "Overhead Press":    {weight:62, date:"2025-09-20",reps:2},
+  "Hang Power Snatch": {weight:62, date:"2026-01-17",reps:1},
+  "Muscle Snatch":     {weight:58, date:"2025-12-23",reps:1},
+  "Snatch Balance":    {weight:55, date:"2025-12-23",reps:3},
+  "Snatch (Floor)":    {weight:55, date:"2025-11-01",reps:2},
+  "Clean":             {weight:80, date:"2025-xx-xx",reps:1},
+  "Clean & Jerk":      {weight:65, date:"2025-xx-xx",reps:1},
+  "Push Jerk":         {weight:60, date:"2025-04-11",reps:1},
+  "Overhead Squat":    {weight:50, date:"2025-10-20",reps:4},
+  "Sots Press":        {weight:30, date:"2025-10-22",reps:5},
+  "Flat Bench Press":  {weight:98, date:"2024-12-16",reps:2},
+  "Klokov Trapi":      {weight:72, date:"2025-10-06",reps:5},
+  "Berestov Squats":   {weight:82, date:"2025-11-15",reps:1},
+};
+
+// ── Sleep quality badges ──────────────────────────────────────────────────────
+const SLEEP = {
+  full:    {label:"FULL SLEEP",    color:"#5a9e45", bg:"rgba(90,158,69,0.12)"},
+  good:    {label:"GOOD SLEEP",    color:"#4a90d9", bg:"rgba(74,144,217,0.12)"},
+  partial: {label:"5.5H SLEEP",    color:"#d4a843", bg:"rgba(212,168,67,0.12)"},
+  warn:    {label:"SHIFT FATIGUE", color:"#c94f3a", bg:"rgba(201,79,58,0.12)"},
+};
+
+// ── Program ───────────────────────────────────────────────────────────────────
+const DAYS_SUMMER = [
+  {
+    id:"d1", label:"DAY 1", name:"Snatch + Back Squat",
+    schedule:"Monday", color:"#4a90d9", sleep:"full",
+    maxLoad: true,
+    focus:["Snatch technique","Back Squat daily max single","Posterior chain"],
+    exercises:[
+      {name:"Muscle Snatch",              sets:4, reps:"4",   l1:"42–48 kg",   l2:"48–54 kg",   type:"snatch",   note:"Session opener every day per Torokhtiy. No leg drive, arms pull. Your best is 58 kg — work 72–83%. Slow and deliberate."},
+      {name:"Hang Power Snatch",          sets:5, reps:"3",   l1:"50–56 kg",   l2:"54–60 kg",   type:"snatch",   note:"Above knee. Your best is 62 kg — work 80–90%. Explosive hip extension, meet the bar high. Hypertrophy sets, not a max attempt."},
+      {name:"Back Squat — Daily Max Single", sets:"4–6", reps:"1", l1:"95–118 kg", l2:"100–120 kg", type:"strength", note:"🎯 Pavlukhin/Golovinsky protocol: work up to the heaviest single that feels solid today. No grinding misses. Start at 80%, add 5kg per set until speed slows. Best is 118 kg. Full depth, high bar."},
+      {name:"Leg Press",                  sets:4, reps:"10",  l1:"120–140 kg", l2:"130–150 kg", type:"accessory",note:"Quad volume without spinal load after heavy singles. Full ROM, controlled descent. Best is 140 kg — work in that range."},
+      {name:"Overhead Squat",             sets:4, reps:"3",   l1:"40–48 kg",   l2:"46–54 kg",   type:"snatch",   note:"PRIMARY SNATCH LIMITER — best is 50 kg. 2s pause at bottom. Bar over mid-foot. Every kg here = heavier snatch. Own the position."},
+      {name:"Good Morning",               sets:4, reps:"8",   l1:"50–60 kg",   l2:"55–65 kg",   type:"accessory",note:"⚠️ BACK: Hip hinge, soft knees, feel hamstrings not lower back. Best is 75 kg — work 65–80%. Strengthens first pull position. Stop if sharp pain."},
+      {name:"Weighted Pull Up",           sets:4, reps:"6–8", l1:"BW+5 kg",    l2:"BW+8 kg",    type:"strength", note:"Lat strength improves bar control (Pavlukhin). Dead hang to chin. Add weight when 8 reps easy."},
+      {name:"GHR (Glute Ham Raise)",       sets:3, reps:"8",   l1:"5–10 kg",    l2:"8–12 kg",    type:"strength", note:"Hold plate to chest. You're already doing 3×10 bodyweight as warm-up so load immediately. Strengthens hamstrings in lengthened position — directly improves first pull off the floor and reduces QL compensation that drives your back pain."},
+    ]
+  },
+  {
+    id:"d2", label:"DAY 2", name:"Clean + Upper Hypertrophy",
+    schedule:"Tuesday", color:"#c94f3a", sleep:"full",
+    maxLoad: true,
+    focus:["Clean technique","Upper back hypertrophy","Chest work"],
+    exercises:[
+      {name:"Muscle Snatch (opener)",     sets:2, reps:"3",   l1:"42–46 kg",   l2:"44–48 kg",   type:"snatch",   note:"Light pattern touch per Golovinsky — competition movement every session. 50% effort, pure technique. 2 sets only."},
+      {name:"Hang Power Clean",           sets:5, reps:"3",   l1:"58–65 kg",   l2:"63–70 kg",   type:"cj",       note:"Above knee. Clean is 80 kg — work 72–80%. Aggressive pull, high elbows, fast turnover. Quarter squat landing. Builds pattern before full cleans."},
+      {name:"Clean Pull",                 sets:4, reps:"4",   l1:"85–95 kg",   l2:"90–100 kg",  type:"cj",       note:"Best is 120 kg — stay 70–80% for volume. ⚠️ BACK: Controlled off floor, explosive at hip. Quality over load."},
+      {name:"Incline Barbell Press",      sets:4, reps:"8",   l1:"58–68 kg",   l2:"63–73 kg",   type:"strength", note:"Chest hypertrophy without overhead conflict. Controlled 2s descent. Primary chest builder this block."},
+      {name:"Weighted Parallel Bar Dips", sets:4, reps:"8",   l1:"BW+20 kg",   l2:"BW+25 kg",   type:"strength", note:"Forward lean = chest dominant, upright = tricep dominant. Mix both within sets. Tricep strength directly supports jerk lockout — your weak point. Belt + plates. Full ROM, chest to bar level at bottom."},
+      {name:"Klokov Trapi",               sets:4, reps:"8",   l1:"55–62 kg",   l2:"60–67 kg",   type:"strength", note:"Best is 72 kg. Upper trap + rear delt. Direct carry-over to snatch and clean second pull. Elbows flared, pull to chin height."},
+      {name:"Wide Overhead Press",        sets:4, reps:"6",   l1:"35–42 kg",   l2:"40–47 kg",   type:"strength", note:"Snatch-width grip. Overhead stability for receiving. Feel shoulder blades and upper back work."},
+      {name:"Dead Bug",                   sets:3, reps:"10/side",l1:"BW",      l2:"BW",          type:"accessory",note:"Back pain prevention. Lower back glued to floor throughout."},
+    ]
+  },
+  {
+    id:"d3", label:"DAY 3", name:"Front Squat + Posterior Chain",
+    schedule:"Wednesday", color:"#4a90d9", sleep:"good",
+    maxLoad: false,
+    focus:["Front Squat daily max single","Posterior chain","OHS stability"],
+    exercises:[
+      {name:"Muscle Snatch (opener)",     sets:2, reps:"3",   l1:"42–46 kg",   l2:"44–48 kg",   type:"snatch",   note:"Pattern touch. Work starts 7pm — conserve energy. Light and technical only."},
+      {name:"Front Squat — Daily Max Single", sets:"4–6", reps:"1", l1:"82–102 kg", l2:"88–108 kg", type:"strength", note:"🎯 Daily max single — Golovinsky/Pavlukhin protocol. Work up to the heaviest solid single today. Best is 102 kg. ⚠️ WED: Work starts 7pm — respect the ceiling, don't push past 90%."},
+      {name:"Front Squat — Volume",       sets:3, reps:"4",   l1:"72–85 kg",   l2:"78–92 kg",   type:"strength", note:"Drop to ~80% of today's single. Elbows high, upright torso. 1s pause at bottom each rep. Clean receiving position — this is exactly the position you catch the bar in."},
+      {name:"RDL Pull",                   sets:4, reps:"6",   l1:"75–85 kg",   l2:"80–90 kg",   type:"strength", note:"Best is 102 kg. ⚠️ BACK: Feel hamstrings not lower back. Reduce if back rounds. Hamstring strength = better first pull."},
+      {name:"GHR (Glute Ham Raise)",       sets:3, reps:"10",  l1:"BW",         l2:"5–8 kg",     type:"strength", note:"RDL covers hip hinge — GHR covers knee flexion. Completes the posterior chain picture. Bodyweight first set, add load in Phase 2. Hamstrings in lengthened position, directly reduces QL compensation and back pain."},
+      {name:"Snatch High Pull",           sets:3, reps:"4",   l1:"70–78 kg",   l2:"76–84 kg",   type:"snatch",   note:"Best is 92 kg — stay 75–85%. Pull to chin, elbows high and out. Upper back builder with direct snatch carry-over."},
+      {name:"Overhead Squat",             sets:3, reps:"3",   l1:"40–48 kg",   l2:"46–54 kg",   type:"snatch",   note:"Technique maintenance. 2s pause at bottom. Keep position standards from Monday. Lighter day — position focus only."},
+      {name:"Plank",                      sets:3, reps:"50s", l1:"BW",         l2:"BW",          type:"accessory",note:"Posterior pelvic tilt, squeeze glutes. Add 5s each week. Core stability for squat and receiving position."},
+    ]
+  },
+  {
+    id:"d4", label:"DAY 4", name:"🎯 Jerk Priority + C&J",
+    schedule:"Thursday", color:"#d4a843", sleep:"partial",
+    maxLoad: false,
+    focus:["Jerk is the session main event","Daily max singles","C&J practice"],
+    exercises:[
+      {name:"Muscle Snatch (opener)",     sets:2, reps:"3",   l1:"40–44 kg",   l2:"42–46 kg",   type:"snatch",   note:"Pattern touch. 5.5hrs sleep — keep this light and deliberate. 2 sets only."},
+      {name:"Jerk from Rack — Daily Max Single", sets:"6–8", reps:"1", l1:"52–60 kg", l2:"56–64 kg", type:"cj", note:"🎯 PRIMARY MOVEMENT. Golovinsky/Pavlukhin protocol. Climb to the heaviest single that feels solid. Stop before a miss. Push Jerk only. Vertical dip, powerful drive, punch straight up. 5.5hrs sleep — respect the ceiling."},
+      {name:"Push Press",                 sets:4, reps:"5",   l1:"50–56 kg",   l2:"54–60 kg",   type:"cj",       note:"Overhead strength base for jerk. Dip straight down, no forward lean. Lock out with ears behind arms."},
+      {name:"Clean & Jerk",               sets:4, reps:"1+2", l1:"55–62 kg",   l2:"58–65 kg",   type:"cj",       note:"1 clean + 2 jerks. Double jerk = extra reps on weak point per Pavlukhin. Technique focus, not a max attempt."},
+      {name:"Sots Press",                 sets:3, reps:"5",   l1:"25–30 kg",   l2:"28–33 kg",   type:"snatch",   note:"OHS bottom position → press overhead. Best is 30 kg. Technique exercise — if you can't hold position, reduce load. That IS the work."},
+      {name:"Behind Neck Press",          sets:3, reps:"6",   l1:"35–42 kg",   l2:"40–46 kg",   type:"strength", note:"Snatch grip. Rear delts and upper traps. Direct carry-over to OHS stability."},
+      {name:"Pallof Press",               sets:3, reps:"10/side",l1:"Light",   l2:"Light-Med",   type:"accessory",note:"Anti-rotation core. 2s hold at extension. Protects back and stabilizes receiving position."},
+    ]
+  },
+  {
+    id:"d5", label:"DAY 5", name:"Klokov + Berestov + Lunges",
+    schedule:"Saturday", color:"#8b5cf6", sleep:"partial",
+    maxLoad: false,
+    focus:["Klokov Squat singles","Berestov Squat 3×9","Single-leg strength"],
+    exercises:[
+      {name:"Muscle Snatch (opener)",     sets:2, reps:"3",   l1:"42–46 kg",   l2:"44–48 kg",   type:"snatch",   note:"Pattern touch. 5.5hrs sleep — light and technical only. 2 sets."},
+      {name:"Klokov Squat — Singles",     sets:"3–5", reps:"1", l1:"85–107 kg", l2:"92–112 kg", type:"strength", note:"🎯 Paused squat singles — 5–7s controlled descent, 10s pause at bottom, drive up. Your best is 107 kg. Work up to the heaviest single that feels solid with perfect position. These are technique-controlled singles, not grind singles — the pause and tempo ARE the exercise. 5.5hrs sleep — stay technical."},
+      {name:"Berestov Squat",             sets:3, reps:"9",   l1:"60–72 kg",   l2:"66–78 kg",   type:"strength", note:"3 reps wide stance + 3 reps normal stance + 3 reps narrow stance = 9 total per set. No reracking between stances. Moderate load — this is a volume technique exercise. Hits quad, adductor, and glute from all angles. Berestov's signature."},
+      {name:"Lunge (Barbell)",            sets:3, reps:"8/leg",l1:"40–50 kg",  l2:"46–56 kg",   type:"strength", note:"Per Pavlukhin: lunge squats for jerk tendon development and single-leg strength even without split jerk. Controlled descent, knee tracks over toe. Each leg separately."},
+      {name:"Face Pull",                  sets:3, reps:"15",  l1:"Light",      l2:"Light-Med",   type:"accessory",note:"Rear delt and external rotator health. High rep, feel the squeeze. Protects shoulder integrity for all overhead work."},
+      {name:"Ab Wheel / Rollout",         sets:3, reps:"8–10",l1:"BW",         l2:"BW",          type:"accessory",note:"⚠️ BACK: Only if back feels good. Full extension builds anterior core. Regress to half rollout if needed."},
+    ]
+  },
+];
+
+// School term version — 4 days, same content as summer D1–D3 + D4
+const DAYS_SCHOOL = DAYS_SUMMER.slice(0,4).map((d,i) => ({
+  ...d,
+  schedule: ["Monday","Tuesday","Wednesday","Saturday"][i],
+}));
+
+const TYPE_META = {
+  snatch:    {color:"#4a90d9",bg:"rgba(74,144,217,0.1)",  label:"SNATCH"},
+  cj:        {color:"#c94f3a",bg:"rgba(201,79,58,0.1)",   label:"C&J"},
+  strength:  {color:"#d4a843",bg:"rgba(212,168,67,0.1)",  label:"STRENGTH"},
+  accessory: {color:"#555",   bg:"rgba(85,85,85,0.1)",    label:"ACCESSORY"},
+};
+
+const PR_ALL = [
+  "Back Squat","Front Squat","Clean Pull","Deadlift","RDL Pull","Snatch Deadlift",
+  "Klokov Squats","Klokov Deadlift","Klokov Trapi","Berestov Squats",
+  "Snatch (Floor)","Hang Power Snatch","Muscle Snatch","Snatch Balance","Snatch High Pull",
+  "Clean","Clean & Jerk","Push Jerk","Jerk","Power Clean","Hang Power Clean",
+  "Overhead Press","Wide Overhead Press","Push Press","Overhead Squat","Sots Press","Behind Neck Press",
+  "Good Morning","T-Bar Row","Lat Pulldown","Pull Up","Incline Barbell Press","Flat Bench Press",
+  "Romanian Deadlift","Seated Cable Row","Lunge (Barbell)",
+];
+
+// ── UI primitives ─────────────────────────────────────────────────────────────
+const Tag = ({children,color,bg}) => (
+  <span style={{fontSize:9,fontWeight:600,letterSpacing:1.5,color,background:bg,
+    borderRadius:3,padding:"2px 7px",fontFamily:"'DM Mono',monospace",border:`1px solid ${color}33`}}>
+    {children}
+  </span>
+);
+const Pill = ({children,gold,style}) => (
+  <span style={{fontSize:11,color:gold?"var(--gold)":"var(--text2)",
+    background:gold?"rgba(212,168,67,0.08)":"var(--bg3)",
+    borderRadius:20,padding:"3px 10px",fontFamily:"'DM Mono',monospace",...style}}>
+    {children}
+  </span>
+);
+const Label = ({children,style}) => (
+  <div style={{fontSize:9,color:"var(--text3)",letterSpacing:2.5,fontFamily:"'DM Mono',monospace",
+    marginBottom:8,marginTop:18,fontWeight:600,...style}}>{children}</div>
+);
+const Card = ({children,style}) => (
+  <div style={{background:"var(--bg1)",border:"1px solid var(--border)",borderRadius:10,padding:16,...style}}>
+    {children}
+  </div>
+);
+const Btn = ({children,onClick,ghost,small,active,style}) => (
+  <button onClick={onClick} style={{
+    background:active?"var(--gold)":ghost?"transparent":"var(--gold)",
+    color:active?"#000":ghost?"var(--text2)":"#000",
+    border:ghost&&!active?"1px solid var(--border2)":"none",
+    borderRadius:5,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600,
+    letterSpacing:0.5,padding:small?"6px 14px":"10px 22px",
+    fontSize:small?11:13,transition:"all 0.15s",...style,
+  }}>{children}</button>
+);
+const Inp = ({style,...p}) => (
+  <input style={{background:"var(--bg2)",border:"1px solid var(--border2)",borderRadius:6,
+    color:"var(--text)",padding:"10px 12px",fontSize:13,width:"100%",...style}} {...p}/>
+);
+const Sel = ({style,children,...p}) => (
+  <select style={{background:"var(--bg2)",border:"1px solid var(--border2)",borderRadius:6,
+    color:"var(--text)",padding:"10px 12px",fontSize:13,width:"100%",cursor:"pointer",...style}} {...p}>
+    {children}
+  </select>
+);
+const Tex = ({style,...p}) => (
+  <textarea style={{background:"var(--bg2)",border:"1px solid var(--border2)",borderRadius:6,
+    color:"var(--text)",padding:"10px 12px",fontSize:13,width:"100%",
+    fontFamily:"'DM Sans',sans-serif",minHeight:80,resize:"vertical",...style}} {...p}/>
+);
+
+// ── Weight generator ──────────────────────────────────────────────────────────
+function generateWeights(loadStr) {
+  if (!loadStr) return null;
+  const nums = loadStr.match(/\d+(\.\d+)?/g);
+  if (!nums || nums.length === 0) return null;
+  // Skip non-numeric loads
+  if (/BW|Light|band|cable/i.test(loadStr)) return null;
+  let base;
+  if (nums.length >= 2) {
+    base = (parseFloat(nums[0]) + parseFloat(nums[1])) / 2;
+  } else {
+    base = parseFloat(nums[0]);
+  }
+  const min = Math.max(5, Math.round((base * 0.85) / 2.5) * 2.5);
+  const max = Math.round((base * 1.15) / 2.5) * 2.5;
+  const weights = [];
+  for (let w = min; w <= max; w = Math.round((w + 2.5) * 10) / 10) {
+    weights.push(w);
+  }
+  return { weights, base };
+}
+
+// ── Exercise Card ─────────────────────────────────────────────────────────────
+function ExCard({ex, phase, sessionKey, onProgress}) {
+  const [open, setOpen] = useState(false);
+  const [sets, setSets] = useState(() => {
+    const count = typeof ex.sets === "number" ? ex.sets :
+      ex.sets === "6–8" ? 7 : parseInt(ex.sets) || 3;
+    return Array.from({length: count}, () => ({done: false, weight: null}));
+  });
+
+  const m = TYPE_META[ex.type];
+  const load = phase === 0 ? ex.l1 : ex.l2;
+  const weightData = generateWeights(load);
+  const doneCount = sets.filter(s => s.done).length;
+  const totalSets = sets.length;
+  const allDone = doneCount === totalSets;
+  const inProgress = doneCount > 0 && !allDone;
+
+  // Report progress to parent
+  useEffect(() => {
+    if (onProgress) onProgress(ex.name, doneCount, totalSets);
+  }, [doneCount]);
+
+  // Persist set state to storage
+  async function updateSet(idx, field, value) {
+    const updated = sets.map((s, i) => i === idx ? {...s, [field]: value} : s);
+    setSets(updated);
+    if (sessionKey) {
+      try {
+        const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+        await storage.set(key, JSON.stringify(updated));
+      } catch {}
+    }
+  }
+
+  // Load persisted state on mount
+  useEffect(() => {
+    if (!sessionKey) return;
+    const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+    storage.get(key).then(result => {
+      if (result) {
+        try {
+          const saved = JSON.parse(result.value);
+          if (Array.isArray(saved) && saved.length === sets.length) setSets(saved);
+        } catch {}
+      }
+    }).catch(() => {});
+  }, [sessionKey]);
+
+  return (
+    <div style={{
+      background: "var(--bg1)", borderRadius: 8, marginBottom: 8, overflow: "hidden",
+      border: `1px solid ${allDone ? "#5a9e4466" : open ? m.color+"44" : "var(--border)"}`,
+      transition: "border-color 0.2s",
+      opacity: allDone ? 0.75 : 1,
+    }}>
+      {/* Header */}
+      <div style={{display:"flex", alignItems:"center", gap:10, padding:"12px 14px"}}>
+        {/* Done indicator */}
+        <div style={{
+          width: 20, height: 20, borderRadius: 5, flexShrink: 0,
+          background: allDone ? "var(--green)" : inProgress ? "var(--gold)" : "var(--bg3)",
+          border: `1.5px solid ${allDone ? "var(--green)" : inProgress ? "var(--gold)" : "var(--border2)"}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "all 0.15s", cursor: "pointer",
+        }} onClick={() => setOpen(!open)}>
+          {allDone && <span style={{color:"#000", fontSize:10, fontWeight:800}}>✓</span>}
+          {inProgress && <span style={{color:"#000", fontSize:8, fontWeight:800}}>{doneCount}</span>}
+        </div>
+
+        <div onClick={() => setOpen(!open)} style={{display:"flex", alignItems:"center", gap:8, flex:1, cursor:"pointer"}}>
+          <Tag color={m.color} bg={m.bg}>{m.label}</Tag>
+          <span style={{
+            fontFamily:"'Bebas Neue',sans-serif", fontSize:17, letterSpacing:0.3,
+            textDecoration: allDone ? "line-through" : "none",
+            color: allDone ? "var(--text3)" : "var(--text)",
+          }}>{ex.name}</span>
+        </div>
+
+        <div style={{display:"flex", gap:6, alignItems:"center"}}>
+          {inProgress && (
+            <span style={{fontSize:10, color:"var(--gold)", fontFamily:"'DM Mono',monospace"}}>
+              {doneCount}/{totalSets}
+            </span>
+          )}
+          <Pill>{ex.sets}×{ex.reps}</Pill>
+          <Pill gold>{load}</Pill>
+          <span onClick={() => setOpen(!open)} style={{color:"var(--text3)", fontSize:10, cursor:"pointer", marginLeft:2}}>
+            {open ? "▲" : "▼"}
+          </span>
+        </div>
+      </div>
+
+      {/* Expanded body */}
+      {open && (
+        <div style={{borderTop:"1px solid var(--border)", padding:"14px", background:"var(--bg)"}}>
+
+          {/* Phase load reference */}
+          <div style={{display:"flex", gap:10, marginBottom:14}}>
+            {[["WK 1–3", ex.l1, phase===0], ["WK 4–6", ex.l2, phase===1]].map(([lbl,val,active]) => (
+              <div key={lbl} style={{flex:1, background:"var(--bg2)", borderRadius:6, padding:"8px 12px",
+                border:`1px solid ${active ? "var(--gold)" : "var(--border)"}`}}>
+                <div style={{fontSize:9, color:"var(--text3)", letterSpacing:1.5, fontFamily:"'DM Mono',monospace", marginBottom:3}}>{lbl}</div>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:18, color:active?"var(--gold)":"var(--text3)"}}>{val}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Set tracker */}
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:9, color:"var(--text2)", letterSpacing:2, fontFamily:"'DM Mono',monospace", marginBottom:8}}>
+              SETS
+            </div>
+            {sets.map((s, idx) => (
+              <div key={idx} style={{
+                display:"flex", alignItems:"center", gap:10,
+                padding:"8px 10px", marginBottom:6, borderRadius:6,
+                background: s.done ? "rgba(90,158,69,0.08)" : "var(--bg2)",
+                border: `1px solid ${s.done ? "#5a9e4433" : "var(--border)"}`,
+                transition:"all 0.15s",
+              }}>
+                {/* Set number */}
+                <span style={{
+                  fontFamily:"'DM Mono',monospace", fontSize:11,
+                  color:"var(--text2)", width:16, flexShrink:0,
+                }}>S{idx+1}</span>
+
+                {/* Checkbox */}
+                <div onClick={() => updateSet(idx, "done", !s.done)} style={{
+                  width:22, height:22, borderRadius:5, cursor:"pointer", flexShrink:0,
+                  background: s.done ? "var(--green)" : "var(--bg3)",
+                  border:`1.5px solid ${s.done ? "var(--green)" : "var(--border2)"}`,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  transition:"all 0.15s",
+                }}>
+                  {s.done && <span style={{color:"#000", fontSize:12, fontWeight:800}}>✓</span>}
+                </div>
+
+                {/* Weight picker */}
+                {weightData ? (
+                  <select
+                    value={s.weight || ""}
+                    onChange={e => updateSet(idx, "weight", e.target.value)}
+                    style={{
+                      flex:1, background:"var(--bg3)", border:`1px solid ${s.done?"#5a9e4433":"var(--border2)"}`,
+                      borderRadius:5, color: s.weight ? "var(--gold)" : "var(--text)",
+                      padding:"5px 8px", fontSize:12, cursor:"pointer",
+                      fontFamily:"'DM Mono',monospace",
+                    }}
+                  >
+                    <option value="">— kg</option>
+                    {weightData.weights.map(w => (
+                      <option key={w} value={w}
+                        style={{fontWeight: Math.abs(w - weightData.base) < 1.5 ? "bold" : "normal"}}>
+                        {w % 1 === 0 ? w : w.toFixed(1)} kg{Math.abs(w - weightData.base) < 1.5 ? " ●" : ""}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span style={{flex:1, fontSize:11, color:"var(--text2)", fontStyle:"italic"}}>
+                    {load}
+                  </span>
+                )}
+
+                {/* Reps reminder */}
+                <span style={{fontSize:11, color:"var(--text2)", fontFamily:"'DM Mono',monospace", flexShrink:0}}>
+                  ×{ex.reps}
+                </span>
+              </div>
+            ))}
+
+            {/* Quick actions */}
+            <div style={{display:"flex", gap:8, marginTop:8}}>
+              <button onClick={async () => {
+                const allChecked = sets.every(s=>s.done);
+                const updated = sets.map(s => ({...s, done: !allChecked}));
+                setSets(updated);
+                if(sessionKey) {
+                  try {
+                    await storage.set(`sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`, JSON.stringify(updated));
+                  } catch {}
+                }
+              }} style={{
+                fontSize:11, padding:"6px 14px", borderRadius:4, cursor:"pointer",
+                background:"var(--bg2)", border:"1px solid var(--border2)",
+                color:"var(--text)", fontFamily:"'DM Mono',monospace",
+              }}>{sets.every(s=>s.done) ? "UNCHECK ALL" : "CHECK ALL"}</button>
+
+              {weightData && (
+                <button onClick={async () => {
+                  const rec = weightData.weights.find(w => Math.abs(w - weightData.base) < 1.5) || weightData.weights[Math.floor(weightData.weights.length/2)];
+                  const updated = sets.map(s => ({...s, weight: String(rec)}));
+                  setSets(updated);
+                  if(sessionKey) {
+                    try {
+                      await storage.set(`sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`, JSON.stringify(updated));
+                    } catch {}
+                  }
+                }} style={{
+                  fontSize:11, padding:"6px 14px", borderRadius:4, cursor:"pointer",
+                  background:"var(--bg2)", border:"1px solid var(--border2)",
+                  color:"var(--text)", fontFamily:"'DM Mono',monospace",
+                }}>SET ALL → REC</button>
+              )}
+            </div>
+          </div>
+
+          {/* Coaching note */}
+          <p style={{fontSize:12, color:"var(--text2)", lineHeight:1.75}}>{ex.note}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Schedule view ─────────────────────────────────────────────────────────────
+function ScheduleView() {
+  const rows = [
+    {day:"Monday",   work:"Off",          sleep:"Full night",  hrs:"7–8h", quality:"⭐⭐⭐", session:"Day 1 — Heavy", note:"Best day"},
+    {day:"Tuesday",  work:"Off",          sleep:"Full night",  hrs:"7–8h", quality:"⭐⭐⭐", session:"Day 2 — Heavy", note:"Best day"},
+    {day:"Wednesday",work:"7pm→7:30am",   sleep:"Full night",  hrs:"7–8h", quality:"⭐⭐",   session:"Day 3 — Moderate", note:"Work starts 7pm"},
+    {day:"Thursday", work:"7pm→7:30am",   sleep:"8:30am→2pm",  hrs:"5.5h", quality:"⭐⭐",   session:"Day 4 — Jerk (summer)", note:"Summer only"},
+    {day:"Friday",   work:"7pm→7:30am",   sleep:"Post-shift sleep", hrs:"5.5h", quality:"❌",    session:"Rest", note:"Sleep after shift"},
+    {day:"Saturday", work:"7pm→7:30am",   sleep:"8:30am→2pm",  hrs:"5.5h", quality:"⭐⭐",   session:"Day 5 — Klokov + Berestov + Lunges", note:"Summer only"},
+    {day:"Sunday",   work:"Finish 7:30am",sleep:"Recovery",    hrs:"Full", quality:"❌",    session:"Rest only", note:"Last shift ends"},
+  ];
+  return (
+    <div>
+      <Label>WEEKLY SCHEDULE OVERVIEW</Label>
+      {rows.map((r,i)=>(
+        <div key={i} style={{display:"flex",gap:10,padding:"10px 12px",
+          background:i%2===0?"var(--bg1)":"var(--bg2)",
+          borderRadius:i===0?"8px 8px 0 0":i===rows.length-1?"0 0 8px 8px":"0",
+          border:"1px solid var(--border)",borderTop:i===0?"1px solid var(--border)":"none",
+          alignItems:"center",flexWrap:"wrap"}}>
+          <div style={{width:80,fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5}}>{r.day}</div>
+          <div style={{width:60,fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{r.quality}</div>
+          <div style={{flex:1,fontSize:12,color:"var(--text2)"}}>{r.session}</div>
+          <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{r.hrs}</div>
+          <div style={{fontSize:10,color:"var(--text3)",fontStyle:"italic"}}>{r.note}</div>
+        </div>
+      ))}
+      <div style={{marginTop:12,background:"#080d14",border:"1px solid #1a2a3a",borderRadius:8,padding:"12px 14px"}}>
+        <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--blue)",letterSpacing:1.5,marginBottom:6}}>
+          🌙 SHIFT PROTOCOL
+        </div>
+        <p style={{fontSize:12,color:"#556",lineHeight:1.75}}>
+          Thu/Sat training happens on 5.5h sleep (summer: 8:30am→2pm). No PR attempts these days.
+          Daily max singles on jerk = climb to a solid single, stop before a miss.
+          Fri is rest — sleep post-shift before last night. Wed: work starts 7pm — hard stop at 3pm, max 80%.
+          When school resumes in August, Sat drops back to ~3.5h sleep — revert to 4-day Mon/Tue/Wed/Thu.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── Mobility Data ─────────────────────────────────────────────────────────────
+const MOBILITY = {
+  pre: {
+    snatch: {
+      label:"PRE-SESSION — SNATCH DAYS (D1, D3)",
+      color:"#4a90d9", time:"10–12 min",
+      note:"Opens the thoracic spine and shoulders before any overhead work. Do this in order — each drill feeds the next.",
+      drills:[
+        {name:"Heated Pad — Lower Back & Hips", duration:"5 min passive", tool:"Heated pad",
+         area:"back/hips", desc:"Apply heated pad to lower back and hip flexors while you prepare your equipment. Passive tissue warmup. Zero effort — just heat before you load."},
+        {name:"Theracane — Thoracic Trigger Points", duration:"2 min", tool:"Theracane",
+         area:"thoracic", desc:"Find the knots on either side of your thoracic spine (T4–T8 region). Apply sustained pressure for 20–30s per point. This directly unlocks the upper back rounding that limits your OHS. 3–4 points per side."},
+        {name:"Foam Roller — Thoracic Extension", duration:"90 sec", tool:"Foam roller",
+         area:"thoracic", desc:"Place roller perpendicular to spine at mid-back. Arms crossed over chest. Extend over the roller, hold 3–5s, move up one segment. Work T4 to T8. This is the most direct fix for OHS forward lean."},
+        {name:"Banded Shoulder Distraction", duration:"60 sec/side", tool:"Resistance band",
+         area:"shoulder", desc:"Anchor band low, loop around shoulder at armpit. Step away to create tension. Let the band pull the arm down while you rotate the torso away. Feel the joint capsule open. This is the most effective drill for getting arms behind ears. Hold 45–60s each side."},
+        {name:"Lat Stretch — Doorframe or Rack", duration:"45 sec/side", tool:"Rack upright",
+         area:"shoulder/lat", desc:"Grab the rack upright at shoulder height, step back and hinge at the hip until you feel the lat stretch along the side. Tight lats are pulling your arms forward in OHS — this is direct. Hold, breathe out to deepen."},
+        {name:"Wall Slides", duration:"10 reps", tool:"Wall",
+         area:"shoulder", desc:"Stand with back flat to wall, arms at 90°. Slide arms overhead keeping forearms on wall. If they peel off, that's your external rotation limit. Work within your range — don't force it. This activates serratus and trains the overhead pattern before loading it."},
+        {name:"OHS with Empty Bar — Pause at Bottom", duration:"3×3", tool:"Barbell",
+         area:"full chain", desc:"Snatch-grip overhead squat, pause 3s at bottom each rep. Warm up the receiving position before any loaded work. If it feels blocked, revisit the banded distraction."},
+      ]
+    },
+    clean: {
+      label:"PRE-SESSION — CLEAN DAYS (D2)",
+      color:"#c94f3a", time:"10 min",
+      note:"Hip flexors and thoracic are the limiting factors for your clean receiving position. Front rack mobility addressed here.",
+      drills:[
+        {name:"Heated Pad — Hip Flexors", duration:"5 min passive", tool:"Heated pad",
+         area:"hips", desc:"Apply to hip flexors (front of hip/groin area) while preparing. Passive warmup before any active work."},
+        {name:"Foam Roller — Thoracic Extension", duration:"90 sec", tool:"Foam roller",
+         area:"thoracic", desc:"Same as snatch day. Thoracic mobility affects front rack position — a stiff upper back makes it impossible to keep elbows high in the clean."},
+        {name:"Theracane — Hip Flexor / TFL", duration:"90 sec/side", tool:"Theracane",
+         area:"hips", desc:"Locate the hip flexor attachment (just inside the hip bone at the front). Apply sustained pressure 20–30s per point. Tight hip flexors prevent you from sitting fully into the squat clean receiving position."},
+        {name:"Couch Stretch", duration:"90 sec/side", tool:"Wall/rack",
+         area:"hip flexors", desc:"Rear knee on floor, rear foot against wall/rack, front foot forward. Upright torso. This is the most effective hip flexor stretch that exists. Hold and breathe — deepen on each exhale. Your squat receiving position depends on this."},
+        {name:"90/90 Hip Rotation", duration:"60 sec/side", tool:"Floor",
+         area:"hips", desc:"Sit on floor with both legs bent 90°. Rotate from side to side, letting both knees fall to the floor. This opens hip internal and external rotation — both needed for a deep squat clean receive."},
+        {name:"Front Rack Stretch", duration:"60 sec/side", tool:"Rack upright",
+         area:"shoulder/elbow", desc:"Rest one arm on rack at shoulder height, elbow bent 90°. Step forward to open the front rack position. Feel the elbow being pulled back. High elbows in the clean start here."},
+        {name:"Empty Bar Hang Power Clean × 5", duration:"2 sets", tool:"Barbell",
+         area:"full chain", desc:"Activate the pattern at zero load. Focus on elbow speed in the turnover and rack position."},
+      ]
+    },
+    jerk: {
+      label:"PRE-SESSION — JERK DAYS (D4)",
+      color:"#d4a843", time:"10 min",
+      note:"Shoulders and hip flexors for jerk mechanics. Thoracic for the rack position. Get the overhead path clear before max singles.",
+      drills:[
+        {name:"Heated Pad — Shoulders & Upper Back", duration:"5 min passive", tool:"Heated pad",
+         area:"shoulder/thoracic", desc:"Apply to upper back and rear shoulders while preparing. Passive warmup before jerk work."},
+        {name:"Theracane — Thoracic T4–T8", duration:"90 sec", tool:"Theracane",
+         area:"thoracic", desc:"Quick hit on thoracic trigger points. 2–3 key spots per side, 20s each. Opens the dip-and-drive path for the jerk."},
+        {name:"Banded Shoulder Distraction", duration:"60 sec/side", tool:"Resistance band",
+         area:"shoulder", desc:"Same as snatch day. Critical before jerk singles — arms must be able to get fully behind ears at lockout. Do both sides."},
+        {name:"Shoulder CARs (Controlled Articular Rotations)", duration:"5 reps/side", tool:"None",
+         area:"shoulder", desc:"Standing, make the largest slow circle possible with one arm, keeping the scapula controlled. Forward and backward. This actively moves the shoulder through its full range before you load it. 5 forward, 5 backward each arm."},
+        {name:"Couch Stretch", duration:"60 sec/side", tool:"Wall/rack",
+         area:"hip flexors", desc:"Hip flexors affect jerk dip mechanics — tight hip flexors cause forward lean in the dip. Quick version pre-jerk session."},
+        {name:"Jerk Footwork Drill", duration:"10 reps", tool:"None",
+         area:"full chain", desc:"Practice the push jerk footwork pattern with no weight. Dip, drive, jump feet to receiving position. Groove the foot pattern before adding bar weight."},
+      ]
+    },
+    active: {
+      label:"PRE-SESSION — ACTIVE DAY (D5)",
+      color:"#8b5cf6", time:"8 min",
+      note:"Lighter active day — shorter prep. Focus on movement quality rather than tissue work.",
+      drills:[
+        {name:"Foam Roller — Full Back", duration:"90 sec", tool:"Foam roller",
+         area:"full back", desc:"Roll from lower back to upper back. Find tight spots and pause 10s. General tissue quality work."},
+        {name:"Hip 90/90", duration:"60 sec/side", tool:"Floor",
+         area:"hips", desc:"Hip rotation — same as clean day. Maintains the hip work from previous sessions."},
+        {name:"Wall Slides", duration:"10 reps", tool:"Wall",
+         area:"shoulder", desc:"Overhead pattern activation. Lower intensity version of the shoulder prep."},
+        {name:"World's Greatest Stretch", duration:"5 reps/side", tool:"Floor",
+         area:"full chain", desc:"Lunge position, same-side hand on floor, opposite hand reaches to ceiling with rotation. Combines hip flexor, thoracic, and shoulder in one movement. Best single warm-up drill for weightlifters."},
+      ]
+    },
+  },
+  post: {
+    label:"POST-SESSION — ALL DAYS (8–10 min)",
+    color:"#5a9e45", time:"8–10 min",
+    note:"Body is warm — passive stretching works best now. Don't rush this. Best tissue gains happen when relaxed.",
+    drills:[
+      {name:"Lacrosse Ball — Posterior Shoulder Capsule", duration:"90 sec/side", tool:"Lacrosse/massage ball",
+       area:"shoulder", desc:"Lie on the ball placed in the rear of the shoulder joint (posterior capsule). Let gravity do the work. Breathe and relax into it. This directly improves external rotation and overhead lock-out. Most important drill for your shoulder limitation."},
+      {name:"Lat Smash — Foam Roller or Ball", duration:"60 sec/side", tool:"Foam roller or ball",
+       area:"lat/shoulder", desc:"Place roller or ball under the armpit/lat area, roll slowly. Find the tightest point and hold. Tight lats are pulling your arms forward — releasing them post-session compounds the pre-session lat stretch work."},
+      {name:"Theracane — Mid Thoracic", duration:"2 min", tool:"Theracane",
+       area:"thoracic", desc:"Post-session thoracic release while the tissue is warm. Work the same T4–T8 area. 3–4 points each side at sustained pressure. You'll feel more release here post-session than pre."},
+      {name:"Doorframe Hip Flexor Stretch", duration:"90 sec/side", tool:"Floor/wall",
+       area:"hip flexors", desc:"Kneeling lunge with rear knee on floor. Push hips forward. Hold and breathe. Post-session is when this stretch makes the most structural change — the muscle is warm and pliable."},
+      {name:"Child's Pose with Lat Reach", duration:"60 sec/side", tool:"Floor",
+       area:"lat/thoracic", desc:"Child's pose, then walk both hands to one side as far as possible. Feel the lat and thoracic stretch on the opposite side. Hold 30s each side. Low effort, high carry-over to OHS position."},
+      {name:"Passive Thoracic Extension — Foam Roller", duration:"2 min", tool:"Foam roller",
+       area:"thoracic", desc:"Roller under mid-back, arms overhead (or crossed over chest), let gravity pull you into extension for 2 full minutes. This is passive — don't force it. Over weeks this remodels the thoracic curve and directly improves OHS."},
+    ]
+  },
+  bed: {
+    label:"BEFORE BED — SHIFT NIGHTS (5 min, floor only)",
+    color:"#4a90d9", time:"5 min",
+    note:"This is where the biggest long-term gains happen. Daily low-intensity mobility compounds fast. Do this while watching something — zero concentration needed.",
+    drills:[
+      {name:"Hip Flexor Stretch — Floor", duration:"2 min/side", tool:"Floor",
+       area:"hip flexors", desc:"Lie on your back at the edge of the bed or floor. Pull one knee to chest, let the other leg hang or rest flat. Hold 2 minutes each side. This is the most time-efficient hip flexor intervention that exists. Do it every single night."},
+      {name:"Thoracic Extension — Floor", duration:"2 min", tool:"Floor or rolled towel",
+       area:"thoracic", desc:"Place a rolled towel or small roll under your mid-back at T6–T7. Arms overhead or crossed. Let gravity do the work for 2 minutes. Watch TV in this position. Cumulative daily work here will unlock your OHS within 4–6 weeks."},
+      {name:"Door Frame Shoulder Stretch", duration:"30 sec/side", tool:"Doorframe",
+       area:"shoulder", desc:"Stand in doorframe, arm at 90° on the frame, rotate body away. Feel anterior shoulder and pec stretch. 30s each side. Counterbalances the pulling volume from training."},
+    ]
+  }
+};
+
+// ── Mobility Drill Card ────────────────────────────────────────────────────────
+function DrillCard({drill}) {
+  const [open,setOpen] = useState(false);
+  const toolColors = {
+    "Heated pad":"#c94f3a", "Theracane":"#d4a843", "Foam roller":"#4a90d9",
+    "Resistance band":"#5a9e45", "Lacrosse/massage ball":"#8b5cf6",
+    "Wall":"var(--text2)", "Barbell":"var(--text2)", "Floor":"var(--text2)",
+    "Rack upright":"var(--text2)", "None":"var(--text2)", "Wall/rack":"var(--text2)",
+    "Floor/wall":"var(--text2)", "Floor or rolled towel":"var(--text2)",
+    "Doorframe":"var(--text2)",
+  };
+  const areaColors = {
+    "thoracic":"#4a90d9", "shoulder":"#d4a843", "hips":"#c94f3a",
+    "hip flexors":"#c94f3a", "lat/shoulder":"#5a9e45", "back/hips":"#8b5cf6",
+    "full chain":"var(--gold)", "shoulder/lat":"#d4a843", "shoulder/elbow":"#d4a843",
+    "shoulder/thoracic":"#4a90d9", "full back":"var(--text2)", "lat/thoracic":"#5a9e45",
+  };
+  const tc = toolColors[drill.tool] || "var(--text2)";
+  const ac = areaColors[drill.area] || "var(--text2)";
+  return (
+    <div style={{background:"var(--bg1)",borderRadius:8,marginBottom:8,overflow:"hidden",
+      border:`1px solid ${open?"#5a9e4444":"var(--border)"}`,transition:"border-color 0.2s"}}>
+      <div onClick={()=>setOpen(!open)} style={{display:"flex",alignItems:"center",gap:10,
+        padding:"11px 14px",cursor:"pointer",userSelect:"none"}}>
+        <Tag color={ac} bg={ac+"18"}>{drill.area.toUpperCase()}</Tag>
+        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:16,flex:1,letterSpacing:0.3}}>{drill.name}</span>
+        <div style={{display:"flex",gap:6}}>
+          <Pill style={{fontSize:10,color:tc}}>{drill.tool}</Pill>
+          <Pill style={{fontSize:10,color:"var(--green)"}}>{drill.duration}</Pill>
+        </div>
+        <span style={{color:"var(--text3)",fontSize:10,marginLeft:2}}>{open?"▲":"▼"}</span>
+      </div>
+      {open&&(
+        <div style={{borderTop:"1px solid var(--border)",padding:"12px 14px",background:"var(--bg)"}}>
+          <p style={{fontSize:12,color:"var(--text2)",lineHeight:1.8}}>{drill.desc}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Mobility Tab ──────────────────────────────────────────────────────────────
+function MobilityTab() {
+  const [section,setSection] = useState("snatch");
+  const sections = [
+    {id:"snatch",  label:"D1/D3 PRE",  data:MOBILITY.pre.snatch},
+    {id:"clean",   label:"D2 PRE",     data:MOBILITY.pre.clean},
+    {id:"jerk",    label:"D4 PRE",     data:MOBILITY.pre.jerk},
+    {id:"active",  label:"D5 PRE",     data:MOBILITY.pre.active},
+    {id:"post",    label:"POST",        data:MOBILITY.post},
+    {id:"bed",     label:"BEDTIME",     data:MOBILITY.bed},
+  ];
+  const current = sections.find(s=>s.id===section);
+  const d = current.data;
+
+  return (
+    <div className="fade">
+      {/* Priority banner */}
+      <div style={{background:"#0a0f08",border:"1px solid #2a3a20",borderRadius:8,
+        padding:"12px 14px",marginBottom:16}}>
+        <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"#5a9e45",letterSpacing:1.5,marginBottom:6}}>
+          🎯 YOUR MOBILITY PRIORITIES
+        </div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:8}}>
+          {[
+            {label:"THORACIC EXTENSION",color:"#4a90d9",note:"OHS rounding"},
+            {label:"SHOULDER EXTERNAL ROTATION",color:"#d4a843",note:"Can't get arms behind ears"},
+            {label:"HIP FLEXORS",color:"#c94f3a",note:"Squat depth + receiving"},
+          ].map(p=>(
+            <div key={p.label} style={{background:p.color+"14",border:`1px solid ${p.color}44`,
+              borderRadius:6,padding:"6px 10px"}}>
+              <div style={{fontSize:9,color:p.color,fontFamily:"'DM Mono',monospace",letterSpacing:1}}>{p.label}</div>
+              <div style={{fontSize:10,color:"var(--text3)",marginTop:2}}>{p.note}</div>
+            </div>
+          ))}
+        </div>
+        <p style={{fontSize:11,color:"#556",lineHeight:1.7}}>
+          Fix these three and your OHS goes from 50 kg to 65+ kg — which directly unlocks a heavier snatch.
+          Bedtime routine is the highest ROI: 5 min daily compounds faster than 30 min once a week.
+        </p>
+      </div>
+
+      {/* Section selector */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:16}}>
+        {sections.map(s=>(
+          <button key={s.id} onClick={()=>setSection(s.id)} style={{
+            padding:"8px 4px",borderRadius:6,cursor:"pointer",textAlign:"center",
+            background:section===s.id?"var(--gold)":"var(--bg2)",
+            color:section===s.id?"#000":"var(--text3)",
+            border:section===s.id?"none":"1px solid var(--border)",
+            fontFamily:"'DM Mono',monospace",fontSize:9,fontWeight:600,letterSpacing:1,
+            transition:"all 0.15s",
+          }}>{s.label}</button>
+        ))}
+      </div>
+
+      {/* Section header */}
+      <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 14px",marginBottom:14,
+        border:`1px solid ${d.color}44`}}>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:20,color:d.color,letterSpacing:0.5,marginBottom:4}}>
+          {d.label}
+        </div>
+        <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:6}}>
+          <span style={{fontSize:10,color:"var(--green)",background:"rgba(90,158,69,0.1)",
+            borderRadius:3,padding:"2px 8px",fontFamily:"'DM Mono',monospace",
+            border:"1px solid rgba(90,158,69,0.3)"}}>{d.time}</span>
+        </div>
+        <p style={{fontSize:11,color:"var(--text2)",lineHeight:1.7}}>{d.note}</p>
+      </div>
+
+      {/* Drills */}
+      {d.drills.map((drill,i)=><DrillCard key={i} drill={drill}/>)}
+
+      {/* Tools reminder */}
+      <div style={{marginTop:16,background:"var(--bg2)",border:"1px solid var(--border)",
+        borderRadius:8,padding:"12px 14px"}}>
+        <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--text3)",letterSpacing:1.5,marginBottom:8}}>
+          YOUR TOOLS
+        </div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {[
+            ["Theracane","#d4a843","Trigger points"],
+            ["Foam Roller","#4a90d9","Extension/rolling"],
+            ["Lacrosse Ball","#8b5cf6","Joint capsule"],
+            ["Bands","#5a9e45","Distraction"],
+            ["Heated Pad","#c94f3a","Passive warmup"],
+            ["TENS Device","#888","Recovery"],
+          ].map(([name,color,use])=>(
+            <div key={name} style={{background:color+"14",border:`1px solid ${color}33`,
+              borderRadius:5,padding:"5px 10px"}}>
+              <div style={{fontSize:9,color,fontFamily:"'DM Mono',monospace",letterSpacing:0.5}}>{name}</div>
+              <div style={{fontSize:9,color:"var(--text3)",marginTop:1}}>{use}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Supplements Data ──────────────────────────────────────────────────────────
+const SUPPS = [
+  // ── CURRENT STACK ────────────────────────────────────────────────────────
+  {
+    id:"creatine", name:"Creatine Monohydrate", dose:"5g", status:"current",
+    priority:"essential", category:"performance",
+    timing:[
+      {label:"POST-TRAINING", when:"Immediately after session", color:"#5a9e45",
+       note:"Best absorbed post-training with carbs. On rest days, any time consistently — timing matters less than daily consistency."},
+    ],
+    rationale:"Directly increases phosphocreatine stores for explosive lifting. Every kg of strength gains in the snatch and jerk is supported by this. Non-negotiable for hypertrophy block.",
+    nightShift:"Take post-gym on training days. On shift days, take with your first meal after waking (1pm).",
+    warning:null,
+  },
+  {
+    id:"d3", name:"Vitamin D3 5000IU", dose:"5000 IU", status:"current",
+    priority:"essential", category:"foundational",
+    timing:[
+      {label:"WITH FIRST MEAL", when:"With food containing fat", color:"#d4a843",
+       note:"Fat-soluble — needs dietary fat for absorption. Take with your biggest meal. On shift days that's your 1–2pm meal after waking."},
+    ],
+    rationale:"Night shift workers are almost universally deficient. D3 directly impacts testosterone, strength output, bone density, and immune function. 5000IU is appropriate given your deficiency risk.",
+    nightShift:"Always take with your post-sleep meal (~1–2pm), not before bed. D3 can suppress melatonin — wrong timing disrupts already-compromised sleep.",
+    warning:"⚠️ Upgrade: when your D3+K2 arrives, switch to that product and discontinue standalone D3.",
+  },
+  {
+    id:"magnesium", name:"Hi-Absorb Magnesium", dose:"400mg (2×200mg)", status:"current",
+    priority:"essential", category:"recovery",
+    timing:[
+      {label:"BEFORE SLEEP", when:"30–60 min before your sleep window", color:"#8b5cf6",
+       note:"Magnesium directly improves sleep quality and depth — your most compromised variable as a night shift worker. Take before both sleep windows: daytime sleep after shift AND night sleep on off days."},
+    ],
+    rationale:"Critical for muscle recovery, back pain management (QL tension), and sleep architecture. You're currently on 400mg which is solid. Magnesium glycinate or malate form is ideal.",
+    nightShift:"Take at ~8–8:30am before sleeping post-shift. On off days, take at your normal bedtime.",
+    warning:"Consider increasing to 400mg if currently only taking 200mg (2 caps = 400mg total — you're good).",
+  },
+  {
+    id:"bcomplex", name:"B-Right B Complex", dose:"1 cap", status:"current",
+    priority:"high", category:"foundational",
+    timing:[
+      {label:"WITH FIRST MEAL", when:"Morning meal or first meal after waking", color:"#d4a843",
+       note:"B vitamins are energising — take at the start of your active day, not before sleep. On shift days, take at your 1pm wake-up meal."},
+    ],
+    rationale:"Night shifts disrupt circadian-linked B vitamin metabolism. B complex supports energy production, nervous system function, and stress resilience under shift work.",
+    nightShift:"Always with your first meal after waking. Never before your sleep window — B vitamins can interfere with sleep onset.",
+    warning:null,
+  },
+  {
+    id:"zinc", name:"Zinc", dose:"25mg (reduce from 50mg)", status:"current",
+    priority:"medium", category:"foundational",
+    timing:[
+      {label:"WITH FOOD", when:"With a meal, away from iron sources", color:"#4a90d9",
+       note:"Take with food to prevent nausea. Keep away from iron-containing foods (red meat) by 2hrs — zinc and iron compete for absorption."},
+    ],
+    rationale:"Testosterone synthesis, immune function, wound healing. Important for heavy training but 50mg daily is above the tolerable upper limit (40mg). Reduce to 25mg.",
+    nightShift:"Take with your main meal — any time of day.",
+    warning:"⚠️ REDUCE DOSE: 50mg daily long-term exceeds the 40mg UL. Drop to 25mg (half your current dose) or take every other day.",
+  },
+  {
+    id:"copper", name:"Copper", dose:"2mg", status:"current",
+    priority:"medium", category:"foundational",
+    timing:[
+      {label:"WITH FOOD", when:"Same meal as zinc, or separate meal", color:"#4a90d9",
+       note:"Zinc and copper compete — they can be taken together or at separate meals. Both with food."},
+    ],
+    rationale:"Correctly paired with zinc. Copper supports connective tissue synthesis (collagen cross-linking), iron metabolism, and antioxidant function. Keep this ratio.",
+    nightShift:"With any main meal.",
+    warning:null,
+  },
+  {
+    id:"omega3", name:"Omega-3", dose:"2500mg (4 caps)", status:"current",
+    priority:"essential", category:"recovery",
+    timing:[
+      {label:"WITH LARGEST MEAL", when:"With your highest-fat meal of the day", color:"#5a9e45",
+       note:"Fat-soluble, needs dietary fat for absorption. Splitting across 2 meals also works — 2 caps with 2 meals. Reduces fishy aftertaste and improves absorption."},
+    ],
+    rationale:"Joint and tendon protection for Olympic lifting. Reduces post-session inflammation. Particularly important for wrists, elbows, shoulders under snatch and C&J load. This is your most important recovery supplement.",
+    nightShift:"Split: 2 caps with 1pm meal, 2 caps with pre-shift meal (~5pm).",
+    warning:"Note: 2500mg total omega-3 is the product weight. Check the EPA+DHA content — aim for 2–3g EPA+DHA specifically, not just total fish oil.",
+  },
+  {
+    id:"glucosamine", name:"Glucosamine Complex", dose:"4 caps", status:"current",
+    priority:"high", category:"recovery",
+    timing:[
+      {label:"WITH FOOD", when:"With your main meal, split if possible", color:"#d4a843",
+       note:"GI upset is common without food. Split across 2 meals if 4 caps at once causes discomfort."},
+    ],
+    rationale:"Cartilage and connective tissue support. Olympic lifting puts extreme stress on knees, hips, and spine. Long-term investment — effects build over 8–12 weeks.",
+    nightShift:"With 1pm meal and/or pre-shift meal.",
+    warning:null,
+  },
+  {
+    id:"vitE", name:"Vitamin E", dose:"400 IU", status:"current",
+    priority:"low", category:"foundational",
+    timing:[
+      {label:"WITH FAT-CONTAINING MEAL", when:"With food containing fat", color:"#888",
+       note:"Fat-soluble. Completely ineffective without dietary fat. Take with same meal as D3 and omega-3."},
+    ],
+    rationale:"Antioxidant support. Some evidence for muscle recovery. Lower priority than other antioxidants in your stack.",
+    nightShift:"With 1pm meal alongside D3.",
+    warning:"Note: high-dose vitamin E (400IU+) may blunt some training adaptations if taken immediately post-workout. Take with your first meal, not post-training.",
+  },
+  {
+    id:"ashwagandha", name:"Ashwagandha KSM-66", dose:"450mg", status:"current",
+    priority:"high", category:"recovery",
+    timing:[
+      {label:"BEFORE SLEEP", when:"30 min before sleep window", color:"#8b5cf6",
+       note:"Most effective taken before sleep — reduces cortisol, improves sleep depth and recovery. Pairs well with magnesium. Take both together before your sleep window."},
+    ],
+    rationale:"Cortisol management is critical for night shift workers. Ashwagandha directly reduces cortisol and supports testosterone levels under chronic stress. Directly addresses your training-recovery bottleneck.",
+    nightShift:"Take at ~8–8:30am before daytime sleep after shift. On off days, take at your normal bedtime. Pairs with magnesium.",
+    warning:null,
+  },
+  {
+    id:"rhodiola", name:"Rhodiola Rosea", dose:"400mg", status:"current",
+    priority:"medium", category:"performance",
+    timing:[
+      {label:"WITH FIRST MEAL", when:"Morning or first meal, NOT before sleep", color:"#4a90d9",
+       note:"Rhodiola is stimulating — take at the start of your active day. On shift days, take with your 1pm wake-up meal. Never before sleep."},
+    ],
+    rationale:"Adaptogen for physical and mental fatigue — directly applicable to night shift pattern. Cycle 8 weeks on, 2 weeks off to maintain effectiveness.",
+    nightShift:"Always with first meal after waking. On shift days: 1pm meal. Cycling: note your start date.",
+    warning:"⚠️ CYCLE: 8 weeks on / 2 weeks off. Track your cycle start date in notes below.",
+  },
+  {
+    id:"ginkgo", name:"Ginkgo Biloba", dose:"120mg", status:"current",
+    priority:"low", category:"optional",
+    timing:[
+      {label:"WITH FIRST MEAL", when:"Start of active day", color:"#888",
+       note:"Cognitive focus and circulation. Take at start of active day."},
+    ],
+    rationale:"Cognitive focus and cerebral circulation. Low priority for training performance. Fine to keep.",
+    nightShift:"With first meal after waking.",
+    warning:null,
+  },
+  {
+    id:"cranberry", name:"Cranberry", dose:"4200mg (2 caps)", status:"current",
+    priority:"low", category:"optional",
+    timing:[
+      {label:"WITH FOOD", when:"Any meal", color:"#888",
+       note:"Urinary health maintenance. Timing not critical."},
+    ],
+    rationale:"Urinary health — unrelated to training performance. Fine to keep.",
+    nightShift:"Any meal, any time.",
+    warning:null,
+  },
+
+  // ── INCOMING ─────────────────────────────────────────────────────────────
+  {
+    id:"fishOil", name:"Fish Oil EPA/DHA", dose:"2–3g EPA+DHA", status:"incoming",
+    priority:"essential", category:"recovery",
+    timing:[
+      {label:"SPLIT WITH MEALS", when:"2 meals with fat content", color:"#5a9e45",
+       note:"Split across 2 meals for better absorption and no fishy aftertaste. E.g. 2g EPA/DHA with 1pm meal, 1g with pre-shift meal."},
+    ],
+    rationale:"Highest priority incoming supplement. Specifically for tendon and joint health under Olympic lifting load. Anti-inflammatory effect directly addresses back pain. When this arrives, assess whether your current omega-3 has sufficient EPA+DHA — you may be able to consolidate.",
+    nightShift:"Split across your two main meals of the day.",
+    warning:"When this arrives: check if it consolidates with your current omega-3 product. Target 2–3g EPA+DHA total daily from both sources combined.",
+  },
+  {
+    id:"d3k2", name:"Vitamin D3 + K2", dose:"5000IU D3 / 100–200mcg K2", status:"incoming",
+    priority:"essential", category:"foundational",
+    timing:[
+      {label:"WITH FAT-CONTAINING MEAL", when:"First meal after waking", color:"#d4a843",
+       note:"Fat-soluble. Same timing as current D3. K2 directs calcium to bones rather than soft tissue — important given D3 supplementation at 5000IU."},
+    ],
+    rationale:"Upgrade from standalone D3. K2 (MK-7 form preferred) ensures the calcium mobilised by D3 goes to bones and teeth rather than arteries or soft tissue. Directly supports bone density for Olympic lifting.",
+    nightShift:"Replace current D3 with this product. Same timing — with 1pm meal after waking.",
+    warning:"When this arrives: discontinue standalone D3 5000IU and standalone Vitamin E if the new product includes E. Don't double-dose.",
+  },
+  {
+    id:"collagen", name:"Collagen Peptides + Vitamin C", dose:"15g collagen / 50mg VitC", status:"incoming",
+    priority:"high", category:"recovery",
+    timing:[
+      {label:"PRE-TRAINING (30–60 MIN)", when:"30–60 min before session starts", color:"#c94f3a",
+       note:"This is the evidence-based protocol specifically. Collagen synthesis peaks ~1hr after ingestion and requires mechanical loading to direct to tendons. The Vitamin C is required for collagen synthesis. Take, then train."},
+    ],
+    rationale:"The most direct tendon and ligament support available. Olympic lifting is hard on wrists, elbows, shoulders, and knees. Hydrolyzed collagen peptides + Vitamin C pre-training is the specific protocol shown in research to increase collagen synthesis in tendons.",
+    nightShift:"Take 30–60 min before your gym session regardless of what time it is. Pre-training timing is everything for this one.",
+    warning:"Must be hydrolyzed collagen peptides (not gelatin). Must include or be paired with Vitamin C. Timing is critical — the effect requires exercise stimulus after ingestion.",
+  },
+];
+
+const SUPP_CATEGORIES = {
+  performance:  {label:"PERFORMANCE",  color:"#5a9e45"},
+  foundational: {label:"FOUNDATIONAL", color:"#4a90d9"},
+  recovery:     {label:"RECOVERY",     color:"#8b5cf6"},
+  optional:     {label:"OPTIONAL",     color:"#555"},
+};
+
+const PRIORITY_ORDER = {essential:0, high:1, medium:2, low:3};
+
+// ── Supplement Card ───────────────────────────────────────────────────────────
+function SuppCard({supp, checked, onToggle}) {
+  const [open, setOpen] = useState(false);
+  const cat = SUPP_CATEGORIES[supp.category];
+  const isIncoming = supp.status === "incoming";
+  const priorityColors = {essential:"#d4a843", high:"#5a9e45", medium:"#4a90d9", low:"#555"};
+  const pc = priorityColors[supp.priority];
+
+  return (
+    <div style={{
+      background: isIncoming ? "#0a0f0a" : "var(--bg1)",
+      border: `1px solid ${checked ? "#5a9e4466" : isIncoming ? "#2a3a2a" : "var(--border)"}`,
+      borderRadius:8, marginBottom:8, overflow:"hidden",
+      opacity: isIncoming ? 0.85 : 1, transition:"all 0.2s",
+    }}>
+      <div style={{display:"flex", alignItems:"center", gap:10, padding:"11px 14px"}}>
+        {/* Checkbox */}
+        {!isIncoming && (
+          <div onClick={onToggle} style={{
+            width:20, height:20, borderRadius:5, flexShrink:0, cursor:"pointer",
+            background: checked ? "var(--green)" : "var(--bg3)",
+            border: `1.5px solid ${checked ? "var(--green)" : "var(--border2)"}`,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            transition:"all 0.15s",
+          }}>
+            {checked && <span style={{color:"#000", fontSize:11, fontWeight:800}}>✓</span>}
+          </div>
+        )}
+        {isIncoming && (
+          <div style={{width:20, height:20, borderRadius:5, flexShrink:0,
+            background:"#1a2a1a", border:"1.5px solid #3a5a3a",
+            display:"flex", alignItems:"center", justifyContent:"center"}}>
+            <span style={{fontSize:10}}>📦</span>
+          </div>
+        )}
+
+        {/* Name + dose */}
+        <div style={{flex:1, cursor:"pointer"}} onClick={()=>setOpen(!open)}>
+          <div style={{display:"flex", alignItems:"center", gap:8, flexWrap:"wrap"}}>
+            <span style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:16, letterSpacing:0.3,
+              textDecoration: checked ? "line-through" : "none",
+              color: checked ? "var(--text3)" : "var(--text)"}}>
+              {supp.name}
+            </span>
+            {isIncoming && <Tag color="#5a9e45" bg="rgba(90,158,69,0.1)">INCOMING</Tag>}
+          </div>
+          <div style={{fontSize:11, color:"var(--text3)", fontFamily:"'DM Mono',monospace", marginTop:2}}>
+            {supp.dose}
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div style={{display:"flex", gap:5, alignItems:"center"}}>
+          <Tag color={cat.color} bg={cat.color+"18"}>{cat.label}</Tag>
+          <Tag color={pc} bg={pc+"18"}>{supp.priority.toUpperCase()}</Tag>
+          <span onClick={()=>setOpen(!open)} style={{color:"var(--text3)", fontSize:10, cursor:"pointer", marginLeft:2}}>
+            {open?"▲":"▼"}
+          </span>
+        </div>
+      </div>
+
+      {open && (
+        <div style={{borderTop:"1px solid var(--border)", padding:"14px", background:"var(--bg)"}}>
+          {/* Timing blocks */}
+          <div style={{marginBottom:12}}>
+            <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2, fontFamily:"'DM Mono',monospace", marginBottom:8}}>
+              TIMING
+            </div>
+            {supp.timing.map((t,i)=>(
+              <div key={i} style={{background:"var(--bg2)", borderRadius:6, padding:"10px 12px",
+                borderLeft:`3px solid ${t.color}`, marginBottom:6}}>
+                <div style={{fontFamily:"'DM Mono',monospace", fontSize:10, color:t.color,
+                  letterSpacing:1, marginBottom:4}}>{t.label} — {t.when}</div>
+                <p style={{fontSize:12, color:"var(--text2)", lineHeight:1.7}}>{t.note}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Night shift specific */}
+          <div style={{background:"#08080f", border:"1px solid #1a1a3a", borderRadius:6,
+            padding:"10px 12px", marginBottom:10}}>
+            <div style={{fontFamily:"'DM Mono',monospace", fontSize:9, color:"var(--blue)",
+              letterSpacing:1.5, marginBottom:5}}>🌙 NIGHT SHIFT TIMING</div>
+            <p style={{fontSize:12, color:"#667", lineHeight:1.7}}>{supp.nightShift}</p>
+          </div>
+
+          {/* Rationale */}
+          <p style={{fontSize:12, color:"var(--text2)", lineHeight:1.7, marginBottom: supp.warning?10:0}}>
+            {supp.rationale}
+          </p>
+
+          {/* Warning */}
+          {supp.warning && (
+            <div style={{background:"#120808", border:"1px solid #3a1818", borderRadius:6,
+              padding:"8px 12px", marginTop:8}}>
+              <p style={{fontSize:12, color:"#c94f3a", lineHeight:1.7}}>{supp.warning}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Supplements Tab ───────────────────────────────────────────────────────────
+function SuppsTab({checked, onToggle, suppNotes, onNoteChange}) {
+  const [filter, setFilter] = useState("all");
+  const [dayType, setDayType] = useState("off");
+
+  const current = SUPPS.filter(s=>s.status==="current");
+  const incoming = SUPPS.filter(s=>s.status==="incoming");
+
+  const filtered = (list) => {
+    if(filter==="all") return list.sort((a,b)=>PRIORITY_ORDER[a.priority]-PRIORITY_ORDER[b.priority]);
+    return list.filter(s=>s.category===filter)
+      .sort((a,b)=>PRIORITY_ORDER[a.priority]-PRIORITY_ORDER[b.priority]);
+  };
+
+  const doneCount = current.filter(s=>checked[s.id]).length;
+
+  // Build timing schedule based on day type
+  const SCHEDULE = {
+    off: [
+      {time:"On Waking", items:["B Complex (with breakfast)","Rhodiola (with breakfast)","Ginkgo (with breakfast)"]},
+      {time:"With First Meal (fat-containing)", items:["D3 5000IU","Vitamin E 400IU","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
+      {time:"30–60 Min Pre-Training", items:["Collagen + Vitamin C (incoming)"]},
+      {time:"Post-Training", items:["Creatine 5g"]},
+      {time:"Second Meal", items:["Glucosamine (2 caps)","Omega-3 (2 caps)","Glucosamine (2 caps remaining)"]},
+      {time:"Before Sleep", items:["Magnesium 400mg","Ashwagandha 450mg"]},
+    ],
+    shift: [
+      {time:"~1pm (Wake + First Meal)", items:["D3 5000IU","Vitamin E","B Complex","Rhodiola","Ginkgo","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
+      {time:"~12:30–3pm (Gym)", items:["Collagen + VitC 30–60 min before (incoming)","Creatine post-session"]},
+      {time:"~5pm (Pre-Shift Meal)", items:["Omega-3 (2 caps)","Glucosamine (2 caps)"]},
+      {time:"~8–8:30am (After Shift, Before Sleep)", items:["Magnesium 400mg","Ashwagandha 450mg","Glucosamine (2 caps remaining)"]},
+    ],
+  };
+
+  const schedule = SCHEDULE[dayType];
+
+  return (
+    <div className="fade">
+      {/* Progress bar */}
+      <div style={{background:"var(--bg2)", borderRadius:8, padding:"12px 14px", marginBottom:16,
+        border:"1px solid var(--border)"}}>
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
+          <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:18, letterSpacing:0.5}}>
+            TODAY'S STACK
+          </div>
+          <div style={{fontFamily:"'DM Mono',monospace", fontSize:13, color:"var(--gold)"}}>
+            {doneCount}/{current.length}
+          </div>
+        </div>
+        <div style={{background:"var(--bg3)", borderRadius:20, height:6, overflow:"hidden"}}>
+          <div style={{width:`${(doneCount/current.length)*100}%`, height:"100%",
+            background:"var(--gold)", borderRadius:20, transition:"width 0.3s"}}/>
+        </div>
+      </div>
+
+      {/* Day type toggle */}
+      <div style={{display:"flex", gap:6, marginBottom:16}}>
+        <button onClick={()=>setDayType("off")} style={{
+          flex:1, padding:"10px", borderRadius:6, cursor:"pointer", fontWeight:600,
+          fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:1, border:"none",
+          background:dayType==="off"?"var(--gold)":"var(--bg2)",
+          color:dayType==="off"?"#000":"var(--text2)",
+          transition:"all 0.15s",
+        }}>☀️ DAY OFF (MON/TUE)</button>
+        <button onClick={()=>setDayType("shift")} style={{
+          flex:1, padding:"10px", borderRadius:6, cursor:"pointer", fontWeight:600,
+          fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:1, border:"none",
+          background:dayType==="shift"?"var(--blue)":"var(--bg2)",
+          color:dayType==="shift"?"#fff":"var(--text2)",
+          transition:"all 0.15s",
+        }}>🌙 SHIFT DAY (WED–SAT)</button>
+      </div>
+
+      {/* Schedule view */}
+      <div style={{marginBottom:20}}>
+        <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2.5,
+          fontFamily:"'DM Mono',monospace", marginBottom:10, fontWeight:600}}>
+          {dayType==="off"?"OFF DAY SCHEDULE":"SHIFT DAY SCHEDULE"}
+        </div>
+        {schedule.map((block,i)=>(
+          <div key={i} style={{display:"flex", gap:12, marginBottom:10}}>
+            <div style={{width:130, flexShrink:0}}>
+              <div style={{fontSize:10, color:"var(--gold)", fontFamily:"'DM Mono',monospace",
+                fontWeight:600, letterSpacing:0.5, lineHeight:1.4}}>{block.time}</div>
+            </div>
+            <div style={{flex:1, background:"var(--bg2)", borderRadius:6, padding:"8px 12px",
+              border:"1px solid var(--border)"}}>
+              {block.items.map((item,j)=>(
+                <div key={j} style={{fontSize:11, color: item.includes("incoming")?"#5a9e45":"var(--text2)",
+                  fontStyle: item.includes("incoming")?"italic":"normal",
+                  padding:"1px 0", lineHeight:1.6}}>{item}</div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter tabs */}
+      <div style={{display:"flex", gap:6, marginBottom:14, flexWrap:"wrap"}}>
+        {[["all","ALL"],["performance","PERFORMANCE"],["recovery","RECOVERY"],
+          ["foundational","FOUNDATION"],["optional","OPTIONAL"]].map(([id,lbl])=>(
+          <button key={id} onClick={()=>setFilter(id)} style={{
+            padding:"5px 12px", borderRadius:4, cursor:"pointer", fontSize:9,
+            fontFamily:"'DM Mono',monospace", fontWeight:600, letterSpacing:1,
+            border:"none", transition:"all 0.15s",
+            background:filter===id?"var(--gold)":"var(--bg2)",
+            color:filter===id?"#000":"var(--text3)",
+          }}>{lbl}</button>
+        ))}
+      </div>
+
+      {/* Current supplements */}
+      <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2.5,
+        fontFamily:"'DM Mono',monospace", marginBottom:10, fontWeight:600, marginTop:4}}>
+        CURRENT STACK — {filtered(current).length} SUPPLEMENTS
+      </div>
+      {filtered(current).map(s=>(
+        <SuppCard key={s.id} supp={s} checked={!!checked[s.id]} onToggle={()=>onToggle(s.id)}/>
+      ))}
+
+      {/* Incoming */}
+      <div style={{fontSize:9, color:"#5a9e45", letterSpacing:2.5,
+        fontFamily:"'DM Mono',monospace", marginBottom:10, fontWeight:600, marginTop:20}}>
+        INCOMING — {filtered(incoming).length} SUPPLEMENTS
+      </div>
+      {filtered(incoming).map(s=>(
+        <SuppCard key={s.id} supp={s} checked={false} onToggle={()=>{}}/>
+      ))}
+
+      {/* Notes */}
+      <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2.5,
+        fontFamily:"'DM Mono',monospace", marginBottom:8, fontWeight:600, marginTop:20}}>
+        RHODIOLA CYCLE NOTES
+      </div>
+      <textarea
+        style={{background:"var(--bg2)", border:"1px solid var(--border2)", borderRadius:6,
+          color:"var(--text)", padding:"10px 12px", fontSize:12, width:"100%",
+          fontFamily:"'DM Sans',sans-serif", minHeight:60, resize:"vertical"}}
+        placeholder="e.g. Rhodiola cycle start: May 15 — off Aug 9. Notes..."
+        value={suppNotes}
+        onChange={e=>onNoteChange(e.target.value)}
+      />
+
+      {/* Key flags */}
+      <div style={{marginTop:16, background:"#120808", border:"1px solid #3a1818",
+        borderRadius:8, padding:"12px 14px"}}>
+        <div style={{fontFamily:"'DM Mono',monospace", fontSize:9, color:"var(--red)",
+          letterSpacing:1.5, marginBottom:8}}>⚠️ ACTION ITEMS</div>
+        {[
+          "Reduce Zinc from 50mg → 25mg (currently above tolerable upper limit)",
+          "When D3+K2 arrives: discontinue standalone D3 5000IU",
+          "When fish oil arrives: verify EPA+DHA content, consolidate with current omega-3",
+          "Collagen + VitC: must be taken 30–60 min pre-training specifically",
+          "Rhodiola: cycle 8 weeks on / 2 weeks off — track start date above",
+          "Vitamin E: never take post-training — may blunt adaptations",
+        ].map((item,i)=>(
+          <div key={i} style={{display:"flex", gap:8, marginBottom:6}}>
+            <span style={{color:"var(--red)", fontSize:11, flexShrink:0}}>→</span>
+            <span style={{fontSize:12, color:"#886", lineHeight:1.6}}>{item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Main App ──────────────────────────────────────────────────────────────────
+function OlyTracker() {
+  const [tab,setTab]         = useState("program");
+  const [dayIdx,setDayIdx]   = useState(0);
+  const [week,setWeek]       = useState(1);
+  const [isSummer,setIsSummer] = useState(true);
+  const [prs,setPrs]         = useState({});
+  const [logs,setLogs]       = useState({});
+  const [loading,setLoading] = useState(true);
+  const [toast,setToast]     = useState(null);
+  const [newPR,setNewPR]     = useState({lift:"Back Squat",weight:"",reps:"1"});
+  const [logForm,setLogForm] = useState({dayId:"d1",notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""});
+  const [prTab,setPrTab]     = useState("key");
+  const [progTab,setProgTab] = useState("program");
+  const [suppChecked,setSuppChecked] = useState({});
+  const [suppNotes,setSuppNotes]     = useState("");
+  const [sessionProgress,setSessionProgress] = useState({});
+
+  const DAYS = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
+  const phase = week<=3?0:1;
+  const day = DAYS[Math.min(dayIdx, DAYS.length-1)];
+
+  // Reset progress tracking when day changes
+  useEffect(() => { setSessionProgress({}); }, [dayIdx, week]);
+
+  useEffect(()=>{load();},[]);
+
+  async function load() {
+    try {
+      const [p,l,w,s] = await Promise.allSettled([
+        storage.get("oly_prs"),
+        storage.get("oly_logs"),
+        storage.get("oly_week"),
+        storage.get("oly_summer"),
+      ]);
+      if(p.status==="fulfilled"&&p.value) setPrs(JSON.parse(p.value.value));
+      else{setPrs(SEED_PRS);await storage.set("oly_prs",JSON.stringify(SEED_PRS));}
+      if(l.status==="fulfilled"&&l.value) setLogs(JSON.parse(l.value.value));
+      if(w.status==="fulfilled"&&w.value) setWeek(JSON.parse(w.value.value));
+      if(s.status==="fulfilled"&&s.value) setIsSummer(JSON.parse(s.value.value));
+      // Load supplements
+      const [sc, sn] = await Promise.allSettled([
+        storage.get("oly_supp_checked"),
+        storage.get("oly_supp_notes"),
+      ]);
+      if(sc.status==="fulfilled"&&sc.value) setSuppChecked(JSON.parse(sc.value.value));
+      if(sn.status==="fulfilled"&&sn.value) setSuppNotes(sn.value.value);
+    } catch{setPrs(SEED_PRS);}
+    setLoading(false);
+  }
+
+  async function toggleSupp(id) {
+    const updated = {...suppChecked, [id]: !suppChecked[id]};
+    setSuppChecked(updated);
+    try{await storage.set("oly_supp_checked", JSON.stringify(updated));}catch{}
+  }
+
+  async function saveSuppNotes(val) {
+    setSuppNotes(val);
+    try{await storage.set("oly_supp_notes", val);}catch{}
+  }
+
+  function showToast(msg){setToast(msg);setTimeout(()=>setToast(null),2500);}
+
+  async function saveWeek(w){setWeek(w);try{await storage.set("oly_week",JSON.stringify(w));}catch{}}
+  async function toggleSummer(v){
+    setIsSummer(v);
+    if(dayIdx>=4&&!v) setDayIdx(0);
+    try{await storage.set("oly_summer",JSON.stringify(v));}catch{}
+  }
+
+  async function handleAddPR(){
+    if(!newPR.weight||isNaN(newPR.weight)) return;
+    const existing=prs[newPR.lift];
+    const nw=parseFloat(newPR.weight);
+    const isNew=!existing||nw>existing.weight;
+    const updated={...prs,[newPR.lift]:{weight:nw,date:new Date().toISOString().slice(0,10),reps:parseInt(newPR.reps)||1}};
+    setPrs(updated);
+    try{await storage.set("oly_prs",JSON.stringify(updated));}catch{}
+    setNewPR(p=>({...p,weight:"",reps:"1"}));
+    showToast(isNew?`🏆 NEW PR — ${newPR.lift}: ${nw} kg!`:`Logged: ${newPR.lift} ${nw} kg`);
+  }
+
+  async function handleLog(){
+    if(!logForm.notes&&!logForm.weights&&!logForm.rating) return;
+    const d=DAYS.find(d=>d.id===logForm.dayId);
+    const updated={...logs,[`${Date.now()}`]:{
+      date:new Date().toISOString().slice(0,10),
+      dayName:d?.name||logForm.dayId,
+      week,notes:logForm.notes,weights:logForm.weights,
+      backPain:logForm.backPain,nightShift:logForm.nightShift,
+      techniqueFeel:logForm.techniqueFeel,
+      energyLevel:logForm.energyLevel,
+      focusNext:logForm.focusNext,
+      rating:logForm.rating,
+    }};
+    setLogs(updated);
+    try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
+    setLogForm(f=>({...f,notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
+    showToast("Session logged ✓");
+  }
+
+  const logEntries=Object.values(logs).sort((a,b)=>b.date.localeCompare(a.date));
+  const isLogged=(w)=>Object.values(logs).some(l=>l.week===w);
+
+  const KEY_PRS=[["Back Squat","🏋️"],["Clean","💪"],["Clean & Jerk","⚡"],["Snatch (Floor)","🎯"],
+    ["Hang Power Snatch","🔥"],["Push Jerk","🎯"],["Overhead Squat","📐"],["Clean Pull","💥"],
+    ["Jerk from Rack","🎯"],["Sots Press","🧘"]];
+
+  const sleepMeta = day ? SLEEP[day.sleep] : null;
+
+  if(loading) return(
+    <div style={{background:"var(--bg)",height:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:28,color:"var(--text3)",letterSpacing:5}}>LOADING</span>
+    </div>
+  );
+
+  return (
+    <div style={{minHeight:"100vh",background:"var(--bg)"}}>
+
+      {/* Toast */}
+      {toast&&(
+        <div style={{position:"fixed",top:70,left:"50%",transform:"translateX(-50%)",
+          background:"var(--gold)",color:"#000",padding:"10px 20px",borderRadius:6,
+          fontWeight:600,fontSize:13,zIndex:999,whiteSpace:"nowrap",
+          boxShadow:"0 4px 20px rgba(0,0,0,0.5)"}}>
+          {toast}
+        </div>
+      )}
+
+      {/* Header */}
+      <div style={{background:"var(--bg1)",borderBottom:"1px solid var(--border)",position:"sticky",top:0,zIndex:100}}>
+        <div style={{maxWidth:700,margin:"0 auto",padding:"14px 16px 0"}}>
+          <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
+            <div>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:30,letterSpacing:2,lineHeight:1}}>
+                OLY<span style={{color:"var(--gold)"}}>TRACKER</span>
+              </div>
+              <div style={{fontSize:9,color:"var(--text3)",letterSpacing:2.5,fontFamily:"'DM Mono',monospace",marginTop:3}}>
+                BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
+              </div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
+              <div style={{textAlign:"right"}}>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:26,color:"var(--gold)",lineHeight:1}}>WK {week}</div>
+                <div style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",marginTop:2}}>
+                  PHASE {phase+1} · {phase===0?"BASE BUILD":"LOAD UP"}
+                </div>
+              </div>
+              {/* Summer toggle */}
+              <div style={{display:"flex",gap:1,background:"var(--bg2)",borderRadius:5,border:"1px solid var(--border)",overflow:"hidden"}}>
+                <button onClick={()=>toggleSummer(true)} style={{
+                  padding:"4px 10px",fontSize:9,fontFamily:"'DM Mono',monospace",fontWeight:600,letterSpacing:1,
+                  border:"none",cursor:"pointer",background:isSummer?"var(--gold)":"transparent",
+                  color:isSummer?"#000":"var(--text3)",transition:"all 0.15s",
+                }}>☀️ SUMMER</button>
+                <button onClick={()=>toggleSummer(false)} style={{
+                  padding:"4px 10px",fontSize:9,fontFamily:"'DM Mono',monospace",fontWeight:600,letterSpacing:1,
+                  border:"none",cursor:"pointer",background:!isSummer?"var(--gold)":"transparent",
+                  color:!isSummer?"#000":"var(--text3)",transition:"all 0.15s",
+                }}>🎒 SCHOOL</button>
+              </div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:0,overflowX:"auto",WebkitOverflowScrolling:"touch",
+            scrollbarWidth:"none",msOverflowStyle:"none"}}>
+            {[["program","PROGRAM"],["mobility","MOBILITY"],["supps","SUPPS"],["log","LOG"],["prs","PRs"]].map(([id,lbl])=>(
+              <button key={id} onClick={()=>setTab(id)} style={{
+                padding:"9px 12px",cursor:"pointer",fontSize:10,fontWeight:600,letterSpacing:1.5,
+                border:"none",background:"transparent",fontFamily:"'DM Mono',monospace",
+                color:tab===id?"var(--gold)":"var(--text3)",
+                borderBottom:tab===id?"2px solid var(--gold)":"2px solid transparent",
+                transition:"all 0.15s",whiteSpace:"nowrap",flexShrink:0,
+              }}>{lbl}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{maxWidth:700,margin:"0 auto",padding:"20px 16px 80px"}}>
+
+        {/* ═══ PROGRAM ═══ */}
+        {tab==="program" && (
+          <div className="fade">
+
+            {/* Program / Schedule sub-tabs */}
+            <div style={{display:"flex",gap:6,marginBottom:16}}>
+              <Btn small ghost={progTab!=="program"} active={progTab==="program"} onClick={()=>setProgTab("program")}>TRAINING DAYS</Btn>
+              <Btn small ghost={progTab!=="schedule"} active={progTab==="schedule"} onClick={()=>setProgTab("schedule")}>SCHEDULE</Btn>
+            </div>
+
+            {progTab==="schedule" && <ScheduleView />}
+
+            {progTab==="program" && <>
+              {/* Mode banner */}
+              <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:16,
+                background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
+                border:`1px solid ${isSummer?"#d4a84344":"#4a90d944"}`}}>
+                <span style={{fontSize:18}}>{isSummer?"☀️":"🎒"}</span>
+                <div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:16,letterSpacing:0.5,
+                    color:isSummer?"var(--gold)":"var(--blue)"}}>
+                    {isSummer?"SUMMER MODE — 5 DAYS/WEEK":"SCHOOL TERM — 4 DAYS/WEEK"}
+                  </div>
+                  <div style={{fontSize:10,color:"var(--text3)",marginTop:2}}>
+                    {isSummer?"Mon/Tue/Wed/Thu/Sat · Extended sleep on shift days (8:30am→2pm)":"Mon/Tue/Wed/Thu · Sat drops to ~3.5h sleep when school resumes"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Week selector */}
+              <Label>SELECT WEEK</Label>
+              <div style={{display:"flex",gap:7,marginBottom:20,flexWrap:"wrap",alignItems:"center"}}>
+                {[1,2,3,4,5,6].map(w=>{
+                  const active=w===week,logged=isLogged(w);
+                  return(
+                    <button key={w} onClick={()=>saveWeek(w)} style={{
+                      width:44,height:44,borderRadius:6,cursor:"pointer",
+                      fontFamily:"'DM Mono',monospace",fontSize:14,fontWeight:700,transition:"all 0.15s",
+                      background:active?"var(--gold)":logged?"rgba(90,158,69,0.1)":"var(--bg2)",
+                      color:active?"#000":logged?"var(--green)":"var(--text3)",
+                      border:active?"none":logged?"1px solid var(--green)":"1px solid var(--border)",
+                      boxShadow:active?"0 0 16px rgba(212,168,67,0.3)":"none",
+                    }}>{w}</button>
+                  );
+                })}
+                <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:4}}>
+                  PH1: 1–3 · PH2: 4–6
+                </span>
+              </div>
+
+              {/* Phase banner */}
+              <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 16px",marginBottom:20,
+                border:`1px solid ${phase===0?"#4a90d944":"#d4a84344"}`,
+                display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:21,letterSpacing:0.5,
+                    color:phase===0?"var(--blue)":"var(--gold)"}}>
+                    {phase===0?"PHASE 1 — BUILD THE BASE":"PHASE 2 — LOAD THE BASE"}
+                  </div>
+                  <div style={{fontSize:11,color:"var(--text2)",marginTop:4,lineHeight:1.6}}>
+                    {phase===0
+                      ?"Technique + hypertrophy. Position over load. Own every rep."
+                      :"Add load systematically. Technique breaks → drop 5 kg."}
+                  </div>
+                </div>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:54,color:"var(--bg3)",userSelect:"none"}}>{week}</div>
+              </div>
+
+              {/* Day tabs */}
+              <div style={{display:"grid",gridTemplateColumns:`repeat(${DAYS.length},1fr)`,gap:6,marginBottom:18}}>
+                {DAYS.map((d,i)=>{
+                  const active=dayIdx===i;
+                  const sl=SLEEP[d.sleep];
+                  return(
+                    <div key={d.id} onClick={()=>setDayIdx(i)} style={{
+                      padding:"8px 4px",borderRadius:8,cursor:"pointer",textAlign:"center",
+                      border:`1px solid ${active?d.color:"var(--border)"}`,
+                      background:active?d.color+"14":"var(--bg1)",transition:"all 0.15s",
+                    }}>
+                      <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,letterSpacing:1,
+                        color:active?d.color:"var(--text2)"}}>{d.label}</div>
+                      <div style={{fontSize:8,color:active?d.color+"99":"var(--text3)",marginTop:1}}>{d.schedule}</div>
+                      <div style={{fontSize:7,color:sl.color,marginTop:2,letterSpacing:0.5}}>{sl.label}</div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Day header */}
+              <div style={{marginBottom:14}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:8}}>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:24,letterSpacing:0.3,color:day.color,lineHeight:1.2}}>
+                    {day.name}
+                  </div>
+                  {sleepMeta&&(
+                    <Tag color={sleepMeta.color} bg={sleepMeta.bg}>{sleepMeta.label}</Tag>
+                  )}
+                  {day.maxLoad&&(
+                    <Tag color="var(--gold)" bg="rgba(212,168,67,0.1)">GO HEAVY TODAY</Tag>
+                  )}
+                </div>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                  {day.focus.map((f,i)=><Tag key={i} color={day.color} bg={day.color+"15"}>{f}</Tag>)}
+                </div>
+              </div>
+
+              {/* Phase note */}
+              <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
+                padding:"9px 12px",marginBottom:14,fontSize:11,color:"var(--text2)"}}>
+                {phase===0
+                  ?"📐 Phase 1: Tap each exercise for coaching notes and load guidelines. Position before weight."
+                  :"⚡ Phase 2: Load increases. Technique breaks → drop 5 kg. Never grind bad reps."}
+              </div>
+
+              {/* Session progress bar */}
+              {(()=>{
+                const totalDone = Object.values(sessionProgress).reduce((a,b)=>a+(b.done||0),0);
+                // Calculate total sets from ALL exercises in the day, not just reported ones
+                const totalSets = day.exercises.reduce((acc, ex) => {
+                  const count = typeof ex.sets === "number" ? ex.sets :
+                    ex.sets === "6–8" ? 7 : parseInt(ex.sets) || 3;
+                  return acc + count;
+                }, 0);
+                const pct = totalSets>0 ? Math.round((totalDone/totalSets)*100) : 0;
+                const allComplete = pct===100;
+                return (
+                  <div style={{marginBottom:14,background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
+                    border:`1px solid ${allComplete?"#5a9e4444":"var(--border)"}`}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                      <span style={{fontSize:9,color:"var(--text2)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>
+                        SESSION PROGRESS
+                      </span>
+                      <div style={{display:"flex",alignItems:"baseline",gap:6}}>
+                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,
+                          color:allComplete?"var(--green)":pct>0?"var(--gold)":"var(--text3)"}}>
+                          {pct}%
+                        </span>
+                        <span style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
+                          {totalDone}/{totalSets} sets
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{background:"var(--bg3)",borderRadius:20,height:6,overflow:"hidden"}}>
+                      <div style={{
+                        width:`${pct}%`,height:"100%",borderRadius:20,transition:"width 0.3s",
+                        background:allComplete?"var(--green)":pct>50?"var(--gold)":"var(--blue)",
+                      }}/>
+                    </div>
+                    {allComplete&&(
+                      <div style={{fontSize:10,color:"var(--green)",fontFamily:"'DM Mono',monospace",
+                        letterSpacing:1,marginTop:6,textAlign:"center"}}>
+                        ✓ SESSION COMPLETE — LOG YOUR SESSION
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Exercises */}
+              {day.exercises.map((ex,i)=>(
+                <ExCard key={i} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`}
+                  onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                />
+              ))}
+
+              {/* Back pain protocol */}
+              <div style={{marginTop:16,background:"#120808",border:"1px solid #3a1818",borderRadius:8,padding:"12px 14px"}}>
+                <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--red)",letterSpacing:1.5,marginBottom:6}}>
+                  ⚠️ BACK PAIN PROTOCOL
+                </div>
+                <p style={{fontSize:12,color:"#665",lineHeight:1.75}}>
+                  Back flares: drop all floor pulls, replace with seated cable rows or T-bar rows.
+                  Reduce squat to pain-free depth. Never train through sharp or radiating pain.
+                  Technique at 60% is always safe. Log back pain level (0–10) in session notes.
+                </p>
+              </div>
+            </>}
+          </div>
+        )}
+
+        {/* ═══ MOBILITY ═══ */}
+        {tab==="mobility" && <MobilityTab/>}
+
+        {/* ═══ SUPPS ═══ */}
+        {tab==="supps" && <SuppsTab checked={suppChecked} onToggle={toggleSupp} suppNotes={suppNotes} onNoteChange={saveSuppNotes}/>}
+
+        {/* ═══ LOG ═══ */}
+        {tab==="log" && (
+          <div className="fade">
+            <Label>LOG SESSION — WEEK {week}</Label>
+            <Card style={{marginBottom:20}}>
+
+              {/* Session selector */}
+              <div style={{marginBottom:12}}>
+                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>SESSION</label>
+                <Sel value={logForm.dayId} onChange={e=>setLogForm(f=>({...f,dayId:e.target.value}))}>
+                  {DAYS.map(d=><option key={d.id} value={d.id}>{d.label} — {d.schedule} — {d.name.replace("🎯 ","")}</option>)}
+                </Sel>
+              </div>
+
+              {/* Weights used */}
+              <div style={{marginBottom:12}}>
+                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>WEIGHTS USED</label>
+                <Inp placeholder="e.g. BS single: 112kg · Leg Press: 130kg · OHS: 45kg"
+                  value={logForm.weights} onChange={e=>setLogForm(f=>({...f,weights:e.target.value}))}/>
+              </div>
+
+              {/* Review dropdowns */}
+              <div style={{fontSize:9,color:"var(--text2)",letterSpacing:2,fontFamily:"'DM Mono',monospace",marginBottom:8,marginTop:4}}>POST-TRAINING REVIEW</div>
+
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+                <div>
+                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>TECHNIQUE FEEL</label>
+                  <Sel value={logForm.techniqueFeel} onChange={e=>setLogForm(f=>({...f,techniqueFeel:e.target.value}))}>
+                    <option value="">— select</option>
+                    <option value="Clicked">✅ Clicked</option>
+                    <option value="Decent">👍 Decent</option>
+                    <option value="Inconsistent">⚠️ Inconsistent</option>
+                    <option value="Off today">❌ Off today</option>
+                  </Sel>
+                </div>
+                <div>
+                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>ENERGY LEVEL</label>
+                  <Sel value={logForm.energyLevel} onChange={e=>setLogForm(f=>({...f,energyLevel:e.target.value}))}>
+                    <option value="">— select</option>
+                    <option value="High">🔥 High</option>
+                    <option value="Normal">💪 Normal</option>
+                    <option value="Low">😴 Low</option>
+                    <option value="Post-shift">🌙 Post-shift</option>
+                  </Sel>
+                </div>
+              </div>
+
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+                <div>
+                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>BACK PAIN (0–10)</label>
+                  <Inp type="number" min="0" max="10" placeholder="0"
+                    value={logForm.backPain} onChange={e=>setLogForm(f=>({...f,backPain:e.target.value}))}/>
+                </div>
+                <div>
+                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>POST NIGHT SHIFT?</label>
+                  <Sel value={logForm.nightShift} onChange={e=>setLogForm(f=>({...f,nightShift:e.target.value==="true"}))}>
+                    <option value="false">No</option>
+                    <option value="true">Yes — 5.5h sleep</option>
+                  </Sel>
+                </div>
+              </div>
+
+              <div style={{marginBottom:12}}>
+                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>FOCUS NEXT SESSION</label>
+                <Sel value={logForm.focusNext} onChange={e=>setLogForm(f=>({...f,focusNext:e.target.value}))}>
+                  <option value="">— select</option>
+                  <option value="Nothing — felt good">✅ Nothing — felt good</option>
+                  <option value="Bar path">📐 Bar path</option>
+                  <option value="Hip position">🦵 Hip position</option>
+                  <option value="Receiving position">📥 Receiving position</option>
+                  <option value="Jerk dip">⬇️ Jerk dip</option>
+                  <option value="Overhead lockout">🔒 Overhead lockout</option>
+                  <option value="First pull off floor">🏋️ First pull off floor</option>
+                  <option value="Footwork">👣 Footwork</option>
+                  <option value="OHS depth">📐 OHS depth</option>
+                </Sel>
+              </div>
+
+              {/* Session rating */}
+              <div style={{marginBottom:14}}>
+                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:8}}>SESSION RATING</label>
+                <div style={{display:"flex",gap:8}}>
+                  {["⭐","⭐⭐","⭐⭐⭐","⭐⭐⭐⭐","⭐⭐⭐⭐⭐"].map((stars,i)=>(
+                    <button key={i} onClick={()=>setLogForm(f=>({...f,rating:stars}))} style={{
+                      flex:1,padding:"8px 4px",borderRadius:5,cursor:"pointer",fontSize:12,
+                      border:"none",transition:"all 0.15s",
+                      background:logForm.rating===stars?"var(--gold)":"var(--bg2)",
+                      color:logForm.rating===stars?"#000":"var(--text3)",
+                    }}>{i+1}</button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Free notes */}
+              <div style={{marginBottom:14}}>
+                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>NOTES (coach cues, observations)</label>
+                <Tex placeholder="Michael's cues, what felt different, PR attempts..."
+                  value={logForm.notes} onChange={e=>setLogForm(f=>({...f,notes:e.target.value}))}/>
+              </div>
+
+              <Btn onClick={handleLog}>LOG SESSION</Btn>
+            </Card>
+
+            <Label>PAST SESSIONS</Label>
+            {logEntries.length===0&&(
+              <p style={{color:"var(--text3)",fontSize:13,fontStyle:"italic"}}>No sessions yet. Get under the bar.</p>
+            )}
+            {logEntries.map((entry,i)=>(
+              <Card key={i} style={{marginBottom:10}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                  <div>
+                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,letterSpacing:0.3}}>{entry.dayName}</div>
+                    {entry.rating&&<div style={{fontSize:14,marginTop:2}}>{entry.rating}</div>}
+                  </div>
+                  <div style={{textAlign:"right"}}>
+                    <div style={{fontSize:10,color:"var(--gold)",fontFamily:"'DM Mono',monospace"}}>WK {entry.week}</div>
+                    <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{entry.date}</div>
+                  </div>
+                </div>
+                {entry.weights&&<div style={{fontSize:11,color:"var(--gold)",fontFamily:"'DM Mono',monospace",marginBottom:8}}>{entry.weights}</div>}
+                <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
+                  {entry.techniqueFeel&&<span style={{fontSize:10,background:"var(--bg2)",color:"var(--text2)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>{entry.techniqueFeel}</span>}
+                  {entry.energyLevel&&<span style={{fontSize:10,background:"var(--bg2)",color:"var(--text2)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>{entry.energyLevel}</span>}
+                  {entry.backPain&&parseInt(entry.backPain)>0&&(
+                    <span style={{fontSize:10,background:"rgba(201,79,58,0.1)",color:"var(--red)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>
+                      BACK {entry.backPain}/10
+                    </span>
+                  )}
+                  {entry.nightShift&&<span style={{fontSize:10,background:"rgba(74,144,217,0.1)",color:"var(--blue)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>🌙 NIGHT SHIFT</span>}
+                </div>
+                {entry.focusNext&&(
+                  <div style={{fontSize:11,color:"var(--purple)",fontFamily:"'DM Mono',monospace",marginBottom:6}}>
+                    NEXT: {entry.focusNext}
+                  </div>
+                )}
+                {entry.notes&&<div style={{fontSize:12,color:"var(--text2)",lineHeight:1.7}}>{entry.notes}</div>}
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* ═══ PRs ═══ */}
+        {tab==="prs" && (
+          <div className="fade">
+            <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
+              {[["key","KEY LIFTS"],["strength","STRENGTH"],["overhead","OVERHEAD"],["all","ALL"],["add","+ ADD PR"]].map(([id,lbl])=>(
+                <Btn key={id} small ghost={prTab!==id} active={prTab===id} onClick={()=>setPrTab(id)}>{lbl}</Btn>
+              ))}
+            </div>
+
+            {prTab==="key"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {KEY_PRS.map(([lift,icon])=>{
+                  const pr=prs[lift];
+                  return(
+                    <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",
+                      borderLeft:"3px solid var(--gold)",borderRadius:10,padding:"14px 14px"}}>
+                      <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:5}}>
+                        {icon} {lift.toUpperCase()}
+                      </div>
+                      {pr?(
+                        <>
+                          <div style={{display:"flex",alignItems:"baseline",gap:4}}>
+                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:28,color:"var(--gold)",lineHeight:1}}>{pr.weight}</span>
+                            <span style={{fontSize:12,color:"var(--text3)"}}>kg</span>
+                            {pr.reps>1&&<span style={{fontSize:12,color:"var(--text2)"}}>×{pr.reps}</span>}
+                          </div>
+                          <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:4}}>{pr.date}</div>
+                        </>
+                      ):(
+                        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--text3)"}}>—</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {prTab==="strength"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {["Deadlift","RDL Pull","Snatch Deadlift","Klokov Squats","Klokov Deadlift",
+                  "Good Morning","T-Bar Row","Lat Pulldown","Incline Barbell Press","Romanian Deadlift","Seated Cable Row"].map(lift=>{
+                  const pr=prs[lift];
+                  return(
+                    <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",borderRadius:8,padding:"12px"}}>
+                      <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>{lift.toUpperCase()}</div>
+                      {pr?(
+                        <div style={{display:"flex",alignItems:"baseline",gap:4}}>
+                          <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--gold)"}}>{pr.weight}</span>
+                          <span style={{fontSize:10,color:"var(--text3)"}}>kg</span>
+                          {pr.reps>1&&<span style={{fontSize:10,color:"var(--text2)"}}>×{pr.reps}</span>}
+                        </div>
+                      ):<div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,color:"var(--text3)"}}>—</div>}
+                      {pr&&<div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:2}}>{pr.date}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {prTab==="overhead"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {["Overhead Press","Wide Overhead Press","Push Press","Behind Neck Press",
+                  "Overhead Squat","Sots Press","Snatch Balance","Lunge (Barbell)"].map(lift=>{
+                  const pr=prs[lift];
+                  return(
+                    <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",
+                      borderLeft:"3px solid var(--blue)",borderRadius:8,padding:"12px"}}>
+                      <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>{lift.toUpperCase()}</div>
+                      {pr?(
+                        <div style={{display:"flex",alignItems:"baseline",gap:4}}>
+                          <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--blue)"}}>{pr.weight}</span>
+                          <span style={{fontSize:10,color:"var(--text3)"}}>kg</span>
+                          {pr.reps>1&&<span style={{fontSize:10,color:"var(--text2)"}}>×{pr.reps}</span>}
+                        </div>
+                      ):<div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,color:"var(--text3)"}}>—</div>}
+                      {pr&&<div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:2}}>{pr.date}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {prTab==="all"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {Object.entries(prs).sort((a,b)=>b[1].weight-a[1].weight).map(([lift,pr])=>(
+                  <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 12px"}}>
+                    <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>{lift.toUpperCase()}</div>
+                    <div style={{display:"flex",alignItems:"baseline",gap:4}}>
+                      <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--gold)"}}>{pr.weight}</span>
+                      <span style={{fontSize:10,color:"var(--text3)"}}>kg</span>
+                      {pr.reps>1&&<span style={{fontSize:10,color:"var(--text2)"}}>×{pr.reps}</span>}
+                    </div>
+                    <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:2}}>{pr.date}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {prTab==="add"&&(
+              <Card>
+                <div style={{marginBottom:12}}>
+                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>LIFT</label>
+                  <Sel value={newPR.lift} onChange={e=>setNewPR(p=>({...p,lift:e.target.value}))}>
+                    {PR_ALL.map(l=><option key={l} value={l}>{l}</option>)}
+                  </Sel>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
+                  <div>
+                    <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>WEIGHT (KG)</label>
+                    <Inp type="number" placeholder="0" value={newPR.weight} onChange={e=>setNewPR(p=>({...p,weight:e.target.value}))}/>
+                  </div>
+                  <div>
+                    <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>REPS</label>
+                    <Inp type="number" placeholder="1" value={newPR.reps} onChange={e=>setNewPR(p=>({...p,reps:e.target.value}))}/>
+                  </div>
+                </div>
+                <Btn onClick={handleAddPR}>SAVE RECORD</Btn>
+              </Card>
+            )}
+
+            {(prTab==="key"||prTab==="all")&&(
+              <div style={{marginTop:16,background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:8,padding:"12px 14px"}}>
+                <div style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:6}}>
+                  📊 IMPORTED FROM FITNOTES — DEC 2024 TO MAY 2026
+                </div>
+                <p style={{fontSize:11,color:"var(--text3)",lineHeight:1.7}}>
+                  17 months of training history pre-loaded. Key gap to fill in Week 1: Jerk from Rack and Sots Press baselines need to be established and logged.
+                </p>
+              </div>
+            )}
+
+            {/* Data backup */}
+            <div style={{marginTop:20,background:"#080f08",border:"1px solid #1a3a1a",borderRadius:8,padding:"14px"}}>
+              <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--green)",letterSpacing:1.5,marginBottom:10}}>
+                💾 DATA BACKUP
+              </div>
+              <p style={{fontSize:11,color:"#556",lineHeight:1.7,marginBottom:12}}>
+                Export your data before any app update. Import it back after to restore everything — PRs, logs, session weights, supplement notes.
+              </p>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                <Btn small onClick={()=>{
+                  const data = {
+                    version:1,
+                    exported: new Date().toISOString(),
+                    oly_prs: prs,
+                    oly_logs: logs,
+                    oly_week: week,
+                    oly_summer: isSummer,
+                    oly_supp_checked: suppChecked,
+                    oly_supp_notes: suppNotes,
+                  };
+                  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `olytracker_backup_${new Date().toISOString().slice(0,10)}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  showToast("Data exported ✓");
+                }} style={{background:"var(--green)",color:"#000"}}>⬇ EXPORT DATA</Btn>
+
+                <label style={{
+                  background:"transparent",color:"var(--text2)",border:"1px solid var(--border2)",
+                  borderRadius:5,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600,
+                  letterSpacing:0.5,padding:"6px 14px",fontSize:11,display:"inline-block",
+                }}>
+                  ⬆ IMPORT DATA
+                  <input type="file" accept=".json" style={{display:"none"}} onChange={async e=>{
+                    const file = e.target.files[0];
+                    if(!file) return;
+                    try {
+                      const text = await file.text();
+                      const data = JSON.parse(text);
+                      if(data.version !== 1) { showToast("❌ Invalid backup file"); return; }
+                      if(data.oly_prs) { setPrs(data.oly_prs); await storage.set("oly_prs",JSON.stringify(data.oly_prs)); }
+                      if(data.oly_logs) { setLogs(data.oly_logs); await storage.set("oly_logs",JSON.stringify(data.oly_logs)); }
+                      if(data.oly_week) { setWeek(data.oly_week); await storage.set("oly_week",JSON.stringify(data.oly_week)); }
+                      if(data.oly_summer !== undefined) { setIsSummer(data.oly_summer); await storage.set("oly_summer",JSON.stringify(data.oly_summer)); }
+                      if(data.oly_supp_checked) { setSuppChecked(data.oly_supp_checked); await storage.set("oly_supp_checked",JSON.stringify(data.oly_supp_checked)); }
+                      if(data.oly_supp_notes !== undefined) { setSuppNotes(data.oly_supp_notes); await storage.set("oly_supp_notes",data.oly_supp_notes); }
+                      showToast("✓ Data restored successfully");
+                      e.target.value = "";
+                    } catch(err) {
+                      showToast("❌ Failed to import — invalid file");
+                    }
+                  }}/>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root=ReactDOM.createRoot(document.getElementById('root'));
+root.render(<OlyTracker/>);
+</script>
+</body>
+</html>
