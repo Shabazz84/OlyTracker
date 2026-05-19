@@ -1014,7 +1014,7 @@ const SUPP_CATEGORIES = {
 const PRIORITY_ORDER = {essential:0, high:1, medium:2, low:3};
 
 // ── Supplement Card ───────────────────────────────────────────────────────────
-function SuppCard({supp, checked, onToggle}) {
+function SuppCard({supp, checked, history7, onToggle}) {
   const [open, setOpen] = useState(false);
   const cat = SUPP_CATEGORIES[supp.category];
   const isIncoming = supp.status === "incoming";
@@ -1063,6 +1063,19 @@ function SuppCard({supp, checked, onToggle}) {
             {supp.dose}
           </div>
         </div>
+
+        {/* History dots — last 7 days */}
+        {!isIncoming && history7 && (
+          <div style={{display:"flex", gap:3, alignItems:"center", flexShrink:0}}>
+            {history7.map((taken, i) => (
+              <div key={i} style={{
+                width:6, height:6, borderRadius:"50%",
+                background: taken ? "var(--green)" : "var(--bg3)",
+                border: `1px solid ${taken ? "var(--green)" : "var(--border2)"}`,
+              }}/>
+            ))}
+          </div>
+        )}
 
         {/* Tags */}
         <div style={{display:"flex", gap:5, alignItems:"center"}}>
@@ -1118,9 +1131,19 @@ function SuppCard({supp, checked, onToggle}) {
 }
 
 // ── Supplements Tab ───────────────────────────────────────────────────────────
-function SuppsTab({checked, onToggle, suppNotes, onNoteChange}) {
+function SuppsTab({checked, history, onToggle, suppNotes, onNoteChange}) {
   const [filter, setFilter] = useState("all");
   const [dayType, setDayType] = useState("off");
+
+  function last7(suppId) {
+    const days = [];
+    for(let i=6;i>=0;i--){
+      const d=new Date(); d.setDate(d.getDate()-i);
+      const key=d.toISOString().slice(0,10);
+      days.push(!!(history[key]?.[suppId]));
+    }
+    return days;
+  }
 
   const current = SUPPS.filter(s=>s.status==="current");
   const incoming = SUPPS.filter(s=>s.status==="incoming");
@@ -1234,7 +1257,7 @@ function SuppsTab({checked, onToggle, suppNotes, onNoteChange}) {
         CURRENT STACK — {filtered(current).length} SUPPLEMENTS
       </div>
       {filtered(current).map(s=>(
-        <SuppCard key={s.id} supp={s} checked={!!checked[s.id]} onToggle={()=>onToggle(s.id)}/>
+        <SuppCard key={s.id} supp={s} checked={!!checked[s.id]} history7={last7(s.id)} onToggle={()=>onToggle(s.id)}/>
       ))}
 
       {/* Incoming */}
@@ -1611,8 +1634,10 @@ function OlyTracker() {
   const [logForm,setLogForm] = useState({dayId:"d1",notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""});
   const [prTab,setPrTab]     = useState("key");
   const [progTab,setProgTab] = useState("program");
-  const [suppChecked,setSuppChecked] = useState({});
+  const [suppHistory,setSuppHistory] = useState({});
   const [suppNotes,setSuppNotes]     = useState("");
+  const TODAY = new Date().toISOString().slice(0,10);
+  const suppChecked = suppHistory[TODAY] || {};
   const [sessionProgress,setSessionProgress] = useState({});
   const [gistCfg,setGistCfg] = useState(()=>{try{return JSON.parse(localStorage.getItem("oly_gist")||"null")||{token:"",id:"",lastSync:null};}catch{return{token:"",id:"",lastSync:null};}});
   const [syncStatus,setSyncStatus] = useState("idle");
@@ -1644,10 +1669,10 @@ function OlyTracker() {
       if(s.status==="fulfilled"&&s.value) setIsSummer(JSON.parse(s.value.value));
       // Load supplements
       const [sc, sn] = await Promise.allSettled([
-        storage.get("oly_supp_checked"),
+        storage.get("oly_supp_history"),
         storage.get("oly_supp_notes"),
       ]);
-      if(sc.status==="fulfilled"&&sc.value) setSuppChecked(JSON.parse(sc.value.value));
+      if(sc.status==="fulfilled"&&sc.value) setSuppHistory(JSON.parse(sc.value.value)||{});
       if(sn.status==="fulfilled"&&sn.value) setSuppNotes(sn.value.value);
       // Pull from Gist on startup (takes priority over localStorage)
       const gcfg=JSON.parse(localStorage.getItem("oly_gist")||"null");
@@ -1675,7 +1700,7 @@ function OlyTracker() {
       try{
         const setsData={};
         Object.keys(localStorage).filter(k=>k.startsWith("sets_")).forEach(k=>{setsData[k]=localStorage.getItem(k);});
-        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes,sets:setsData};
+        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_history:suppHistory,oly_supp_notes:suppNotes,sets:setsData};
         await gist.write(cfg.token,cfg.id,data);
         const updated={...cfg,lastSync:new Date().toISOString()};
         setGistCfg(updated);
@@ -1684,14 +1709,14 @@ function OlyTracker() {
       }catch{setSyncStatus("error");}
     },3000);
     return()=>clearTimeout(timer);
-  },[prs,logs,week,isSummer,suppChecked,suppNotes,loading,setsVersion]);
+  },[prs,logs,week,isSummer,suppHistory,suppNotes,loading,setsVersion]);
 
   async function applyRemoteData(data){
     if(data.oly_prs){setPrs(data.oly_prs);await storage.set("oly_prs",JSON.stringify(data.oly_prs));}
     if(data.oly_logs){setLogs(data.oly_logs);await storage.set("oly_logs",JSON.stringify(data.oly_logs));}
     if(data.oly_week!==undefined){setWeek(data.oly_week);await storage.set("oly_week",JSON.stringify(data.oly_week));}
     if(data.oly_summer!==undefined){setIsSummer(data.oly_summer);await storage.set("oly_summer",JSON.stringify(data.oly_summer));}
-    if(data.oly_supp_checked){setSuppChecked(data.oly_supp_checked);await storage.set("oly_supp_checked",JSON.stringify(data.oly_supp_checked));}
+    if(data.oly_supp_history){setSuppHistory(data.oly_supp_history);await storage.set("oly_supp_history",JSON.stringify(data.oly_supp_history));}
     if(data.oly_supp_notes!==undefined){setSuppNotes(data.oly_supp_notes);await storage.set("oly_supp_notes",data.oly_supp_notes);}
     if(data.sets){
       const count=Object.keys(data.sets).length;
@@ -1712,7 +1737,7 @@ function OlyTracker() {
         const remote=await gist.read(gistToken,id);
         if(remote.version===1) await applyRemoteData(remote);
       } else {
-        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes};
+        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_history:suppHistory,oly_supp_notes:suppNotes};
         id=await gist.create(gistToken,data);
       }
       const cfg={token:gistToken,id,lastSync:new Date().toISOString()};
@@ -1727,9 +1752,10 @@ function OlyTracker() {
   }
 
   async function toggleSupp(id) {
-    const updated = {...suppChecked, [id]: !suppChecked[id]};
-    setSuppChecked(updated);
-    try{await storage.set("oly_supp_checked", JSON.stringify(updated));}catch{}
+    const todayEntry = {...(suppHistory[TODAY]||{}), [id]: !suppChecked[id]};
+    const updated = {...suppHistory, [TODAY]: todayEntry};
+    setSuppHistory(updated);
+    try{await storage.set("oly_supp_history",JSON.stringify(updated));}catch{}
   }
 
   async function saveSuppNotes(val) {
@@ -2048,7 +2074,7 @@ function OlyTracker() {
         {tab==="mobility" && <MobilityTab/>}
 
         {/* ═══ SUPPS ═══ */}
-        {tab==="supps" && <SuppsTab checked={suppChecked} onToggle={toggleSupp} suppNotes={suppNotes} onNoteChange={saveSuppNotes}/>}
+        {tab==="supps" && <SuppsTab checked={suppChecked} history={suppHistory} onToggle={toggleSupp} suppNotes={suppNotes} onNoteChange={saveSuppNotes}/>}
 
         {/* ═══ LOG ═══ */}
         {tab==="log" && (
@@ -2346,7 +2372,7 @@ function OlyTracker() {
                     oly_logs: logs,
                     oly_week: week,
                     oly_summer: isSummer,
-                    oly_supp_checked: suppChecked,
+                    oly_supp_history: suppChecked,
                     oly_supp_notes: suppNotes,
                   };
                   const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
@@ -2376,7 +2402,7 @@ function OlyTracker() {
                       if(data.oly_logs) { setLogs(data.oly_logs); await storage.set("oly_logs",JSON.stringify(data.oly_logs)); }
                       if(data.oly_week) { setWeek(data.oly_week); await storage.set("oly_week",JSON.stringify(data.oly_week)); }
                       if(data.oly_summer !== undefined) { setIsSummer(data.oly_summer); await storage.set("oly_summer",JSON.stringify(data.oly_summer)); }
-                      if(data.oly_supp_checked) { setSuppChecked(data.oly_supp_checked); await storage.set("oly_supp_checked",JSON.stringify(data.oly_supp_checked)); }
+                      if(data.oly_supp_history) { setSuppHistory(data.oly_supp_history); await storage.set("oly_supp_history",JSON.stringify(data.oly_supp_history)); }
                       if(data.oly_supp_notes !== undefined) { setSuppNotes(data.oly_supp_notes); await storage.set("oly_supp_notes",data.oly_supp_notes); }
                       showToast("✓ Data restored successfully");
                       e.target.value = "";
@@ -2427,7 +2453,7 @@ function OlyTracker() {
                       try{
                         const cfg=JSON.parse(localStorage.getItem("oly_gist"));
                         const setsData={};Object.keys(localStorage).filter(k=>k.startsWith("sets_")).forEach(k=>{setsData[k]=localStorage.getItem(k);});
-                        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes,sets:setsData};
+                        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_history:suppHistory,oly_supp_notes:suppNotes,sets:setsData};
                         await gist.write(cfg.token,cfg.id,data);
                         const updated={...cfg,lastSync:new Date().toISOString()};
                         setGistCfg(updated);localStorage.setItem("oly_gist",JSON.stringify(updated));
