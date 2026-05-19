@@ -1393,7 +1393,7 @@ function PRCards({prs}) {
             <div style={{fontSize:12,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:4}}>— not logged yet</div>
           </div>
         );
-        const history=entry.history||[{weight:entry.weight,date:entry.date,reps:entry.reps}];
+        const history=entry.history||[{weight:entry.weight??0,date:entry.date??'',reps:entry.reps??1}];
         const weights=history.map(h=>h.weight);
         const minW=Math.min(...weights)*0.9, maxW=Math.max(...weights);
         const W=80,H=36,pad=4;
@@ -1407,7 +1407,7 @@ function PRCards({prs}) {
                 <div style={{fontSize:28,fontWeight:700,color,lineHeight:1.1,fontFamily:"'Bebas Neue',sans-serif"}}>
                   {entry.weight}<span style={{fontSize:13,color:'var(--text2)',marginLeft:3,fontFamily:"'DM Mono',monospace"}}>kg ×{entry.reps}</span>
                 </div>
-                <div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:2}}>{entry.date}</div>
+                <div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:2}}>{entry.date||'—'}</div>
               </div>
               {history.length>1&&(
                 <svg viewBox={`0 0 ${W} ${H}`} style={{width:W,height:H,flexShrink:0}}>
@@ -1694,7 +1694,7 @@ function OlyTracker() {
         const raw=JSON.parse(p.value.value);
         const migrated={};
         Object.entries(raw).forEach(([lift,entry])=>{
-          migrated[lift]=entry.history?entry:{...entry,history:[{weight:entry.weight,date:entry.date,reps:entry.reps}]};
+          migrated[lift]=entry.history?entry:{...entry,history:entry.weight!=null?[{weight:entry.weight,date:entry.date??'',reps:entry.reps??1}]:[]};
         });
         setPrs(migrated);
       }else{
@@ -1824,7 +1824,7 @@ function OlyTracker() {
       const history=[...(existing?.history||[]),{weight:nw,date:today,reps:nr}];
       entry={weight:nw,date:today,reps:nr,history};
     }else{
-      entry={...existing};
+      entry={...existing,history:existing.history||[]};
     }
     const updated={...prs,[newPR.lift]:entry};
     setPrs(updated);
