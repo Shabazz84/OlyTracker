@@ -1317,6 +1317,13 @@ function parseRepsNum(r) {
   return parseInt(s) || 3;
 }
 
+function fmtMonthYear(isoDate) {
+  if(!isoDate) return '';
+  const [y,m]=isoDate.slice(0,7).split('-');
+  const mon=new Date(+y,+m-1).toLocaleString('default',{month:'short'});
+  return `${mon}'${y.slice(2)}`;
+}
+
 function SVGLineChart({data, series, height=160, yMax:yMaxProp}) {
   if (!data || data.length === 0) return (
     <div style={{color:'var(--text3)',fontSize:11,textAlign:'center',padding:20,fontFamily:"'DM Mono',monospace"}}>
@@ -1368,29 +1375,65 @@ function SVGLineChart({data, series, height=160, yMax:yMaxProp}) {
   );
 }
 
-function PRBarChart({groups}) {
-  const globalMax = Math.max(...groups.flatMap(g => g.entries.map(e => e.weight)), 1);
+function PRCards({prs}) {
+  const MAIN=[
+    {key:'Snatch (Floor)',    label:'SNATCH',       color:'var(--gold)'},
+    {key:'Clean & Jerk',     label:'CLEAN & JERK',  color:'var(--gold)'},
+    {key:'Back Squat',       label:'BACK SQUAT',    color:'var(--blue)'},
+    {key:'Deadlift',         label:'DEADLIFT',      color:'var(--green)'},
+    {key:'Flat Bench Press', label:'BENCH PRESS',   color:'var(--purple)'},
+  ];
   return (
-    <div>
-      {groups.map(g => (
-        <div key={g.label} style={{marginBottom:16}}>
-          <div style={{fontSize:9,color:'var(--text3)',letterSpacing:2,fontFamily:"'DM Mono',monospace",marginBottom:8}}>{g.label}</div>
-          {g.entries.map(e => (
-            <div key={e.lift} style={{display:'flex',alignItems:'center',gap:8,marginBottom:5}}>
-              <div style={{width:148,fontSize:10,color:'var(--text2)',textAlign:'right',fontFamily:"'DM Mono',monospace",
-                flexShrink:0,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
-                {e.lift.toUpperCase()}
+    <div style={{display:'flex',flexDirection:'column',gap:8}}>
+      {MAIN.map(({key,label,color})=>{
+        const entry=prs[key];
+        if(!entry) return (
+          <div key={key} style={{background:'var(--bg1)',borderRadius:8,padding:'12px 14px',border:'1px solid var(--border)'}}>
+            <div style={{fontSize:8,color:'var(--text3)',letterSpacing:2,fontFamily:"'DM Mono',monospace"}}>{label}</div>
+            <div style={{fontSize:12,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:4}}>— not logged yet</div>
+          </div>
+        );
+        const history=entry.history||[{weight:entry.weight,date:entry.date,reps:entry.reps}];
+        const weights=history.map(h=>h.weight);
+        const minW=Math.min(...weights)*0.9, maxW=Math.max(...weights);
+        const W=80,H=36,pad=4;
+        const xi=i=>history.length===1?W/2:pad+i*(W-2*pad)/(history.length-1);
+        const yi=w=>H-pad-((w-minW)/(maxW-minW||1))*(H-2*pad);
+        return (
+          <div key={key} style={{background:'var(--bg1)',borderRadius:8,padding:'12px 14px',border:`1px solid ${color}33`}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+              <div>
+                <div style={{fontSize:8,color:'var(--text3)',letterSpacing:2,fontFamily:"'DM Mono',monospace"}}>{label}</div>
+                <div style={{fontSize:28,fontWeight:700,color,lineHeight:1.1,fontFamily:"'Bebas Neue',sans-serif"}}>
+                  {entry.weight}<span style={{fontSize:13,color:'var(--text2)',marginLeft:3,fontFamily:"'DM Mono',monospace"}}>kg ×{entry.reps}</span>
+                </div>
+                <div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:2}}>{entry.date}</div>
               </div>
-              <div style={{flex:1,background:'var(--bg3)',borderRadius:3,height:16,overflow:'hidden'}}>
-                <div style={{width:`${(e.weight/globalMax)*100}%`,height:'100%',background:g.color,borderRadius:3,minWidth:3}}/>
-              </div>
-              <span style={{width:70,fontSize:11,color:'var(--text)',fontFamily:"'DM Mono',monospace",flexShrink:0}}>
-                {e.weight}kg{e.reps>1?` ×${e.reps}`:''}
-              </span>
+              {history.length>1&&(
+                <svg viewBox={`0 0 ${W} ${H}`} style={{width:W,height:H,flexShrink:0}}>
+                  <polyline points={history.map((h,i)=>`${xi(i)},${yi(h.weight)}`).join(' ')}
+                    fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                  {history.map((h,i)=>(
+                    <circle key={i} cx={xi(i)} cy={yi(h.weight)} r={i===history.length-1?3:2}
+                      fill={color} opacity={i===history.length-1?1:0.5}/>
+                  ))}
+                </svg>
+              )}
             </div>
-          ))}
-        </div>
-      ))}
+            {history.length>0&&(
+              <div style={{marginTop:8,paddingTop:6,borderTop:'1px solid var(--border)',display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+                {history.map((h,i)=>(
+                  <span key={i} style={{fontSize:9,fontFamily:"'DM Mono',monospace",
+                    color:i===history.length-1?color:'var(--text3)',
+                    fontWeight:i===history.length-1?600:400}}>
+                    {h.weight}kg{i===history.length-1?' ★':` ${fmtMonthYear(h.date)}`}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
