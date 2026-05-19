@@ -1563,14 +1563,6 @@ function Reports({prs, logs}) {
       }));
   },[logs]);
 
-  const prGroups = useMemo(()=>[
-    {label:'COMPETITION', color:'var(--gold)',  lifts:['Snatch (Floor)','Hang Power Snatch','Muscle Snatch','Clean','Clean & Jerk','Push Jerk','Jerk from Rack']},
-    {label:'SQUAT',       color:'var(--blue)',  lifts:['Back Squat','Front Squat','Overhead Squat','Klokov Squats','Berestov Squats']},
-    {label:'PULL',        color:'var(--green)', lifts:['Clean Pull','Snatch High Pull','Snatch Deadlift','RDL Pull','Deadlift','Klokov Deadlift']},
-    {label:'UPPER',       color:'var(--purple)',lifts:['Overhead Press','Wide Overhead Press','Push Press','Behind Neck Press','Flat Bench Press','Incline Barbell Press','Weighted Pull Up','Klokov Trapi','T-Bar Row','Lat Pulldown','Good Morning']},
-  ].map(g=>({...g,entries:g.lifts.map(l=>prs[l]?{lift:l,...prs[l]}:null).filter(Boolean)}))
-   .filter(g=>g.entries.length>0),[prs]);
-
   const shiftStats = useMemo(()=>{
     const s=qualityData.filter(d=>d.nightShift&&d.rating!=null);
     const r=qualityData.filter(d=>!d.nightShift&&d.rating!=null);
@@ -1588,13 +1580,6 @@ function Reports({prs, logs}) {
 
   return (
     <div className="fade">
-      <div style={sec}>
-        <div style={hd}>PERSONAL RECORDS</div>
-        {prGroups.length>0
-          ? <PRBarChart groups={prGroups}/>
-          : <div style={{color:'var(--text3)',fontSize:12}}>No PRs logged yet.</div>}
-      </div>
-
       <div style={sec}>
         <div style={hd}>SESSION VOLUME</div>
         {sessionVolumes.length>0 ? (<>
