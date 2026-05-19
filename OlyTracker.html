@@ -33,7 +33,33 @@ const storage={
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef } = React;
+
+// ── GitHub Gist sync service ──────────────────────────────────────────────────
+const gist = {
+  H(t){return{Authorization:`Bearer ${t}`,Accept:"application/vnd.github+json","Content-Type":"application/json"};},
+  async find(t){
+    const r=await fetch("https://api.github.com/gists?per_page=100",{headers:this.H(t)});
+    if(!r.ok)throw new Error(r.status);
+    return (await r.json()).find(g=>g.description==="OlyTracker sync")?.id||null;
+  },
+  async create(t,data){
+    const r=await fetch("https://api.github.com/gists",{method:"POST",headers:this.H(t),
+      body:JSON.stringify({description:"OlyTracker sync",public:false,files:{"data.json":{content:JSON.stringify(data)}}})});
+    if(!r.ok)throw new Error(r.status);
+    return(await r.json()).id;
+  },
+  async read(t,id){
+    const r=await fetch(`https://api.github.com/gists/${id}`,{headers:this.H(t)});
+    if(!r.ok)throw new Error(r.status);
+    return JSON.parse((await r.json()).files?.["data.json"]?.content||"{}");
+  },
+  async write(t,id,data){
+    const r=await fetch(`https://api.github.com/gists/${id}`,{method:"PATCH",headers:this.H(t),
+      body:JSON.stringify({files:{"data.json":{content:JSON.stringify(data)}}})});
+    if(!r.ok)throw new Error(r.status);
+  }
+};
 
 const injectFonts = () => {
   if (document.getElementById("oly-fonts")) return;
@@ -1268,6 +1294,9 @@ function OlyTracker() {
   const [suppChecked,setSuppChecked] = useState({});
   const [suppNotes,setSuppNotes]     = useState("");
   const [sessionProgress,setSessionProgress] = useState({});
+  const [gistCfg,setGistCfg] = useState(()=>{try{return JSON.parse(localStorage.getItem("oly_gist")||"null")||{token:"",id:"",lastSync:null};}catch{return{token:"",id:"",lastSync:null};}});
+  const [syncStatus,setSyncStatus] = useState("idle");
+  const [gistToken,setGistToken] = useState("");
 
   const DAYS = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
   const phase = week<=3?0:1;
@@ -1298,8 +1327,71 @@ function OlyTracker() {
       ]);
       if(sc.status==="fulfilled"&&sc.value) setSuppChecked(JSON.parse(sc.value.value));
       if(sn.status==="fulfilled"&&sn.value) setSuppNotes(sn.value.value);
+      // Pull from Gist on startup (takes priority over localStorage)
+      const gcfg=JSON.parse(localStorage.getItem("oly_gist")||"null");
+      if(gcfg?.token&&gcfg?.id){
+        try{
+          const remote=await gist.read(gcfg.token,gcfg.id);
+          if(remote.version===1) await applyRemoteData(remote);
+          const updated={...gcfg,lastSync:new Date().toISOString()};
+          setGistCfg(updated);
+          localStorage.setItem("oly_gist",JSON.stringify(updated));
+          setSyncStatus("ok");
+        }catch{setSyncStatus("error");}
+      }
     } catch{setPrs(SEED_PRS);}
     setLoading(false);
+  }
+
+  // Auto-push to Gist 3s after any data change
+  useEffect(()=>{
+    if(loading) return;
+    const cfg=JSON.parse(localStorage.getItem("oly_gist")||"null");
+    if(!cfg?.token||!cfg?.id) return;
+    const timer=setTimeout(async()=>{
+      setSyncStatus("syncing");
+      try{
+        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes};
+        await gist.write(cfg.token,cfg.id,data);
+        const updated={...cfg,lastSync:new Date().toISOString()};
+        setGistCfg(updated);
+        localStorage.setItem("oly_gist",JSON.stringify(updated));
+        setSyncStatus("ok");
+      }catch{setSyncStatus("error");}
+    },3000);
+    return()=>clearTimeout(timer);
+  },[prs,logs,week,isSummer,suppChecked,suppNotes,loading]);
+
+  async function applyRemoteData(data){
+    if(data.oly_prs){setPrs(data.oly_prs);await storage.set("oly_prs",JSON.stringify(data.oly_prs));}
+    if(data.oly_logs){setLogs(data.oly_logs);await storage.set("oly_logs",JSON.stringify(data.oly_logs));}
+    if(data.oly_week!==undefined){setWeek(data.oly_week);await storage.set("oly_week",JSON.stringify(data.oly_week));}
+    if(data.oly_summer!==undefined){setIsSummer(data.oly_summer);await storage.set("oly_summer",JSON.stringify(data.oly_summer));}
+    if(data.oly_supp_checked){setSuppChecked(data.oly_supp_checked);await storage.set("oly_supp_checked",JSON.stringify(data.oly_supp_checked));}
+    if(data.oly_supp_notes!==undefined){setSuppNotes(data.oly_supp_notes);await storage.set("oly_supp_notes",data.oly_supp_notes);}
+  }
+
+  async function connectGist(){
+    if(!gistToken.trim()) return;
+    setSyncStatus("syncing");
+    try{
+      let id=await gist.find(gistToken);
+      if(id){
+        const remote=await gist.read(gistToken,id);
+        if(remote.version===1) await applyRemoteData(remote);
+      } else {
+        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes};
+        id=await gist.create(gistToken,data);
+      }
+      const cfg={token:gistToken,id,lastSync:new Date().toISOString()};
+      setGistCfg(cfg);
+      localStorage.setItem("oly_gist",JSON.stringify(cfg));
+      setSyncStatus("ok");
+      showToast("✓ GitHub sync connected");
+    }catch{
+      setSyncStatus("error");
+      showToast("❌ Sync failed — check your token");
+    }
   }
 
   async function toggleSupp(id) {
@@ -1947,6 +2039,74 @@ function OlyTracker() {
                   }}/>
                 </label>
               </div>
+
+              {/* GitHub Sync */}
+              <div style={{marginTop:12,background:"#050510",border:`1px solid ${gistCfg.id?"#1a2a3a":"#1a1a2a"}`,borderRadius:8,padding:"14px"}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+                  <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:gistCfg.id?"var(--blue)":"var(--text3)",letterSpacing:1.5}}>
+                    🔄 GITHUB SYNC
+                  </div>
+                  {gistCfg.id&&(
+                    <div style={{display:"flex",alignItems:"center",gap:6}}>
+                      <div style={{width:6,height:6,borderRadius:"50%",background:syncStatus==="ok"?"var(--green)":syncStatus==="syncing"?"var(--gold)":syncStatus==="error"?"var(--red)":"var(--border2)"}}/>
+                      <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
+                        {syncStatus==="syncing"?"SYNCING…":syncStatus==="ok"?`SYNCED ${gistCfg.lastSync?new Date(gistCfg.lastSync).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}`:syncStatus==="error"?"SYNC ERROR":"IDLE"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {!gistCfg.id?(
+                  <>
+                    <p style={{fontSize:11,color:"#446",lineHeight:1.7,marginBottom:8}}>
+                      Sync PRs and logs between PC and phone via a private GitHub Gist. Enter a token with <b style={{color:"var(--text2)"}}>gist</b> scope.
+                    </p>
+                    <p style={{fontSize:10,color:"#335",lineHeight:1.6,marginBottom:10}}>
+                      github.com → Settings → Developer settings → Personal access tokens → Tokens (classic) → New → check "gist" → Generate
+                    </p>
+                    <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                      <input value={gistToken} onChange={e=>setGistToken(e.target.value)}
+                        placeholder="ghp_your_token_here"
+                        style={{flex:1,background:"var(--bg3)",border:"1px solid var(--border2)",borderRadius:5,
+                          color:"var(--text)",padding:"7px 10px",fontSize:11,fontFamily:"'DM Mono',monospace"}}/>
+                      <Btn small onClick={connectGist} style={{background:"var(--blue)",color:"#fff",flexShrink:0}}>
+                        {syncStatus==="syncing"?"…":"CONNECT"}
+                      </Btn>
+                    </div>
+                  </>
+                ):(
+                  <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                    <Btn small onClick={async()=>{
+                      setSyncStatus("syncing");
+                      try{
+                        const cfg=JSON.parse(localStorage.getItem("oly_gist"));
+                        const data={version:1,oly_prs:prs,oly_logs:logs,oly_week:week,oly_summer:isSummer,oly_supp_checked:suppChecked,oly_supp_notes:suppNotes};
+                        await gist.write(cfg.token,cfg.id,data);
+                        const updated={...cfg,lastSync:new Date().toISOString()};
+                        setGistCfg(updated);localStorage.setItem("oly_gist",JSON.stringify(updated));
+                        setSyncStatus("ok");showToast("✓ Pushed to GitHub");
+                      }catch{setSyncStatus("error");showToast("❌ Push failed");}
+                    }} style={{background:"var(--blue)",color:"#fff"}}>↑ PUSH NOW</Btn>
+                    <Btn small onClick={async()=>{
+                      setSyncStatus("syncing");
+                      try{
+                        const cfg=JSON.parse(localStorage.getItem("oly_gist"));
+                        const remote=await gist.read(cfg.token,cfg.id);
+                        if(remote.version===1) await applyRemoteData(remote);
+                        const updated={...cfg,lastSync:new Date().toISOString()};
+                        setGistCfg(updated);localStorage.setItem("oly_gist",JSON.stringify(updated));
+                        setSyncStatus("ok");showToast("✓ Pulled from GitHub");
+                      }catch{setSyncStatus("error");showToast("❌ Pull failed");}
+                    }}>↓ PULL NOW</Btn>
+                    <Btn small ghost onClick={()=>{
+                      setGistCfg({token:"",id:"",lastSync:null});
+                      localStorage.removeItem("oly_gist");
+                      setSyncStatus("idle");
+                      showToast("Sync disconnected");
+                    }}>DISCONNECT</Btn>
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
         )}
