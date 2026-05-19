@@ -2044,9 +2044,9 @@ function OlyTracker() {
               </div>
 
               {/* GitHub Sync */}
-              <div style={{marginTop:12,background:"#050510",border:`1px solid ${gistCfg.id?"#1a2a3a":"#1a1a2a"}`,borderRadius:8,padding:"14px"}}>
+              <div style={{marginTop:12,background:"#0a0a1a",border:`1px solid ${gistCfg.id?"#2a4a6a":"#2a2a4a"}`,borderRadius:8,padding:"14px"}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
-                  <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:gistCfg.id?"var(--blue)":"var(--text3)",letterSpacing:1.5}}>
+                  <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--blue)",letterSpacing:1.5}}>
                     ðŸ”„ GITHUB SYNC
                   </div>
                   {gistCfg.id&&(
@@ -2060,10 +2060,10 @@ function OlyTracker() {
                 </div>
                 {!gistCfg.id?(
                   <>
-                    <p style={{fontSize:11,color:"#446",lineHeight:1.7,marginBottom:8}}>
-                      Sync PRs and logs between PC and phone via a private GitHub Gist. Enter a token with <b style={{color:"var(--text2)"}}>gist</b> scope.
+                    <p style={{fontSize:11,color:"var(--text2)",lineHeight:1.7,marginBottom:8}}>
+                      Sync PRs and logs between PC and phone via a private GitHub Gist. Enter a token with <b style={{color:"var(--text)"}}>gist</b> scope.
                     </p>
-                    <p style={{fontSize:10,color:"#335",lineHeight:1.6,marginBottom:10}}>
+                    <p style={{fontSize:10,color:"var(--text3)",lineHeight:1.6,marginBottom:10}}>
                       github.com â†’ Settings â†’ Developer settings â†’ Personal access tokens â†’ Tokens (classic) â†’ New â†’ check "gist" â†’ Generate
                     </p>
                     <div style={{display:"flex",gap:8,alignItems:"center"}}>
