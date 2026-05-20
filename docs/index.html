@@ -2684,6 +2684,9 @@ function OlyTracker() {
   const [logForm,setLogForm] = useState(()=>({dayId:"d1",date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
   const [prTab,setPrTab]     = useState("key");
   const [progTab,setProgTab] = useState("program");
+  const PROGRAM_START_MS = new Date("2026-05-20").getTime();
+  const currentWeek = Math.max(1, Math.min(28, Math.floor((Date.now() - PROGRAM_START_MS) / (7*24*3600*1000)) + 1));
+  const [progViewWeek, setProgViewWeek] = useState(currentWeek);
   const [suppHistory,setSuppHistory] = useState({});
   const [suppNotes,setSuppNotes]     = useState("");
   const TODAY = new Date().toISOString().slice(0,10);
@@ -2969,9 +2972,18 @@ function OlyTracker() {
             <div style={{display:"flex",gap:6,marginBottom:16}}>
               <Btn small ghost={progTab!=="program"} active={progTab==="program"} onClick={()=>setProgTab("program")}>TRAINING DAYS</Btn>
               <Btn small ghost={progTab!=="schedule"} active={progTab==="schedule"} onClick={()=>setProgTab("schedule")}>SCHEDULE</Btn>
+              <Btn small ghost={progTab!=="weekplan"} active={progTab==="weekplan"} onClick={()=>setProgTab("weekplan")}>WEEK PLAN</Btn>
             </div>
 
             {progTab==="schedule" && <ScheduleView />}
+            {progTab==="weekplan" && (
+              <ProgramWeekView
+                viewWeek={progViewWeek}
+                onWeekChange={setProgViewWeek}
+                currentWeek={currentWeek}
+                isSummer={isSummer}
+              />
+            )}
 
             {progTab==="program" && <>
               {/* Mode banner */}
