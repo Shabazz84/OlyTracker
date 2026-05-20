@@ -1556,7 +1556,7 @@ function LoadDevelopment({setsData,dateMap}){
       const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
       if(!m||!Array.isArray(setArr))return;
       const[,sk,,, exRaw]=m;
-      const exName=exRaw.replace(/_/g,' ');
+      const exName=exRaw.replace(/_/g,' ').split(' — ')[0];
       const exReps=exRepsMap[exName]||3;
       if(!s[sk])s[sk]={key:sk,week:+m[2],dayId:m[3],tonnage:0,reps:0};
       setArr.forEach(st=>{
@@ -1641,7 +1641,7 @@ function ExerciseBreakdown({setsData,dateMap}){
       const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
       if(!m||!Array.isArray(setArr))return;
       const[,sk,wk,dk,exRaw]=m;
-      const exName=exRaw.replace(/_/g,' ');
+      const exName=exRaw.replace(/_/g,' ').split(' — ')[0];
       const exReps=exRepsMap[exName]||3;
       const date=dateMap[sk]||null;
       const doneSets=setArr.filter(s=>s.done&&parseFloat(s.weight)>0);
