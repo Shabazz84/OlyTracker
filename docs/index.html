@@ -2538,6 +2538,138 @@ function SystemTab({week}) {
   );
 }
 
+// ── Program Week View ─────────────────────────────────────────────────────────
+const BLOCK_COLORS = {1:"#4a90d9",2:"#c94f3a",3:"#d4a843",4:"#5a9e45"};
+const PHASE_COLORS = {
+  "Phase 1":"#4a90d9","Phase 2":"#d4a843","Deload":"#888","Test":"#5a9e45",
+  "Accumulation":"#c94f3a","Intensification":"#d4a843","Volume":"#4a90d9",
+  "Mock Competition":"#8b5cf6","Peak":"#5a9e45","Taper":"#8b5cf6",
+};
+
+function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
+  const isB1 = viewWeek <= 8;
+  const weekData = isB1
+    ? PROGRAM_B1[viewWeek - 1]
+    : PROGRAM_OUTLINE.find(w => w.week === viewWeek);
+  if (!weekData) return null;
+
+  const blockNum = isB1 ? 1 : weekData.block;
+  const blockColor = BLOCK_COLORS[blockNum];
+  const phaseColor = PHASE_COLORS[weekData.phase] || "#888";
+  const isCurrentWeek = viewWeek === currentWeek;
+  const TOTAL_WEEKS = 28;
+
+  const days = weekData.days
+    ? (isSummer ? weekData.days : weekData.days.filter(d => d.id !== "d5"))
+    : null;
+
+  return (
+    <div className="fade">
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
+        <button onClick={()=>onWeekChange(Math.max(1,viewWeek-1))}
+          disabled={viewWeek<=1}
+          style={{width:36,height:36,borderRadius:6,border:"1px solid var(--border)",
+            background:"var(--bg2)",color:viewWeek<=1?"var(--text3)":"var(--text)",
+            cursor:viewWeek<=1?"default":"pointer",fontSize:16,flexShrink:0}}>
+          ‹
+        </button>
+        <div style={{flex:1,textAlign:"center"}}>
+          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:20,letterSpacing:0.5,
+            color:blockColor,lineHeight:1.1}}>
+            BLOCK {blockNum} · WEEK {viewWeek}
+          </div>
+          <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",
+            letterSpacing:1,marginTop:2}}>
+            {viewWeek} of {TOTAL_WEEKS}
+          </div>
+        </div>
+        <button onClick={()=>onWeekChange(Math.min(TOTAL_WEEKS,viewWeek+1))}
+          disabled={viewWeek>=TOTAL_WEEKS}
+          style={{width:36,height:36,borderRadius:6,border:"1px solid var(--border)",
+            background:"var(--bg2)",color:viewWeek>=TOTAL_WEEKS?"var(--text3)":"var(--text)",
+            cursor:viewWeek>=TOTAL_WEEKS?"default":"pointer",fontSize:16,flexShrink:0}}>
+          ›
+        </button>
+      </div>
+
+      {!isCurrentWeek && (
+        <button onClick={()=>onWeekChange(currentWeek)}
+          style={{width:"100%",padding:"7px 12px",marginBottom:12,borderRadius:6,
+            border:`1px solid ${blockColor}66`,background:`${blockColor}11`,
+            color:blockColor,fontSize:11,fontFamily:"'DM Mono',monospace",
+            letterSpacing:0.5,cursor:"pointer"}}>
+          ← CURRENT WEEK ({currentWeek})
+        </button>
+      )}
+      {isCurrentWeek && (
+        <div style={{textAlign:"center",marginBottom:8,fontSize:9,
+          color:blockColor,fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>
+          ● CURRENT WEEK
+        </div>
+      )}
+
+      <div style={{background:"var(--bg2)",borderRadius:10,padding:"14px 16px",
+        marginBottom:14,border:`1px solid ${blockColor}33`}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+          <span style={{fontSize:9,color:phaseColor,fontFamily:"'DM Mono',monospace",
+            letterSpacing:1.5,background:`${phaseColor}18`,padding:"2px 7px",borderRadius:10}}>
+            {weekData.phase}
+          </span>
+          <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1}}>
+            {weekData.load}
+          </span>
+        </div>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17,letterSpacing:0.3,
+          lineHeight:1.2,marginBottom:6}}>
+          {weekData.focus}
+        </div>
+        <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.6}}>{weekData.note}</div>
+      </div>
+
+      {isB1 && days && days.map(d => (
+        <div key={d.id} style={{background:"var(--bg2)",borderRadius:8,
+          padding:"10px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
+          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:12,
+            color:"var(--text2)",letterSpacing:1,marginBottom:8}}>
+            {d.label}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:6}}>
+            <div>
+              <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,
+                fontFamily:"'DM Mono',monospace",marginBottom:3}}>PRIMARY</div>
+              <div style={{fontSize:12,fontWeight:600,lineHeight:1.3}}>{d.primary}</div>
+              <div style={{fontSize:11,color:"var(--blue)",fontFamily:"'DM Mono',monospace",
+                marginTop:3}}>{d.load}</div>
+            </div>
+            <div>
+              <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,
+                fontFamily:"'DM Mono',monospace",marginBottom:3}}>SECONDARY</div>
+              <div style={{fontSize:10,color:"var(--text2)",lineHeight:1.6}}>{d.secondary}</div>
+            </div>
+          </div>
+          <div style={{fontSize:10,color:"var(--text3)",borderTop:"1px solid var(--border)",
+            paddingTop:6,fontStyle:"italic"}}>{d.notes}</div>
+        </div>
+      ))}
+
+      {!isB1 && (
+        <div style={{background:"var(--bg2)",borderRadius:8,padding:"14px 16px",
+          border:"1px solid var(--border)"}}>
+          <div style={{fontSize:10,color:"var(--text2)",lineHeight:1.7,marginBottom:10}}>
+            Block {blockNum} sessions are defined at week-level resolution.
+            Full per-day tables are added at the start of each block.
+          </div>
+          <div style={{fontSize:10,color:"var(--text3)"}}>
+            Reference: <span style={{color:"var(--text2)",fontFamily:"'DM Mono',monospace"}}>
+              summaries/complete_program.md → Part 3
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
