@@ -110,3 +110,51 @@ Jerk: if 57 kg prescribed sets feel very easy, note it — Phase 2 daily max sta
 | D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 90–98 / 80 kg | RDL 4×6·80, GHR 3×10·BW, SHP 3×4·76, OHS 3×3·44, Plank 3×60s | MS opener 2×3·44. Hard stop 3pm |
 | D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 57 kg / 54 kg | C&J 4×(1+2)·60, Sots 3×5·28, BNP 3×6·40, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
 | D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 90–100 / 64 kg | Lunge 3×8/leg·44, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
+
+---
+
+### Phase 2 — Weeks 4–6: 72–80% TM · Auto-regulation begins
+
+Jerk transitions to daily max singles (Golovinsky protocol): warm up 50%→60%→70%→80%, then add 2.5–5 kg until the set feels maximal but not a grind. Stop at the heaviest solid single. No misses.
+OHS increases to 4 sets — the ceiling is rising, this is the primary adaptation target.
+
+---
+
+## Week 4 — Phase 2 · 72–80% TM · Jerk singles begin
+
+First week of daily max jerk singles. Open conservatively — target around 60–62 kg. The goal is learning the auto-regulation, not a PR. OHS now 4 sets.
+🔴 Back pain: same substitutions. Jerk: proceed normally (no axial loading in jerk from rack).
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 | 56 kg / 46 kg | BS single (feel 107–115), GM 4×8·57, Pull-up 4×6·BW+8, GHR 3×8·10 | MS opener 2×3·46. OHS now 4 sets |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 64 kg / 92 kg | Inc Press 4×8·68, Dips 4×8·BW+24, Trapi 4×8·62, Wide OHP 4×6·42, Dead Bug 3×10 | MS opener 2×3·46 |
+| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 92–100 / 83 kg | RDL 4×6·82, GHR 3×10·5, SHP 3×4·78, OHS 3×3·46, Plank 3×60s | MS opener 2×3·46. Hard stop 3pm |
+| D4 Thu ⭐⭐ | **Jerk daily max single** / Push Press 4×5 | feel ~60–65 kg / 56 kg | C&J 4×(1+2)·62, Sots 3×5·30, BNP 3×6·42, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep. Conservative first single |
+| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 93–103 / 66 kg | Lunge 3×8/leg·46, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
+
+## Week 5 — Phase 2 · 72–80% TM · +2.5 kg from Week 4
+
+Jerk auto-regulation is now familiar. Push the daily max higher if the set felt solid last week.
+Target jerk single: last week's max + 2.5 kg if it was clean.
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 | 58 kg / 48 kg | BS single (feel 110–118), GM 4×8·60, Pull-up 4×6·BW+10, GHR 3×8·10 | MS opener 2×3·46 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 66 kg / 95 kg | Inc Press 4×8·70, Dips 4×8·BW+24, Trapi 4×8·64, Wide OHP 4×6·44, Dead Bug 3×10 | MS opener 2×3·46 |
+| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 95–102 / 86 kg | RDL 4×6·85, GHR 3×10·5, SHP 3×4·80, OHS 3×3·48, Plank 3×65s | MS opener 2×3·46. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk daily max / Push Press 4×5 | feel ~63–68 kg / 58 kg | C&J 4×(1+2)·64, Sots 3×5·30, BNP 3×6·44, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep |
+| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 96–105 / 68 kg | Lunge 3×8/leg·48, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
+
+## Week 6 — Phase 2 · 72–80% TM · Phase 2 peak · Prepare for deload
+
+Last heavy week before deload. Push the jerk single — this is the last opportunity before Week 8 test.
+Target jerk: 67–70 kg if form has been solid on D4. BS single: attempt 115–118 kg if feeling strong.
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 | 60 kg / 50 kg | BS single (feel 112–118), GM 4×8·62, Pull-up 4×6·BW+10, GHR 3×8·12 | MS opener 2×3·48. OHS target 50 kg — Block 1 milestone |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 68 kg / 97 kg | Inc Press 4×8·72, Dips 4×8·BW+26, Trapi 4×8·66, Wide OHP 4×6·46, Dead Bug 3×10 | MS opener 2×3·48 |
+| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 97–102 / 88 kg | RDL 4×6·88, GHR 3×10·8, SHP 3×4·83, OHS 3×3·50, Plank 3×65s | MS opener 2×3·48. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk daily max / Push Press 4×5 | feel ~65–70 kg / 60 kg | C&J 4×(1+2)·66, Sots 3×5·32, BNP 3×6·46, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep. Phase 2 peak single |
+| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 98–107 / 70 kg | Lunge 3×8/leg·50, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·48. No PRs |
