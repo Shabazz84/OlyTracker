@@ -206,3 +206,64 @@ Check ALL boxes before starting Block 2. If any are unchecked, repeat the Phase 
 - [ ] 8 weeks of Block 1 completed
 
 **If OHS < 60 kg:** Do not advance. Add 2 weeks of OHS-priority work (4 sets every D1 and D3, +2.5 kg from test week load) before re-testing.
+
+---
+
+## Part 3: Blocks 2–4 — Week-Level Outline
+
+---
+
+## Block 2 — Technique Consolidation (Weeks 9–16)
+**Load zone:** 70–85% TM · **Key change:** Introduce competition lifts from floor (snatch + clean)
+**New on D4:** Jerk back-off sets added — 2×3 @ 85% of daily max single
+
+| Week | Focus | Load | Notes |
+|------|-------|------|-------|
+| 9 | Introduction — full snatch + clean from floor at 65% | 65–70% | Low volume. Treat like Week 1 — learn the positions from floor |
+| 10 | Consolidate floor positions | 67–73% | +2.5 kg primary. Film every snatch from floor and review |
+| 11 | Build volume at moderate load | 70–76% | 5×3 on snatch from floor; 5×3 clean from floor |
+| 12 | Accumulation peak — highest volume week of Block 2 | 72–78% | Most total sets. ATW baseline recorded |
+| 13 | Intensification begins — daily max on snatch + clean | 78–82% | Reduce accessory volume by 1 set each to conserve CNS |
+| 14 | Intensification continues — push snatch and clean maxes | 80–85% | Jerk target: 72–75 kg single |
+| 15 | Deload — vol −40%, intensity maintained | 78% | Same protocol as Block 1 Week 7 |
+| 16 | Test — 1RM snatch, clean, jerk, OHS, front squat | max | First full floor snatch and clean test |
+
+**Block 2 test targets:** Snatch 68+ kg · Clean 85+ kg · Jerk 75+ kg · OHS 65+ kg
+**Block 2 → 3 advance criteria:** OHS ≥ 65 kg · Clean bar path solid at 85% · Jerk gap to clean ≤ 10 kg · 8 weeks completed
+
+---
+
+## Block 3 — Strength & Load Development (Weeks 17–24)
+**Load zone:** 75–90% TM · **Key change:** ATW (Average Training Weight) tracking begins
+**Torokhtiy rule:** ATW must rise +1%/week over 6 weeks (+4% total → predicts +10 kg competition total)
+**ATW formula:** (sum of all kg lifted in session) ÷ (total reps) = ATW. Track weekly average.
+
+| Week | Focus | Load | Notes |
+|------|-------|------|-------|
+| 17 | Volume block starts — establish ATW baseline | 75–80% | Record ATW this week. This is the baseline. |
+| 18 | Volume — moderate load, high sets | 76–82% | ATW target: baseline +1%. More sets at working weight |
+| 19 | Volume peak — highest total tonnage week | 77–83% | ATW target: baseline +2%. Heavy singles limited to 1× per lift |
+| 20 | Volume-intensity transition | 79–85% | ATW target: baseline +3%. Begin reducing sets, adding singles |
+| 21 | Intensification — near-max loads, low volume | 82–88% | 3–5 singles per lift. ATW may dip — intensity compensates |
+| 22 | Intensification peak | 85–90% | Snatch + clean heavy singles 2× this week (Mon + Wed) |
+| 23 | Deload — vol −40%, intensity maintained | 83% | Same deload protocol |
+| 24 | Test — full 1RM competition lifts | max | ATW must be +4% above Week 17 baseline |
+
+**Block 3 test targets:** Snatch 70+ kg · C&J 90+ kg · ATW +4% from Week 17 baseline · PRs in 2+ lifts
+**Block 3 → 4 advance criteria:** ATW +4% confirmed · PRs in snatch and clean · Competition or test event within 4–8 weeks
+
+---
+
+## Block 4 — Competition Prep / Peaking (Weeks 25–28)
+**Load zone:** 85–95% TM · **Key change:** Volume −35% from Block 3 peak · No variation chasing
+**Rule:** Competition movements only. No new exercises. No technique experiments. Execute what you know.
+
+| Week | Focus | Load | Notes |
+|------|-------|------|-------|
+| 25 | Peak week 1 — volume down, intensity up | 88–93% | 3×1 on snatch + clean. Jerk daily max. All accessories cut in half |
+| 26 | Peak week 2 — sharpen the singles | 90–95% | 2×1 on snatch + clean at 90%. Attempt PR if moving well |
+| 27 | Mock competition — full warm-up protocol | 85–92% | 3 mock sessions this week. Full competition warm-up. Attempt selection practice |
+| 28 | Taper — volume −50%, sharpness maintained | 85% | 2 sessions only. 2×1 snatch + 2×1 clean + 1 jerk. Rest |
+
+**Year 1 targets:** Snatch 70 kg · C&J 90 kg
+**Mock competition format (Week 27):** Full warm-up (6 attempts per lift: 3 warm-up, 3 competition attempts). Attempt 1 = opener (90% of target). Attempt 2 = second (95%). Attempt 3 = max if Attempt 2 solid, repeat if not.
