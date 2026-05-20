@@ -162,17 +162,19 @@ async function callLmStudio(systemPrompt, userPrompt, cfg) {
   });
   if (!res.ok) throw new Error(`LM Studio ${res.status}: ${res.statusText}`);
   const data = await res.json();
+  if (!data.choices?.length) throw new Error("LM Studio returned no choices");
   return data.choices[0].message.content;
 }
 
 function parseAiResponse(text) {
+  if (typeof text !== "string") text = String(text ?? "");
   const match = text.match(/```json\n?([\s\S]*?)\n?```/);
   if (match) {
     try {
       const p = JSON.parse(match[1]);
       return {
-        narrative:           p.narrative           || text,
-        loadRecommendation:  p.loadRecommendation  || "hold",
+        narrative:           p.narrative           ?? text,
+        loadRecommendation:  p.loadRecommendation  ?? "hold",
         skipExercises:       Array.isArray(p.skipExercises)       ? p.skipExercises       : [],
         reduceLoadExercises: Array.isArray(p.reduceLoadExercises) ? p.reduceLoadExercises : [],
         flags:               Array.isArray(p.flags)               ? p.flags               : [],
