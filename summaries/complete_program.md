@@ -71,3 +71,42 @@ The training system explicitly states Day 5 is a "65–70% only, no PRs, tissue 
 Goal: Establish correct positions under sub-maximal load. Higher reps on accessories. No daily max singles on jerk yet — prescribed sets to learn the movement pattern.
 
 ---
+
+## Week 1 — Phase 1 · 65–72% TM · Establish base positions
+
+New loading zone. Prioritize technique over weight on every set. Feel each position.
+🔴 Back pain: substitute Leg Press (4×10·120 kg) for BS single; reduce Clean Pull to 72 kg.
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 | 50 kg / 40 kg | BS single (feel 95–105), GM 4×8·50, Pull-up 4×6·BW+5, GHR 3×8·5 | MS opener 2×3·42 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 58 kg / 85 kg | Inc Press 4×8·58, Dips 4×8·BW+20, Trapi 4×8·55, Wide OHP 4×6·35, Dead Bug 3×10 | MS opener 2×3·42 |
+| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 82–90 / 72 kg | RDL 4×6·75, GHR 3×10·BW, SHP 3×4·70, OHS 3×3·40, Plank 3×50s | MS opener 2×3·42. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 52 kg / 50 kg | C&J 4×(1+2)·55, Sots 3×5·25, BNP 3×6·35, Pallof 3×10 | MS opener 2×3·40. 5.5h sleep — no grinding |
+| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 85–95 / 60 kg | Lunge 3×8/leg·40, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·42. No PRs |
+
+## Week 2 — Phase 1 · 65–72% TM · +2.5 kg primary lifts
+
+Loads up 2.5 kg across primary barbell lifts from Week 1. Same technique standards.
+🔴 Back pain: same substitutions as Week 1.
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 | 52 kg / 42 kg | BS single (feel 100–110), GM 4×8·52, Pull-up 4×6·BW+5, GHR 3×8·7 | MS opener 2×3·44 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 60 kg / 87 kg | Inc Press 4×8·62, Dips 4×8·BW+20, Trapi 4×8·57, Wide OHP 4×6·37, Dead Bug 3×10 | MS opener 2×3·44 |
+| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 86–94 / 76 kg | RDL 4×6·77, GHR 3×10·BW, SHP 3×4·73, OHS 3×3·42, Plank 3×55s | MS opener 2×3·44. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 55 kg / 52 kg | C&J 4×(1+2)·57, Sots 3×5·27, BNP 3×6·37, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
+| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 88–98 / 62 kg | Lunge 3×8/leg·42, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
+
+## Week 3 — Phase 1 · 65–72% TM · +2.5 kg from Week 2 · Phase 1 peak
+
+Last week at Phase 1 loads. Confirm positions are solid before Phase 2 begins next week.
+Jerk: if 57 kg prescribed sets feel very easy, note it — Phase 2 daily max starts Week 4.
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 | 54 kg / 44 kg | BS single (feel 105–113), GM 4×8·55, Pull-up 4×6·BW+7, GHR 3×8·8 | MS opener 2×3·44 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 62 kg / 90 kg | Inc Press 4×8·65, Dips 4×8·BW+22, Trapi 4×8·60, Wide OHP 4×6·40, Dead Bug 3×10 | MS opener 2×3·44 |
+| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 90–98 / 80 kg | RDL 4×6·80, GHR 3×10·BW, SHP 3×4·76, OHS 3×3·44, Plank 3×60s | MS opener 2×3·44. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 57 kg / 54 kg | C&J 4×(1+2)·60, Sots 3×5·28, BNP 3×6·40, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
+| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 90–100 / 64 kg | Lunge 3×8/leg·44, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
