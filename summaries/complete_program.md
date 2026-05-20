@@ -267,3 +267,53 @@ Check ALL boxes before starting Block 2. If any are unchecked, repeat the Phase 
 
 **Year 1 targets:** Snatch 70 kg · C&J 90 kg
 **Mock competition format (Week 27):** Full warm-up (6 attempts per lift: 3 warm-up, 3 competition attempts). Attempt 1 = opener (90% of target). Attempt 2 = second (95%). Attempt 3 = max if Attempt 2 solid, repeat if not.
+
+---
+
+## Part 4: Progression Checklists
+
+---
+
+### Block 1 → Block 2
+
+Move when **ALL** of the following are true:
+
+- [ ] OHS: 60 kg or more with solid position
+- [ ] Snatch (HPS): Consistent technique at 75–80% of snatch TM
+- [ ] Back pain: Stable at 🟡 or better for 2+ consecutive weeks
+- [ ] 8 weeks of Block 1 completed
+
+**If not ready:** Repeat Phase 2 structure for 2 extra weeks, re-test, then advance.
+
+---
+
+### Block 2 → Block 3
+
+Move when **ALL** of the following are true:
+
+- [ ] OHS: 65 kg or more with solid position
+- [ ] Snatch (from floor): Clean bar path and receiving position at 85% TM
+- [ ] Jerk: Gap to clean reduced to 10 kg or less (e.g., clean 85 kg → jerk 75 kg)
+- [ ] 8 weeks of Block 2 completed
+- [ ] Block 2 test week shows improvement on at least 2 of the 3 primary lifts
+
+---
+
+### Block 3 → Block 4
+
+Move when **ALL** of the following are true:
+
+- [ ] ATW has risen 4%+ from the Block 3 Week 17 baseline
+- [ ] PRs set in at least 2 of the 3 competition lifts in Block 3 test week
+- [ ] Competition or test event within 4–8 weeks of planned Block 4 start
+
+---
+
+### Non-Negotiable Long-Term Rules (All 8 Sources)
+
+1. Never train through sharp back pain (4+/10) — substitute, don't grind
+2. Film every session — self-coaching is only possible with visual feedback
+3. Jerk must follow clean by 10 kg max — if gap opens, return to jerk priority
+4. OHS must stay 15–20% above current snatch max at all times
+5. 8-week cycle is law — test, assess, adjust; never run indefinitely without a reset
+6. Touch competition movements every session — even 2×3 at 50%
