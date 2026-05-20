@@ -125,6 +125,25 @@ const SEED_PRS = {
   "Berestov Squats":   {weight:82, date:"2025-11-15",reps:1},
 };
 
+// ── Review storage ────────────────────────────────────────────────────────────
+const REVIEWS_KEY = "oly_reviews";
+const reviewStorage = {
+  getAll: () => { try { return JSON.parse(localStorage.getItem(REVIEWS_KEY)||"{}"); } catch { return {}; } },
+  get:    (week) => reviewStorage.getAll()[week] || null,
+  save:   (week, data) => {
+    const all = reviewStorage.getAll();
+    all[week] = { ...data, week, savedAt: new Date().toISOString() };
+    localStorage.setItem(REVIEWS_KEY, JSON.stringify(all));
+    return all[week];
+  },
+};
+
+const LM_CFG_KEY = "oly_lm_cfg";
+const lmCfgStorage = {
+  get:  () => { try { return JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || { baseUrl:"http://localhost:1234/v1", model:"" }; } catch { return { baseUrl:"http://localhost:1234/v1", model:"" }; } },
+  save: (cfg) => { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); },
+};
+
 // ── Sleep quality badges ──────────────────────────────────────────────────────
 const SLEEP = {
   full:    {label:"FULL SLEEP",    color:"#5a9e45", bg:"rgba(90,158,69,0.12)"},
