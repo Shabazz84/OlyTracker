@@ -2660,6 +2660,250 @@ function SystemTab({week}) {
   );
 }
 
+// ── LM Settings Panel ─────────────────────────────────────────────────────────
+function LmSettingsPanel() {
+  const [cfg, setCfg] = React.useState(lmCfgStorage.get);
+  const [saved, setSaved] = React.useState(false);
+  const save = () => { lmCfgStorage.save(cfg); setSaved(true); setTimeout(() => setSaved(false), 2000); };
+  return (
+    <div>
+      <div style={{marginBottom:6}}>
+        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>BASE URL</div>
+        <input value={cfg.baseUrl} onChange={e=>setCfg(c=>({...c,baseUrl:e.target.value}))}
+          placeholder="http://localhost:1234/v1"
+          style={{width:"100%",boxSizing:"border-box",background:"var(--bg3)",border:"1px solid var(--border2)",
+            borderRadius:5,color:"var(--text)",padding:"6px 10px",fontSize:10,fontFamily:"'DM Mono',monospace"}}/>
+      </div>
+      <div style={{marginBottom:10}}>
+        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>MODEL NAME</div>
+        <input value={cfg.model} onChange={e=>setCfg(c=>({...c,model:e.target.value}))}
+          placeholder="e.g. qwen3.5-30b-a3b"
+          style={{width:"100%",boxSizing:"border-box",background:"var(--bg3)",border:"1px solid var(--border2)",
+            borderRadius:5,color:"var(--text)",padding:"6px 10px",fontSize:10,fontFamily:"'DM Mono',monospace"}}/>
+      </div>
+      <Btn small onClick={save} style={saved?{color:"#5a9e45",borderColor:"#5a9e45"}:{color:"var(--gold)",borderColor:"var(--gold)"}}>
+        {saved ? "✓ SAVED" : "SAVE"}
+      </Btn>
+    </div>
+  );
+}
+
+// ── Week Review Form ───────────────────────────────────────────────────────────
+function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
+  const dayList = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
+  const blankDays = {};
+  dayList.forEach(d => { blankDays[d.id] = { status:"done", notes:"" }; });
+
+  const [form, setForm] = React.useState(() => {
+    const saved = reviewStorage.get(week);
+    return saved
+      ? { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
+      : { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false };
+  });
+  const [aiLoading, setAiLoading] = React.useState(false);
+  const [aiError,   setAiError]   = React.useState(null);
+  const [expanded,  setExpanded]  = React.useState(false);
+
+  React.useEffect(() => {
+    const saved = reviewStorage.get(week);
+    setForm(saved
+      ? { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
+      : { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false });
+    setExpanded(false);
+    setAiError(null);
+  }, [week]);
+
+  const setDay    = (id, patch) => setForm(f => ({ ...f, days:{ ...f.days, [id]:{ ...f.days[id], ...patch } } }));
+  const addInjury = ()          => setForm(f => ({ ...f, injuries:[...f.injuries,{ bodyPart:"", type:"sharp", severity:"moderate" }] }));
+  const setInjury = (i, patch)  => setForm(f => ({ ...f, injuries:f.injuries.map((inj,idx) => idx===i ? {...inj,...patch} : inj) }));
+  const removeInj = (i)         => setForm(f => ({ ...f, injuries:f.injuries.filter((_,idx) => idx!==i) }));
+
+  const handleGenerate = async () => {
+    const cfg = lmCfgStorage.get();
+    if (!cfg.baseUrl) { setAiError("No LM Studio URL configured. Go to Settings → LM STUDIO."); return; }
+    setAiLoading(true);
+    setAiError(null);
+    try {
+      const { system, user } = buildReviewPrompt(week, weekData, form, isSummer);
+      const raw    = await callLmStudio(system, user, cfg);
+      const parsed = parseAiResponse(raw);
+      setForm(f => ({ ...f, ai: parsed }));
+    } catch (e) {
+      setAiError(e.message || "LM Studio unreachable. Is it running on localhost:1234?");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleSave = () => {
+    const saved = reviewStorage.save(week, { ...form, confirmed:true });
+    setForm(prev => ({ ...prev, confirmed:true }));
+    onSaved(saved);
+  };
+
+  const pill = (active, color) => ({
+    padding:"4px 10px", borderRadius:12, fontSize:10, cursor:"pointer",
+    fontFamily:"'DM Mono',monospace", letterSpacing:0.5, border:`1px solid ${active?color:"var(--border)"}`,
+    background:active?`${color}22`:"transparent", color:active?color:"var(--text3)",
+  });
+
+  const STATUS_COLOR = { done:"#5a9e45", partial:"#d4a843", skipped:"#c94f3a" };
+
+  if (!expanded) {
+    return (
+      <div style={{marginTop:16,borderTop:"1px solid var(--border)",paddingTop:14}}>
+        <button onClick={()=>setExpanded(true)}
+          style={{width:"100%",padding:"9px 14px",borderRadius:8,border:"1px solid var(--border)",
+            background:"var(--bg2)",color:"var(--text2)",fontSize:11,
+            fontFamily:"'DM Mono',monospace",letterSpacing:0.5,cursor:"pointer",textAlign:"left"}}>
+          {form.confirmed ? "✓ WEEK REVIEW SAVED  ·  tap to edit" : "▸ WEEK REVIEW"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{marginTop:16,borderTop:"1px solid var(--border)",paddingTop:14}}>
+      <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5,marginBottom:12,color:"var(--gold)"}}>
+        WEEK {week} REVIEW
+      </div>
+
+      <div style={{marginBottom:14}}>
+        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:6}}>OVERALL</div>
+        <div style={{display:"flex",gap:6,marginBottom:6,flexWrap:"wrap"}}>
+          {[{val:"green",label:"🟢 Good",color:"#5a9e45"},{val:"yellow",label:"🟡 OK",color:"#d4a843"},{val:"red",label:"🔴 Rough",color:"#c94f3a"}]
+            .map(o => <button key={o.val} onClick={()=>setForm(f=>({...f,rating:o.val}))} style={pill(form.rating===o.val,o.color)}>{o.label}</button>)}
+        </div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {[{val:"good",label:"Energy full"},{val:"stable",label:"Stable"},{val:"declining",label:"Fading"}]
+            .map(o => <button key={o.val} onClick={()=>setForm(f=>({...f,energyTrend:o.val}))} style={pill(form.energyTrend===o.val,"#888")}>{o.label}</button>)}
+        </div>
+      </div>
+
+      <div style={{marginBottom:14}}>
+        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:6}}>SESSIONS</div>
+        {dayList.map(d => {
+          const ds = form.days[d.id] || { status:"done", notes:"" };
+          return (
+            <div key={d.id} style={{marginBottom:6,padding:"8px 10px",background:"var(--bg3)",borderRadius:6}}>
+              <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:ds.status!=="done"?6:0}}>
+                <span style={{fontSize:10,fontFamily:"'DM Mono',monospace",color:"var(--text2)",minWidth:56,flexShrink:0}}>{d.label.split(" ").slice(0,2).join(" ")}</span>
+                {["done","partial","skipped"].map(s => (
+                  <button key={s} onClick={()=>setDay(d.id,{status:s})} style={pill(ds.status===s, STATUS_COLOR[s])}>
+                    {s.charAt(0).toUpperCase()+s.slice(1)}
+                  </button>
+                ))}
+              </div>
+              {ds.status!=="done" && (
+                <input value={ds.notes} onChange={e=>setDay(d.id,{notes:e.target.value})}
+                  placeholder="What happened / what was modified…"
+                  style={{width:"100%",boxSizing:"border-box",background:"var(--bg2)",border:"1px solid var(--border)",
+                    borderRadius:4,color:"var(--text)",padding:"5px 8px",fontSize:10}}/>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{marginBottom:14}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+          <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>INJURIES / ISSUES</div>
+          <button onClick={addInjury}
+            style={{fontSize:9,padding:"2px 8px",borderRadius:10,border:"1px solid var(--border)",
+              background:"transparent",color:"var(--text3)",cursor:"pointer",fontFamily:"'DM Mono',monospace"}}>+ ADD</button>
+        </div>
+        {form.injuries.length===0 && (
+          <div style={{fontSize:10,color:"var(--text3)",fontStyle:"italic"}}>None — tap + ADD if needed</div>
+        )}
+        {form.injuries.map((inj,i) => (
+          <div key={i} style={{marginBottom:6,padding:"8px 10px",background:"var(--bg3)",borderRadius:6,display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
+            <input value={inj.bodyPart} onChange={e=>setInjury(i,{bodyPart:e.target.value})}
+              placeholder="Body part (e.g. left bicep)"
+              style={{flex:1,minWidth:90,background:"var(--bg2)",border:"1px solid var(--border)",
+                borderRadius:4,color:"var(--text)",padding:"4px 7px",fontSize:10}}/>
+            {["sharp","dull"].map(t => <button key={t} onClick={()=>setInjury(i,{type:t})} style={pill(inj.type===t,t==="sharp"?"#c94f3a":"#d4a843")}>{t}</button>)}
+            {["mild","moderate","bad"].map(s => <button key={s} onClick={()=>setInjury(i,{severity:s})} style={pill(inj.severity===s,"#888")}>{s}</button>)}
+            <button onClick={()=>removeInj(i)} style={{fontSize:11,background:"transparent",border:"none",color:"var(--text3)",cursor:"pointer"}}>✕</button>
+          </div>
+        ))}
+      </div>
+
+      <div style={{marginBottom:14}}>
+        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:4}}>NOTES FOR NEXT WEEK</div>
+        <textarea value={form.generalNotes} onChange={e=>setForm(f=>({...f,generalNotes:e.target.value}))}
+          placeholder="Anything else the coach should know…" rows={2}
+          style={{width:"100%",boxSizing:"border-box",background:"var(--bg2)",border:"1px solid var(--border)",
+            borderRadius:6,color:"var(--text)",padding:"7px 10px",fontSize:11,resize:"vertical"}}/>
+      </div>
+
+      <button onClick={handleGenerate} disabled={aiLoading}
+        style={{width:"100%",padding:"10px",borderRadius:8,
+          border:`1px solid ${aiLoading?"var(--border)":"var(--gold)"}`,
+          background:aiLoading?"transparent":"#d4a84311",
+          color:aiLoading?"var(--text3)":"var(--gold)",
+          fontSize:11,fontFamily:"'DM Mono',monospace",letterSpacing:0.5,
+          cursor:aiLoading?"default":"pointer",marginBottom:8}}>
+        {aiLoading ? "GENERATING…" : "⚡ GENERATE AI REVIEW"}
+      </button>
+
+      {aiError && (
+        <div style={{fontSize:10,color:"#c94f3a",marginBottom:10,padding:"7px 10px",
+          background:"#c94f3a11",borderRadius:6,border:"1px solid #c94f3a33"}}>
+          {aiError}
+        </div>
+      )}
+
+      {form.ai && (
+        <div style={{marginBottom:14,padding:"12px 14px",background:"var(--bg2)",borderRadius:8,border:"1px solid var(--gold)33"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <span style={{fontSize:9,color:"var(--gold)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>AI REVIEW</span>
+            <span style={{fontSize:9,fontFamily:"'DM Mono',monospace",letterSpacing:0.5,
+              color:form.ai.loadRecommendation==="advance"?"#5a9e45":form.ai.loadRecommendation==="reduce"?"#c94f3a":"#d4a843",
+              background:form.ai.loadRecommendation==="advance"?"#5a9e4522":form.ai.loadRecommendation==="reduce"?"#c94f3a22":"#d4a84322",
+              padding:"1px 7px",borderRadius:8}}>
+              {form.ai.loadRecommendation.toUpperCase()}
+            </span>
+          </div>
+          <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.7,marginBottom:form.ai.flags.length>0?10:0}}>
+            {form.ai.narrative}
+          </div>
+          {form.ai.flags.length > 0 && (
+            <>
+              <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:5}}>NEXT WEEK FLAGS</div>
+              {form.ai.flags.map((f,i) => (
+                <div key={i} style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:4}}>
+                  <span style={{fontSize:9,fontFamily:"'DM Mono',monospace",flexShrink:0,
+                    color:f.action==="skip"?"#c94f3a":"#d4a843",
+                    background:f.action==="skip"?"#c94f3a22":"#d4a84322",
+                    padding:"1px 6px",borderRadius:8}}>
+                    {f.action.toUpperCase()}
+                  </span>
+                  <span style={{fontSize:10,color:"var(--text)"}}>{f.exercise}</span>
+                  <span style={{fontSize:9,color:"var(--text3)"}}>— {f.reason}</span>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+
+      <div style={{display:"flex",gap:8}}>
+        <button onClick={handleSave}
+          style={{flex:1,padding:"10px",borderRadius:8,border:"1px solid #5a9e45",
+            background:"#5a9e4511",color:"#5a9e45",fontSize:11,
+            fontFamily:"'DM Mono',monospace",letterSpacing:0.5,cursor:"pointer"}}>
+          {form.confirmed ? "✓ SAVED  ·  UPDATE" : "SAVE REVIEW"}
+        </button>
+        <button onClick={()=>setExpanded(false)}
+          style={{padding:"10px 14px",borderRadius:8,border:"1px solid var(--border)",
+            background:"transparent",color:"var(--text3)",fontSize:11,cursor:"pointer"}}>
+          CLOSE
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Program Week View ─────────────────────────────────────────────────────────
 const BLOCK_COLORS = {1:"#4a90d9",2:"#c94f3a",3:"#d4a843",4:"#5a9e45"};
 const PHASE_COLORS = {
