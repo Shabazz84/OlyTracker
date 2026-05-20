@@ -129,19 +129,20 @@ const SEED_PRS = {
 const REVIEWS_KEY = "oly_reviews";
 const reviewStorage = {
   getAll: () => { try { return JSON.parse(localStorage.getItem(REVIEWS_KEY)||"{}"); } catch { return {}; } },
-  get:    (week) => reviewStorage.getAll()[week] || null,
+  get:    (week) => reviewStorage.getAll()[week] ?? null,
   save:   (week, data) => {
     const all = reviewStorage.getAll();
     all[week] = { ...data, week, savedAt: new Date().toISOString() };
-    localStorage.setItem(REVIEWS_KEY, JSON.stringify(all));
+    try { localStorage.setItem(REVIEWS_KEY, JSON.stringify(all)); } catch { return null; }
     return all[week];
   },
 };
 
 const LM_CFG_KEY = "oly_lm_cfg";
+const LM_CFG_DEFAULT = { baseUrl:"http://localhost:1234/v1", model:"" };
 const lmCfgStorage = {
-  get:  () => { try { return JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || { baseUrl:"http://localhost:1234/v1", model:"" }; } catch { return { baseUrl:"http://localhost:1234/v1", model:"" }; } },
-  save: (cfg) => { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); },
+  get:  () => { try { return JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || LM_CFG_DEFAULT; } catch { return LM_CFG_DEFAULT; } },
+  save: (cfg) => { try { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); } catch {} return cfg; },
 };
 
 // ── Sleep quality badges ──────────────────────────────────────────────────────
