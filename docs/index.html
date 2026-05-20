@@ -1485,7 +1485,7 @@ function OverviewCards({logs,week,setsData,dateMap}){
 
   // ATW last 30d vs prev 30d
   const exRepsMap={};
-  DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{exRepsMap[ex.name]=parseRepsNum(ex.reps);}));
+  DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{const r=parseRepsNum(ex.reps);exRepsMap[ex.name]=r;const base=ex.name.split(' — ')[0];if(base!==ex.name&&exRepsMap[base]==null)exRepsMap[base]=r;}));
   function calcATW(fromStr,toStr){
     let ton=0,reps=0;
     Object.entries(setsData).forEach(([key,setArr])=>{
@@ -1547,7 +1547,7 @@ function OverviewCards({logs,week,setsData,dateMap}){
 
 function LoadDevelopment({setsData,dateMap}){
   const exRepsMap=useMemo(()=>{
-    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.name]=parseRepsNum(ex.reps);}));return m;
+    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{const r=parseRepsNum(ex.reps);m[ex.name]=r;const base=ex.name.split(' — ')[0];if(base!==ex.name&&m[base]==null)m[base]=r;}));return m;
   },[]);
 
   const sessions=useMemo(()=>{
@@ -1632,7 +1632,7 @@ function ExerciseBreakdown({setsData,dateMap}){
   const [openEx,setOpenEx]=useState(null);
 
   const exRepsMap=useMemo(()=>{
-    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.name]=parseRepsNum(ex.reps);}));return m;
+    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{const r=parseRepsNum(ex.reps);m[ex.name]=r;const base=ex.name.split(' — ')[0];if(base!==ex.name&&m[base]==null)m[base]=r;}));return m;
   },[]);
 
   const exercises=useMemo(()=>{
