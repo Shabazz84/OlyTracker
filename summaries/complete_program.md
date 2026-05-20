@@ -158,3 +158,51 @@ Target jerk: 67–70 kg if form has been solid on D4. BS single: attempt 115–1
 | D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 97–102 / 88 kg | RDL 4×6·88, GHR 3×10·8, SHP 3×4·83, OHS 3×3·50, Plank 3×65s | MS opener 2×3·48. Hard stop 3pm |
 | D4 Thu ⭐⭐ | Jerk daily max / Push Press 4×5 | feel ~65–70 kg / 60 kg | C&J 4×(1+2)·66, Sots 3×5·32, BNP 3×6·46, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep. Phase 2 peak single |
 | D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 98–107 / 70 kg | Lunge 3×8/leg·50, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·48. No PRs |
+
+---
+
+### Deload — Week 7: Volume −40% · Intensity Maintained
+
+Same loads as Week 6. Fewer sets. No PRs, no max singles. Let the adaptation from Weeks 1–6 express itself.
+Film every session. This is the best week to catch technical errors now that fatigue is low.
+
+## Week 7 — Deload · Same loads · Sets −40%
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 3×3 / OHS 2×3 | 56 kg / 44 kg | BS 3×1·95 (no max), GM 2×8·57, Pull-up 2×6·BW+5, GHR 2×8·8 | MS opener 2×3·44. Technique priority |
+| D2 Tue ⭐⭐⭐ | HPC 3×3 / Clean Pull 2×4 | 64 kg / 90 kg | Inc Press 2×8·65, Dips 2×8·BW+20, Trapi 2×8·60, Wide OHP 2×6·40 | MS opener 2×3·44 |
+| D3 Wed ⭐⭐ | FS 3×1·85 / FS vol 2×4 | 85 kg / 80 kg | RDL 2×6·80, GHR 2×10·BW, SHP 2×4·76, OHS 2×3·44, Plank 2×60s | MS opener 2×3·44. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 3×3 / Push Press 2×5 | 57 kg / 54 kg | C&J 2×(1+2)·60, Sots 2×5·28, BNP 2×6·40 | MS opener 2×3·42. 5.5h sleep. Prescribed only, no singles |
+| D5 Sat ⭐⭐ | Berestov 2×9 | 64 kg | Lunge 2×8/leg·44, Face Pull 2×15 | MS opener 2×3·44. No Klokov singles. Light only |
+
+---
+
+### Test — Week 8: 1RM Attempts · Advance Checklist
+
+No volume work this week — only warm-up and max attempts. One lift tested per session.
+Rest 3–5 min between attempts. Stop at the first miss. Record every attempt.
+Note: No floor classics in Block 1 — test HPS and HPC as snatch/clean proxies.
+
+## Week 8 — Test Week
+
+| Day | Test | Warm-up | Attempts | Target |
+|-----|------|---------|----------|--------|
+| D1 Mon | HPS max / OHS max | 40%→50%→60%→70%→80%→90% | Work to max | HPS: 62+ kg · OHS: 55+ kg |
+| D2 Tue | HPC max | 50%→60%→70%→80%→87%→max | Work to max | HPC: 70+ kg |
+| D3 Wed | Front Squat 1RM | 60%→70%→80%→88%→93%→max | Work to max | FS: 102+ kg |
+| D4 Thu | Jerk 1RM | 50%→60%→70%→80%→87%→max | Work to max | Jerk: 67+ kg |
+| D5 Sat | Light technique | 50% only | No max attempts | Active recovery |
+
+---
+
+### Block 1 → Block 2 Advance Checklist
+
+Check ALL boxes before starting Block 2. If any are unchecked, repeat the Phase 2 block for 2 weeks before re-testing.
+
+- [ ] OHS: 60 kg or more with solid position (currently 50 kg — target +10 kg)
+- [ ] HPS: Consistent technique at 75–80% of snatch TM (≈ 47–50 kg at clean positions)
+- [ ] Back pain: Stable at 🟡 or better for 2+ consecutive weeks
+- [ ] 8 weeks of Block 1 completed
+
+**If OHS < 60 kg:** Do not advance. Add 2 weeks of OHS-priority work (4 sets every D1 and D3, +2.5 kg from test week load) before re-testing.
