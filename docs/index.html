@@ -141,10 +141,9 @@ const DAYS_SUMMER = [
     maxLoad: true,
     focus:["Snatch technique","Back Squat daily max single","Posterior chain"],
     exercises:[
-      {name:"Muscle Snatch",              sets:4, reps:"4",   l1:"42–48 kg",   l2:"48–54 kg",   type:"snatch",   note:"Session opener every day per Torokhtiy. No leg drive, arms pull. Your best is 58 kg — work 72–83%. Slow and deliberate."},
+      {name:"Muscle Snatch",              sets:2, reps:"3",   l1:"42–46 kg",   l2:"44–48 kg",   type:"snatch",   note:"Session opener — 2 sets only, every session per Golovinsky/Torokhtiy. No leg drive, pure arm pull. 50% effort. Ingrain the pattern."},
       {name:"Hang Power Snatch",          sets:5, reps:"3",   l1:"50–56 kg",   l2:"54–60 kg",   type:"snatch",   note:"Above knee. Your best is 62 kg — work 80–90%. Explosive hip extension, meet the bar high. Hypertrophy sets, not a max attempt."},
       {name:"Back Squat — Daily Max Single", sets:"4–6", reps:"1", l1:"95–118 kg", l2:"100–120 kg", type:"strength", note:"🎯 Pavlukhin/Golovinsky protocol: work up to the heaviest single that feels solid today. No grinding misses. Start at 80%, add 5kg per set until speed slows. Best is 118 kg. Full depth, high bar."},
-      {name:"Leg Press",                  sets:4, reps:"10",  l1:"120–140 kg", l2:"130–150 kg", type:"accessory",note:"Quad volume without spinal load after heavy singles. Full ROM, controlled descent. Best is 140 kg — work in that range."},
       {name:"Overhead Squat",             sets:4, reps:"3",   l1:"40–48 kg",   l2:"46–54 kg",   type:"snatch",   note:"PRIMARY SNATCH LIMITER — best is 50 kg. 2s pause at bottom. Bar over mid-foot. Every kg here = heavier snatch. Own the position."},
       {name:"Good Morning",               sets:4, reps:"8",   l1:"50–60 kg",   l2:"55–65 kg",   type:"accessory",note:"⚠️ BACK: Hip hinge, soft knees, feel hamstrings not lower back. Best is 75 kg — work 65–80%. Strengthens first pull position. Stop if sharp pain."},
       {name:"Weighted Pull Up",           sets:4, reps:"6–8", l1:"BW+5 kg",    l2:"BW+8 kg",    type:"strength", note:"Lat strength improves bar control (Pavlukhin). Dead hang to chin. Add weight when 8 reps easy."},
@@ -174,12 +173,13 @@ const DAYS_SUMMER = [
     focus:["Front Squat daily max single","Posterior chain","OHS stability"],
     exercises:[
       {name:"Muscle Snatch (opener)",     sets:2, reps:"3",   l1:"42–46 kg",   l2:"44–48 kg",   type:"snatch",   note:"Pattern touch. Work starts 7pm — conserve energy. Light and technical only."},
+      {name:"Snatch Balance",             sets:3, reps:"3",   l1:"35–42 kg",   l2:"40–48 kg",   type:"snatch",   note:"Berestov подводящее упражнение (lead-up). Drop under bar with active turnover — trains the receiving position directly. 55–65% of snatch TM. OHS is the snatch ceiling — own this position. Stop if overhead is unstable."},
       {name:"Front Squat — Daily Max Single", sets:"4–6", reps:"1", l1:"82–102 kg", l2:"88–108 kg", type:"strength", note:"🎯 Daily max single — Golovinsky/Pavlukhin protocol. Work up to the heaviest solid single today. Best is 102 kg. ⚠️ WED: Work starts 7pm — respect the ceiling, don't push past 90%."},
       {name:"Front Squat — Volume",       sets:3, reps:"4",   l1:"72–85 kg",   l2:"78–92 kg",   type:"strength", note:"Drop to ~80% of today's single. Elbows high, upright torso. 1s pause at bottom each rep. Clean receiving position — this is exactly the position you catch the bar in."},
       {name:"RDL Pull",                   sets:4, reps:"6",   l1:"75–85 kg",   l2:"80–90 kg",   type:"strength", note:"Best is 102 kg. ⚠️ BACK: Feel hamstrings not lower back. Reduce if back rounds. Hamstring strength = better first pull."},
       {name:"GHR (Glute Ham Raise)",       sets:3, reps:"10",  l1:"BW",         l2:"5–8 kg",     type:"strength", note:"RDL covers hip hinge — GHR covers knee flexion. Completes the posterior chain picture. Bodyweight first set, add load in Phase 2. Hamstrings in lengthened position, directly reduces QL compensation and back pain."},
       {name:"Snatch High Pull",           sets:3, reps:"4",   l1:"70–78 kg",   l2:"76–84 kg",   type:"snatch",   note:"Best is 92 kg — stay 75–85%. Pull to chin, elbows high and out. Upper back builder with direct snatch carry-over."},
-      {name:"Overhead Squat",             sets:3, reps:"3",   l1:"40–48 kg",   l2:"46–54 kg",   type:"snatch",   note:"Technique maintenance. 2s pause at bottom. Keep position standards from Monday. Lighter day — position focus only."},
+      {name:"Overhead Squat",             sets:4, reps:"4",   l1:"40–48 kg",   l2:"46–54 kg",   type:"snatch",   note:"🎯 PRIMARY OHS block — 4×4 with 2s pause. This is the snatch ceiling. Position over load. Pair with Snatch Balance work — the two exercises reinforce each other. Reduce load before letting position break."},
       {name:"Plank",                      sets:3, reps:"50s", l1:"BW",         l2:"BW",          type:"accessory",note:"Posterior pelvic tilt, squeeze glutes. Add 5s each week. Core stability for squat and receiving position."},
     ]
   },
@@ -205,7 +205,7 @@ const DAYS_SUMMER = [
     focus:["Klokov Squat singles","Berestov Squat 3×9","Single-leg strength"],
     exercises:[
       {name:"Muscle Snatch (opener)",     sets:2, reps:"3",   l1:"42–46 kg",   l2:"44–48 kg",   type:"snatch",   note:"Pattern touch. 5.5hrs sleep — light and technical only. 2 sets."},
-      {name:"Klokov Squat — Singles",     sets:"3–5", reps:"1", l1:"85–107 kg", l2:"92–112 kg", type:"strength", note:"🎯 Paused squat singles — 5–7s controlled descent, 10s pause at bottom, drive up. Your best is 107 kg. Work up to the heaviest single that feels solid with perfect position. These are technique-controlled singles, not grind singles — the pause and tempo ARE the exercise. 5.5hrs sleep — stay technical."},
+      {name:"Klokov Squat — Singles",     sets:"3–5", reps:"1", l1:"85–107 kg", l2:"92–112 kg", type:"strength", note:"🎯 Paused squat — 5–7s descent, 10s bottom pause, drive up. Alternates by week: ODD weeks (1,3,5) = daily max single (Golovinsky protocol — climb to heaviest solid single, stop before a miss). EVEN weeks (2,4,6) = prescribed 3×3 @ 80%. 5.5hrs sleep — stay technical, never grind."},
       {name:"Berestov Squat",             sets:3, reps:"9",   l1:"60–72 kg",   l2:"66–78 kg",   type:"strength", note:"3 reps wide stance + 3 reps normal stance + 3 reps narrow stance = 9 total per set. No reracking between stances. Moderate load — this is a volume technique exercise. Hits quad, adductor, and glute from all angles. Berestov's signature."},
       {name:"Lunge (Barbell)",            sets:3, reps:"8/leg",l1:"40–50 kg",  l2:"46–56 kg",   type:"strength", note:"Per Pavlukhin: lunge squats for jerk tendon development and single-leg strength even without split jerk. Controlled descent, knee tracks over toe. Each leg separately."},
       {name:"Face Pull",                  sets:3, reps:"15",  l1:"Light",      l2:"Light-Med",   type:"accessory",note:"Rear delt and external rotator health. High rep, feel the squeeze. Protects shoulder integrity for all overhead work."},
