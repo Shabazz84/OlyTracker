@@ -1324,54 +1324,80 @@ function fmtMonthYear(isoDate) {
   return `${mon}'${y.slice(2)}`;
 }
 
-function SVGLineChart({data, series, height=160, yMax:yMaxProp}) {
-  if (!data || data.length === 0) return (
-    <div style={{color:'var(--text3)',fontSize:11,textAlign:'center',padding:20,fontFamily:"'DM Mono',monospace"}}>
-      No data yet
-    </div>
+function SVGLineChart({data, series, height=160, yMax:yMaxProp}){
+  const [tip,setTip]=useState(null);
+  if(!data||data.length===0) return (
+    <div style={{color:'var(--text3)',fontSize:11,textAlign:'center',padding:20,fontFamily:"'DM Mono',monospace"}}>No data yet</div>
   );
-  const W=600, H=height, PL=36, PR=12, PT=14, PB=28;
-  const cw=W-PL-PR, ch=H-PT-PB;
-  const allVals = series.flatMap(s => data.map(d => d[s.key]).filter(v => v!=null));
-  const yMax = yMaxProp || (Math.max(...allVals, 1) * 1.15);
-  const xi = i => PL + (data.length===1 ? cw/2 : i*cw/(data.length-1));
-  const yi = v => PT + ch - (v/yMax)*ch;
-  function segs(key) {
-    const r=[]; let c=[];
-    data.forEach((d,i) => {
-      if(d[key]!=null) c.push([xi(i),yi(d[key])]);
-      else { if(c.length>1) r.push([...c]); c=[]; }
+  const W=600,H=height,PL=36,PR=12,PT=14,PB=28;
+  const cw=W-PL-PR,ch=H-PT-PB;
+  const allVals=series.flatMap(s=>data.map(d=>d[s.key]).filter(v=>v!=null));
+  const yMax=yMaxProp||(Math.max(...allVals,1)*1.15);
+  const xi=i=>PL+(data.length===1?cw/2:i*cw/(data.length-1));
+  const yi=v=>PT+ch-(v/yMax)*ch;
+  function segs(key){
+    const r=[];let c=[];
+    data.forEach((d,i)=>{
+      if(d[key]!=null)c.push([xi(i),yi(d[key])]);
+      else{if(c.length>1)r.push([...c]);c=[];}
     });
-    if(c.length>1) r.push(c);
+    if(c.length>1)r.push(c);
     return r;
   }
-  const xTicks = data.length<=8 ? data.map((_,i)=>i) : [0,Math.floor(data.length/2),data.length-1];
-  const yTicks = [0,0.25,0.5,0.75,1];
+  const xTicks=data.length<=8?data.map((_,i)=>i):[0,Math.floor(data.length/2),data.length-1];
+  const yTicks=[0,0.25,0.5,0.75,1];
+
+  function handlePointer(e){
+    const svg=e.currentTarget;
+    const rect=svg.getBoundingClientRect();
+    const clientX=e.touches?e.touches[0].clientX:e.clientX;
+    const px=(clientX-rect.left)/rect.width*W;
+    const idx=Math.round((px-PL)/cw*(data.length-1));
+    const i=Math.max(0,Math.min(data.length-1,idx));
+    setTip({i,x:xi(i),d:data[i]});
+  }
+
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%',height:'auto',display:'block'}}>
-      {yTicks.map(f => {
-        const v=yMax*f;
-        return <g key={f}>
-          <line x1={PL} x2={W-PR} y1={yi(v)} y2={yi(v)} stroke="#1e1e2e" strokeWidth="1"/>
-          <text x={PL-4} y={yi(v)+4} textAnchor="end" fill="#555" fontSize="9" fontFamily="'DM Mono',monospace">{Math.round(v)}</text>
-        </g>;
-      })}
-      {xTicks.map(i => (
-        <text key={i} x={xi(i)} y={H-5} textAnchor="middle" fill="#555" fontSize="9" fontFamily="'DM Mono',monospace">
-          {String(data[i].date||data[i].label||i+1).slice(-5)}
-        </text>
-      ))}
-      {series.map(s => (
-        <g key={s.key}>
-          {segs(s.key).map((seg,si) => (
-            <polyline key={si} points={seg.map(p=>p.join(',')).join(' ')} fill="none" stroke={s.color} strokeWidth="2" strokeLinejoin="round"/>
-          ))}
-          {data.map((d,i) => d[s.key]!=null && (
-            <circle key={i} cx={xi(i)} cy={yi(d[s.key])} r="3" fill={s.color}/>
-          ))}
-        </g>
-      ))}
-    </svg>
+    <div style={{position:'relative'}}>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%',height:'auto',display:'block',cursor:'crosshair'}}
+        onMouseMove={handlePointer} onMouseLeave={()=>setTip(null)}
+        onTouchMove={e=>{e.preventDefault();handlePointer(e);}} onTouchEnd={()=>setTimeout(()=>setTip(null),1500)}>
+        {yTicks.map(f=>{
+          const v=yMax*f;
+          return <g key={f}>
+            <line x1={PL} x2={W-PR} y1={yi(v)} y2={yi(v)} stroke="#1e1e2e" strokeWidth="1"/>
+            <text x={PL-4} y={yi(v)+4} textAnchor="end" fill="#555" fontSize="9" fontFamily="'DM Mono',monospace">{Math.round(v)}</text>
+          </g>;
+        })}
+        {xTicks.map(i=>(
+          <text key={i} x={xi(i)} y={H-5} textAnchor="middle" fill="#555" fontSize="9" fontFamily="'DM Mono',monospace">
+            {String(data[i].date||data[i].label||i+1).slice(-5)}
+          </text>
+        ))}
+        {series.map(s=>(
+          <g key={s.key}>
+            {segs(s.key).map((seg,si)=>(
+              <polyline key={si} points={seg.map(p=>p.join(',')).join(' ')} fill="none" stroke={s.color} strokeWidth="2" strokeLinejoin="round"/>
+            ))}
+            {data.map((d,i)=>d[s.key]!=null&&(
+              <circle key={i} cx={xi(i)} cy={yi(d[s.key])} r={tip?.i===i?4:3} fill={s.color} opacity={tip?.i===i?1:0.85}/>
+            ))}
+          </g>
+        ))}
+        {tip&&<line x1={tip.x} x2={tip.x} y1={PT} y2={H-PB} stroke="#ffffff22" strokeWidth="1" strokeDasharray="3,3"/>}
+      </svg>
+      {tip&&(
+        <div style={{position:'absolute',top:4,left:0,right:0,pointerEvents:'none',display:'flex',justifyContent:'center'}}>
+          <div style={{background:'var(--bg2)',border:'1px solid var(--border2)',borderRadius:6,padding:'4px 10px',
+            fontSize:10,color:'var(--text)',fontFamily:"'DM Mono',monospace",whiteSpace:'nowrap'}}>
+            {tip.d.date||tip.d.label}
+            {series.map(s=>tip.d[s.key]!=null&&(
+              <span key={s.key} style={{color:s.color,marginLeft:8}}>{s.label}: {tip.d[s.key]}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -1742,64 +1768,81 @@ function ExerciseBreakdown({setsData,dateMap}){
   );
 }
 
-function CalendarHeatmap({logs}) {
-  const entries = Object.values(logs).filter(e => e.date);
-  const trainedSet = new Set(entries.map(e => e.date));
-  const ratingOf = date => {
-    const e = entries.find(x => x.date===date);
-    return e ? (e.rating ? e.rating.length : 3) : 0;
-  };
-  const today = new Date();
-  const days = Array.from({length:91},(_,i) => {
-    const d=new Date(today); d.setDate(d.getDate()-(90-i));
-    return d.toISOString().slice(0,10);
-  });
-  const dow0 = new Date(days[0]).getDay();
-  const pad = (dow0===0?6:dow0-1);
+function CalendarHeatmap({logs}){
+  const [selected,setSelected]=useState(null);
+  const entries=Object.values(logs).filter(e=>e.date);
+  const trainedSet=new Set(entries.map(e=>e.date));
+  const ratingOf=date=>{const e=entries.find(x=>x.date===date);return e?(e.rating?e.rating.length:3):0;};
+  const entryOf=date=>entries.find(x=>x.date===date)||null;
+  const today=new Date();
+  const days=Array.from({length:91},(_,i)=>{const d=new Date(today);d.setDate(d.getDate()-(90-i));return d.toISOString().slice(0,10);});
+  const dow0=new Date(days[0]).getDay();
+  const pad=(dow0===0?6:dow0-1);
   const cells=[...Array(pad).fill(null),...days];
   const weeks=[];
-  for(let i=0;i<cells.length;i+=7) weeks.push(cells.slice(i,i+7));
+  for(let i=0;i<cells.length;i+=7)weeks.push(cells.slice(i,i+7));
   const cellColor=date=>{
-    if(!date||!trainedSet.has(date)) return 'var(--bg3)';
+    if(!date||!trainedSet.has(date))return 'var(--bg3)';
     const r=ratingOf(date);
-    return r>=4?'#5a9e44':r>=3?'#4a90d9':r>=2?'#d4a843':'#888';
+    return r>=4?'var(--green)':r>=3?'var(--blue)':r>=2?'var(--gold)':'var(--text3)';
   };
   const monthLabels=[];
   weeks.forEach((wk,wi)=>{
-    const fd=wk.find(d=>d);
-    if(!fd) return;
+    const fd=wk.find(d=>d);if(!fd)return;
     const m=fd.split('-')[1];
     const prev=weeks[wi-1]?.find(d=>d);
-    if(!prev||prev.split('-')[1]!==m)
-      monthLabels.push([wi,new Date(fd).toLocaleString('default',{month:'short'})]);
+    if(!prev||prev.split('-')[1]!==m)monthLabels.push([wi,new Date(fd).toLocaleString('default',{month:'short'})]);
   });
+  const sel=selected?entryOf(selected):null;
   return (
-    <div style={{overflowX:'auto'}}>
-      <div style={{position:'relative',paddingTop:18,minWidth:'fit-content'}}>
-        <div style={{display:'flex',gap:3,position:'absolute',top:0,left:0}}>
-          {weeks.map((_,wi)=>{
-            const ml=monthLabels.find(([w])=>w===wi);
-            return <div key={wi} style={{width:12,fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>{ml?ml[1]:''}</div>;
-          })}
+    <div>
+      <div style={{overflowX:'auto'}}>
+        <div style={{position:'relative',paddingTop:18,minWidth:'fit-content'}}>
+          <div style={{display:'flex',gap:3,position:'absolute',top:0,left:0}}>
+            {weeks.map((_,wi)=>{
+              const ml=monthLabels.find(([w])=>w===wi);
+              return <div key={wi} style={{width:14,fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>{ml?ml[1]:''}</div>;
+            })}
+          </div>
+          <div style={{display:'flex',gap:3}}>
+            {weeks.map((wk,wi)=>(
+              <div key={wi} style={{display:'flex',flexDirection:'column',gap:3}}>
+                {wk.map((d,di)=>(
+                  <div key={di} title={d||''} onClick={()=>d&&trainedSet.has(d)&&setSelected(selected===d?null:d)}
+                    style={{width:14,height:14,borderRadius:2,background:cellColor(d),opacity:d?1:0,
+                      cursor:d&&trainedSet.has(d)?'pointer':'default',
+                      outline:selected===d?'2px solid var(--gold)':'none',outlineOffset:1}}/>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-        <div style={{display:'flex',gap:3}}>
-          {weeks.map((wk,wi)=>(
-            <div key={wi} style={{display:'flex',flexDirection:'column',gap:3}}>
-              {wk.map((d,di)=>(
-                <div key={di} title={d||''} style={{width:12,height:12,borderRadius:2,background:cellColor(d),opacity:d?1:0}}/>
-              ))}
+        <div style={{display:'flex',gap:12,marginTop:10,flexWrap:'wrap'}}>
+          {[['5★','var(--green)'],['3–4★','var(--blue)'],['1–2★','var(--gold)'],['No rating','var(--text3)'],['Rest','var(--bg3)']].map(([l,c])=>(
+            <div key={l} style={{display:'flex',alignItems:'center',gap:4}}>
+              <div style={{width:10,height:10,borderRadius:2,background:c,border:'1px solid var(--border2)'}}/>
+              <span style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>{l}</span>
             </div>
           ))}
         </div>
       </div>
-      <div style={{display:'flex',gap:12,marginTop:10,flexWrap:'wrap'}}>
-        {[['5★','#5a9e44'],['3–4★','#4a90d9'],['1–2★','#d4a843'],['No rating','#888'],['Rest','var(--bg3)']].map(([l,c])=>(
-          <div key={l} style={{display:'flex',alignItems:'center',gap:4}}>
-            <div style={{width:10,height:10,borderRadius:2,background:c,border:'1px solid var(--border2)'}}/>
-            <span style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>{l}</span>
+      {sel&&(
+        <div style={{marginTop:12,background:'var(--bg1)',borderRadius:8,padding:'12px 14px',border:'1px solid var(--border2)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
+            <div style={{fontSize:11,color:'var(--gold)',fontFamily:"'DM Mono',monospace",fontWeight:600}}>{selected} · {sel.dayName||''}</div>
+            <div onClick={()=>setSelected(null)} style={{cursor:'pointer',fontSize:14,color:'var(--text3)',lineHeight:1}}>×</div>
           </div>
-        ))}
-      </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6,fontSize:10,fontFamily:"'DM Mono',monospace"}}>
+            {sel.rating&&<div><span style={{color:'var(--text3)'}}>rating </span><span style={{color:'var(--gold)'}}>{sel.rating}</span></div>}
+            {sel.energyLevel&&<div><span style={{color:'var(--text3)'}}>energy </span><span style={{color:'var(--text)'}}>{sel.energyLevel}</span></div>}
+            {sel.backPain!=null&&sel.backPain!==''&&<div><span style={{color:'var(--text3)'}}>back </span><span style={{color:'var(--red)'}}>{sel.backPain}/10</span></div>}
+            {sel.techniqueFeel&&<div><span style={{color:'var(--text3)'}}>tech </span><span style={{color:'var(--text)'}}>{sel.techniqueFeel}</span></div>}
+            {sel.nightShift&&<div style={{gridColumn:'1/-1'}}><span style={{color:'var(--text3)'}}>🌙 post-shift session</span></div>}
+          </div>
+          {sel.notes&&<div style={{marginTop:8,fontSize:10,color:'var(--text2)',fontFamily:"'DM Mono',monospace"}}>{sel.notes}</div>}
+          {sel.focusNext&&<div style={{marginTop:4,fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>next: {sel.focusNext}</div>}
+        </div>
+      )}
     </div>
   );
 }
