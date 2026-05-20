@@ -1847,61 +1847,33 @@ function CalendarHeatmap({logs}){
   );
 }
 
-function Reports({prs, logs}) {
-  const [setsData, setSetsData] = useState({});
-
-  useEffect(() => {
+function Reports({prs, logs, week}){
+  const setsData=useMemo(()=>{
     const d={};
     Object.keys(localStorage).filter(k=>k.startsWith('sets_')).forEach(k=>{
       try{d[k]=JSON.parse(localStorage.getItem(k)||'[]');}catch{}
     });
-    setSetsData(d);
-  }, []);
-
-  const exRepsMap = useMemo(()=>{
-    const m={};
-    DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.name]=parseRepsNum(ex.reps);}));
-    return m;
+    return d;
   },[]);
 
-  const sessionVolumes = useMemo(()=>{
-    const sessions={};
-    Object.entries(setsData).forEach(([key,setArr])=>{
-      const match=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
-      if(!match||!Array.isArray(setArr)) return;
-      const [,sk,,, exRaw]=match;
-      const exName=exRaw.replace(/_/g,' ');
-      const reps=exRepsMap[exName]||3;
-      if(!sessions[sk]) sessions[sk]={key:sk,week:+match[2],dayId:match[3],tonnage:0,totalSets:0,doneSets:0};
-      setArr.forEach(s=>{
-        sessions[sk].totalSets++;
-        if(s.done){
-          sessions[sk].doneSets++;
-          const w=parseFloat(s.weight)||0;
-          if(w>0&&reps>0) sessions[sk].tonnage+=w*reps;
-        }
-      });
-    });
-    const dateMap={};
+  const dateMap=useMemo(()=>{
+    const m={};
     Object.values(logs).forEach(entry=>{
-      if(!entry.week) return;
+      if(!entry.week)return;
       const day=DAYS_SUMMER.find(d=>d.name===entry.dayName||d.id===entry.dayName);
-      if(day) dateMap[`w${entry.week}_${day.id}`]=entry.date;
+      if(day)m[`w${entry.week}_${day.id}`]=entry.date;
     });
-    return Object.values(sessions)
-      .map(s=>({...s,date:dateMap[s.key]||null,label:`W${s.week} ${s.dayId.toUpperCase()}`}))
-      .filter(s=>s.doneSets>0)
-      .sort((a,b)=>(a.date||a.label).localeCompare(b.date||b.label));
-  },[setsData,logs,exRepsMap]);
+    return m;
+  },[logs]);
 
-  const qualityData = useMemo(()=>{
+  const qualityData=useMemo(()=>{
     const EL={'High':4,'Normal':3,'Low':2,'Post-shift':1};
     const TF={'Clicked':4,'Decent':3,'Inconsistent':2,'Off today':1};
     return Object.values(logs)
       .filter(e=>e.date)
       .sort((a,b)=>a.date.localeCompare(b.date))
       .map(e=>({
-        date:e.date, label:e.date.slice(5),
+        date:e.date,label:e.date.slice(5),
         rating:e.rating?e.rating.length:null,
         energy:EL[e.energyLevel]??null,
         backPain:e.backPain?parseInt(e.backPain)||null:null,
@@ -1910,15 +1882,12 @@ function Reports({prs, logs}) {
       }));
   },[logs]);
 
-  const shiftStats = useMemo(()=>{
+  const shiftStats=useMemo(()=>{
     const s=qualityData.filter(d=>d.nightShift&&d.rating!=null);
     const r=qualityData.filter(d=>!d.nightShift&&d.rating!=null);
     const avg=arr=>arr.length?(arr.reduce((a,d)=>a+d.rating,0)/arr.length).toFixed(1):null;
     const avgBP=arr=>arr.length?(arr.reduce((a,d)=>a+(d.backPain||0),0)/arr.length).toFixed(1):null;
-    return {
-      shifted:{data:s,avgRating:avg(s),avgBP:avgBP(s)},
-      rested:{data:r,avgRating:avg(r),avgBP:avgBP(r)},
-    };
+    return{shifted:{data:s,avgRating:avg(s),avgBP:avgBP(s)},rested:{data:r,avgRating:avg(r),avgBP:avgBP(r)}};
   },[qualityData]);
 
   const sec={marginBottom:28};
@@ -1927,54 +1896,56 @@ function Reports({prs, logs}) {
 
   return (
     <div className="fade">
+
       <div style={sec}>
-        <div style={hd}>SESSION VOLUME</div>
-        {sessionVolumes.length>0 ? (<>
-          <div style={sub}>TONNAGE (kg·reps, completed sets with logged weight)</div>
-          <SVGLineChart data={sessionVolumes} height={150}
-            series={[{key:'tonnage',color:'var(--gold)',label:'Tonnage'}]}/>
-          <div style={{...sub,marginTop:14}}>SETS COMPLETED VS PROGRAMMED</div>
-          <SVGLineChart data={sessionVolumes} height={120}
-            series={[
-              {key:'totalSets',color:'#333355',label:'Programmed'},
-              {key:'doneSets',color:'#5a9e44',label:'Completed'},
-            ]}/>
-        </>) : (
-          <div style={{color:'var(--text3)',fontSize:12,padding:'16px 0'}}>
-            No volume data yet — check off sets with weights to populate this.
-          </div>
-        )}
+        <div style={hd}>OVERVIEW</div>
+        <OverviewCards logs={logs} week={week} setsData={setsData} dateMap={dateMap}/>
+      </div>
+
+      <div style={sec}>
+        <div style={hd}>PERSONAL RECORDS</div>
+        <PRCards prs={prs}/>
+      </div>
+
+      <div style={sec}>
+        <div style={hd}>LOAD DEVELOPMENT</div>
+        <LoadDevelopment setsData={setsData} dateMap={dateMap}/>
+      </div>
+
+      <div style={sec}>
+        <div style={hd}>EXERCISE BREAKDOWN</div>
+        <ExerciseBreakdown setsData={setsData} dateMap={dateMap}/>
       </div>
 
       <div style={sec}>
         <div style={hd}>SESSION QUALITY</div>
-        {qualityData.length>0 ? (<>
-          <div style={sub}>RATING (1–5 ★), ENERGY (4=HIGH → 1=POST-SHIFT), BACK PAIN (0–10)</div>
+        {qualityData.length>0?(<>
+          <div style={sub}>RATING (1–5★) · ENERGY (4=HIGH→1=POST-SHIFT) · BACK PAIN (0–10)</div>
           <SVGLineChart data={qualityData} height={160} yMax={10}
             series={[
               {key:'rating',color:'var(--gold)',label:'Rating'},
-              {key:'energy',color:'#5a9e44',label:'Energy'},
-              {key:'backPain',color:'#cc4444',label:'Back pain'},
+              {key:'energy',color:'var(--green)',label:'Energy'},
+              {key:'backPain',color:'var(--red)',label:'Back pain'},
             ]}/>
-          <div style={{...sub,marginTop:14}}>TECHNIQUE FEEL (4=CLICKED → 1=OFF)</div>
+          <div style={{...sub,marginTop:14}}>TECHNIQUE FEEL (4=CLICKED→1=OFF)</div>
           <SVGLineChart data={qualityData} height={100} yMax={4}
             series={[{key:'tech',color:'var(--blue)',label:'Technique'}]}/>
-        </>) : (
+        </>):(
           <div style={{color:'var(--text3)',fontSize:12,padding:'16px 0'}}>No session logs yet.</div>
         )}
       </div>
 
       <div style={sec}>
         <div style={hd}>TRAINING FREQUENCY</div>
-        <div style={sub}>LAST 90 DAYS</div>
+        <div style={sub}>LAST 90 DAYS — TAP A DAY TO SEE SESSION DETAILS</div>
         <CalendarHeatmap logs={logs}/>
       </div>
 
-      {(shiftStats.shifted.data.length>0||shiftStats.rested.data.length>0) && (
+      {(shiftStats.shifted.data.length>0||shiftStats.rested.data.length>0)&&(
         <div style={sec}>
           <div style={hd}>NIGHT SHIFT IMPACT</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-            {[['POST-SHIFT',shiftStats.shifted,'#c4943a'],['RESTED',shiftStats.rested,'#5a9e44']].map(([lbl,stat,col])=>(
+            {[['POST-SHIFT',shiftStats.shifted,'var(--gold)'],['RESTED',shiftStats.rested,'var(--green)']].map(([lbl,stat,col])=>(
               <div key={lbl} style={{background:'var(--bg1)',borderRadius:8,padding:14,border:`1px solid ${col}44`}}>
                 <div style={{fontSize:9,color:'var(--text3)',letterSpacing:2,fontFamily:"'DM Mono',monospace",marginBottom:8}}>{lbl}</div>
                 <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:30,color:col,lineHeight:1}}>
@@ -2889,7 +2860,7 @@ function OlyTracker() {
         )}
 
         {/* ═══ REPORTS ═══ */}
-        {tab==="reports" && <Reports prs={prs} logs={logs}/>}
+        {tab==="reports" && <Reports prs={prs} logs={logs} week={week}/>}
 
       </div>
     </div>
