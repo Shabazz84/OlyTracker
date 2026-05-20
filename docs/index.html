@@ -145,6 +145,108 @@ const lmCfgStorage = {
   save: (cfg) => { try { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); } catch {} return cfg; },
 };
 
+// ── LM Studio client ──────────────────────────────────────────────────────────
+async function callLmStudio(systemPrompt, userPrompt, cfg) {
+  const res = await fetch(`${cfg.baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: cfg.model || "local-model",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user",   content: userPrompt },
+      ],
+      temperature: 0.3,
+      max_tokens: 1200,
+    }),
+  });
+  if (!res.ok) throw new Error(`LM Studio ${res.status}: ${res.statusText}`);
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+
+function parseAiResponse(text) {
+  const match = text.match(/```json\n?([\s\S]*?)\n?```/);
+  if (match) {
+    try {
+      const p = JSON.parse(match[1]);
+      return {
+        narrative:           p.narrative           || text,
+        loadRecommendation:  p.loadRecommendation  || "hold",
+        skipExercises:       Array.isArray(p.skipExercises)       ? p.skipExercises       : [],
+        reduceLoadExercises: Array.isArray(p.reduceLoadExercises) ? p.reduceLoadExercises : [],
+        flags:               Array.isArray(p.flags)               ? p.flags               : [],
+        generatedAt:         new Date().toISOString(),
+      };
+    } catch {}
+  }
+  return { narrative: text, loadRecommendation: "hold", skipExercises: [], reduceLoadExercises: [], flags: [], generatedAt: new Date().toISOString() };
+}
+
+function buildReviewPrompt(week, weekData, formData, isSummer) {
+  const dayList = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
+
+  const exerciseList = dayList.map(d =>
+    `${d.label}: ${d.exercises.map(e => e.name).join(", ")}`
+  ).join("\n");
+
+  const weekLog = dayList.map(d => {
+    const ds = formData.days[d.id] || { status: "done", notes: "" };
+    return `${d.label}: ${ds.status.toUpperCase()}${ds.notes ? ` — ${ds.notes}` : ""}`;
+  }).join("\n");
+
+  const injuryText = formData.injuries.length > 0
+    ? formData.injuries.map(inj => `${inj.bodyPart} (${inj.type} pain, severity: ${inj.severity})`).join("; ")
+    : "None reported";
+
+  const system = `You are an Olympic weightlifting coach reviewing a training week for a specific athlete. Give concrete, safe recommendations for the following week.
+
+ATHLETE PROFILE:
+- 102.5 kg bodyweight, intermediate strength background transitioning to Olympic weightlifting
+- Bests: Back Squat 118 kg, Front Squat 102 kg, Clean 80 kg, Jerk ~65 kg, OHS 50 kg
+- Jerk is far behind clean — priority weak point. OHS stability is the primary snatch ceiling.
+- Chronic back pain (manageable). Push jerk only — NO split jerk.
+- Night shifts Wed–Sun 7pm–7:30am (5.5h sleep Thu/Sat training days).
+- Current block: Block 1 Hypertrophy Foundation — no full competition lifts from floor.
+
+INJURY PROTOCOL (apply strictly):
+- Sharp pain reported → skip ALL exercises loading that structure for minimum 7 days
+- Left bicep / shoulder / elbow injury → skip all overhead pressing, pulling, and snatch-pattern exercises
+- Lower back sharp pain → skip all spinal loading (squats, pulls, presses)
+- Dull ache → reduce load 15%, monitor
+- Jerk priority: preserve jerk work unless the injury directly involves the jerk mechanics (shoulder, elbow, wrist)
+
+RESPONSE FORMAT — output a \`\`\`json block with this exact shape, then an optional coaching note after it:
+{
+  "narrative": "2-3 sentence plain-English summary of the week and key issue",
+  "loadRecommendation": "advance" | "hold" | "reduce",
+  "skipExercises": ["Exact Exercise Name As Listed Below", ...],
+  "reduceLoadExercises": ["Exact Exercise Name As Listed Below", ...],
+  "flags": [
+    { "day": "d1", "exercise": "Exact Exercise Name", "action": "skip" | "reduce", "reason": "brief reason" }
+  ]
+}
+Use ONLY exercise names exactly as they appear in PLANNED EXERCISES below.`;
+
+  const user = `WEEK ${week} — ${weekData.phase} (${weekData.load})
+Focus: ${weekData.focus}
+Note: ${weekData.note}
+
+PLANNED EXERCISES:
+${exerciseList}
+
+WEEK LOG:
+${weekLog}
+
+INJURIES THIS WEEK:
+${injuryText}
+
+ADDITIONAL NOTES:
+${formData.generalNotes || "None"}`;
+
+  return { system, user };
+}
+
 // ── Sleep quality badges ──────────────────────────────────────────────────────
 const SLEEP = {
   full:    {label:"FULL SLEEP",    color:"#5a9e45", bg:"rgba(90,158,69,0.12)"},
