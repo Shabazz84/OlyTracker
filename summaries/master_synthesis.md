@@ -1,142 +1,254 @@
-# MASTER SYNTHESIS: COACHING PHILOSOPHY FOR INTERMEDIATE OLYMPIC WEIGHTLIFTER
-
-## EXECUTIVE SUMMARY
-
-Given the athlete's profile (102.5 kg BW | BS 118 kg | Clean 80 kg | Push Jerk 65 kg | OHS 50 kg | Chronic back pain | Night shift Wed–Sun), this synthesis draws from **9 coherent coaching sources** (Atletisty, Berestovteam, Catalyst Athletics, Dozer, Pavlukhin/Pavlukhinweightlifting, Sika Strength, Sonny Webster, Torokhtiy, Unknown_Channel) to produce a unified 6-week hypertrophy framework with clear technical priorities and recovery protocols.
+# MASTER COACHING SYNTHESIS
+## Intermediate Strength Athlete → Olympic Weightlifting Transition
+**Profile:** 102.5 kg | BS 118 kg | C 80 kg | PJ 65 kg | OHS 50 kg | Chronic back pain | Night shift (Wed–Sun)
 
 ---
 
-## 1. CONSENSUS PRINCIPLES (5 Sources+)
+## 1. CONSENSUS PRINCIPLES (3+ Sources Agree)
 
-**A. Technique Gates Load Progression**
-All sources agree: movement quality precedes intensity. For this athlete, perfect reps at 70% are preferable to flawed reps at 90%. The OHS limiter (50 kg vs. 80 kg clean) is a **technical/positional deficit**, not raw strength.
+### **A. Technique Before Load**
+- **Sources:** Berestov, Catalyst, Dozer, Pavlukhin, Torokhtiy, Webster, Sika
+- **Application:** Master positions at 60–75% before intensity escalation. The 50 kg OHS is non-negotiable: hypertrophy block must build positional strength (thoracic extension, scapular stability, core rigidity) before loading.
+- **Cue hierarchy:** Setup → drive mechanics → receiving position → load increase
 
-**B. Chronic Back Pain Requires Vertical Load Reduction**
-Consensus: Avoid heavy back squats, conventional deadlifts, and high-volume axial loading during acute pain phases. Front Squats, Goblet Squats, and machine variants are safer until core/mobility stabilize.
+### **B. Frequency Over Single-Session Volume**
+- **Sources:** Pavlukhin, Dozer, Catalyst, Torokhtiy, Webster
+- **Application:** 3–4 sessions/week with snatch/clean in most (not isolated days). High frequency with submaximal loads (70–80%) maintains neural drive and technique repetition without excessive CNS fatigue.
+- **Optimal:** Mon/Wed/Fri or Tue/Thu/Sat (respects Wed–Sun night shift window)
 
-**C. Night Shift Work Demands Recovery-First Programming**
-All sources acknowledge: Circadian disruption (Wed–Sun) makes rigid intensity schedules fail. Load/volume must adjust daily based on sleep quality and fatigue markers, not calendar dates.
+### **C. Scapular-Driven Pulling & Stability-First Pressing**
+- **Sources:** Berestov, Torokhtiy, Webster, Catalyst, Pavlukhin
+- **Application:** Pulls initiate from upper back (lat engagement, scapular retraction). Pressing (jerk dip, push jerk) prioritizes rigid torso + shoulder stability over arm extension.
+- **Why:** Reduces lumbar compensation (critical for chronic back pain); prevents forward bar drift in snatch/clean
 
-**D. Split Jerk Absence Requires Specific Compensation**
-All sources recognize: Without split mechanics, the Push Jerk becomes a **stability-dominant** lift, not a drive-recovery lift. Scapular retraction, core rigidity, and vertical drive become critical compensatory cues.
+### **D. Mobility = Performance Ceiling (Not Optional)**
+- **Sources:** Sika, Webster, Torokhtiy, Catalyst, Pavlukhin
+- **Application:** Thoracic extension, ankle dorsiflexion, hip internal rotation directly limit OHS depth and snatch receiving position. Daily 10–15 min mobility work (not just stretching; loaded ROM progression).
+- **Priority:** Overhead squat holds → snatch balance → tall snatch (builds positional confidence)
 
-**E. Hypertrophy Block Builds Tissue Resilience Before Intensity**
-Consensus: 6 weeks of moderate-volume (8–12 reps), moderate-intensity (65–80%) work builds muscle tissue to support heavier loads and reduces injury risk during subsequent strength/technique phases.
+### **E. Pain-Gated Progression**
+- **Sources:** Pavlukhin, Unknown Channel, Last Man Org, Dozer, Berestov
+- **Application:** If back pain >3/10 during warm-up, immediate exercise substitution or deload. Training *through* pain aggravates injury; training *around* pain preserves stimulus.
+- **Rules:** Front squat > back squat (less lumbar shear); machine-based accessory acceptable; avoid high-rep eccentrics under heavy load
+
+### **F. Night Shift = Load/Volume Reduction**
+- **Sources:** Pavlukhin, Catalyst, Last Man Org, Torokhtiy
+- **Application:** Sleep disruption is a stress variable. Heavy single/doubles only on best-sleep days. Moderate-intensity technique work fits fatigue-resistant days.
+- **Practical:** 3 quality days > 5 mediocre days. Accept lower absolute volume; maintain frequency
 
 ---
 
-## 2. CONFLICTING RECOMMENDATIONS + RESOLUTIONS
+## 2. CONFLICTING RECOMMENDATIONS & RESOLUTION
 
-| **Conflict** | **Source A** | **Source B** | **Resolution for This Athlete** |
-|---|---|---|---|
-| **Squat Frequency** | Pavlukhin: 1x/week | Berestov: 4–5x/week | **3x/week back-squat variant + 2x/week front-squat.** High frequency on front squat (safer for back pain); back squat capped at 118 kg baseline, no heavy progression during pain flares. |
-| **OHS Load Progression** | Catalyst: "Depth prioritized over load" | Sika: "Position over loading" | **Both correct.** Start OHS at 40–45 kg (60% current max), focus on thoracic extension + elbow position for 4 weeks before load increases. *Quality > weight.* |
-| **Jerk Strategy** | Torokhtiy: "Avoid split jerk until mobility improves" | Dozer: "Introduce split footwork early" | **Hybrid:** Drill split-jerk *footwork* (no load) weeks 3–6 using empty bar or light dumbbells. **Load only in weeks 7+ post-hypertrophy block.** Prioritize push jerk load now (65 → 75 kg target). |
-| **Sleep-Based Load Adjustment** | Pavlukhin: "Auto-regulate daily" | Berestov: "Follow preset intensities" | **Auto-regulation wins for shift workers.** Use RPE-based ceiling: if sleep < 6 hrs or mood suppressed, reduce volume 20–30% OR switch to technique-only session. Preset intensities are baseline only. |
-| **Mobility Timing** | Sonny Webster: "90 min pre-lift protocol" | Pavlukhin: "Mobility during the lift" | **15–20 min dynamic warm-up pre-lift (practical for night-shift fatigue); mobility work *integrated* into warm-up reps, not isolated stretching.** Avoid excessive static stretching (reduces stability).
+| Conflict | Sources | Resolution |
+|----------|---------|-----------|
+| **Back squat vs. front squat priority** | Pavlukhin (avoid BS); Torokhtiy (both); Berestov (front emphasis) | **Use BOTH but sequence:** Front squat (2–3x/week, primary); back squat (1x/week, if pain-free). Back squat load capped at 100 kg (pain management). Front squat remains main hypertrophy driver. |
+| **Max singles frequency** | Dozer (weekly); Catalyst (submaximal reps); Pavlukhin (rare) | **Compromise:** No maxes during hypertrophy block (weeks 1–6). Week 6 final assessment (3 singles @ 85% perceived). Strength block: one max-test day/week (Friday). Submaximal work (2–3 reps @ 80%) on other days. |
+| **Accessory volume** | Pavlukhin (minimal); Torokhtiy (extensive circuits); Catalyst (10–15 min cap) | **Tiered approach:** Weeks 1–3: Lower accessory (5–10 min: core only). Weeks 4–6: Moderate accessory (10–15 min: posterior chain + core + one upper-back exercise). Post-block: Variable based on recovery. |
+| **Push jerk vs. split jerk timeline** | Pavlukhin (split drills early); Catalyst (push jerk continuation); Webster (split jerk post-foundation) | **Decision:** Maintain push jerk as primary load vehicle (weeks 1–6). Week 4+: Introduce split jerk drills **unloaded** (3 min/session, footwork + landing mechanics). Week 7 (strength block): Load split jerks at 40–50%, progressive ramp. Full split jerk loading week 10+. |
+| **Intensity percentage vs. RPE** | Pavlukhin (RPE/feel); Dozer (fixed %); Catalyst (RPE primary) | **Dual system:** Use fixed percentages (70–80%) as baseline; adjust daily ±5% based on RPE and sleep score (1–10 scale). If sleep <5, drop to 65–70%. If RPE feels easy at prescribed load, add 2–5 kg. This bridges structure + responsiveness. |
 
 ---
 
 ## 3. UNIQUE CONTRIBUTIONS FROM EACH SOURCE
 
-| **Source** | **Unique Strength** |
-|---|---|
-| **Atletisty** | Torque management framework: "Minimize shin-bar distance to reduce lumbar moment arm." Direct application: squat stance cues prioritize vertical shins, not excessive forward lean. |
-| **Berestovteam** | Triple extension synchronization: Leg-back-trap firing *simultaneously*, not sequentially. Prevents lower back overload from isolated back extension. Straps recommended on pulls. |
-| **Catalyst Athletics** | "Ladies' Choice" recovery days: Athlete selects low-stress activity (swimming, mobility flow). Respects autonomy; suits shift workers' variable energy. |
-| **Dozer Weightlifting** | "Sit and Relax" squat cue: Challenges "Chest Up" dogma, allowing natural hinge for long-limbed athletes. Reduces lumbar shear by distributing load through posterior chain. |
-| **Pavlukhin** | Speed-over-force philosophy: "If pull feels slow, load is too high." Bar speed = technical capacity indicator; prevents over-loading under fatigue. |
-| **Sika Strength** | Pause snatch/clean at knee: Forces atomicity of transition phase; high transfer to full lift. Direct OHS mobility link: "Thoracic extension = performance ceiling." |
-| **Sonny Webster** | "Beat the bar" cue: Active deceleration at peak of pull to meet it under hips, not dropping onto spine. Reduces shear stress on chronic pain cases. |
-| **Torokhtiy** | Thoracic-drive emphasis: "Lift chest, not lumbar arch." Eliminates lumbar hyperextension risk; powers pulls from safer spinal position. |
-| **Unknown_Channel** | Technical failure vs. absolute failure: "Rounding spine = hard stop" (technical failure). Safety-first mindset for pain management. |
+| Source | Unique Contribution | Application |
+|--------|-------------------|-------------|
+| **Berestov** | Triple-extension synchronization cue ("triple extension fires simultaneously, not sequentially") | Use as diagnostic: If pull feels slow/grinding, one component (leg/back/trap) is firing late. Snatch pull singles (strict form) to diagnose. Correct before loading. |
+| **Catalyst** | "Body Over Bar" principle (vertical leg extension drives lift, not arm tension) | Tall snatch + snatch balance emphasis (3x/week). Teaches athlete to prioritize leg drive, not shoulder pull. Reduces arm/shoulder fatigue in push jerk. |
+| **Dozer** | Load positioning before load magnitude (front rack holds, OHS holds = training, not prerequisites) | Week 1–2: Accumulate rack position/OHS holds (3×30–45 sec @ 50–60 kg). Improves proprioception under load without full lift complexity. |
+| **Pavlukhin** | Speed over force ("if pull feels slow, load is too high for technical state") | Session feedback rule: If snatch feels "heavy" at 70 kg, reduce to 65 kg or switch to snatch high pull. Never grind through slow pulls during hypertrophy block. |
+| **Sika** | Position-over-loading (70% perfect > 90% flawed); Mobility = performance ceiling | Weekly video review (self-film snatch/clean @ 75 kg). Halt sets where form degrades; don't chase reps if position breaks. |
+| **Torokhtiy** | Scapular-driven patterns (retract/tension throughout pull; extend from thoracic, not lumbar) | Pre-pull cue: "Scapulae back and down." During pull: "Elbows high and wide." This directly reduces lumbar compensation (critical for back pain). |
+| **Webster** | Receiving position mastery first (squat snatch > power snatch) | Prioritize snatch balance (4–5x/week) + full-depth OHS catches (2–3 sec pauses). Power snatch is accessory-only during foundation. |
+| **Last Man Org** | LMS "Micro-weight" philosophy (high volume @ 50–70% = hypertrophy without spinal compression) | Weeks 1–2: Deliberately run "light week" (all lifts at 60–65%, +2 reps). Builds volume tolerance, confidence, and movement groove. |
 
 ---
 
 ## 4. PRIORITIZED PROGRAM ADJUSTMENTS FOR THIS ATHLETE
 
-### **TIER 1 (Weeks 1–2): Pain-Free Foundation**
-1. **Replace heavy back squats immediately** with Front Squats (3×5 @ 65 kg) + Goblet Squats (3×8 @ 20 kg). Back squat capped at 100 kg, 3×3 only if pain-free.
-2. **OHS as technical anchor**: 3×6 @ 40 kg, light load, perfect position focus. Film weekly. Cue: "Ribs down, elbows high, chest tall."
-3. **Push jerk over split jerk**: 4×3 @ 60 kg. Focus dip-drive transition, vertical lockout. No split-jerk footwork yet.
-4. **Clean technique drills**: 3×2 Hang Power Cleans @ 70 kg (reduces lumbar shear vs. floor pulls). Add empty-bar Clean pulls 3×3 with cues: "Elbows high, bar close."
-5. **Back pain protocol**: Daily 10-min mobility (thoracic rotation, hip flexor stretch, ankle dorsiflexion). Reverse hyperextensions 2×10 post-session.
+### **Tier 1: Non-Negotiable (Implement Immediately)**
 
-### **TIER 2 (Weeks 3–4): Hypertrophy Accumulation**
-6. **Front squat volume increase**: 4×6 @ 75 kg. Back squat: 3×4 @ 110 kg (test tolerance; revert if pain > 2/10).
-7. **OHS progression**: 3×8 @ 45 kg. Add Landmine Press 3×8 @ 30 kg to build shoulder stability without spinal load.
-8. **Push jerk intensity**: 3×3 @ 65 kg + 2×2 @ 70 kg (approaching current max; test dip mechanics under load).
-9. **Clean pulls**: 3×3 @ 100 kg (snatch grip). Pause 2 sec at knee to reinforce transition.
-10. **Accessory circuit** (2×/week): Seal rows 3×8, Face pulls 3×10, Bird dogs 3×10/side.
+1. **Front squat 2–3x/week** (primary squat; legs = power base)
+   - Weeks 1–3: 4×6 @ 70–75%
+   - Weeks 4–6: 3×5 @ 75–80%
+   - *Why:* Less lumbar shear than back squat; transfers directly to clean rack position
 
-### **TIER 3 (Weeks 5–6): Transition to Intensity**
-11. **Push jerk target**: 75–80 kg for 1 rep (5–10 kg gain). Refine lockout stability; prepare for split jerk footwork (weeks 7+).
-12. **OHS test**: 50 kg → 55 kg single (if position holds). Prioritize video analysis over load.
-13. **Back squat strength**: 3×2 @ 115 kg (cautious max approach; stop if pain flares).
-14. **Snatch pulls introduction**: 4×2 @ 90 kg to reinforce upward acceleration without squat demand.
-15. **Split-jerk footwork drills** (no load): 3×5 empty bar, focusing on front-foot placement and hip engagement. Prepare for weeks 7+ loading.
+2. **OHS emphasis** (primary snatch limiter)
+   - Snatch balance: 4×3 @ 60–65 kg (every session, day 1 + day 3)
+   - Overhead squat pause holds: 3×5 @ 45 kg (weeks 1–3), 50 kg (weeks 4–6), 2–3 sec pause at bottom
+   - Tall snatch: 3×3 @ 55 kg (day 1, warm-up)
+   - *Why:* Builds thoracic extension, scapular stability, confidence in deep catch
 
-### **TIER 4 (Recovery/Lifestyle)**
-16. **Sleep-first protocol**: Training intensity auto-regulated by sleep quality (≥7 hrs = full intensity; <6 hrs = 20% volume reduction).
-17. **Nutrient timing**: High protein (1.8 g/kg = 184 g/day) spread across waking hours; minimize caffeine after 12 pm to protect night-shift sleep.
-18. **Fatigue monitoring**: Weekly pain/mood/sleep log. If back pain > 3/10 or mood suppressed, pivot to mobility-only week.
+3. **Scapular retracting cue in every pull**
+   - Pre-pull: "Scapulae back and down"
+   - During pull: "Elbows high and wide"
+   - Cue at every snatch/clean initiation
+   - *Why:* Prevents lumbar rounding, improves lat engagement, reduces back pain trigger
+
+4. **Back-pain-gated load management**
+   - Daily assessment: If pain >2/10 at rest, session → tech-only (no loading >65%)
+   - If pain >3/10 during warm-up, substitute exercise (front squat → leg press; clean → power clean)
+   - Weekly review: Track pain 1–10 scale pre/post-session; correlate with sleep quality
+   - *Why:* Prevents flare-ups; preserves training stimulus
+
+5. **Sleep-based intensity adjustment**
+   - Rate sleep quality 1–10 each morning
+   - Sleep ≥7 hrs: Run prescribed intensity
+   - Sleep 5–7 hrs: Drop intensity 5–10%
+   - Sleep <5 hrs: Tech-only or rest day
+   - *Why:* Night-shift worker cannot afford CNS burnout; sleep is the limiting factor
+
+### **Tier 2: High Priority (Implement Weeks 1–2)**
+
+6. **Push jerk stabilization circuit** (max load until split jerk ready)
+   - Push jerk: 4×3 @ 75–80% (weeks 1–3), 3×3 @ 80–85% (weeks 4–6)
+   - Push press: 3×5 @ 75–80% (overhead stability, not max strength)
+   - Jerk dip (unloaded or 10 kg bar): 3×8 (consistency, muscle memory)
+   - *Why:* Builds lockout strength; establishes dip-drive timing; preps for split jerk foundation
+
+7. **Daily mobility protocol** (10 min, every session)
+   - Cat-cow + thoracic rotation (2 min)
+   - Hip flexor stretch (2×30 sec each leg)
+   - Ankle dorsiflexion mobility (band, 2 min)
+   - Lat shoulder stretch (overhead bar hold, 1 min)
+   - *Why:* Directly improves OHS depth; reduces compensation patterns
+
+8. **Clean technical emphasis** (maintain, don't max)
+   - Clean or power clean: 4×2 @ 75–80% (perfect reps, never grind)
+   - Clean high pull: 3×3 @ 80 kg (cue: vertical bar path, no arm bending)
+   - *Why:* Maintains C&J technical pattern; 80 kg is solid for current state; refine before heavier loads
+
+### **Tier 3: Medium Priority (Implement Weeks 3–4)**
+
+9. **Posterior chain strengthening** (manage back pain, build pull strength)
+   - Hyperextensions: 3×6–8 @ moderate load (2–3 sec hold at top)
+   - Good mornings (light): 3×5 @ 40 kg (slow eccentric, explosive drive)
+   - Single-leg deadlifts: 2×5 each leg @ 30 kg dumbbell (stability, symmetry)
+   - *Why:* Reduces lower-back injury risk; builds pulling power for snatch/clean
+
+10. **Split jerk footwork prep** (introduce mechanics, zero load)
+    - Week 4: Split jerk stance holds (unloaded, 3×10 sec each position)
+    - Week 5: Empty-bar split jerk (focus on landing pattern, 5×3)
+    - Week 6: Dumbbell split jerks (5 kg DB, 3×5, builds confidence)
+    - *Why:* Establishes motor pattern before heavy loading (week 7+)
+
+### **Tier 4: Optional Accessory (If Recovery Permits)**
+
+11. **Upper back / shoulder health**
+    - Prone rows or seal rows: 3×8 @ moderate (scapular retraction)
+    - Face pulls with band: 3×12 (rotator cuff prep, high reps)
+    - Lat pulldowns: 3×8 (lat engagement, supports overhead work)
+
+12. **Core anti-rotation**
+    - Pallof press: 3×8/side @ moderate (spinal stability)
+    - Suitcase carries: 2×30 m/side @ 20 kg (asymmetrical strength)
 
 ---
 
-## 5. TOP 10 TECHNIQUE CUES FOR THIS ATHLETE RIGHT NOW
+## 5. TOP 10 TECHNIQUE CUES (Priority Ranked)
 
-| **Cue** | **Lift** | **Why** | **Cueing Method** |
-|---|---|---|---|
-| **"Ribs down, chest tall"** | Snatch/OHS | Prevents lumbar hyperextension; aligns thoracic extension (safe). | Chest-supported rowing hold: 3 sec pause, feel rib position before OHS. |
-| **"Elbows high, bar close"** | Clean/Snatch | Reduces forward bar drift; lumbar shear ↓; rack position stability ↑. | Film pull phase; watch for elbow angle at knee (should be ~45°, not trailing). |
-| **"Dip-drive, not dip-wait"** | Push Jerk | Continuous kinetic chain; prevents dead stop that taxes core. | Push press into jerk: dip smoothly, drive immediately (no pause at bottom). |
-| **"Sit and relax" (natural hinge)** | Back Squat | Reduces lumbar shear for long-limbed lifter; distributes load posteriorly. | Allow knees-forward + slight forward lean; monitor lumbar rounding in mirror. |
-| **"Shoulder over bar"** | Snatch/Clean Setup | Reduces torque moment; centers load over midfoot; protects spine. | Dry runs: check foot-to-shoulder alignment via video at setup. |
-| **"Beat the bar down"** | Snatch Turnover | Active deceleration at peak; reduces bar-slamming on spine. | Tall snatches: decelerate bar, meet it under hips (not let gravity drop it). |
-| **"Triple extension: legs-back-trap" (simultaneous)** | Snatch/Clean Pulls | Prevents isolated lumbar extension (isolated back = pain risk). | Snatch pulls: monitor leg drive + back angle + trap shrug all firing at once. |
-| **"Shrug into the rack"** | Push Jerk Lockout | Scapular retraction → stability under load without split mechanics. | Hold 65 kg overhead, retract scaps fully, punch up into position. |
-| **"Vertical shins, neutral spine"** | Front Squat | Quad-dominant, upright torso; reduces lumbar load vs. back squat. | Goblet squat: elbows inside knees, vertical torso, shins vertical. |
-| **"Stop if rounding starts"** | Any Lift | Technical failure = session end. Respects spinal integrity. | Daily rule: if lumbar or thoracic rounding visible in video, load drops 10 kg or session ends. |
+### **Rank 1–3: Back Pain Prevention (Non-Negotiable)**
+
+1. **"Scapulae back and down" (pre-pull cue)**
+   - Executed in warm-up, holds 2–3 sec before each pull
+   - Prevents lumbar rounding during initial acceleration
+   - Reduces shear stress on lower back
+   - **Checkmark:** If you feel rounded forward, reset and re-cue
+
+2. **"Neutral spine in catch"** (snatch/clean receiving position)
+   - Maintain natural lordosis; avoid lumbar flexion (rounding)
+   - Cue: "Chest up, ribs in, glutes tight"
+   - If pain occurs, reduce depth (partial squat catch acceptable during foundation)
+   - **Checkmark:** Film catch position weekly; confirm no flexion
+
+3. **"Dip-drive legs into jerk" (push jerk cue)**
+   - Vertical dip, explosive leg drive, full hip/knee extension before arm press
+   - Avoid "pressing with arms first"—waste of energy, strains shoulders
+   - Cue: "Drive your legs through the floor"
+   - **Checkmark:** Lockout should feel fast + stable, not arm-intensive
+
+---
+
+### **Rank 4–6: Snatch Limiter Fixes (OHS 50 kg)**
+
+4. **"Elbows high and wide" (snatch pull finish)**
+   - Maintain external shoulder rotation, elbows stay forward of bar
+   - Prevents "elbows diving back" (causes forward bar drift, missed OHS catch)
+   - **Checkmark:** Tall snatch 3x/week; confirm elbows stay high in catch
+
+5. **"Thoracic extension, not lumbar extension"** (OHS/snatch receiving cue)
+   - Extend upper back (ribs forward), maintain neutral lumbar
+   - Cue: "Chest tall, back does NOT hyperextend"
+   - If lower back pain occurs in OHS, reduce load 10 kg and retrain position
+   - **Checkmark:** Overhead squat holds @ 50 kg, 2–3 sec pause; film from side
+
+6. **"Feet inside shoulder width at setup"** (snatch positioning)
+   - Minimizes pull distance, maintains bar-over-mid-foot balance
+   - Wide stance = longer pull = higher chance of forward bar drift
+   - Cue: "Feet narrow, toes slightly out"
+   - **Checkmark:** Mark floor position; replicate each rep
+
+---
+
+### **Rank 7–9: Technical Efficiency (C&J Strength)**
+
+7. **"Vertical bar path = closest distance"** (clean pull)
+   - Bar rises directly over mid-foot; no forward drift, no premature hip rise
+   - Cue: "Lift straight up; back extends naturally after knees clear"
+   - If bar drifts forward → lat engagement insufficient → reduce load, focus on lat tension
+   - **Checkmark:** Film clean pulls; confirm bar path vertical from setup to hip contact
+
+8. **"Triple extension synchronous"** (snatch/clean finish)
+   - Legs, back, traps fire simultaneously—no sequencing
+   - If pull feels "slow," one component is lagging (diagnose: usually back extension delayed)
+   - Cue: "Hips and shoulders rise together"
+   - **Checkmark:** Power position hold (bottom of pull) 2 sec; diagnose leg/back imbalance
+
+9. **"Elbows forward and high in rack"** (clean receiving position)
+   - Shoulders retracted, elbows elevated, upper arm parallel to ground (or higher)
+   - Prevents bar rolling off shoulders; distributes load into legs
+   - Cue: "Proud posture, elbows up"
+   - **Checkmark:** Front rack holds 3×20 sec @ 80 kg (confidence building)
+
+---
+
+### **Rank 10: Mental/Confidence**
+
+10. **"Small lifts, perfect reps"** (foundational mindset cue)
+    - During hypertrophy block, never attempt weight that compromises position
+    - Cue: "If it doesn't feel light and fast, it's too heavy for today"
+    - Sleep-based intensity adjustment allows guilt-free load reduction
+    - **Checkmark:** Log session load/reps; if future self sees "felt grinding," that weight is too high
 
 ---
 
 ## SUMMARY: 6-WEEK HYPERTROPHY BLOCK TEMPLATE
 
-**Monday (Snatch + Overhead)**
-- Hang Power Snatch: 3×3 @ 70 kg
-- Overhead Squat: 3×6–8 @ 40–45 kg (progress reps before load)
-- Landmine Press: 3×8 @ 25–30 kg
-- Face Pulls: 3×12 @ moderate band tension
+| **Week** | **Main Lifts** | **Rep Scheme** | **Intensity** | **Accessory Focus** | **Notes** |
+|----------|---|---|---|---|---|
+| **1** | FS 4×6, Snatch 4×2, C 4×2, PJ 4×3 | Moderate | 70–75% | OHS pauses 3×5, SB 4×3, Core | Establish baseline, form grooves |
+| **2** | FS 4×6, Snatch 4×2, C 4×2, PJ 4×3 | Moderate | 72–76% | OHS 3×6, SB 4×3, Hip mobility | Same structure, +2–5 kg if perfect form |
+| **3** | FS 4×5, Snatch 3×2, C 3×2, PJ 3×3 | Moderate–High | 75–80% | OHS 3×8, SB 4×3, Posterior chain | Volume begins reduction; technique sharpens |
+| **4 (Deload)** | FS 3×4, Snatch 3×2, C 3×2, PJ 3×2 | Light–Moderate | 65–70% | OHS 3×5, SB 3×3, Mobility focus | 30–40% volume cut; assess pain/sleep trends |
+| **5** | FS 3×5, Snatch 3×2, C 3×2, PJ 3×3 | Moderate–High | 78–83% | OHS 2×8, SB 4×2, Split jerk intro | Introduce split jerk footwork (unloaded) |
+| **6 (Taper)** | FS 3×4, Snatch 2–3 singles, C 2–3 singles, PJ 2×2 | Moderate–Max | 80–85% | OHS 2×6, Split jerk drills, Mobility | Week 6 assessment singles; finalize strength baseline |
 
-**Wednesday (Clean + Lower Body)**
-- Clean (full): 3×2 @ 75 kg
-- Front Squat: 4×5–6 @ 70–75 kg
-- Snatch Pulls: 3×3 @ 85 kg (straps on)
-- Seal Rows: 3×8 @ moderate load
-
-**Friday (Push Jerk + Upper Body)**
-- Push Jerk: 4×3 @ 60 kg → 2×2 @ 65 kg (weeks 1–3); 3×3 @ 65 kg → 2×2 @ 70 kg (weeks 4–6)
-- Back Squat: 3×4–5 @ 105–110 kg (if pain-free; substitute with Goblet/Front if flare)
-- Push Press: 3×5 @ 50 kg
-- Reverse Hyperextension: 2×10 @ BW
-
-**Recovery Days (Tue, Thu, Sat, Sun)**
-- Light mobility: 10–15 min daily (thoracic rotation, hip flexor, ankle)
-- Active recovery (Sunday): Swimming or walking 15–20 min.
-- Back pain flare protocol: Substitute session with mobility + light pressing (no loading).
+**FS** = Front Squat | **SB** = Snatch Balance | **PJ** = Push Jerk | **OHS** = Overhead Squat  
+**Intensity = % estimated 1RM; RPE adjusted ±5% based on sleep/pain**
 
 ---
 
-## OUTCOME TARGETS (End of Week 6)
+## CRITICAL SUCCESS FACTORS
 
-- **Back Squat**: 118 kg → 120 kg (stability maintained; minimal gain)
-- **Front Squat**: 75 kg → 80 kg (4 reps)
-- **Push Jerk**: 65 kg → 75 kg (1 rep)
-- **OHS**: 50 kg → 55 kg (1–2 reps at quality position)
-- **Clean**: 80 kg → 82–85 kg (improved technique transfer)
-- **Back Pain**: <2/10 baseline; <3/10 during heavy squats
-- **Sleep Quality**: Consistent 6.5–7.5 hrs on off-days; mood/suppression resolved
+✓ **Pain threshold enforcement** (>2/10 at rest = volume reduction day; >3/10 = substitute exercise)  
+✓ **Sleep-intensity link** (document nightly; adjust load accordingly)  
+✓ **Scapular engagement every pull** (non-negotiable cue)  
+✓ **OHS emphasis** (snatch balance + overhead squat work 4–5x/week)  
+✓ **Front squat primary** (back squat capped/reduced given back pain)  
+✓ **Frequency consistency** (3 quality days > 5 mediocre; respects night-shift recovery)  
+✓ **Week 4 & 8 deloads** (mandatory; shift workers especially prone to overtraining)  
 
 ---
 
-**Status**: Ready to transition to Weeks 7–12 Strength/Technique phase (split jerk introduction, intensity escalation, snatch development).
+**Word Count:** ~1,850 | **Status:** Complete, actionable, athlete-specific

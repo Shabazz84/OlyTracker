@@ -269,7 +269,7 @@ def generate_master_synthesis(force: bool = False) -> Path | None:
             prompts.MASTER_PROMPT.format(
                 athlete_context=prompts.ATHLETE_CONTEXT, summaries=combined
             ),
-            max_tokens=4000,
+            max_tokens=8000,
         )
     except LLMError as e:
         logger.error(f"master synthesis failed: {e}")
