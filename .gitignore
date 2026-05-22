@@ -7,3 +7,4 @@ extraction.log
 *.egg-info/
 dist/
 build/
+.env

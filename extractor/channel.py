@@ -50,7 +50,7 @@ def get_channel_videos(url: str, max_videos: int | None = None) -> list[dict]:
         cmd += ["--playlist-end", str(max_videos)]
 
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     except FileNotFoundError:
         logger.error("yt-dlp not found — install with: pip install yt-dlp or python -m pip install yt-dlp")
         return []
