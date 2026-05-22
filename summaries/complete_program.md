@@ -1,57 +1,56 @@
-# OlyTracker Complete Program
+# OlyTracker Complete Program — v2
 **Athlete:** 102.5 kg | BS 118 | Clean 80 | Jerk ~65 | OHS 50 (limiter) | Push jerk only | Night shifts Wed–Sun
-**Source:** summaries/training_system.md (8-source synthesis)
+**Source:** summaries/master_synthesis.md (Claude API — all 9 sources)
 **Status:** Block 1 Week 1 — started 2026-05-20
+**Updated:** 2026-05-22 — flags F2/F3/F4/F5 resolved, McGill warm-up added, split jerk footwork added
 
 ---
 
-## Part 1: Program Review
+## Part 1: Program Review — Flag Resolutions
 
-Read this before training. Four unresolved conflicts between the current tracker sessions and the training system. Decide on each before Block 2.
-
----
-
-**Flag F2 — Day 2: Chest hypertrophy vs overhead strength**
-
-Current D2 has Incline Barbell Press (4×8) and Weighted Dips (4×8) as the upper hypertrophy block. These build chest and triceps volume.
-
-The training system (Everett, Pavlukhin) prescribes Strict Press or Push Press as the overhead strength component on Day 2 — direct transfer to jerk lockout strength, which is the primary weak point.
-
-**Option A:** Keep Incline Press + Dips. Chest hypertrophy has value in Block 1; jerk overhead strength is covered on Day 4. Trade-off: slower jerk development.
-**Option B:** Replace Incline Press + Dips with Push Press (4×5) + Strict Press (3×5). Prioritizes jerk directly. Trade-off: less chest hypertrophy this block.
+All four flags resolved. Changes reflected in week tables below.
 
 ---
 
-**Flag F3 — Day 3: Snatch Balance absent; OHS secondary**
+**Flag F2 — Day 2: Chest hypertrophy → Overhead strength** ✅ RESOLVED — Option B
 
-Current D3 has no Snatch Balance. The training system lists it as Day 3's primary lead-up exercise (Berestov's подводящие упражнения principle). OHS is currently 3×3 secondary; training system prescribes 4×4–6 primary.
+Incline Press + Weighted Dips removed. Replaced with:
+- **Push Press 4×5** — direct jerk carryover, primary overhead strength builder
+- **Strict Press 3×5** — lockout stability, shoulder endurance under fatigue
+- **Wide OHP removed** — redundant with Push Press + Strict Press overhead volume
+- **Front Rack Holds 3×20s @ 80 kg added** — clean rack confidence, daily habit
 
-OHS at 50 kg is the current snatch ceiling. This is the most important structural weak point in the program.
-
-**Option A:** Add Snatch Balance (3×3 @ 55–65% snatch TM = 35–41 kg) before OHS. Replace one FS volume set with an OHS set to make it 4×4. Run time: adds ~10 min to D3.
-**Option B:** Keep current D3 as-is. Rely on D1 OHS sets for development. Accept slower OHS progress.
-
----
-
-**Flag F4 — Day 4: Missing jerk back-off sets**
-
-After the daily max single, the training system (Golovinsky/Everett) calls for 2–3 back-off sets at 85% of the top single. These volume sets at near-max load are where motor pattern consolidation happens.
-
-Current D4 goes directly from the daily max single to Push Press, skipping the back-off entirely.
-
-**Option A:** Add `Jerk back-off: 2×3 @ 85% of today's single` immediately after the daily max. Start in Week 4 when daily max singles begin. Adds ~8 min to D4.
-**Option B:** Keep D4 as-is. The C&J block provides additional jerk practice at lower loads.
+Reasoning: Jerk is the primary weak point (80 kg clean / 65 kg jerk = 81% ratio; target 85%+). Every upper session should address this directly. Chest hypertrophy deferred to Block 2 accessory work.
 
 ---
 
-**Flag F5 — Day 5: Klokov singles vs no-PRs rule**
+**Flag F3 — Day 3: Snatch Balance added; OHS upgraded** ✅ RESOLVED — Option A
 
-Current D5 has Klokov Squat daily max singles (5–7s descent, 10s pause at bottom, max effort). This is a significant CNS demand on a 5.5h sleep day.
+- **Snatch Balance 3×3 added** before OHS — Berestov's lead-up principle, direct OHS transfer
+- **OHS upgraded to 4×4** (was 3×3 secondary; now co-primary with Snatch Balance)
+- Load sequence: SB → FS single → OHS (shoulder pre-fatigued from SB improves OHS position hold)
+- Time note: D3 hard stop 3pm. If running long, drop 1 FS volume set (keep the singles).
 
-The training system explicitly states Day 5 is a "65–70% only, no PRs, tissue day not performance day" session. Klokov singles on a 5.5h post-shift day contradict this and risk both quality degradation and injury.
+Reasoning: OHS 50 kg is the snatch ceiling. It must be treated as primary, not secondary. Snatch Balance forces the receiving position under load — the fastest route to OHS improvement.
 
-**Option A:** Keep Klokov singles as written. The movement is technical not explosive; the pause and tempo reduce spinal loading. Monitor whether CNS fatigue from D4 + 5.5h sleep is affecting rep quality.
-**Option B:** Move Klokov singles to Day 1 (Monday — best recovery). Replace D5 with Klokov Squats at 65–70% (3×5, no singles), preserving the movement pattern but removing the intensity demand.
+---
+
+**Flag F4 — Day 4: Jerk back-off sets added** ✅ RESOLVED — Option A
+
+From **Week 4 onward**: after the daily max single, add **Jerk back-off 2×3 @ 85% of today's single**.
+- If today's single = 65 kg → back-off = 55 kg × 2×3
+- Starts Week 4 when daily max singles begin (Golovinsky protocol)
+- In Weeks 1–3 (prescribed sets): no back-off needed — the 4×3 block serves this function
+
+Reasoning: Motor pattern consolidation happens in volume after the max, not in the max itself. Golovinsky and Everett both specify this.
+
+---
+
+**Flag F5 — Day 5: Klokov singles moved to Day 1** ✅ RESOLVED — Option B
+
+- **Klokov Squat Daily Max Single moved to D1** (Mon — best recovery, full sleep)
+- **D5 keeps Klokov Squats** but as **3×5 @ 65–70% of D1 single** — technique reps, not max effort
+- Rationale: D5 is 5.5h sleep post-shift. CNS max effort on Klokov = injury risk and quality degradation. D1 has full recovery — the movement gets a proper max attempt.
 
 ---
 
@@ -59,10 +58,77 @@ The training system explicitly states Day 5 is a "65–70% only, no PRs, tissue 
 
 **Goal:** Build the tissue base. No competition lifts from floor. Hang variations and partials only.
 **Schedule:** Summer 5-day (Mon/Tue/Wed/Thu/Sat). School term: drop D5, D4 moves to Friday.
-**Auto-regulation:** BS singles (D1), FS singles (D3), Klokov singles (D5) are feel-based. Climb to the heaviest single that is solid and fast. No grinding misses.
-**Back pain protocol:** 🟡 (1–3/10) → reduce pull loads 15%, front squat replaces BS. 🔴 (4+/10) → no axial loading, leg press/belt squat only, maintain OHS and jerk.
+**Auto-regulation:** BS singles (D1), Klokov singles (D1), FS singles (D3) are feel-based. Climb to the heaviest single that is solid and fast. No grinding misses.
 
-**Session opener (every day):** Muscle Snatch 2×3 @ load shown. No leg drive. Deliberate. This is a pattern touch, not a warm-up set.
+**Back pain protocol (updated):**
+- 🟢 (<2/10) → proceed as programmed
+- 🟡 (2–3/10) → reduce all loads 15–20%, front squat replaces BS single, skip pulls
+- 🔴 (>3/10) → no axial loading; leg press/belt squat only, maintain OHS and jerk from rack
+
+**Mandatory pre-session warm-up (every day, every session):**
+McGill Big Three — 5 min, non-negotiable:
+1. Modified curl-up — 3×8/side
+2. Side plank — 3×30s/side
+3. Bird-dog — 3×10/side
+Then: 5 min aerobic (bike or walk) + mobility flow (thoracic rotation, hip flexor, ankle)
+
+**Session opener (every day):** Muscle Snatch 2×3 @ load shown. No leg drive. Deliberate. Pattern touch, not warm-up.
+
+---
+
+### Per-Day Exercise Skeleton (constant across Block 1, loads vary by week)
+
+**D1 — Snatch + Posterior Chain (Mon ⭐⭐⭐)**
+1. Muscle Snatch — 2×3 (opener)
+2. Hang Power Snatch — 5×3
+3. Overhead Squat — 3×3 (Ph1) / 4×3 (Ph2)
+4. Back Squat — Daily Max Single (feel-based)
+5. Klokov Squat — Daily Max Single (moved from D5; 5–7s descent, 10s pause)
+6. Good Morning — 4×8
+7. Weighted Pull-up — 4×6–8
+8. GHR — 3×8
+
+**D2 — Clean + Overhead Strength (Tue ⭐⭐⭐)**
+1. Muscle Snatch — 2×3 (opener)
+2. Hang Power Clean — 5×3
+3. Clean Pull — 4×4
+4. Push Press — 4×5 *(replaces Incline Press)*
+5. Strict Press — 3×5 *(replaces Dips)*
+6. Klokov Trapi — 4×8
+7. Front Rack Holds — 3×20s @ 80 kg *(new)*
+8. Dead Bug — 3×10/side
+
+**D3 — Front Squat + OHS Development (Wed ⭐⭐)**
+1. Muscle Snatch — 2×3 (opener)
+2. Snatch Balance — 3×3 *(new — lead-up before OHS)*
+3. Front Squat — Daily Max Single + 3×4 volume
+4. Overhead Squat — 4×4 *(upgraded from 3×3; co-primary with SB)*
+5. Snatch High Pull — 3×4
+6. RDL — 4×6
+7. GHR — 3×10
+8. Plank — 3×50s
+*Hard stop 3pm. If short on time: drop 1 FS volume set.*
+
+**D4 — Jerk Priority (Thu ⭐⭐)**
+1. Muscle Snatch — 2×3 (opener)
+2. Jerk from Rack — 4×3 prescribed (Ph1 Wk1–3) / Daily Max Single (Ph2 from Wk4)
+3. Jerk back-off — 2×3 @ 85% of single *(from Wk4 only)*
+4. Push Press — 4×5
+5. Clean & Jerk — 4×(1+2)
+6. Sots Press — 3×5
+7. Behind Neck Press — 3×6
+8. Split Jerk Footwork — 3×5 unloaded *(from Wk5 only — footwork only, no load)*
+9. Pallof Press — 3×10/side
+*5.5h sleep day — no grinding on jerk singles*
+
+**D5 — Active Hypertrophy + Technique (Sat ⭐⭐)**
+1. Muscle Snatch — 2×3 (opener)
+2. Klokov Squat — 3×5 @ 65–70% of D1 single *(no max singles)*
+3. Berestov Squat — 3×9
+4. Lunge — 3×8/leg
+5. Face Pull — 3×15
+6. Ab Wheel — 3×8–10
+*No PRs. No max effort. Tissue day.*
 
 ---
 
@@ -79,11 +145,11 @@ New loading zone. Prioritize technique over weight on every set. Feel each posit
 
 | Day | Primary | Load | Secondary | Notes |
 |-----|---------|------|-----------|-------|
-| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 | 50 kg / 40 kg | BS single (feel 95–105), GM 4×8·50, Pull-up 4×6·BW+5, GHR 3×8·5 | MS opener 2×3·42 |
-| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 58 kg / 85 kg | Inc Press 4×8·58, Dips 4×8·BW+20, Trapi 4×8·55, Wide OHP 4×6·35, Dead Bug 3×10 | MS opener 2×3·42 |
-| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 82–90 / 72 kg | RDL 4×6·75, GHR 3×10·BW, SHP 3×4·70, OHS 3×3·40, Plank 3×50s | MS opener 2×3·42. Hard stop 3pm |
-| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 52 kg / 50 kg | C&J 4×(1+2)·55, Sots 3×5·25, BNP 3×6·35, Pallof 3×10 | MS opener 2×3·40. 5.5h sleep — no grinding |
-| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 85–95 / 60 kg | Lunge 3×8/leg·40, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·42. No PRs |
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 / BS single / Klokov single | 50 / 40 / feel 95–105 / feel 90–100 | GM 4×8·50, Pull-up 4×6·BW+5, GHR 3×8·5 | MS opener 2×3·42 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 58 / 85 | PP 4×5·50, SP 3×5·38, Trapi 4×8·55, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·42 |
+| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 38 / feel 82–90 / 72 / 40 | SHP 3×4·70, RDL 4×6·75, GHR 3×10·BW, Plank 3×50s | MS opener 2×3·42. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 52 / 50 | C&J 4×(1+2)·55, Sots 3×5·25, BNP 3×6·35, Pallof 3×10 | MS opener 2×3·40. 5.5h sleep — no grinding |
+| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 62 / 60 | Lunge 3×8/leg·40, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·42. No PRs |
 
 ## Week 2 — Phase 1 · 65–72% TM · +2.5 kg primary lifts
 
@@ -92,11 +158,11 @@ Loads up 2.5 kg across primary barbell lifts from Week 1. Same technique standar
 
 | Day | Primary | Load | Secondary | Notes |
 |-----|---------|------|-----------|-------|
-| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 | 52 kg / 42 kg | BS single (feel 100–110), GM 4×8·52, Pull-up 4×6·BW+5, GHR 3×8·7 | MS opener 2×3·44 |
-| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 60 kg / 87 kg | Inc Press 4×8·62, Dips 4×8·BW+20, Trapi 4×8·57, Wide OHP 4×6·37, Dead Bug 3×10 | MS opener 2×3·44 |
-| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 86–94 / 76 kg | RDL 4×6·77, GHR 3×10·BW, SHP 3×4·73, OHS 3×3·42, Plank 3×55s | MS opener 2×3·44. Hard stop 3pm |
-| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 55 kg / 52 kg | C&J 4×(1+2)·57, Sots 3×5·27, BNP 3×6·37, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
-| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 88–98 / 62 kg | Lunge 3×8/leg·42, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 / BS single / Klokov single | 52 / 42 / feel 100–110 / feel 93–103 | GM 4×8·52, Pull-up 4×6·BW+5, GHR 3×8·7 | MS opener 2×3·44 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 60 / 87 | PP 4×5·52, SP 3×5·40, Trapi 4×8·57, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·44 |
+| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 40 / feel 86–94 / 76 / 42 | SHP 3×4·73, RDL 4×6·77, GHR 3×10·BW, Plank 3×55s | MS opener 2×3·44. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 55 / 52 | C&J 4×(1+2)·57, Sots 3×5·27, BNP 3×6·37, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
+| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 64 / 62 | Lunge 3×8/leg·42, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
 
 ## Week 3 — Phase 1 · 65–72% TM · +2.5 kg from Week 2 · Phase 1 peak
 
@@ -105,76 +171,77 @@ Jerk: if 57 kg prescribed sets feel very easy, note it — Phase 2 daily max sta
 
 | Day | Primary | Load | Secondary | Notes |
 |-----|---------|------|-----------|-------|
-| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 | 54 kg / 44 kg | BS single (feel 105–113), GM 4×8·55, Pull-up 4×6·BW+7, GHR 3×8·8 | MS opener 2×3·44 |
-| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 62 kg / 90 kg | Inc Press 4×8·65, Dips 4×8·BW+22, Trapi 4×8·60, Wide OHP 4×6·40, Dead Bug 3×10 | MS opener 2×3·44 |
-| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 90–98 / 80 kg | RDL 4×6·80, GHR 3×10·BW, SHP 3×4·76, OHS 3×3·44, Plank 3×60s | MS opener 2×3·44. Hard stop 3pm |
-| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 57 kg / 54 kg | C&J 4×(1+2)·60, Sots 3×5·28, BNP 3×6·40, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
-| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 90–100 / 64 kg | Lunge 3×8/leg·44, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 / BS single / Klokov single | 54 / 44 / feel 105–113 / feel 96–106 | GM 4×8·55, Pull-up 4×6·BW+7, GHR 3×8·8 | MS opener 2×3·44 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 62 / 90 | PP 4×5·55, SP 3×5·42, Trapi 4×8·60, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·44 |
+| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 42 / feel 90–98 / 80 / 44 | SHP 3×4·76, RDL 4×6·80, GHR 3×10·BW, Plank 3×60s | MS opener 2×3·44. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 57 / 54 | C&J 4×(1+2)·60, Sots 3×5·28, BNP 3×6·40, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
+| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 65 / 64 | Lunge 3×8/leg·44, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
 
 ---
 
 ### Phase 2 — Weeks 4–6: 72–80% TM · Auto-regulation begins
 
 Jerk transitions to daily max singles (Golovinsky protocol): warm up 50%→60%→70%→80%, then add 2.5–5 kg until the set feels maximal but not a grind. Stop at the heaviest solid single. No misses.
-OHS increases to 4 sets — the ceiling is rising, this is the primary adaptation target.
+**Jerk back-off begins Week 4:** 2×3 @ 85% of today's single, immediately after the max.
+OHS increases to 4 sets on D1 — the ceiling is rising, this is the primary adaptation target.
 
 ---
 
-## Week 4 — Phase 2 · 72–80% TM · Jerk singles begin
+## Week 4 — Phase 2 · 72–80% TM · Jerk singles + back-off begin
 
-First week of daily max jerk singles. Open conservatively — target around 60–62 kg. The goal is learning the auto-regulation, not a PR. OHS now 4 sets.
-🔴 Back pain: same substitutions. Jerk: proceed normally (no axial loading in jerk from rack).
-
-| Day | Primary | Load | Secondary | Notes |
-|-----|---------|------|-----------|-------|
-| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 | 56 kg / 46 kg | BS single (feel 107–115), GM 4×8·57, Pull-up 4×6·BW+8, GHR 3×8·10 | MS opener 2×3·46. OHS now 4 sets |
-| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 64 kg / 92 kg | Inc Press 4×8·68, Dips 4×8·BW+24, Trapi 4×8·62, Wide OHP 4×6·42, Dead Bug 3×10 | MS opener 2×3·46 |
-| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 92–100 / 83 kg | RDL 4×6·82, GHR 3×10·5, SHP 3×4·78, OHS 3×3·46, Plank 3×60s | MS opener 2×3·46. Hard stop 3pm |
-| D4 Thu ⭐⭐ | **Jerk daily max single** / Push Press 4×5 | feel ~60–65 kg / 56 kg | C&J 4×(1+2)·62, Sots 3×5·30, BNP 3×6·42, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep. Conservative first single |
-| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 93–103 / 66 kg | Lunge 3×8/leg·46, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
-
-## Week 5 — Phase 2 · 72–80% TM · +2.5 kg from Week 4
-
-Jerk auto-regulation is now familiar. Push the daily max higher if the set felt solid last week.
-Target jerk single: last week's max + 2.5 kg if it was clean.
+First week of daily max jerk singles. Open conservatively — target ~60–62 kg. Goal is learning auto-regulation, not a PR. OHS now 4 sets on D1.
+🔴 Back pain: same substitutions. Jerk: proceed normally.
 
 | Day | Primary | Load | Secondary | Notes |
 |-----|---------|------|-----------|-------|
-| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 | 58 kg / 48 kg | BS single (feel 110–118), GM 4×8·60, Pull-up 4×6·BW+10, GHR 3×8·10 | MS opener 2×3·46 |
-| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 66 kg / 95 kg | Inc Press 4×8·70, Dips 4×8·BW+24, Trapi 4×8·64, Wide OHP 4×6·44, Dead Bug 3×10 | MS opener 2×3·46 |
-| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 95–102 / 86 kg | RDL 4×6·85, GHR 3×10·5, SHP 3×4·80, OHS 3×3·48, Plank 3×65s | MS opener 2×3·46. Hard stop 3pm |
-| D4 Thu ⭐⭐ | Jerk daily max / Push Press 4×5 | feel ~63–68 kg / 58 kg | C&J 4×(1+2)·64, Sots 3×5·30, BNP 3×6·44, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep |
-| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 96–105 / 68 kg | Lunge 3×8/leg·48, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 / BS single / Klokov single | 56 / 46 / feel 107–115 / feel 98–108 | GM 4×8·57, Pull-up 4×6·BW+8, GHR 3×8·10 | MS opener 2×3·46. OHS now 4 sets |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 64 / 92 | PP 4×5·57, SP 3×5·44, Trapi 4×8·62, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·46 |
+| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 44 / feel 92–100 / 83 / 46 | SHP 3×4·78, RDL 4×6·82, GHR 3×10·5, Plank 3×60s | MS opener 2×3·46. Hard stop 3pm |
+| D4 Thu ⭐⭐ | **Jerk daily max / Back-off 2×3·85% / PP 4×5** | feel ~60–65 / calc / 56 | C&J 4×(1+2)·62, Sots 3×5·30, BNP 3×6·42, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep. Conservative first single. Back-off starts this week |
+| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 67 / 66 | Lunge 3×8/leg·46, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
+
+## Week 5 — Phase 2 · 72–80% TM · +2.5 kg · Split footwork begins
+
+Jerk auto-regulation familiar. Push the daily max if last week's single was clean.
+Split jerk footwork drills begin on D4 — unloaded, footwork and landing only.
+
+| Day | Primary | Load | Secondary | Notes |
+|-----|---------|------|-----------|-------|
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 / BS single / Klokov single | 58 / 48 / feel 110–118 / feel 100–110 | GM 4×8·60, Pull-up 4×6·BW+10, GHR 3×8·10 | MS opener 2×3·46 |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 66 / 95 | PP 4×5·60, SP 3×5·46, Trapi 4×8·64, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·46 |
+| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 46 / feel 95–102 / 86 / 48 | SHP 3×4·80, RDL 4×6·85, GHR 3×10·5, Plank 3×65s | MS opener 2×3·46. Hard stop 3pm |
+| D4 Thu ⭐⭐ | **Jerk daily max / Back-off 2×3·85% / PP 4×5** | feel ~63–68 / calc / 58 | C&J 4×(1+2)·64, Sots 3×5·30, BNP 3×6·44, **Split footwork 3×5·unloaded**, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep. Footwork: stance only, no bar |
+| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 68 / 68 | Lunge 3×8/leg·48, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
 
 ## Week 6 — Phase 2 · 72–80% TM · Phase 2 peak · Prepare for deload
 
-Last heavy week before deload. Push the jerk single — this is the last opportunity before Week 8 test.
-Target jerk: 67–70 kg if form has been solid on D4. BS single: attempt 115–118 kg if feeling strong.
+Last heavy week. Push the jerk single — last opportunity before Week 8 test.
+Target jerk: 67–70 kg if form solid on D4. BS single: attempt 115–118 kg if feeling strong.
 
 | Day | Primary | Load | Secondary | Notes |
 |-----|---------|------|-----------|-------|
-| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 | 60 kg / 50 kg | BS single (feel 112–118), GM 4×8·62, Pull-up 4×6·BW+10, GHR 3×8·12 | MS opener 2×3·48. OHS target 50 kg — Block 1 milestone |
-| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 68 kg / 97 kg | Inc Press 4×8·72, Dips 4×8·BW+26, Trapi 4×8·66, Wide OHP 4×6·46, Dead Bug 3×10 | MS opener 2×3·48 |
-| D3 Wed ⭐⭐ | FS single / FS vol 3×4 | feel 97–102 / 88 kg | RDL 4×6·88, GHR 3×10·8, SHP 3×4·83, OHS 3×3·50, Plank 3×65s | MS opener 2×3·48. Hard stop 3pm |
-| D4 Thu ⭐⭐ | Jerk daily max / Push Press 4×5 | feel ~65–70 kg / 60 kg | C&J 4×(1+2)·66, Sots 3×5·32, BNP 3×6·46, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep. Phase 2 peak single |
-| D5 Sat ⭐⭐ | Klokov singles / Berestov 3×9 | feel 98–107 / 70 kg | Lunge 3×8/leg·50, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·48. No PRs |
+| D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 / BS single / Klokov single | 60 / 50 / feel 112–118 / feel 103–113 | GM 4×8·62, Pull-up 4×6·BW+10, GHR 3×8·12 | MS opener 2×3·48. OHS target 50 kg — Block 1 milestone |
+| D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 68 / 97 | PP 4×5·62, SP 3×5·48, Trapi 4×8·66, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·48 |
+| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 48 / feel 97–102 / 88 / 50 | SHP 3×4·83, RDL 4×6·88, GHR 3×10·8, Plank 3×65s | MS opener 2×3·48. Hard stop 3pm |
+| D4 Thu ⭐⭐ | **Jerk daily max / Back-off 2×3·85% / PP 4×5** | feel ~65–70 / calc / 60 | C&J 4×(1+2)·66, Sots 3×5·32, BNP 3×6·46, Split footwork 3×5·unloaded, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep. Phase 2 peak single |
+| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 70 / 70 | Lunge 3×8/leg·50, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·48. No PRs |
 
 ---
 
 ### Deload — Week 7: Volume −40% · Intensity Maintained
 
 Same loads as Week 6. Fewer sets. No PRs, no max singles. Let the adaptation from Weeks 1–6 express itself.
-Film every session. This is the best week to catch technical errors now that fatigue is low.
+Film every session. Lowest fatigue of the block — best week to spot technical errors.
 
 ## Week 7 — Deload · Same loads · Sets −40%
 
 | Day | Primary | Load | Secondary | Notes |
 |-----|---------|------|-----------|-------|
-| D1 Mon ⭐⭐⭐ | HPS 3×3 / OHS 2×3 | 56 kg / 44 kg | BS 3×1·95 (no max), GM 2×8·57, Pull-up 2×6·BW+5, GHR 2×8·8 | MS opener 2×3·44. Technique priority |
-| D2 Tue ⭐⭐⭐ | HPC 3×3 / Clean Pull 2×4 | 64 kg / 90 kg | Inc Press 2×8·65, Dips 2×8·BW+20, Trapi 2×8·60, Wide OHP 2×6·40 | MS opener 2×3·44 |
-| D3 Wed ⭐⭐ | FS 3×1·85 / FS vol 2×4 | 85 kg / 80 kg | RDL 2×6·80, GHR 2×10·BW, SHP 2×4·76, OHS 2×3·44, Plank 2×60s | MS opener 2×3·44. Hard stop 3pm |
-| D4 Thu ⭐⭐ | Jerk 3×3 / Push Press 2×5 | 57 kg / 54 kg | C&J 2×(1+2)·60, Sots 2×5·28, BNP 2×6·40 | MS opener 2×3·42. 5.5h sleep. Prescribed only, no singles |
-| D5 Sat ⭐⭐ | Berestov 2×9 | 64 kg | Lunge 2×8/leg·44, Face Pull 2×15 | MS opener 2×3·44. No Klokov singles. Light only |
+| D1 Mon ⭐⭐⭐ | HPS 3×3 / OHS 2×3 / BS 3×1·95 (no max) | 56 / 44 / 95 | GM 2×8·57, Pull-up 2×6·BW+5, GHR 2×8·8 | MS opener 2×3·44. No Klokov singles. Technique priority |
+| D2 Tue ⭐⭐⭐ | HPC 3×3 / Clean Pull 2×4 | 64 / 90 | PP 3×5·55, SP 2×5·42, Trapi 2×8·60, FRH 2×20s·80 | MS opener 2×3·44 |
+| D3 Wed ⭐⭐ | SB 2×3 / FS 3×1·85 / FS vol 2×4 / OHS 2×4 | 38 / 85 / 80 / 44 | SHP 2×4·76, RDL 2×6·80, GHR 2×10·BW, Plank 2×60s | MS opener 2×3·44. Hard stop 3pm |
+| D4 Thu ⭐⭐ | Jerk 3×3 / Push Press 2×5 | 57 / 54 | C&J 2×(1+2)·60, Sots 2×5·28, BNP 2×6·40, Split footwork 2×5·unloaded | MS opener 2×3·42. 5.5h sleep. Prescribed only, no singles, no back-off |
+| D5 Sat ⭐⭐ | Klokov 2×5 / Berestov 2×9 | 64 / 64 | Lunge 2×8/leg·44, Face Pull 2×15 | MS opener 2×3·44. Light only |
 
 ---
 
@@ -182,7 +249,7 @@ Film every session. This is the best week to catch technical errors now that fat
 
 No volume work this week — only warm-up and max attempts. One lift tested per session.
 Rest 3–5 min between attempts. Stop at the first miss. Record every attempt.
-Note: No floor classics in Block 1 — test HPS and HPC as snatch/clean proxies.
+No floor classics in Block 1 — test HPS and HPC as snatch/clean proxies.
 
 ## Week 8 — Test Week
 
@@ -215,7 +282,8 @@ Check ALL boxes before starting Block 2. If any are unchecked, repeat the Phase 
 
 ## Block 2 — Technique Consolidation (Weeks 9–16)
 **Load zone:** 70–85% TM · **Key change:** Introduce competition lifts from floor (snatch + clean)
-**New on D4:** Jerk back-off sets added — 2×3 @ 85% of daily max single
+**New on D4:** Jerk back-off sets continue — 2×3 @ 85% of daily max single (carried from Block 1)
+**New on D4:** Split jerk loading begins if Block 2 prerequisites met (OHS ≥ 60 kg, footwork grooved)
 
 | Week | Focus | Load | Notes |
 |------|-------|------|-------|
@@ -309,11 +377,13 @@ Move when **ALL** of the following are true:
 
 ---
 
-### Non-Negotiable Long-Term Rules (All 8 Sources)
+### Non-Negotiable Long-Term Rules (All 9 Sources)
 
-1. Never train through sharp back pain (4+/10) — substitute, don't grind
+1. Never train through sharp back pain (>3/10) — substitute, don't grind
 2. Film every session — self-coaching is only possible with visual feedback
 3. Jerk must follow clean by 10 kg max — if gap opens, return to jerk priority
 4. OHS must stay 15–20% above current snatch max at all times
 5. 8-week cycle is law — test, assess, adjust; never run indefinitely without a reset
 6. Touch competition movements every session — even 2×3 at 50%
+7. McGill Big Three before every session — non-negotiable regardless of how good the back feels
+8. Sleep gates intensity — if sleep <6h, reduce loads 15–20% or switch to technique-only
