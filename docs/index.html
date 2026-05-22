@@ -1108,15 +1108,15 @@ const SUPPS = [
     warning:"✅ DISCONTINUED: Replaced by Vitamin D3+K2. Stop taking standalone D3.",
   },
   {
-    id:"magnesium", name:"Hi-Absorb Magnesium", dose:"400mg (2×200mg)", status:"current",
+    id:"magnesium", name:"Magnesium Glycinate", dose:"210mg elemental (per serving)", status:"current",
     priority:"essential", category:"recovery",
     timing:[
       {label:"BEFORE SLEEP", when:"30–60 min before your sleep window", color:"#8b5cf6",
-       note:"Magnesium directly improves sleep quality and depth — your most compromised variable as a night shift worker. Take before both sleep windows: daytime sleep after shift AND night sleep on off days."},
+       note:"Magnesium directly improves sleep quality and depth — your most compromised variable as a night shift worker. Take before both sleep windows: daytime sleep after shift AND night sleep on off days. Glycinate form is among the best absorbed — pairs well with Glycine before sleep."},
     ],
-    rationale:"Critical for muscle recovery, back pain management (QL tension), and sleep architecture. You're currently on 400mg which is solid. Magnesium glycinate or malate form is ideal.",
-    nightShift:"Take at ~8–8:30am before sleeping post-shift. On off days, take at your normal bedtime.",
-    warning:"Consider increasing to 400mg if currently only taking 200mg (2 caps = 400mg total — you're good).",
+    rationale:"Critical for muscle recovery, back pain management (QL tension), and sleep architecture. Glycinate form has superior bioavailability and is gentler on digestion than oxide. 210mg elemental is a solid dose — can stack 2 servings (420mg) if sleep quality is still poor.",
+    nightShift:"Take at ~8–8:30am before sleeping post-shift. On off days, take at your normal bedtime. Pairs with Ashwagandha and Glycine.",
+    warning:null,
   },
   {
     id:"bcomplex", name:"B-Right B Complex", dose:"1 cap", status:"current",
@@ -1229,7 +1229,53 @@ const SUPPS = [
     warning:null,
   },
 
-  // ── INCOMING ─────────────────────────────────────────────────────────────
+  // ── NEW ARRIVALS ─────────────────────────────────────────────────────────
+  {
+    id:"taurine", name:"Taurine", dose:"1000mg (1 cap)", status:"current",
+    priority:"medium", category:"recovery",
+    timing:[
+      {label:"POST-TRAINING", when:"Immediately after session", color:"#5a9e45",
+       note:"Post-training is the primary window — repletes electrolytes, reduces oxidative stress from the session, and supports recovery. Can also be stacked pre-training if performance is the goal."},
+    ],
+    rationale:"Electrolyte balance and cardiovascular support — directly relevant for night shift workers whose sodium-potassium regulation is chronically disrupted. Reduces DOMS and muscle soreness. Antioxidant properties counter training-induced oxidative stress. Evidence for improved power output and reduced fatigue.",
+    nightShift:"Post-gym, regardless of session time. On rest/shift days: with any main meal.",
+    warning:null,
+  },
+  {
+    id:"glycine", name:"Glycine", dose:"3g (1 serving)", status:"current",
+    priority:"high", category:"recovery",
+    timing:[
+      {label:"BEFORE SLEEP", when:"30 min before sleep window", color:"#8b5cf6",
+       note:"3g before sleep shown to improve sleep quality and reduce time to sleep onset — directly targets your most compromised variable. Pairs with Magnesium Glycinate and Ashwagandha. Also: take pre-training alongside Collagen — glycine is the primary amino acid in collagen and amplifies tendon synthesis."},
+    ],
+    rationale:"Dual purpose: (1) sleep quality — 3g glycine before sleep measurably improves slow-wave sleep and reduces fatigue on waking; directly addresses night shift sleep deficit. (2) Tendon synthesis — glycine is the most abundant amino acid in collagen; pre-training glycine amplifies the collagen peptides + VitC protocol already in your stack. High-value addition.",
+    nightShift:"Before daytime sleep (8–8:30am after shift) AND before night sleep on off days. Can double-dose pre-training (3g with Collagen) for tendon protocol.",
+    warning:"Can also take 3g pre-training alongside Collagen + VitC for enhanced tendon synthesis. Two windows of use: sleep quality AND pre-training tendon protocol.",
+  },
+  {
+    id:"glutamine", name:"L-Glutamine", dose:"5g (1 serving)", status:"current",
+    priority:"medium", category:"recovery",
+    timing:[
+      {label:"POST-TRAINING", when:"After session, with creatine", color:"#5a9e45",
+       note:"Post-training is the primary window — gut permeability increases with heavy training and glutamine directly repairs intestinal barrier. Can also be taken before sleep for recovery."},
+    ],
+    rationale:"Gut integrity under training stress — glutamine is the primary fuel for enterocytes; heavy training transiently increases gut permeability and glutamine supplementation directly addresses this. Immune support for night shift workers (glutamine is primary fuel for immune cells). May reduce muscle soreness and accelerate recovery. Less critical than sleep/recovery supplements but solid addition given training volume.",
+    nightShift:"Post-gym on training days. On rest days, take before sleep. Shift days: after gym session.",
+    warning:null,
+  },
+  {
+    id:"argcitr", name:"L-Arginine + L-Citrulline", dose:"750mg/cap — take 4–6 caps (3–4.5g)", status:"current",
+    priority:"medium", category:"performance",
+    timing:[
+      {label:"PRE-TRAINING (30–60 MIN)", when:"With Collagen + VitC window", color:"#c94f3a",
+       note:"Nitric oxide precursors — take 30–60 min pre-training. Stacks naturally with the Collagen pre-training window. L-Citrulline is more bioavailable for NO production than arginine alone. At 750mg/cap: 4 caps = 3g, 6 caps = 4.5g. Target 3–4.5g for meaningful vasodilation."},
+    ],
+    rationale:"Nitric oxide production via arginine/citrulline → vasodilation → improved nutrient and oxygen delivery to working muscle. Particularly relevant for the jerk and clean pulls where vascular delivery to upper back, shoulders, and legs all matter simultaneously. Citrulline also reduces fatigue during high-rep accessory work and may reduce post-session DOMS.",
+    nightShift:"30–60 min before gym session regardless of time. Stack with Collagen + VitC in the pre-training window.",
+    warning:"Dose: 4–6 caps (3–4.5g) for meaningful effect. 1–2 caps will do nothing. Start with 4 caps and assess tolerance (may cause GI upset in some at higher doses).",
+  },
+
+  // ── DISCONTINUED ─────────────────────────────────────────────────────────
   {
     id:"fishOil", name:"Fish Oil EPA/DHA", dose:"2–3g EPA+DHA", status:"discontinued",
     priority:"essential", category:"recovery",
@@ -1242,7 +1288,7 @@ const SUPPS = [
     warning:"✅ DISCONTINUED: Omega-3 (1200mg EPA / 850mg DHA) already covers the target range. No need to add this.",
   },
   {
-    id:"d3k2", name:"Vitamin D3 + K2", dose:"5000IU D3 / 100–200mcg K2", status:"current",
+    id:"d3k2", name:"Vitamin D3 + K2", dose:"5000IU D3 (125mcg) / 100mcg K2", status:"current",
     priority:"essential", category:"foundational",
     timing:[
       {label:"WITH FAT-CONTAINING MEAL", when:"First meal after waking", color:"#d4a843",
@@ -1422,16 +1468,16 @@ function SuppsTab({checked, history, onToggle, suppNotes, onNoteChange}) {
     off: [
       {time:"On Waking", items:["B Complex (with breakfast)","Rhodiola (with breakfast)","Ginkgo (with breakfast)"]},
       {time:"With First Meal (fat-containing)", items:["D3+K2","Vitamin E 400IU","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
-      {time:"30–60 Min Pre-Training", items:["Collagen + Vitamin C (15g / 50mg VitC)"]},
-      {time:"Post-Training", items:["Creatine 5g"]},
+      {time:"30–60 Min Pre-Training", items:["Collagen + Vitamin C (15g / 50mg VitC)","Glycine 3g (tendon protocol)","L-Arginine + L-Citrulline (4–6 caps)"]},
+      {time:"Post-Training", items:["Creatine 5g","L-Glutamine 5g","Taurine 1g"]},
       {time:"Second Meal", items:["Glucosamine (2 caps)","Omega-3 (2 caps)","Glucosamine (2 caps remaining)"]},
-      {time:"Before Sleep", items:["Magnesium 400mg","Ashwagandha 450mg"]},
+      {time:"Before Sleep", items:["Magnesium Glycinate 210mg","Ashwagandha 450mg","Glycine 3g"]},
     ],
     shift: [
       {time:"~1pm (Wake + First Meal)", items:["D3+K2","Vitamin E","B Complex","Rhodiola","Ginkgo","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
-      {time:"~12:30–3pm (Gym)", items:["Collagen + VitC 30–60 min before session","Creatine post-session"]},
+      {time:"~12:30–3pm (Gym)", items:["Collagen + VitC 30–60 min before","Glycine 3g (with Collagen)","L-Arginine + L-Citrulline (4–6 caps)","Creatine + L-Glutamine + Taurine post-session"]},
       {time:"~5pm (Pre-Shift Meal)", items:["Omega-3 (2 caps)","Glucosamine (2 caps)"]},
-      {time:"~8–8:30am (After Shift, Before Sleep)", items:["Magnesium 400mg","Ashwagandha 450mg","Glucosamine (2 caps remaining)"]},
+      {time:"~8–8:30am (After Shift, Before Sleep)", items:["Magnesium Glycinate 210mg","Ashwagandha 450mg","Glycine 3g","Glucosamine (2 caps remaining)"]},
     ],
   };
 
