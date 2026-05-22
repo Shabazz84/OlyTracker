@@ -1097,15 +1097,15 @@ const SUPPS = [
     warning:null,
   },
   {
-    id:"d3", name:"Vitamin D3 5000IU", dose:"5000 IU", status:"current",
+    id:"d3", name:"Vitamin D3 5000IU", dose:"5000 IU", status:"discontinued",
     priority:"essential", category:"foundational",
     timing:[
       {label:"WITH FIRST MEAL", when:"With food containing fat", color:"#d4a843",
-       note:"Fat-soluble — needs dietary fat for absorption. Take with your biggest meal. On shift days that's your 1–2pm meal after waking."},
+       note:"Replaced by D3+K2. Do not take both."},
     ],
-    rationale:"Night shift workers are almost universally deficient. D3 directly impacts testosterone, strength output, bone density, and immune function. 5000IU is appropriate given your deficiency risk.",
-    nightShift:"Always take with your post-sleep meal (~1–2pm), not before bed. D3 can suppress melatonin — wrong timing disrupts already-compromised sleep.",
-    warning:"⚠️ Upgrade: when your D3+K2 arrives, switch to that product and discontinue standalone D3.",
+    rationale:"Replaced by D3+K2 combo. Discontinued.",
+    nightShift:"N/A — replaced by D3+K2.",
+    warning:"✅ DISCONTINUED: Replaced by Vitamin D3+K2. Stop taking standalone D3.",
   },
   {
     id:"magnesium", name:"Hi-Absorb Magnesium", dose:"400mg (2×200mg)", status:"current",
@@ -1152,15 +1152,15 @@ const SUPPS = [
     warning:null,
   },
   {
-    id:"omega3", name:"Omega-3", dose:"2500mg (4 caps)", status:"current",
+    id:"omega3", name:"Omega-3", dose:"2500mg (4 caps) — 1200mg EPA / 850mg DHA", status:"current",
     priority:"essential", category:"recovery",
     timing:[
       {label:"WITH LARGEST MEAL", when:"With your highest-fat meal of the day", color:"#5a9e45",
        note:"Fat-soluble, needs dietary fat for absorption. Splitting across 2 meals also works — 2 caps with 2 meals. Reduces fishy aftertaste and improves absorption."},
     ],
-    rationale:"Joint and tendon protection for Olympic lifting. Reduces post-session inflammation. Particularly important for wrists, elbows, shoulders under snatch and C&J load. This is your most important recovery supplement.",
+    rationale:"Joint and tendon protection for Olympic lifting. Reduces post-session inflammation. Particularly important for wrists, elbows, shoulders under snatch and C&J load. Provides 2050mg EPA+DHA total — meets the 2g daily target.",
     nightShift:"Split: 2 caps with 1pm meal, 2 caps with pre-shift meal (~5pm).",
-    warning:"Note: 2500mg total omega-3 is the product weight. Check the EPA+DHA content — aim for 2–3g EPA+DHA specifically, not just total fish oil.",
+    warning:null,
   },
   {
     id:"glucosamine", name:"Glucosamine Complex", dose:"4 caps", status:"current",
@@ -1231,29 +1231,29 @@ const SUPPS = [
 
   // ── INCOMING ─────────────────────────────────────────────────────────────
   {
-    id:"fishOil", name:"Fish Oil EPA/DHA", dose:"2–3g EPA+DHA", status:"incoming",
+    id:"fishOil", name:"Fish Oil EPA/DHA", dose:"2–3g EPA+DHA", status:"discontinued",
     priority:"essential", category:"recovery",
     timing:[
       {label:"SPLIT WITH MEALS", when:"2 meals with fat content", color:"#5a9e45",
-       note:"Split across 2 meals for better absorption and no fishy aftertaste. E.g. 2g EPA/DHA with 1pm meal, 1g with pre-shift meal."},
+       note:"Redundant — existing Omega-3 already provides 2050mg EPA+DHA."},
     ],
-    rationale:"Highest priority incoming supplement. Specifically for tendon and joint health under Olympic lifting load. Anti-inflammatory effect directly addresses back pain. When this arrives, assess whether your current omega-3 has sufficient EPA+DHA — you may be able to consolidate.",
-    nightShift:"Split across your two main meals of the day.",
-    warning:"When this arrives: check if it consolidates with your current omega-3 product. Target 2–3g EPA+DHA total daily from both sources combined.",
+    rationale:"Discontinued — existing Omega-3 (1200mg EPA + 850mg DHA = 2050mg EPA+DHA) already meets the 2g target.",
+    nightShift:"N/A — covered by existing Omega-3.",
+    warning:"✅ DISCONTINUED: Omega-3 (1200mg EPA / 850mg DHA) already covers the target range. No need to add this.",
   },
   {
-    id:"d3k2", name:"Vitamin D3 + K2", dose:"5000IU D3 / 100–200mcg K2", status:"incoming",
+    id:"d3k2", name:"Vitamin D3 + K2", dose:"5000IU D3 / 100–200mcg K2", status:"current",
     priority:"essential", category:"foundational",
     timing:[
       {label:"WITH FAT-CONTAINING MEAL", when:"First meal after waking", color:"#d4a843",
-       note:"Fat-soluble. Same timing as current D3. K2 directs calcium to bones rather than soft tissue — important given D3 supplementation at 5000IU."},
+       note:"Fat-soluble. K2 directs calcium to bones rather than soft tissue — important given D3 supplementation at 5000IU. Replaces standalone D3."},
     ],
     rationale:"Upgrade from standalone D3. K2 (MK-7 form preferred) ensures the calcium mobilised by D3 goes to bones and teeth rather than arteries or soft tissue. Directly supports bone density for Olympic lifting.",
-    nightShift:"Replace current D3 with this product. Same timing — with 1pm meal after waking.",
-    warning:"When this arrives: discontinue standalone D3 5000IU and standalone Vitamin E if the new product includes E. Don't double-dose.",
+    nightShift:"Same timing as old D3 — with 1pm meal after waking.",
+    warning:"⚠️ Standalone D3 5000IU is now discontinued — do not double-dose. If your D3+K2 product includes Vitamin E, discontinue standalone Vitamin E as well.",
   },
   {
-    id:"collagen", name:"Collagen Peptides + Vitamin C", dose:"15g collagen / 50mg VitC", status:"incoming",
+    id:"collagen", name:"Collagen Peptides + Vitamin C", dose:"15g collagen / 50mg VitC", status:"current",
     priority:"high", category:"recovery",
     timing:[
       {label:"PRE-TRAINING (30–60 MIN)", when:"30–60 min before session starts", color:"#c94f3a",
@@ -1421,15 +1421,15 @@ function SuppsTab({checked, history, onToggle, suppNotes, onNoteChange}) {
   const SCHEDULE = {
     off: [
       {time:"On Waking", items:["B Complex (with breakfast)","Rhodiola (with breakfast)","Ginkgo (with breakfast)"]},
-      {time:"With First Meal (fat-containing)", items:["D3 5000IU","Vitamin E 400IU","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
-      {time:"30–60 Min Pre-Training", items:["Collagen + Vitamin C (incoming)"]},
+      {time:"With First Meal (fat-containing)", items:["D3+K2","Vitamin E 400IU","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
+      {time:"30–60 Min Pre-Training", items:["Collagen + Vitamin C (15g / 50mg VitC)"]},
       {time:"Post-Training", items:["Creatine 5g"]},
       {time:"Second Meal", items:["Glucosamine (2 caps)","Omega-3 (2 caps)","Glucosamine (2 caps remaining)"]},
       {time:"Before Sleep", items:["Magnesium 400mg","Ashwagandha 450mg"]},
     ],
     shift: [
-      {time:"~1pm (Wake + First Meal)", items:["D3 5000IU","Vitamin E","B Complex","Rhodiola","Ginkgo","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
-      {time:"~12:30–3pm (Gym)", items:["Collagen + VitC 30–60 min before (incoming)","Creatine post-session"]},
+      {time:"~1pm (Wake + First Meal)", items:["D3+K2","Vitamin E","B Complex","Rhodiola","Ginkgo","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
+      {time:"~12:30–3pm (Gym)", items:["Collagen + VitC 30–60 min before session","Creatine post-session"]},
       {time:"~5pm (Pre-Shift Meal)", items:["Omega-3 (2 caps)","Glucosamine (2 caps)"]},
       {time:"~8–8:30am (After Shift, Before Sleep)", items:["Magnesium 400mg","Ashwagandha 450mg","Glucosamine (2 caps remaining)"]},
     ],
@@ -2664,7 +2664,14 @@ function SystemTab({week}) {
 function LmSettingsPanel() {
   const [cfg, setCfg] = React.useState(lmCfgStorage.get);
   const [saved, setSaved] = React.useState(false);
-  const save = () => { lmCfgStorage.save(cfg); setSaved(true); setTimeout(() => setSaved(false), 2000); };
+  const timerRef = React.useRef(null);
+  React.useEffect(() => () => clearTimeout(timerRef.current), []);
+  const save = () => {
+    lmCfgStorage.save(cfg);
+    setSaved(true);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setSaved(false), 2000);
+  };
   return (
     <div>
       <div style={{marginBottom:6}}>
@@ -2705,16 +2712,19 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
   const [expanded,  setExpanded]  = React.useState(false);
 
   React.useEffect(() => {
+    const dl = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
+    const bd = {};
+    dl.forEach(d => { bd[d.id] = { status:"done", notes:"" }; });
     const saved = reviewStorage.get(week);
     setForm(saved
-      ? { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
-      : { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false });
+      ? { rating:"green", energyTrend:"stable", days:bd, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
+      : { rating:"green", energyTrend:"stable", days:bd, injuries:[], generalNotes:"", ai:null, confirmed:false });
     setExpanded(false);
     setAiError(null);
-  }, [week]);
+  }, [week, isSummer]);
 
   const setDay    = (id, patch) => setForm(f => ({ ...f, days:{ ...f.days, [id]:{ ...f.days[id], ...patch } } }));
-  const addInjury = ()          => setForm(f => ({ ...f, injuries:[...f.injuries,{ bodyPart:"", type:"sharp", severity:"moderate" }] }));
+  const addInjury = ()          => setForm(f => ({ ...f, injuries:[...f.injuries,{ id:Date.now(), bodyPart:"", type:"sharp", severity:"moderate" }] }));
   const setInjury = (i, patch)  => setForm(f => ({ ...f, injuries:f.injuries.map((inj,idx) => idx===i ? {...inj,...patch} : inj) }));
   const removeInj = (i)         => setForm(f => ({ ...f, injuries:f.injuries.filter((_,idx) => idx!==i) }));
 
@@ -2737,6 +2747,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
 
   const handleSave = () => {
     const saved = reviewStorage.save(week, { ...form, confirmed:true });
+    if (!saved) return;
     setForm(prev => ({ ...prev, confirmed:true }));
     onSaved(saved);
   };
@@ -2816,7 +2827,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
           <div style={{fontSize:10,color:"var(--text3)",fontStyle:"italic"}}>None — tap + ADD if needed</div>
         )}
         {form.injuries.map((inj,i) => (
-          <div key={i} style={{marginBottom:6,padding:"8px 10px",background:"var(--bg3)",borderRadius:6,display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
+          <div key={inj.id ?? i} style={{marginBottom:6,padding:"8px 10px",background:"var(--bg3)",borderRadius:6,display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
             <input value={inj.bodyPart} onChange={e=>setInjury(i,{bodyPart:e.target.value})}
               placeholder="Body part (e.g. left bicep)"
               style={{flex:1,minWidth:90,background:"var(--bg2)",border:"1px solid var(--border)",
@@ -3289,6 +3300,9 @@ function OlyTracker() {
               </div>
               <div style={{fontSize:9,color:"var(--text3)",letterSpacing:2.5,fontFamily:"'DM Mono',monospace",marginTop:3}}>
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
+              </div>
+              <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
+                PROGRAM v2 · 2026-05-22
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
