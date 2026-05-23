@@ -2769,7 +2769,11 @@ function inferDaysFromLogs(week, dayList) {
   const weekLogs = Object.values(logs).filter(l => l.week === week);
   const result = {};
   dayList.forEach(d => {
-    const logged = weekLogs.some(l => l.dayLabel && l.dayLabel.split(" ")[0].toLowerCase() === d.id);
+    // dayLabel in logs is "DAY 1", "DAY 2" etc — extract number → "d1", "d2"
+    const logged = weekLogs.some(l => {
+      const m = l.dayLabel && l.dayLabel.match(/(\d+)/);
+      return m ? `d${m[1]}` === d.id : false;
+    });
     result[d.id] = { status: logged ? "done" : "skipped", notes: "" };
   });
   return result;
