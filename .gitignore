@@ -8,3 +8,4 @@ extraction.log
 dist/
 build/
 .env
+docs/key.js

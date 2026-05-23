@@ -35,6 +35,8 @@ const storage={
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>window.__CLAUDE_KEY=undefined;</script>
+<script src="key.js"></script>
 <script type="text/babel">
 const { useState, useEffect, useRef, useMemo } = React;
 
@@ -141,7 +143,13 @@ const reviewStorage = {
 const LM_CFG_KEY = "oly_lm_cfg";
 const LM_CFG_DEFAULT = { apiKey:"" };
 const lmCfgStorage = {
-  get:  () => { try { return JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || LM_CFG_DEFAULT; } catch { return LM_CFG_DEFAULT; } },
+  get:  () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || LM_CFG_DEFAULT;
+      if (!stored.apiKey && window.__CLAUDE_KEY) stored.apiKey = window.__CLAUDE_KEY;
+      return stored;
+    } catch { return { apiKey: window.__CLAUDE_KEY || "" }; }
+  },
   save: (cfg) => { try { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); } catch {} return cfg; },
 };
 
