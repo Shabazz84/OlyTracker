@@ -3191,6 +3191,7 @@ function OlyTracker() {
   const [toast,setToast]     = useState(null);
   const [newPR,setNewPR]     = useState({lift:"Back Squat",weight:"",reps:"1"});
   const [logForm,setLogForm] = useState(()=>({dayId:"d1",date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
+  const [logModal,setLogModal] = useState(false);
   const [prTab,setPrTab]     = useState("key");
   const [progTab,setProgTab] = useState("program");
   const PROGRAM_START_MS = new Date("2026-05-20").getTime();
@@ -3384,6 +3385,7 @@ function OlyTracker() {
     setLogs(updated);
     try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
     setLogForm(f=>({...f,date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
+    setLogModal(false);
     showToast("Session logged ✓");
   }
 
@@ -3634,10 +3636,12 @@ function OlyTracker() {
                       }}/>
                     </div>
                     {allComplete&&(
-                      <div style={{fontSize:10,color:"var(--green)",fontFamily:"'DM Mono',monospace",
-                        letterSpacing:1,marginTop:6,textAlign:"center"}}>
-                        ✓ SESSION COMPLETE — LOG YOUR SESSION
-                      </div>
+                      <button onClick={()=>{setLogForm(f=>({...f,dayId:day.id,date:new Date().toISOString().slice(0,10)}));setLogModal(true);}}
+                        style={{width:"100%",marginTop:8,padding:"8px",borderRadius:6,border:"1px solid var(--green)",
+                          background:"#5a9e4511",color:"var(--green)",fontSize:10,fontFamily:"'DM Mono',monospace",
+                          letterSpacing:1,cursor:"pointer"}}>
+                        ✓ COMPLETE SESSION
+                      </button>
                     )}
                   </div>
                 );
@@ -3650,8 +3654,17 @@ function OlyTracker() {
                 />
               ))}
 
+              {/* Complete session button */}
+              <button onClick={()=>{setLogForm(f=>({...f,dayId:day.id,date:new Date().toISOString().slice(0,10)}));setLogModal(true);}}
+                style={{width:"100%",marginTop:16,marginBottom:4,padding:"13px",borderRadius:8,
+                  border:"1px solid var(--gold)",background:"#d4a84311",
+                  color:"var(--gold)",fontSize:12,fontFamily:"'DM Mono',monospace",
+                  letterSpacing:1,cursor:"pointer"}}>
+                COMPLETE SESSION
+              </button>
+
               {/* Back pain protocol */}
-              <div style={{marginTop:16,background:"#120808",border:"1px solid #3a1818",borderRadius:8,padding:"12px 14px"}}>
+              <div style={{marginTop:12,background:"#120808",border:"1px solid #3a1818",borderRadius:8,padding:"12px 14px"}}>
                 <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--red)",letterSpacing:1.5,marginBottom:6}}>
                   ⚠️ BACK PAIN PROTOCOL
                 </div>
@@ -3674,113 +3687,6 @@ function OlyTracker() {
         {/* ═══ LOG ═══ */}
         {tab==="log" && (
           <div className="fade">
-            <Label>LOG SESSION — WEEK {week}</Label>
-            <Card style={{marginBottom:20}}>
-
-              {/* Date picker */}
-              <div style={{marginBottom:12}}>
-                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>DATE</label>
-                <Inp type="date" value={logForm.date} onChange={e=>setLogForm(f=>({...f,date:e.target.value}))}
-                  style={{colorScheme:"dark"}}/>
-              </div>
-
-              {/* Session selector */}
-              <div style={{marginBottom:12}}>
-                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>SESSION</label>
-                <Sel value={logForm.dayId} onChange={e=>setLogForm(f=>({...f,dayId:e.target.value}))}>
-                  {DAYS.map(d=><option key={d.id} value={d.id}>{d.label} — {d.schedule} — {d.name.replace("🎯 ","")}</option>)}
-                </Sel>
-              </div>
-
-              {/* Weights used */}
-              <div style={{marginBottom:12}}>
-                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>WEIGHTS USED</label>
-                <Inp placeholder="e.g. BS single: 112kg · Leg Press: 130kg · OHS: 45kg"
-                  value={logForm.weights} onChange={e=>setLogForm(f=>({...f,weights:e.target.value}))}/>
-              </div>
-
-              {/* Review dropdowns */}
-              <div style={{fontSize:9,color:"var(--text2)",letterSpacing:2,fontFamily:"'DM Mono',monospace",marginBottom:8,marginTop:4}}>POST-TRAINING REVIEW</div>
-
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
-                <div>
-                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>TECHNIQUE FEEL</label>
-                  <Sel value={logForm.techniqueFeel} onChange={e=>setLogForm(f=>({...f,techniqueFeel:e.target.value}))}>
-                    <option value="">— select</option>
-                    <option value="Clicked">✅ Clicked</option>
-                    <option value="Decent">👍 Decent</option>
-                    <option value="Inconsistent">⚠️ Inconsistent</option>
-                    <option value="Off today">❌ Off today</option>
-                  </Sel>
-                </div>
-                <div>
-                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>ENERGY LEVEL</label>
-                  <Sel value={logForm.energyLevel} onChange={e=>setLogForm(f=>({...f,energyLevel:e.target.value}))}>
-                    <option value="">— select</option>
-                    <option value="High">🔥 High</option>
-                    <option value="Normal">💪 Normal</option>
-                    <option value="Low">😴 Low</option>
-                    <option value="Post-shift">🌙 Post-shift</option>
-                  </Sel>
-                </div>
-              </div>
-
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
-                <div>
-                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>BACK PAIN (0–10)</label>
-                  <Inp type="number" min="0" max="10" placeholder="0"
-                    value={logForm.backPain} onChange={e=>setLogForm(f=>({...f,backPain:e.target.value}))}/>
-                </div>
-                <div>
-                  <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>POST NIGHT SHIFT?</label>
-                  <Sel value={logForm.nightShift} onChange={e=>setLogForm(f=>({...f,nightShift:e.target.value==="true"}))}>
-                    <option value="false">No</option>
-                    <option value="true">Yes — 5.5h sleep</option>
-                  </Sel>
-                </div>
-              </div>
-
-              <div style={{marginBottom:12}}>
-                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>FOCUS NEXT SESSION</label>
-                <Sel value={logForm.focusNext} onChange={e=>setLogForm(f=>({...f,focusNext:e.target.value}))}>
-                  <option value="">— select</option>
-                  <option value="Nothing — felt good">✅ Nothing — felt good</option>
-                  <option value="Bar path">📐 Bar path</option>
-                  <option value="Hip position">🦵 Hip position</option>
-                  <option value="Receiving position">📥 Receiving position</option>
-                  <option value="Jerk dip">⬇️ Jerk dip</option>
-                  <option value="Overhead lockout">🔒 Overhead lockout</option>
-                  <option value="First pull off floor">🏋️ First pull off floor</option>
-                  <option value="Footwork">👣 Footwork</option>
-                  <option value="OHS depth">📐 OHS depth</option>
-                </Sel>
-              </div>
-
-              {/* Session rating */}
-              <div style={{marginBottom:14}}>
-                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:8}}>SESSION RATING</label>
-                <div style={{display:"flex",gap:8}}>
-                  {["⭐","⭐⭐","⭐⭐⭐","⭐⭐⭐⭐","⭐⭐⭐⭐⭐"].map((stars,i)=>(
-                    <button key={i} onClick={()=>setLogForm(f=>({...f,rating:stars}))} style={{
-                      flex:1,padding:"8px 4px",borderRadius:5,cursor:"pointer",fontSize:12,
-                      border:"none",transition:"all 0.15s",
-                      background:logForm.rating===stars?"var(--gold)":"var(--bg2)",
-                      color:logForm.rating===stars?"#000":"var(--text3)",
-                    }}>{i+1}</button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Free notes */}
-              <div style={{marginBottom:14}}>
-                <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>NOTES (coach cues, observations)</label>
-                <Tex placeholder="Michael's cues, what felt different, PR attempts..."
-                  value={logForm.notes} onChange={e=>setLogForm(f=>({...f,notes:e.target.value}))}/>
-              </div>
-
-              <Btn onClick={handleLog}>LOG SESSION</Btn>
-            </Card>
-
             <Label>PAST SESSIONS</Label>
             {logEntries.length===0&&(
               <p style={{color:"var(--text3)",fontSize:13,fontStyle:"italic"}}>No sessions yet. Get under the bar.</p>
@@ -4106,6 +4012,128 @@ function OlyTracker() {
 
       </div>
     </div>
+
+    {/* ═══ LOG MODAL ═══ */}
+    {logModal && (
+      <div onClick={e=>{if(e.target===e.currentTarget)setLogModal(false);}}
+        style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",zIndex:200,overflowY:"auto",padding:"20px 16px 40px"}}>
+        <div style={{maxWidth:480,margin:"0 auto",background:"var(--bg1)",borderRadius:12,
+          border:"1px solid var(--border)",padding:"20px 16px"}}>
+
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:20,letterSpacing:0.5,color:"var(--gold)"}}>
+              COMPLETE SESSION
+            </div>
+            <button onClick={()=>setLogModal(false)}
+              style={{background:"transparent",border:"none",color:"var(--text3)",fontSize:22,cursor:"pointer",lineHeight:1}}>×</button>
+          </div>
+
+          {/* Date */}
+          <div style={{marginBottom:12}}>
+            <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>DATE</label>
+            <Inp type="date" value={logForm.date} onChange={e=>setLogForm(f=>({...f,date:e.target.value}))} style={{colorScheme:"dark"}}/>
+          </div>
+
+          {/* Session */}
+          <div style={{marginBottom:12}}>
+            <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>SESSION</label>
+            <Sel value={logForm.dayId} onChange={e=>setLogForm(f=>({...f,dayId:e.target.value}))}>
+              {DAYS.map(d=><option key={d.id} value={d.id}>{d.label} — {d.schedule} — {d.name}</option>)}
+            </Sel>
+          </div>
+
+          {/* Weights */}
+          <div style={{marginBottom:12}}>
+            <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>WEIGHTS USED</label>
+            <Inp placeholder="e.g. BS single: 112kg · OHS: 45kg"
+              value={logForm.weights} onChange={e=>setLogForm(f=>({...f,weights:e.target.value}))}/>
+          </div>
+
+          {/* Post-training review */}
+          <div style={{fontSize:9,color:"var(--text2)",letterSpacing:2,fontFamily:"'DM Mono',monospace",marginBottom:8,marginTop:4}}>POST-TRAINING REVIEW</div>
+
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+            <div>
+              <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>TECHNIQUE FEEL</label>
+              <Sel value={logForm.techniqueFeel} onChange={e=>setLogForm(f=>({...f,techniqueFeel:e.target.value}))}>
+                <option value="">— select</option>
+                <option value="Clicked">✅ Clicked</option>
+                <option value="Decent">👍 Decent</option>
+                <option value="Inconsistent">⚠️ Inconsistent</option>
+                <option value="Off today">❌ Off today</option>
+              </Sel>
+            </div>
+            <div>
+              <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>ENERGY LEVEL</label>
+              <Sel value={logForm.energyLevel} onChange={e=>setLogForm(f=>({...f,energyLevel:e.target.value}))}>
+                <option value="">— select</option>
+                <option value="High">🔥 High</option>
+                <option value="Normal">💪 Normal</option>
+                <option value="Low">😴 Low</option>
+                <option value="Post-shift">🌙 Post-shift</option>
+              </Sel>
+            </div>
+          </div>
+
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+            <div>
+              <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>BACK PAIN (0–10)</label>
+              <Inp type="number" min="0" max="10" placeholder="0"
+                value={logForm.backPain} onChange={e=>setLogForm(f=>({...f,backPain:e.target.value}))}/>
+            </div>
+            <div>
+              <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>POST NIGHT SHIFT?</label>
+              <Sel value={logForm.nightShift} onChange={e=>setLogForm(f=>({...f,nightShift:e.target.value==="true"}))}>
+                <option value="false">No</option>
+                <option value="true">Yes — 5.5h sleep</option>
+              </Sel>
+            </div>
+          </div>
+
+          <div style={{marginBottom:12}}>
+            <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>FOCUS NEXT SESSION</label>
+            <Sel value={logForm.focusNext} onChange={e=>setLogForm(f=>({...f,focusNext:e.target.value}))}>
+              <option value="">— select</option>
+              <option value="Nothing — felt good">✅ Nothing — felt good</option>
+              <option value="Bar path">📐 Bar path</option>
+              <option value="Hip position">🦵 Hip position</option>
+              <option value="Receiving position">📥 Receiving position</option>
+              <option value="Jerk dip">⬇️ Jerk dip</option>
+              <option value="Overhead lockout">🔒 Overhead lockout</option>
+              <option value="First pull off floor">🏋️ First pull off floor</option>
+              <option value="Footwork">👣 Footwork</option>
+              <option value="OHS depth">📐 OHS depth</option>
+            </Sel>
+          </div>
+
+          {/* Rating */}
+          <div style={{marginBottom:14}}>
+            <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:8}}>SESSION RATING</label>
+            <div style={{display:"flex",gap:8}}>
+              {[1,2,3,4,5].map(n=>{
+                const stars="⭐".repeat(n);
+                return(
+                  <button key={n} onClick={()=>setLogForm(f=>({...f,rating:stars}))} style={{
+                    flex:1,padding:"8px 4px",borderRadius:5,cursor:"pointer",fontSize:12,border:"none",
+                    background:logForm.rating===stars?"var(--gold)":"var(--bg2)",
+                    color:logForm.rating===stars?"#000":"var(--text3)",
+                  }}>{n}</button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div style={{marginBottom:16}}>
+            <label style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>NOTES</label>
+            <Tex placeholder="Cues, observations, PR attempts…"
+              value={logForm.notes} onChange={e=>setLogForm(f=>({...f,notes:e.target.value}))}/>
+          </div>
+
+          <Btn onClick={handleLog}>LOG SESSION</Btn>
+        </div>
+      </div>
+    )}
   );
 }
 
