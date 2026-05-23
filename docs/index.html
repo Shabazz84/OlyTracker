@@ -139,31 +139,36 @@ const reviewStorage = {
 };
 
 const LM_CFG_KEY = "oly_lm_cfg";
-const LM_CFG_DEFAULT = { baseUrl:"http://localhost:1234/v1", model:"" };
+const LM_CFG_DEFAULT = { apiKey:"" };
 const lmCfgStorage = {
   get:  () => { try { return JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || LM_CFG_DEFAULT; } catch { return LM_CFG_DEFAULT; } },
   save: (cfg) => { try { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); } catch {} return cfg; },
 };
 
-// ── LM Studio client ──────────────────────────────────────────────────────────
-async function callLmStudio(systemPrompt, userPrompt, cfg) {
-  const res = await fetch(`${cfg.baseUrl}/chat/completions`, {
+// ── Claude API client ─────────────────────────────────────────────────────────
+async function callClaude(systemPrompt, userPrompt, apiKey) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+    },
     body: JSON.stringify({
-      model: cfg.model || "local-model",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user",   content: userPrompt },
-      ],
-      temperature: 0.3,
+      model: "claude-sonnet-4-6",
       max_tokens: 1200,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
     }),
   });
-  if (!res.ok) throw new Error(`LM Studio ${res.status}: ${res.statusText}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`Claude API ${res.status}: ${err.error?.message || res.statusText}`);
+  }
   const data = await res.json();
-  if (!data.choices?.length) throw new Error("LM Studio returned no choices");
-  return data.choices[0].message.content;
+  if (!data.content?.length) throw new Error("Claude returned no content");
+  return data.content[0].text;
 }
 
 function parseAiResponse(text) {
@@ -2713,7 +2718,7 @@ function SystemTab({week}) {
   );
 }
 
-// ── LM Settings Panel ─────────────────────────────────────────────────────────
+// ── Claude API Settings Panel ─────────────────────────────────────────────────
 function LmSettingsPanel() {
   const [cfg, setCfg] = React.useState(lmCfgStorage.get);
   const [saved, setSaved] = React.useState(false);
@@ -2725,21 +2730,22 @@ function LmSettingsPanel() {
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setSaved(false), 2000);
   };
+  const masked = cfg.apiKey.length > 8
+    ? cfg.apiKey.slice(0, 8) + "••••••••" + cfg.apiKey.slice(-4)
+    : cfg.apiKey;
   return (
     <div>
-      <div style={{marginBottom:6}}>
-        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>BASE URL</div>
-        <input value={cfg.baseUrl} onChange={e=>setCfg(c=>({...c,baseUrl:e.target.value}))}
-          placeholder="http://localhost:1234/v1"
-          style={{width:"100%",boxSizing:"border-box",background:"var(--bg3)",border:"1px solid var(--border2)",
-            borderRadius:5,color:"var(--text)",padding:"6px 10px",fontSize:10,fontFamily:"'DM Mono',monospace"}}/>
-      </div>
       <div style={{marginBottom:10}}>
-        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>MODEL NAME</div>
-        <input value={cfg.model} onChange={e=>setCfg(c=>({...c,model:e.target.value}))}
-          placeholder="e.g. qwen3.5-30b-a3b"
+        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>ANTHROPIC API KEY</div>
+        <input value={cfg.apiKey} onChange={e=>setCfg(c=>({...c,apiKey:e.target.value}))}
+          placeholder="sk-ant-..."
+          type="password"
           style={{width:"100%",boxSizing:"border-box",background:"var(--bg3)",border:"1px solid var(--border2)",
             borderRadius:5,color:"var(--text)",padding:"6px 10px",fontSize:10,fontFamily:"'DM Mono',monospace"}}/>
+        {cfg.apiKey && <div style={{fontSize:9,color:"var(--text3)",marginTop:3,fontFamily:"'DM Mono',monospace"}}>{masked}</div>}
+      </div>
+      <div style={{fontSize:9,color:"var(--text3)",marginBottom:10,lineHeight:1.5}}>
+        Model: <span style={{color:"var(--text2)"}}>claude-sonnet-4-6</span>
       </div>
       <Btn small onClick={save} style={saved?{color:"#5a9e45",borderColor:"#5a9e45"}:{color:"var(--gold)",borderColor:"var(--gold)"}}>
         {saved ? "✓ SAVED" : "SAVE"}
@@ -2782,13 +2788,13 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
   const removeInj = (i)         => setForm(f => ({ ...f, injuries:f.injuries.filter((_,idx) => idx!==i) }));
 
   const handleGenerate = async () => {
-    const cfg = lmCfgStorage.get();
-    if (!cfg.baseUrl) { setAiError("No LM Studio URL configured. Go to Settings → LM STUDIO."); return; }
+    const { apiKey } = lmCfgStorage.get();
+    if (!apiKey) { setAiError("No API key configured. Go to Settings → CLAUDE API."); return; }
     setAiLoading(true);
     setAiError(null);
     try {
       const { system, user } = buildReviewPrompt(week, weekData, form, isSummer);
-      const raw    = await callLmStudio(system, user, cfg);
+      const raw    = await callClaude(system, user, apiKey);
       const parsed = parseAiResponse(raw);
       setForm(f => ({ ...f, ai: parsed }));
     } catch (e) {
@@ -4058,10 +4064,10 @@ function OlyTracker() {
               {/* LM Studio settings */}
               <div style={{marginTop:12,background:"#0a0a1a",border:"1px solid #2a2a4a",borderRadius:8,padding:"14px"}}>
                 <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--gold)",letterSpacing:1.5,marginBottom:8}}>
-                  ⚡ LM STUDIO (AI REVIEW)
+                  ⚡ CLAUDE API (AI REVIEW)
                 </div>
                 <p style={{fontSize:10,color:"var(--text3)",lineHeight:1.6,marginBottom:10}}>
-                  Weekly review uses your local LM Studio instance. Start LM Studio, load a model, and enter its API details below.
+                  Weekly review is analyzed by Claude Sonnet. Paste your Anthropic API key below — it's stored locally in your browser only.
                 </p>
                 <LmSettingsPanel />
               </div>
