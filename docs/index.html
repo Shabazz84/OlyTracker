@@ -2976,6 +2976,15 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
     : PROGRAM_OUTLINE.find(w => w.week === viewWeek);
   if (!weekData) return null;
 
+  const [reviewVersion, setReviewVersion] = React.useState(0);
+  const prevReview = React.useMemo(
+    () => viewWeek > 1 ? reviewStorage.get(viewWeek - 1) : null,
+    [viewWeek, reviewVersion]
+  );
+  const activeFlags = prevReview?.confirmed && prevReview?.ai?.flags?.length > 0
+    ? prevReview.ai.flags
+    : [];
+
   const blockNum = isB1 ? 1 : weekData.block;
   const blockColor = BLOCK_COLORS[blockNum];
   const phaseColor = PHASE_COLORS[weekData.phase] || "#888";
@@ -3030,6 +3039,24 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
           ● CURRENT WEEK
         </div>
       )}
+      {activeFlags.length > 0 && (
+        <div style={{marginBottom:12,padding:"10px 14px",background:"#d4a84311",borderRadius:8,
+          border:"1px solid #d4a84344"}}>
+          <div style={{fontSize:9,color:"var(--gold)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:6}}>
+            ⚠️ FROM WEEK {viewWeek-1} REVIEW
+          </div>
+          {activeFlags.map((f,i) => (
+            <div key={i} style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:3}}>
+              <span style={{fontSize:9,fontFamily:"'DM Mono',monospace",flexShrink:0,
+                color:f.action==="skip"?"#c94f3a":"#d4a843"}}>
+                {f.action.toUpperCase()}
+              </span>
+              <span style={{fontSize:10,color:"var(--text)"}}>{f.exercise}</span>
+              <span style={{fontSize:9,color:"var(--text3)"}}>— {f.reason}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div style={{background:"var(--bg2)",borderRadius:10,padding:"14px 16px",
         marginBottom:14,border:`1px solid ${blockColor}33`}}>
@@ -3052,6 +3079,21 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
       {isB1 && days && days.map(d => (
         <div key={d.id} style={{background:"var(--bg2)",borderRadius:8,
           padding:"10px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
+          {(() => {
+            const dayFlags = activeFlags.filter(f => f.day === d.id);
+            return dayFlags.length > 0 ? (
+              <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:6}}>
+                {dayFlags.map((f,i) => (
+                  <span key={i} style={{fontSize:8,fontFamily:"'DM Mono',monospace",
+                    color:f.action==="skip"?"#c94f3a":"#d4a843",
+                    background:f.action==="skip"?"#c94f3a22":"#d4a84322",
+                    padding:"1px 6px",borderRadius:8}}>
+                    {f.action.toUpperCase()}: {f.exercise}
+                  </span>
+                ))}
+              </div>
+            ) : null;
+          })()}
           <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:12,
             color:"var(--text2)",letterSpacing:1,marginBottom:8}}>
             {d.label}
@@ -3088,6 +3130,14 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
             </span>
           </div>
         </div>
+      )}
+      {isB1 && viewWeek <= currentWeek && (
+        <WeekReviewForm
+          week={viewWeek}
+          weekData={weekData}
+          isSummer={isSummer}
+          onSaved={()=>setReviewVersion(v=>v+1)}
+        />
       )}
     </div>
   );
