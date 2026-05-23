@@ -174,10 +174,17 @@ function parseAiResponse(text) {
       const p = JSON.parse(match[1]);
       return {
         narrative:           p.narrative           ?? text,
-        loadRecommendation:  p.loadRecommendation  ?? "hold",
+        loadRecommendation:  ["advance","hold","reduce"].includes(p.loadRecommendation) ? p.loadRecommendation : "hold",
         skipExercises:       Array.isArray(p.skipExercises)       ? p.skipExercises       : [],
         reduceLoadExercises: Array.isArray(p.reduceLoadExercises) ? p.reduceLoadExercises : [],
-        flags:               Array.isArray(p.flags)               ? p.flags               : [],
+        flags:               Array.isArray(p.flags)
+          ? p.flags.map(f => ({
+              day:      typeof f.day      === "string" ? f.day      : "",
+              exercise: typeof f.exercise === "string" ? f.exercise : "",
+              action:   f.action === "skip" || f.action === "reduce" ? f.action : "reduce",
+              reason:   typeof f.reason   === "string" ? f.reason   : "",
+            }))
+          : [],
         generatedAt:         new Date().toISOString(),
       };
     } catch {}
@@ -2974,7 +2981,6 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
   const weekData = isB1
     ? PROGRAM_B1[viewWeek - 1]
     : PROGRAM_OUTLINE.find(w => w.week === viewWeek);
-  if (!weekData) return null;
 
   const [reviewVersion, setReviewVersion] = React.useState(0);
   const prevReview = React.useMemo(
@@ -2984,6 +2990,8 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
   const activeFlags = prevReview?.confirmed && prevReview?.ai?.flags?.length > 0
     ? prevReview.ai.flags
     : [];
+
+  if (!weekData) return null;
 
   const blockNum = isB1 ? 1 : weekData.block;
   const blockColor = BLOCK_COLORS[blockNum];
