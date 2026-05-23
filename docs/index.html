@@ -4047,6 +4047,17 @@ function OlyTracker() {
                 )}
               </div>
 
+              {/* LM Studio settings */}
+              <div style={{marginTop:12,background:"#0a0a1a",border:"1px solid #2a2a4a",borderRadius:8,padding:"14px"}}>
+                <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--gold)",letterSpacing:1.5,marginBottom:8}}>
+                  ⚡ LM STUDIO (AI REVIEW)
+                </div>
+                <p style={{fontSize:10,color:"var(--text3)",lineHeight:1.6,marginBottom:10}}>
+                  Weekly review uses your local LM Studio instance. Start LM Studio, load a model, and enter its API details below.
+                </p>
+                <LmSettingsPanel />
+              </div>
+
             </div>
           </div>
         )}
