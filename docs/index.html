@@ -2763,16 +2763,27 @@ function LmSettingsPanel() {
 }
 
 // ── Week Review Form ───────────────────────────────────────────────────────────
+function inferDaysFromLogs(week, dayList) {
+  let logs = {};
+  try { logs = JSON.parse(localStorage.getItem("oly_logs") || "{}"); } catch {}
+  const weekLogs = Object.values(logs).filter(l => l.week === week);
+  const result = {};
+  dayList.forEach(d => {
+    const logged = weekLogs.some(l => l.dayLabel && l.dayLabel.split(" ")[0].toLowerCase() === d.id);
+    result[d.id] = { status: logged ? "done" : "skipped", notes: "" };
+  });
+  return result;
+}
+
 function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
   const dayList = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
-  const blankDays = {};
-  dayList.forEach(d => { blankDays[d.id] = { status:"done", notes:"" }; });
 
   const [form, setForm] = React.useState(() => {
     const saved = reviewStorage.get(week);
+    const days = inferDaysFromLogs(week, dayList);
     return saved
-      ? { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
-      : { rating:"green", energyTrend:"stable", days:blankDays, injuries:[], generalNotes:"", ai:null, confirmed:false };
+      ? { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
+      : { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false };
   });
   const [aiLoading, setAiLoading] = React.useState(false);
   const [aiError,   setAiError]   = React.useState(null);
@@ -2780,12 +2791,11 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
 
   React.useEffect(() => {
     const dl = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
-    const bd = {};
-    dl.forEach(d => { bd[d.id] = { status:"done", notes:"" }; });
     const saved = reviewStorage.get(week);
+    const days = inferDaysFromLogs(week, dl);
     setForm(saved
-      ? { rating:"green", energyTrend:"stable", days:bd, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
-      : { rating:"green", energyTrend:"stable", days:bd, injuries:[], generalNotes:"", ai:null, confirmed:false });
+      ? { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
+      : { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false });
     setExpanded(false);
     setAiError(null);
   }, [week, isSummer]);
@@ -2806,7 +2816,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
       const parsed = parseAiResponse(raw);
       setForm(f => ({ ...f, ai: parsed }));
     } catch (e) {
-      setAiError(e.message || "LM Studio unreachable. Is it running on localhost:1234?");
+      setAiError(e.message || "Claude API unreachable. Check your API key in Settings.");
     } finally {
       setAiLoading(false);
     }
