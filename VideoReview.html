@@ -172,7 +172,11 @@ function seekTo(video, time) {
   return new Promise(resolve => {
     const handler = () => {
       video.removeEventListener('seeked', handler);
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      if (typeof video.requestVideoFrameCallback === 'function') {
+        video.requestVideoFrameCallback(() => resolve());
+      } else {
+        setTimeout(resolve, 200);
+      }
     };
     video.addEventListener('seeked', handler);
     video.currentTime = time;
@@ -192,6 +196,12 @@ function videoToCanvas(video) {
 async function extractFrames(videoEl) {
   const duration = videoEl.duration;
   if (!duration || duration < 2) throw new Error('Video must be at least 2 seconds long.');
+  // Prime the video decoder — some browsers don't decode frames until playback starts
+  try {
+    await videoEl.play();
+    await new Promise(r => setTimeout(r, 80));
+    videoEl.pause();
+  } catch (_) {}
   const frames = [];
   for (let i = 0; i < FRAME_COUNT; i++) {
     const t = i === FRAME_COUNT - 1
@@ -576,7 +586,6 @@ function UploadZone({ onFrames, onError }) {
           src={preview}
           onLoadedMetadata={handleVideoLoaded}
           style={{position:'fixed',left:'-9999px',width:'1px',height:'1px',opacity:0,pointerEvents:'none'}}
-          crossOrigin="anonymous"
           muted
           playsInline
         />
