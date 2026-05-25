@@ -348,6 +348,132 @@ function annotateFrames(poseFrames) {
   });
 }
 
+// ── Claude API Client ──────────────────────────────────────────────────────────
+
+function buildPrompt(exercise, annotatedFrames, poseFrames) {
+  const exerciseLabel = EXERCISES.find(e => e.id === exercise)?.label || exercise;
+  const cues   = CUES[exercise]   || [];
+  const phases = PHASES[exercise] || [];
+
+  const cvSummary = poseFrames.map((f, i) => {
+    const a = f.angles;
+    const lines = [`Frame ${i+1} (${f.timestamp}s):`];
+    if (a.left_knee   != null) lines.push(`  left knee ${a.left_knee}°`);
+    if (a.right_knee  != null) lines.push(`  right knee ${a.right_knee}°`);
+    if (a.left_hip    != null) lines.push(`  left hip ${a.left_hip}°`);
+    if (a.right_hip   != null) lines.push(`  right hip ${a.right_hip}°`);
+    if (a.left_elbow  != null) lines.push(`  left elbow ${a.left_elbow}°`);
+    if (a.right_elbow != null) lines.push(`  right elbow ${a.right_elbow}°`);
+    if (f.centroid)            lines.push(`  bar centroid x=${f.centroid.x.toFixed(2)} y=${f.centroid.y.toFixed(2)}`);
+    return lines.join('\n');
+  }).join('\n');
+
+  const xs = poseFrames.map(f => f.centroid?.x).filter(x => x != null);
+  const barDeviation = xs.length > 1
+    ? `Max horizontal bar deviation: ${((Math.max(...xs) - Math.min(...xs)) * 100).toFixed(1)} cm (normalized units × 100)`
+    : 'Bar path data unavailable';
+
+  const cueLibraryText = cues.map(c =>
+    `- [${c.phase}] ${c.cue} (${c.source}): ${c.detail}`
+  ).join('\n');
+
+  const phaseSchema = phases.map(p =>
+    `    {"name":"${p}","status":"ok|warn|fail","note":"one concise observation"}`
+  ).join(',\n');
+
+  const segmentOptions = 'hips|knees|lower_back|upper_back|left_elbow|right_elbow|shoulders|wrists';
+
+  return `You are an Olympic weightlifting technique coach analyzing a ${exerciseLabel} attempt.
+
+ATHLETE PROFILE:
+- 102.5 kg bodyweight, intermediate strength athlete transitioning to Olympic weightlifting
+- OHS stability limiter (50 kg × 4 overhead squat)
+- Push jerk only — no split jerk
+- Chronic lower back pain: flag ANY exercise or position that loads the lumbar under flexion
+- Night-shift worker: technique deteriorates under fatigue — note if movement quality suggests fatigue
+
+CV DATA (computer vision analysis of ${annotatedFrames.length} frames):
+${cvSummary}
+${barDeviation}
+
+The images attached show these frames with the pose skeleton (green=confident, yellow=estimated joints) and the blue bar path trajectory drawn on each frame.
+
+CUE LIBRARY FOR ${exerciseLabel.toUpperCase()}:
+${cueLibraryText}
+
+INSTRUCTIONS:
+Respond with EXACTLY this format — a fenced JSON block first, then a coaching paragraph after the COACHING: marker.
+
+\`\`\`json
+{
+  "phases": [
+${phaseSchema}
+  ],
+  "cues": [
+    {"cue":"<exact cue text from library>","source":"<source>","status":"ok|warn|fail","note":"specific observation tied to CV data"}
+  ],
+  "body_flags": [
+    {"segment":"${segmentOptions}","status":"warn|fail","note":"one line"}
+  ]
+}
+\`\`\`
+
+COACHING:
+Write 2-4 sentences. Be specific and actionable. Reference actual angles or bar path data where relevant. Prioritise the most impactful correction. Mention back pain implications if relevant.`;
+}
+
+async function callClaude(apiKey, exercise, annotatedFrames, poseFrames) {
+  const prompt = buildPrompt(exercise, annotatedFrames, poseFrames);
+
+  const imageBlocks = annotatedFrames.map(f => ({
+    type: 'image',
+    source: { type: 'base64', media_type: 'image/jpeg', data: f.b64.split(',')[1] }
+  }));
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2000,
+      messages: [{
+        role: 'user',
+        content: [...imageBlocks, { type: 'text', text: prompt }]
+      }]
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(`Claude API error ${response.status}: ${err.error?.message || 'unknown'}`);
+  }
+
+  const data = await response.json();
+  const text = data.content?.[0]?.text || '';
+  return parseClaudeResponse(text);
+}
+
+function parseClaudeResponse(text) {
+  const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
+  if (!jsonMatch) {
+    return { raw: text, structured: null, coaching: text };
+  }
+  let structured;
+  try {
+    structured = JSON.parse(jsonMatch[1]);
+  } catch {
+    return { raw: text, structured: null, coaching: text };
+  }
+  const coachingMatch = text.match(/COACHING:\n([\s\S]*?)$/);
+  const coaching = coachingMatch ? coachingMatch[1].trim() : '';
+  return { raw: text, structured, coaching };
+}
+
 // ── Btn component ──────────────────────────────────────────────────────────────
 function Btn({ children, onClick, disabled, style = {} }) {
   return (
