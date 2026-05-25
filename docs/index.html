@@ -2773,9 +2773,28 @@ function inferDaysFromLogs(week, dayList) {
       const m = l.dayLabel && l.dayLabel.match(/(\d+)/);
       return m ? `d${m[1]}` === d.id : false;
     });
+    // Compute actual set completion % from localStorage
+    const prefix = `sets_w${week}_${d.id}_`;
+    let totalSets = 0, doneSets = 0;
+    try {
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith(prefix)) {
+          const sets = JSON.parse(localStorage.getItem(k) || "[]");
+          totalSets += sets.length;
+          doneSets += sets.filter(s => s.done).length;
+        }
+      });
+    } catch {}
+    const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : null;
+    let status;
+    if (pct === 100) status = "done";
+    else if (pct > 0) status = "partial";
+    else if (entry) status = "done"; // logged via COMPLETE but sets not tracked
+    else status = "skipped";
     result[d.id] = {
-      status: entry ? "done" : "skipped",
+      status,
       loggedDate: entry ? entry.date : null,
+      pct,
       notes: "",
     };
   });
@@ -2906,6 +2925,11 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
                 {fromLog && (
                   <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:2}}>
                     {ds.loggedDate}
+                  </span>
+                )}
+                {ds.pct !== null && ds.pct !== undefined && (
+                  <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:2}}>
+                    {ds.pct}%
                   </span>
                 )}
                 {fromLog && (
@@ -3475,7 +3499,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.2 · 2026-05-25
+                PROGRAM v2.3 · 2026-05-25
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
