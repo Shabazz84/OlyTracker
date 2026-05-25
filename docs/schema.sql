@@ -14,7 +14,8 @@ create table sessions (
   energy_level text,
   focus_next text,
   rating text,
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
 create table sets (
@@ -48,3 +49,9 @@ alter table reviews enable row level security;
 create policy "allow all" on sessions for all to anon using (true) with check (true);
 create policy "allow all" on sets for all to anon using (true) with check (true);
 create policy "allow all" on reviews for all to anon using (true) with check (true);
+
+-- NOTE: RLS allows full anon access. Intentional for single-athlete personal app.
+
+-- Performance indexes for sets table queries
+create index idx_sets_week_day on sets(week, day_id);
+create index idx_sets_week_day_exercise on sets(week, day_id, exercise_name);
