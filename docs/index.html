@@ -35,8 +35,81 @@ const storage={
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>window.__CLAUDE_KEY=undefined;window.__SUPABASE_URL=undefined;window.__SUPABASE_KEY=undefined;</script>
 <script src="key.js"></script>
+<script>
+// ── Supabase sync ─────────────────────────────────────────────────────────────
+const sbSync = (() => {
+  const url = window.__SUPABASE_URL;
+  const key = window.__SUPABASE_KEY;
+  const noop = () => {};
+  const noopAsync = async () => null;
+
+  if (!url || !key || url === 'undefined' || key === 'undefined') {
+    return { ready: false, upsertSession: noop, upsertSets: noop, upsertReview: noop, deleteSession: noop, pullAll: noopAsync };
+  }
+
+  const sb = window.supabase.createClient(url, key);
+
+  async function upsertSession(id, e) {
+    try {
+      await sb.from('sessions').upsert({
+        id, week: e.week,
+        day_name: e.dayName || null, day_label: e.dayLabel || null,
+        date: e.date || null, notes: e.notes || null, weights: e.weights || null,
+        back_pain: e.backPain || null, night_shift: !!e.nightShift,
+        technique_feel: e.techniqueFeel || null, energy_level: e.energyLevel || null,
+        focus_next: e.focusNext || null, rating: e.rating || null,
+      });
+    } catch(err) { console.warn('sbSync.upsertSession:', err); }
+  }
+
+  async function upsertSets(lsKey, setsArr) {
+    try {
+      const m = lsKey.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
+      if (!m) return;
+      const week = parseInt(m[2]), dayId = m[3], exName = m[4];
+      const rows = setsArr.map((s, i) => ({
+        id: `${lsKey}_${i}`, week, day_id: dayId, exercise_name: exName,
+        set_index: i, done: !!s.done, weight: s.weight ?? null,
+      }));
+      await sb.from('sets').upsert(rows);
+    } catch(err) { console.warn('sbSync.upsertSets:', err); }
+  }
+
+  async function upsertReview(week, r) {
+    try {
+      await sb.from('reviews').upsert({
+        week, rating: r.rating || null, energy_trend: r.energyTrend || null,
+        injuries: r.injuries || [], general_notes: r.generalNotes || null,
+        ai_response: r.ai || null, confirmed: !!r.confirmed, days: r.days || {},
+      });
+    } catch(err) { console.warn('sbSync.upsertReview:', err); }
+  }
+
+  async function deleteSession(id) {
+    try { await sb.from('sessions').delete().eq('id', id); }
+    catch(err) { console.warn('sbSync.deleteSession:', err); }
+  }
+
+  async function pullAll() {
+    try {
+      const [sess, sets, revs] = await Promise.all([
+        sb.from('sessions').select('*'),
+        sb.from('sets').select('*'),
+        sb.from('reviews').select('*'),
+      ]);
+      return { sessions: sess.data || [], sets: sets.data || [], reviews: revs.data || [] };
+    } catch(err) {
+      console.warn('sbSync.pullAll:', err);
+      return null;
+    }
+  }
+
+  return { ready: true, upsertSession, upsertSets, upsertReview, deleteSession, pullAll };
+})();
+</script>
 <script type="text/babel">
 const { useState, useEffect, useRef, useMemo } = React;
 
