@@ -2788,8 +2788,9 @@ function inferDaysFromLogs(week, dayList) {
     const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : null;
     let status;
     if (pct === 100) status = "done";
-    else if (pct > 0) status = "partial";
-    else if (entry) status = "done"; // logged via COMPLETE but sets not tracked
+    else if (pct !== null && pct > 0) status = "partial";
+    else if (entry && pct === null) status = "skipped"; // COMPLETE pressed but no sets recorded
+    else if (entry && pct === 0) status = "partial";    // COMPLETE pressed, sets exist but none ticked
     else status = "skipped";
     result[d.id] = {
       status,
@@ -3499,7 +3500,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.3 · 2026-05-25
+                PROGRAM v2.4 · 2026-05-25
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
