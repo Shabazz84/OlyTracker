@@ -2769,12 +2769,15 @@ function inferDaysFromLogs(week, dayList) {
   const weekLogs = Object.values(logs).filter(l => l.week === week);
   const result = {};
   dayList.forEach(d => {
-    // dayLabel in logs is "DAY 1", "DAY 2" etc — extract number → "d1", "d2"
-    const logged = weekLogs.some(l => {
+    const entry = weekLogs.find(l => {
       const m = l.dayLabel && l.dayLabel.match(/(\d+)/);
       return m ? `d${m[1]}` === d.id : false;
     });
-    result[d.id] = { status: logged ? "done" : "skipped", notes: "" };
+    result[d.id] = {
+      status: entry ? "done" : "skipped",
+      loggedDate: entry ? entry.date : null,
+      notes: "",
+    };
   });
   return result;
 }
@@ -2784,10 +2787,13 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
 
   const [form, setForm] = React.useState(() => {
     const saved = reviewStorage.get(week);
-    const days = inferDaysFromLogs(week, dayList);
-    return saved
-      ? { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
-      : { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false };
+    const inferred = inferDaysFromLogs(week, dayList);
+    const savedDays = saved?.days || {};
+    const days = {};
+    dayList.forEach(d => {
+      days[d.id] = { ...inferred[d.id], notes: savedDays[d.id]?.notes || "" };
+    });
+    return { rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days };
   });
   const [aiLoading, setAiLoading] = React.useState(false);
   const [aiError,   setAiError]   = React.useState(null);
@@ -2796,10 +2802,13 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
   React.useEffect(() => {
     const dl = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
     const saved = reviewStorage.get(week);
-    const days = inferDaysFromLogs(week, dl);
-    setForm(saved
-      ? { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false, ...saved }
-      : { rating:"green", energyTrend:"stable", days, injuries:[], generalNotes:"", ai:null, confirmed:false });
+    const inferred = inferDaysFromLogs(week, dl);
+    const savedDays = saved?.days || {};
+    const days = {};
+    dl.forEach(d => {
+      days[d.id] = { ...inferred[d.id], notes: savedDays[d.id]?.notes || "" };
+    });
+    setForm({ rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days });
     setExpanded(false);
     setAiError(null);
   }, [week, isSummer]);
@@ -2875,16 +2884,37 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
       <div style={{marginBottom:14}}>
         <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:6}}>SESSIONS</div>
         {dayList.map(d => {
-          const ds = form.days[d.id] || { status:"done", notes:"" };
+          const ds = form.days[d.id] || { status:"skipped", notes:"", loggedDate:null };
+          const fromLog = !!ds.loggedDate;
           return (
             <div key={d.id} style={{marginBottom:6,padding:"8px 10px",background:"var(--bg3)",borderRadius:6}}>
               <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:ds.status!=="done"?6:0}}>
                 <span style={{fontSize:10,fontFamily:"'DM Mono',monospace",color:"var(--text2)",minWidth:56,flexShrink:0}}>{d.label.split(" ").slice(0,2).join(" ")}</span>
-                {["done","partial","skipped"].map(s => (
-                  <button key={s} onClick={()=>setDay(d.id,{status:s})} style={pill(ds.status===s, STATUS_COLOR[s])}>
-                    {s.charAt(0).toUpperCase()+s.slice(1)}
+                {fromLog ? (
+                  <span style={{fontSize:9,fontFamily:"'DM Mono',monospace",color:STATUS_COLOR[ds.status],
+                    background:STATUS_COLOR[ds.status]+"22",border:`1px solid ${STATUS_COLOR[ds.status]}`,
+                    borderRadius:10,padding:"2px 8px"}}>
+                    {ds.status.toUpperCase()}
+                  </span>
+                ) : (
+                  ["done","partial","skipped"].map(s => (
+                    <button key={s} onClick={()=>setDay(d.id,{status:s})} style={pill(ds.status===s, STATUS_COLOR[s])}>
+                      {s.charAt(0).toUpperCase()+s.slice(1)}
+                    </button>
+                  ))
+                )}
+                {fromLog && (
+                  <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:2}}>
+                    {ds.loggedDate}
+                  </span>
+                )}
+                {fromLog && (
+                  <button onClick={()=>setDay(d.id,{status:ds.status==="done"?"partial":ds.status==="partial"?"skipped":"done"})}
+                    style={{fontSize:8,padding:"1px 6px",borderRadius:8,border:"1px solid var(--border)",
+                      background:"transparent",color:"var(--text3)",cursor:"pointer",fontFamily:"'DM Mono',monospace",marginLeft:"auto"}}>
+                    override
                   </button>
-                ))}
+                )}
               </div>
               {ds.status!=="done" && (
                 <input value={ds.notes} onChange={e=>setDay(d.id,{notes:e.target.value})}
@@ -3445,7 +3475,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.1 · 2026-05-23
+                PROGRAM v2.2 · 2026-05-25
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
