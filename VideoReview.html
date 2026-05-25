@@ -841,20 +841,59 @@ function Results({ exercise, annotatedFrames, poseFrames, claudeResult }) {
 // ── App ────────────────────────────────────────────────────────────────────────
 function App() {
   const [showSettings, setShowSettings] = useState(false);
-  const [exercise, setExercise] = useState('snatch');
-  const apiKey = localStorage.getItem('lr_api_key') || '';
-  const [frames, setFrames] = useState(null);
-  const [video, setVideo]   = useState(null);
-  const [error, setError]   = useState('');
+  const [exercise,     setExercise]     = useState('snatch');
+  const [apiKey,       setApiKey]       = useState(() => localStorage.getItem('lr_api_key') || '');
+  const [frames,       setFrames]       = useState(null);
+  const [error,        setError]        = useState('');
+  const [loading,      setLoading]      = useState(false);
+  const [loadingMsg,   setLoadingMsg]   = useState('');
+  const [annotated,    setAnnotated]    = useState(null);
+  const [poseFrames,   setPoseFrames]   = useState(null);
+  const [result,       setResult]       = useState(null);
+
+  const canAnalyze = !!frames && !!apiKey && !loading;
 
   const handleFrames = useCallback((frms, vid) => {
     setFrames(frms || null);
-    setVideo(vid || null);
+    setAnnotated(null);
+    setPoseFrames(null);
+    setResult(null);
     setError('');
   }, []);
 
+  const handleSettingsClose = useCallback(() => {
+    setShowSettings(false);
+    setApiKey(localStorage.getItem('lr_api_key') || '');
+  }, []);
+
+  const analyze = useCallback(async () => {
+    if (!frames || !apiKey) return;
+    setError('');
+    setResult(null);
+    setLoading(true);
+    try {
+      setLoadingMsg('Running pose detection…');
+      const pf = await runPoseOnFrames(frames, msg => setLoadingMsg(msg));
+
+      setLoadingMsg('Annotating frames…');
+      const af = annotateFrames(pf);
+
+      setLoadingMsg('Sending to Claude…');
+      const claudeResult = await callClaude(apiKey, exercise, af, pf);
+
+      setPoseFrames(pf);
+      setAnnotated(af);
+      setResult(claudeResult);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setLoadingMsg('');
+    }
+  }, [frames, apiKey, exercise]);
+
   return (
-    <div style={{maxWidth:640,margin:'0 auto',padding:'0 16px 40px'}}>
+    <div style={{maxWidth:640,margin:'0 auto',padding:'0 16px 60px'}}>
       {/* Header */}
       <div style={{
         display:'flex',alignItems:'center',justifyContent:'space-between',
@@ -865,7 +904,7 @@ function App() {
         </div>
         <button onClick={() => setShowSettings(true)} style={{
           background:'none',border:'1px solid var(--border2)',borderRadius:4,
-          padding:'6px 12px',color:'var(--text2)',cursor:'pointer',fontSize:12
+          padding:'6px 12px',color: apiKey ? 'var(--green)' : 'var(--text2)',cursor:'pointer',fontSize:12
         }}>
           {apiKey ? '⚙ API KEY SET' : '⚙ ADD API KEY'}
         </button>
@@ -873,41 +912,86 @@ function App() {
 
       {/* Exercise selector */}
       <div style={{marginTop:20}}>
-        <div style={{fontSize:11,color:'var(--text2)',letterSpacing:1,marginBottom:6}}>
-          EXERCISE
-        </div>
+        <div style={{fontSize:11,color:'var(--text2)',letterSpacing:1,marginBottom:6}}>EXERCISE</div>
         <select
           value={exercise}
-          onChange={e => setExercise(e.target.value)}
+          onChange={e => { setExercise(e.target.value); setResult(null); }}
           style={{
             width:'100%',background:'var(--bg2)',border:'1px solid var(--border2)',
             borderRadius:4,padding:'10px 12px',color:'var(--text)',fontSize:14
           }}
         >
-          {EXERCISES.map(ex => (
-            <option key={ex.id} value={ex.id}>{ex.label}</option>
-          ))}
+          {EXERCISES.map(ex => <option key={ex.id} value={ex.id}>{ex.label}</option>)}
         </select>
       </div>
 
+      {/* Upload zone */}
       <UploadZone onFrames={handleFrames} onError={setError} />
 
+      {/* Error */}
       {error && (
         <div style={{
-          marginTop:12,padding:'8px 12px',background:'rgba(201,79,58,0.1)',
-          border:'1px solid var(--red)',borderRadius:4,color:'var(--red)',fontSize:12
+          marginTop:12,padding:'10px 14px',
+          background:'rgba(201,79,58,0.1)',border:'1px solid var(--red)',
+          borderRadius:4,color:'var(--red)',fontSize:13,display:'flex',
+          alignItems:'flex-start',gap:8
         }}>
-          {error}
+          <span style={{flex:1}}>{error}</span>
+          <button onClick={() => setError('')} style={{
+            background:'none',border:'none',color:'var(--red)',
+            cursor:'pointer',fontSize:16,lineHeight:1,flexShrink:0
+          }}>×</button>
         </div>
       )}
 
+      {/* Analyze button */}
       {frames && (
-        <div style={{marginTop:16,fontSize:12,color:'var(--text2)'}}>
-          {frames.length} frames ready
+        <div style={{marginTop:20}}>
+          {!apiKey && (
+            <div style={{fontSize:12,color:'var(--text3)',marginBottom:8,textAlign:'center'}}>
+              Add your Anthropic API key in settings to enable analysis
+            </div>
+          )}
+          <Btn
+            onClick={analyze}
+            disabled={!canAnalyze}
+            style={{width:'100%',fontSize:18,padding:'12px 0'}}
+          >
+            {loading ? loadingMsg || 'ANALYZING…' : 'ANALYZE TECHNIQUE'}
+          </Btn>
+          {loading && (
+            <div style={{
+              marginTop:8,height:2,background:'var(--border)',borderRadius:1,overflow:'hidden'
+            }}>
+              <div style={{
+                height:'100%',background:'var(--gold)',
+                animation:'progress 2s ease-in-out infinite',
+                width:'40%'
+              }}/>
+            </div>
+          )}
         </div>
       )}
 
-      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+      {/* Results */}
+      {result && annotated && poseFrames && (
+        <Results
+          exercise={exercise}
+          annotatedFrames={annotated}
+          poseFrames={poseFrames}
+          claudeResult={result}
+        />
+      )}
+
+      {showSettings && <SettingsModal onClose={handleSettingsClose} />}
+
+      <style>{`
+        @keyframes progress {
+          0%{transform:translateX(-100%)}
+          50%{transform:translateX(250%)}
+          100%{transform:translateX(-100%)}
+        }
+      `}</style>
     </div>
   );
 }
