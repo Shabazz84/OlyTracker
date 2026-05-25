@@ -103,7 +103,7 @@ const sbSync = (() => {
       return { sessions: sess.data || [], sets: sets.data || [], reviews: revs.data || [] };
     } catch(err) {
       console.warn('sbSync.pullAll:', err);
-      return null;
+      return { sessions: [], sets: [], reviews: [] };
     }
   }
 

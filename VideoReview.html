@@ -170,15 +170,7 @@ const MAX_HEIGHT  = 720;
 
 function seekTo(video, time) {
   return new Promise(resolve => {
-    const handler = () => {
-      video.removeEventListener('seeked', handler);
-      if (typeof video.requestVideoFrameCallback === 'function') {
-        video.requestVideoFrameCallback(() => resolve());
-      } else {
-        setTimeout(resolve, 200);
-      }
-    };
-    video.addEventListener('seeked', handler);
+    video.addEventListener('seeked', () => setTimeout(resolve, 100), { once: true });
     video.currentTime = time;
   });
 }
