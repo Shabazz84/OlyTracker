@@ -238,8 +238,12 @@ async function getPose() {
 }
 
 function runPoseOnCanvas(pose, canvas) {
-  return new Promise((resolve) => {
-    pose.onResults((results) => resolve(results.poseLandmarks || null));
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Pose detection timed out — try re-uploading the video.')), 10000);
+    pose.onResults((results) => {
+      clearTimeout(timer);
+      resolve(results.poseLandmarks || null);
+    });
     pose.send({ image: canvas });
   });
 }
