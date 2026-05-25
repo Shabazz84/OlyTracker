@@ -284,9 +284,12 @@ async function runPoseOnFrames(frames, onProgress) {
   let pose = null;
   try {
     onProgress('Loading pose model…');
-    pose = await getPose();
+    pose = await Promise.race([
+      getPose(),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
+    ]);
   } catch (_) {
-    // MediaPipe failed to load — proceed without pose data
+    // MediaPipe failed to load or timed out — proceed without pose data
   }
   const results = [];
   for (const frame of frames) {
