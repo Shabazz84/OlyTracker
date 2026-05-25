@@ -22,10 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Inject API key
-        run: printf 'window.__CLAUDE_KEY="%s";\n' "$ANTHROPIC_API_KEY" > docs/key.js
+      - name: Inject API keys
+        run: |
+          printf 'window.__CLAUDE_KEY="%s";\n' "$ANTHROPIC_API_KEY" > docs/key.js
+          printf 'window.__SUPABASE_URL="%s";\n' "$SUPABASE_URL" >> docs/key.js
+          printf 'window.__SUPABASE_KEY="%s";\n' "$SUPABASE_ANON_KEY" >> docs/key.js
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - uses: actions/configure-pages@v4
 
