@@ -2870,10 +2870,23 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
 
   const STATUS_COLOR = { done:"#5a9e45", partial:"#d4a843", skipped:"#c94f3a" };
 
+  const handleExpand = () => {
+    const dl = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
+    const saved = reviewStorage.get(week);
+    const inferred = inferDaysFromLogs(week, dl);
+    const savedDays = saved?.days || {};
+    const days = {};
+    dl.forEach(d => {
+      days[d.id] = { ...inferred[d.id], notes: savedDays[d.id]?.notes || "" };
+    });
+    setForm(prev => ({ ...prev, days }));
+    setExpanded(true);
+  };
+
   if (!expanded) {
     return (
       <div style={{marginTop:16,borderTop:"1px solid var(--border)",paddingTop:14}}>
-        <button onClick={()=>setExpanded(true)}
+        <button onClick={handleExpand}
           style={{width:"100%",padding:"9px 14px",borderRadius:8,border:"1px solid var(--border)",
             background:"var(--bg2)",color:"var(--text2)",fontSize:11,
             fontFamily:"'DM Mono',monospace",letterSpacing:0.5,cursor:"pointer",textAlign:"left"}}>
@@ -3498,7 +3511,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.5 · 2026-05-25
+                PROGRAM v2.6 · 2026-05-25
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
