@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<title>Lift Review</title>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/pose.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%;width:100%}
+:root{
+  --bg:#0a0a0a;--bg1:#111;--bg2:#161616;--bg3:#1c1c1c;
+  --border:#222;--border2:#2a2a2a;
+  --text:#e2e2e2;--text2:#888;--text3:#444;
+  --gold:#d4a843;--red:#c94f3a;--blue:#4a90d9;--green:#5a9e45;--yellow:#d4a843;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px}
+input,select,textarea{font-family:'DM Sans',sans-serif}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--gold)!important}
+.fade{animation:fadeIn 0.25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Constants ──────────────────────────────────────────────────────────────────
+const EXERCISES = [
+  { id: 'snatch',       label: 'Snatch' },
+  { id: 'clean_jerk',  label: 'Clean & Jerk' },
+  { id: 'ohs',         label: 'Overhead Squat' },
+  { id: 'clean_pull',  label: 'Clean Pull' },
+  { id: 'snatch_pull', label: 'Snatch Pull' },
+  { id: 'jerk_rack',   label: 'Jerk from Rack' },
+];
+
+const STATUS_COLOR = { ok: 'var(--green)', warn: 'var(--yellow)', fail: 'var(--red)' };
+const STATUS_ICON  = { ok: '✓', warn: '⚠', fail: '✗' };
+
+// ── Btn component ──────────────────────────────────────────────────────────────
+function Btn({ children, onClick, disabled, style = {} }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        background: disabled ? 'var(--bg3)' : 'var(--gold)',
+        color: disabled ? 'var(--text3)' : '#000',
+        border: 'none',
+        borderRadius: 4,
+        padding: '10px 20px',
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: 16,
+        letterSpacing: 1,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        ...style
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ── Settings Modal ─────────────────────────────────────────────────────────────
+function SettingsModal({ onClose }) {
+  const [key, setKey] = useState(() => localStorage.getItem('lr_api_key') || '');
+  const save = () => {
+    localStorage.setItem('lr_api_key', key.trim());
+    onClose();
+  };
+  return (
+    <div style={{
+      position:'fixed',inset:0,background:'rgba(0,0,0,0.8)',
+      display:'flex',alignItems:'center',justifyContent:'center',zIndex:100
+    }}>
+      <div style={{background:'var(--bg2)',border:'1px solid var(--border2)',borderRadius:8,padding:24,width:340}}>
+        <div style={{fontFamily:"'Bebas Neue'",fontSize:20,letterSpacing:1,marginBottom:16}}>
+          SETTINGS
+        </div>
+        <div style={{fontSize:12,color:'var(--text2)',marginBottom:8}}>
+          ANTHROPIC API KEY
+        </div>
+        <input
+          type="password"
+          value={key}
+          onChange={e => setKey(e.target.value)}
+          placeholder="sk-ant-..."
+          style={{
+            width:'100%',background:'var(--bg3)',border:'1px solid var(--border2)',
+            borderRadius:4,padding:'8px 12px',color:'var(--text)',fontSize:13,marginBottom:16
+          }}
+        />
+        <div style={{fontSize:11,color:'var(--text3)',marginBottom:16}}>
+          Stored in localStorage. Never leaves your browser.
+        </div>
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+          <button onClick={onClose} style={{
+            background:'none',border:'1px solid var(--border2)',borderRadius:4,
+            padding:'8px 14px',color:'var(--text2)',cursor:'pointer',fontSize:13
+          }}>Cancel</button>
+          <Btn onClick={save}>SAVE</Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── App ────────────────────────────────────────────────────────────────────────
+function App() {
+  const [showSettings, setShowSettings] = useState(false);
+  const [exercise, setExercise] = useState('snatch');
+  const apiKey = localStorage.getItem('lr_api_key') || '';
+
+  return (
+    <div style={{maxWidth:640,margin:'0 auto',padding:'0 16px 40px'}}>
+      {/* Header */}
+      <div style={{
+        display:'flex',alignItems:'center',justifyContent:'space-between',
+        padding:'20px 0 16px',borderBottom:'1px solid var(--border)'
+      }}>
+        <div style={{fontFamily:"'Bebas Neue'",fontSize:28,letterSpacing:2,color:'var(--gold)'}}>
+          LIFT REVIEW
+        </div>
+        <button onClick={() => setShowSettings(true)} style={{
+          background:'none',border:'1px solid var(--border2)',borderRadius:4,
+          padding:'6px 12px',color:'var(--text2)',cursor:'pointer',fontSize:12
+        }}>
+          {apiKey ? '⚙ API KEY SET' : '⚙ ADD API KEY'}
+        </button>
+      </div>
+
+      {/* Exercise selector */}
+      <div style={{marginTop:20}}>
+        <div style={{fontSize:11,color:'var(--text2)',letterSpacing:1,marginBottom:6}}>
+          EXERCISE
+        </div>
+        <select
+          value={exercise}
+          onChange={e => setExercise(e.target.value)}
+          style={{
+            width:'100%',background:'var(--bg2)',border:'1px solid var(--border2)',
+            borderRadius:4,padding:'10px 12px',color:'var(--text)',fontSize:14
+          }}
+        >
+          {EXERCISES.map(ex => (
+            <option key={ex.id} value={ex.id}>{ex.label}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Placeholder for upload + results — added in later tasks */}
+      <div style={{marginTop:32,color:'var(--text3)',fontSize:13,textAlign:'center'}}>
+        Upload section coming in Task 2
+      </div>
+
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
