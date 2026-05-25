@@ -170,7 +170,10 @@ const MAX_HEIGHT  = 720;
 
 function seekTo(video, time) {
   return new Promise(resolve => {
-    const handler = () => { video.removeEventListener('seeked', handler); resolve(); };
+    const handler = () => {
+      video.removeEventListener('seeked', handler);
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    };
     video.addEventListener('seeked', handler);
     video.currentTime = time;
   });
@@ -572,7 +575,7 @@ function UploadZone({ onFrames, onError }) {
           ref={videoRef}
           src={preview}
           onLoadedMetadata={handleVideoLoaded}
-          style={{display:'none'}}
+          style={{position:'fixed',left:'-9999px',width:'1px',height:'1px',opacity:0,pointerEvents:'none'}}
           crossOrigin="anonymous"
           muted
           playsInline
