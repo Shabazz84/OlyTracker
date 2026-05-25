@@ -163,6 +163,42 @@ const CUES = {
   ],
 };
 
+// ── CV Utilities ───────────────────────────────────────────────────────────────
+
+const FRAME_COUNT = 8;
+const MAX_HEIGHT  = 720;
+
+function seekTo(video, time) {
+  return new Promise(resolve => {
+    const handler = () => { video.removeEventListener('seeked', handler); resolve(); };
+    video.addEventListener('seeked', handler);
+    video.currentTime = time;
+  });
+}
+
+function videoToCanvas(video) {
+  const scale = Math.min(1, MAX_HEIGHT / video.videoHeight);
+  const w = Math.round(video.videoWidth * scale);
+  const h = Math.round(video.videoHeight * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+  return canvas;
+}
+
+async function extractFrames(videoEl) {
+  const duration = videoEl.duration;
+  if (!duration || duration < 2) throw new Error('Video must be at least 2 seconds long.');
+  const frames = [];
+  for (let i = 0; i < FRAME_COUNT; i++) {
+    const t = (i / (FRAME_COUNT - 1)) * duration;
+    await seekTo(videoEl, t);
+    const canvas = videoToCanvas(videoEl);
+    frames.push({ index: i, timestamp: parseFloat(t.toFixed(2)), canvas });
+  }
+  return frames;
+}
+
 // ── Btn component ──────────────────────────────────────────────────────────────
 function Btn({ children, onClick, disabled, style = {} }) {
   return (
@@ -184,6 +220,101 @@ function Btn({ children, onClick, disabled, style = {} }) {
     >
       {children}
     </button>
+  );
+}
+
+// ── UploadZone ─────────────────────────────────────────────────────────────────
+function UploadZone({ onFrames, onError }) {
+  const [dragging, setDragging]   = useState(false);
+  const [fileName, setFileName]   = useState('');
+  const [preview, setPreview]     = useState(null);
+  const [loading, setLoading]     = useState(false);
+  const fileRef = useRef(null);
+  const videoRef = useRef(null);
+
+  const handleFile = useCallback(async (file) => {
+    if (!file || !file.type.startsWith('video/')) {
+      onError('Please select an MP4, MOV, or WebM video file.');
+      return;
+    }
+    setFileName(file.name);
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+  }, [onError]);
+
+  const handleVideoLoaded = useCallback(async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.duration < 2) {
+      onError('Video must be at least 2 seconds long.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const frames = await extractFrames(video);
+      onFrames(frames, video);
+    } catch (err) {
+      onError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [onFrames, onError]);
+
+  const onDrop = useCallback((e) => {
+    e.preventDefault(); setDragging(false);
+    handleFile(e.dataTransfer.files[0]);
+  }, [handleFile]);
+
+  return (
+    <div style={{marginTop:24}}>
+      <div style={{fontSize:11,color:'var(--text2)',letterSpacing:1,marginBottom:8}}>VIDEO</div>
+
+      {preview && (
+        <video
+          ref={videoRef}
+          src={preview}
+          onLoadedMetadata={handleVideoLoaded}
+          style={{display:'none'}}
+          crossOrigin="anonymous"
+          muted
+          playsInline
+        />
+      )}
+
+      <div
+        onDragOver={e => { e.preventDefault(); setDragging(true); }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={onDrop}
+        onClick={() => !preview && fileRef.current?.click()}
+        style={{
+          border:`1px dashed ${dragging ? 'var(--gold)' : 'var(--border2)'}`,
+          borderRadius:6,padding:'24px 16px',textAlign:'center',
+          cursor: preview ? 'default' : 'pointer',
+          background: dragging ? 'rgba(212,168,67,0.05)' : 'var(--bg2)',
+          transition:'all 0.15s'
+        }}
+      >
+        {loading ? (
+          <div style={{color:'var(--text2)',fontSize:13}}>Extracting frames…</div>
+        ) : fileName ? (
+          <div>
+            <div style={{color:'var(--text)',fontSize:13,marginBottom:4}}>{fileName}</div>
+            <div
+              onClick={e => { e.stopPropagation(); setFileName(''); setPreview(null); onFrames(null); }}
+              style={{color:'var(--text3)',fontSize:11,cursor:'pointer',textDecoration:'underline'}}
+            >
+              Remove
+            </div>
+          </div>
+        ) : (
+          <div style={{color:'var(--text3)',fontSize:13}}>
+            Drop video here or <span style={{color:'var(--gold)'}}>browse</span>
+          </div>
+        )}
+      </div>
+      <input ref={fileRef} type="file" accept="video/*" style={{display:'none'}}
+        onChange={e => handleFile(e.target.files[0])} />
+    </div>
   );
 }
 
@@ -236,6 +367,15 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [exercise, setExercise] = useState('snatch');
   const apiKey = localStorage.getItem('lr_api_key') || '';
+  const [frames, setFrames] = useState(null);
+  const [video, setVideo]   = useState(null);
+  const [error, setError]   = useState('');
+
+  const handleFrames = useCallback((frms, vid) => {
+    setFrames(frms || null);
+    setVideo(vid || null);
+    setError('');
+  }, []);
 
   return (
     <div style={{maxWidth:640,margin:'0 auto',padding:'0 16px 40px'}}>
@@ -274,10 +414,22 @@ function App() {
         </select>
       </div>
 
-      {/* Placeholder for upload + results — added in later tasks */}
-      <div style={{marginTop:32,color:'var(--text3)',fontSize:13,textAlign:'center'}}>
-        Upload section coming in Task 2
-      </div>
+      <UploadZone onFrames={handleFrames} onError={setError} />
+
+      {error && (
+        <div style={{
+          marginTop:12,padding:'8px 12px',background:'rgba(201,79,58,0.1)',
+          border:'1px solid var(--red)',borderRadius:4,color:'var(--red)',fontSize:12
+        }}>
+          {error}
+        </div>
+      )}
+
+      {frames && (
+        <div style={{marginTop:16,fontSize:12,color:'var(--text2)'}}>
+          {frames.length} frames extracted — Task 3 ✓
+        </div>
+      )}
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </div>
