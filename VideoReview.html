@@ -50,6 +50,26 @@ const EXERCISES = [
 const STATUS_COLOR = { ok: 'var(--green)', warn: 'var(--yellow)', fail: 'var(--red)' };
 const STATUS_ICON  = { ok: '✓', warn: '⚠', fail: '✗' };
 
+// ── Phase visual descriptions — used in prompt so Claude identifies phases by image content ──
+const PHASE_VISUAL = {
+  'Setup':       'bar on floor, athlete crouched low, hips below or near shoulder height, arms straight down',
+  'First Pull':  'bar between floor and knee height, hip angle opening slowly, shoulders still over bar',
+  'Transition':  'bar at knee height passing to mid-thigh, athlete sweeping bar back in, back angle changing',
+  'Second Pull': 'bar at hip/upper thigh contact, violent triple extension of ankles/knees/hips, athlete tall and on toes',
+  'Catch':       'bar received overhead in squat, arms locked out, athlete in deep squat under bar',
+  'Clean Catch': 'bar at shoulder/front rack height, elbows pointing forward and high, athlete squatting under bar',
+  'Recovery':    'athlete standing up from squat with bar in rack or overhead, returning to upright',
+  'Jerk Dip':    'bar at shoulders, athlete in slight knee bend dip, torso vertical, preparing to drive',
+  'Jerk Drive':  'bar moving upward off shoulders, legs extending explosively, athlete beginning to move under bar',
+  'Lockout':     'bar fully overhead, arms locked out, athlete standing or split stance with bar locked',
+  'Finish':      'bar at peak height, athlete fully extended on toes, no longer under bar',
+  'Descent':     'bar overhead, athlete squatting down with bar locked out above',
+  'Bottom':      'athlete in full squat with bar locked overhead',
+  'Ascent':      'athlete standing up from squat with bar overhead',
+  'Dip':         'bar at shoulders, slight knee bend, torso vertical',
+  'Drive':       'legs pushing through floor, bar leaving shoulders upward',
+};
+
 // ── Phase lists per exercise ───────────────────────────────────────────────────
 const PHASES = {
   snatch:      ['Setup','First Pull','Transition','Second Pull','Catch','Recovery'],
@@ -449,6 +469,10 @@ function buildPrompt(exercise, annotatedFrames, poseFrames) {
     `    {"name":"${p}","status":"ok|warn|fail","note":"one concise observation"}`
   ).join(',\n');
 
+  const phaseVisualGuide = phases.map(p =>
+    `  "${p}": ${PHASE_VISUAL[p] || p}`
+  ).join('\n');
+
   const segmentOptions = 'hips|knees|lower_back|upper_back|left_elbow|right_elbow|shoulders|wrists';
 
   return `You are an Olympic weightlifting technique coach analyzing a ${exerciseLabel} attempt.
@@ -466,6 +490,9 @@ ${barDeviation}
 
 The images attached show these frames with the pose skeleton (green=confident, yellow=estimated joints) and the blue bar path trajectory drawn on each frame.
 
+PHASE VISUAL IDENTIFICATION GUIDE — use this to identify what phase each frame shows:
+${phaseVisualGuide}
+
 CUE LIBRARY FOR ${exerciseLabel.toUpperCase()}:
 ${cueLibraryText}
 
@@ -477,7 +504,7 @@ Respond with EXACTLY this format — a fenced JSON block first, then a coaching 
   "phases": [
 ${phaseSchema}
   ],
-  "frame_phases": ["<phase name for frame 1>","<phase name for frame 2>","<phase name for frame 3>","<phase name for frame 4>","<phase name for frame 5>","<phase name for frame 6>","<phase name for frame 7>","<phase name for frame 8>"],
+  "frame_phases": ["<phase for image 1>","<phase for image 2>","<phase for image 3>","<phase for image 4>","<phase for image 5>","<phase for image 6>","<phase for image 7>","<phase for image 8>"],
   "cues": [
     {"cue":"<exact cue text from library>","source":"<source>","status":"ok|warn|fail","note":"specific observation tied to CV data"}
   ],
@@ -487,7 +514,12 @@ ${phaseSchema}
 }
 \`\`\`
 
-For "frame_phases": look at each image and identify which lift phase is actually shown. Use only the phase names from the "phases" array above. Multiple frames may share the same phase; not all phases need to appear.
+CRITICAL — frame_phases rules:
+- Identify each frame by what you ACTUALLY SEE in the image, not by its position in the sequence
+- Use the phase visual identification guide above as your reference
+- If frame 2 shows bar at shoulder height with elbows forward, it is "Clean Catch" — not "First Pull"
+- Multiple frames showing the same phase is normal and correct; label them accurately
+- Use only phase names from the list: ${phases.map(p=>`"${p}"`).join(', ')}
 
 COACHING:
 Write 2-4 sentences. Be specific and actionable. Reference actual angles or bar path data where relevant. Prioritise the most impactful correction. Mention back pain implications if relevant.`;
@@ -794,8 +826,8 @@ function FrameLightbox({ annotatedFrames, phases, framePhases, startIndex, onClo
             style={{background:'none',border:'1px solid var(--border2)',borderRadius:4,padding:'6px 14px',
               color: idx===0 ? 'var(--text3)' : 'var(--text)',cursor: idx===0 ? 'default':'pointer',fontSize:16}}>‹</button>
           <div style={{textAlign:'center'}}>
-            <div style={{fontSize:13,color:'var(--text)',fontWeight:500}}>{framePhases?.[idx] || phases?.[idx] || `Frame ${idx+1}`}</div>
-            <div style={{fontSize:11,color:'var(--text3)'}}>{frame?.timestamp}s · frame {idx+1}/{annotatedFrames.length}</div>
+            <div style={{fontSize:13,color:'var(--text)',fontWeight:500}}>{framePhases?.[idx] || `Frame ${idx+1}`}</div>
+            <div style={{fontSize:11,color:'var(--text3)'}}>#{idx+1} of {annotatedFrames.length} · {frame?.timestamp}s</div>
           </div>
           <button onClick={() => setIdx(i => Math.min(i+1,annotatedFrames.length-1))} disabled={idx===annotatedFrames.length-1}
             style={{background:'none',border:'1px solid var(--border2)',borderRadius:4,padding:'6px 14px',
@@ -840,9 +872,9 @@ function KeyFramesStrip({ annotatedFrames, phases, framePhases }) {
               onMouseLeave={e => e.currentTarget.style.borderColor='var(--border)'}
             />
             <div style={{fontSize:9,marginTop:4,color:'var(--text2)'}}>
-              {framePhases?.[i] || phases?.[i] || `Frame ${i+1}`}
+              {framePhases?.[i] || `Frame ${i+1}`}
             </div>
-            <div style={{fontSize:9,color:'var(--text3)'}}>{frame.timestamp}s</div>
+            <div style={{fontSize:9,color:'var(--text3)'}}>#{i+1} · {frame.timestamp}s</div>
           </div>
         ))}
       </div>
@@ -967,8 +999,8 @@ function saveReport(exercise, annotatedFrames, claudeResult) {
   const framesHtml = annotatedFrames.map((f, i) => `
     <div style="flex-shrink:0;text-align:center">
       <img src="${f.b64}" style="display:block;max-width:220px;border-radius:4px;border:1px solid #222"/>
-      <div style="font-size:10px;color:#888;margin-top:4px">${framePhases[i]||phases[i]||`Frame ${i+1}`}</div>
-      <div style="font-size:10px;color:#555">${f.timestamp}s</div>
+      <div style="font-size:10px;color:#888;margin-top:4px">${framePhases[i]||`Frame ${i+1}`}</div>
+      <div style="font-size:10px;color:#555">#${i+1} · ${f.timestamp}s</div>
     </div>`).join('');
 
   const order = {fail:0,warn:1,ok:2};
