@@ -3389,6 +3389,15 @@ function OlyTracker() {
       ]);
       if(sc.status==="fulfilled"&&sc.value) setSuppHistory(JSON.parse(sc.value.value)||{});
       if(sn.status==="fulfilled"&&sn.value) setSuppNotes(sn.value.value);
+      // Pull from Supabase on startup (takes priority over localStorage)
+      if (sbSync.ready) {
+        try {
+          const remote = await sbSync.pullAll();
+          if (remote.sessions.length > 0 || remote.sets.length > 0 || remote.reviews.length > 0) {
+            await applySupabaseData(remote);
+          }
+        } catch { /* silent — continue with localStorage data */ }
+      }
       // Pull from Gist on startup (takes priority over localStorage)
       const gcfg=JSON.parse(localStorage.getItem("oly_gist")||"null");
       if(gcfg?.token&&gcfg?.id){
@@ -3425,6 +3434,46 @@ function OlyTracker() {
     },3000);
     return()=>clearTimeout(timer);
   },[prs,logs,week,isSummer,suppHistory,suppNotes,loading,setsVersion]);
+
+  async function applySupabaseData(remote) {
+    if (remote.sessions.length > 0) {
+      const logsObj = {};
+      remote.sessions.forEach(s => {
+        logsObj[s.id] = {
+          week: s.week, dayName: s.day_name, dayLabel: s.day_label,
+          date: s.date, notes: s.notes || '', weights: s.weights || '',
+          backPain: s.back_pain || '0', nightShift: !!s.night_shift,
+          techniqueFeel: s.technique_feel || '', energyLevel: s.energy_level || '',
+          focusNext: s.focus_next || '', rating: s.rating || '',
+        };
+      });
+      setLogs(logsObj);
+      await storage.set('oly_logs', JSON.stringify(logsObj));
+    }
+    if (remote.sets.length > 0) {
+      const setsMap = {};
+      remote.sets.forEach(s => {
+        const k = `sets_w${s.week}_${s.day_id}_${s.exercise_name}`;
+        if (!setsMap[k]) setsMap[k] = [];
+        setsMap[k][s.set_index] = { done: s.done, weight: s.weight };
+      });
+      Object.entries(setsMap).forEach(([k, arr]) => {
+        localStorage.setItem(k, JSON.stringify(arr.filter(Boolean)));
+      });
+      setSyncRevision(r => r + 1);
+    }
+    if (remote.reviews.length > 0) {
+      const revObj = {};
+      remote.reviews.forEach(r => {
+        revObj[r.week] = {
+          rating: r.rating, energyTrend: r.energy_trend,
+          injuries: r.injuries || [], generalNotes: r.general_notes || '',
+          ai: r.ai_response || null, confirmed: r.confirmed, days: r.days || {},
+        };
+      });
+      localStorage.setItem('oly_reviews', JSON.stringify(revObj));
+    }
+  }
 
   async function applyRemoteData(data){
     if(data.oly_prs){setPrs(data.oly_prs);await storage.set("oly_prs",JSON.stringify(data.oly_prs));}
