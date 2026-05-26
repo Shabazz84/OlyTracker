@@ -95,8 +95,9 @@ const REFERENCE_FRAMES = {
 
 // Reference frames for each exercise — used to show Claude elite technique
 function getRefFrames(exercise) {
-  if (exercise === 'snatch')                          return REFERENCE_FRAMES.snatch;
-  if (exercise === 'clean_jerk' || exercise === 'clean') return REFERENCE_FRAMES.clean_jerk;
+  if (exercise === 'snatch')    return REFERENCE_FRAMES.snatch;
+  // C&J reference uses squat jerk — only the clean portion (frames 0-3) is applicable
+  if (exercise === 'clean_jerk' || exercise === 'clean') return REFERENCE_FRAMES.clean_jerk.slice(0, 4);
   return null;
 }
 
