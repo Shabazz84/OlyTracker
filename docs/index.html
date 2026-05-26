@@ -2440,6 +2440,63 @@ const LMS_PHASES = [
   {id:"micro",     label:"MICRO-WEIGHT",   color:"#5a9e45", desc:"50–60% · technique only · CNS reset · after pain flares or intensity blocks"},
 ];
 
+function SyncSection() {
+  const [migrating, setMigrating] = React.useState(false);
+  const [status, setStatus] = React.useState(null);
+
+  async function migrate() {
+    if (!sbSync.ready) { setStatus('Supabase not configured — check key.js'); return; }
+    setMigrating(true);
+    setStatus(null);
+    try {
+      const logs = JSON.parse(localStorage.getItem('oly_logs') || '{}');
+      await Promise.all(Object.entries(logs).map(([id, e]) => sbSync.upsertSession(id, e)));
+
+      const setKeys = Object.keys(localStorage).filter(k => k.startsWith('sets_'));
+      await Promise.all(setKeys.map(k => {
+        try { return sbSync.upsertSets(k, JSON.parse(localStorage.getItem(k) || '[]')); }
+        catch { return Promise.resolve(); }
+      }));
+
+      const reviews = JSON.parse(localStorage.getItem('oly_reviews') || '{}');
+      await Promise.all(Object.entries(reviews).map(([w, r]) => sbSync.upsertReview(parseInt(w), r)));
+
+      const sCount = Object.keys(logs).length;
+      const rCount = Object.keys(reviews).length;
+      setStatus(`✓ Migrated ${sCount} sessions · ${setKeys.length} set records · ${rCount} reviews`);
+    } catch(err) {
+      setStatus(`Error: ${err.message}`);
+    }
+    setMigrating(false);
+  }
+
+  return (
+    <div style={{marginTop:24,paddingTop:20,borderTop:"1px solid var(--border)"}}>
+      <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:10}}>SUPABASE SYNC</div>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+        <div style={{width:7,height:7,borderRadius:"50%",background:sbSync.ready?"var(--green)":"var(--text3)"}}/>
+        <span style={{fontSize:10,color:sbSync.ready?"var(--text2)":"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
+          {sbSync.ready ? "Connected" : "Not configured"}
+        </span>
+      </div>
+      {sbSync.ready && (
+        <button onClick={migrate} disabled={migrating}
+          style={{padding:"9px 16px",borderRadius:7,border:"1px solid var(--border)",
+            background:migrating?"var(--bg2)":"var(--bg1)",color:migrating?"var(--text3)":"var(--text2)",
+            fontSize:10,fontFamily:"'DM Mono',monospace",letterSpacing:0.5,cursor:migrating?"default":"pointer"}}>
+          {migrating ? "Migrating…" : "Migrate localStorage → Supabase"}
+        </button>
+      )}
+      {status && (
+        <div style={{marginTop:10,fontSize:10,color:status.startsWith("✓")?"var(--green)":"var(--red)",
+          fontFamily:"'DM Mono',monospace",lineHeight:1.6}}>
+          {status}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SystemTab({week}) {
   const STORAGE_KEY = "oly_system";
   const [data, setData] = useState(() => {
@@ -2801,6 +2858,7 @@ function SystemTab({week}) {
           </div>
         </div>
       )}
+      <SyncSection />
     </div>
   );
 }
