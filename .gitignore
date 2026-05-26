@@ -1,4 +1,5 @@
 transcripts/
+reference_videos/
 data/telegram_atletisty.json
 __pycache__/
 *.pyc
