@@ -24,9 +24,12 @@ jobs:
 
       - name: Inject API keys
         run: |
-          printf 'window.__CLAUDE_KEY="%s";\n' "$ANTHROPIC_API_KEY" > docs/key.js
-          if [ -n "$SUPABASE_URL" ]; then printf 'window.__SUPABASE_URL="%s";\n' "$SUPABASE_URL" >> docs/key.js; fi
-          if [ -n "$SUPABASE_ANON_KEY" ]; then printf 'window.__SUPABASE_KEY="%s";\n' "$SUPABASE_ANON_KEY" >> docs/key.js; fi
+          CLEAN_CLAUDE=$(echo "$ANTHROPIC_API_KEY" | tr -d '\r\n')
+          CLEAN_SB_URL=$(echo "$SUPABASE_URL" | tr -d '\r\n')
+          CLEAN_SB_KEY=$(echo "$SUPABASE_ANON_KEY" | tr -d '\r\n')
+          printf 'window.__CLAUDE_KEY="%s";\n' "$CLEAN_CLAUDE" > docs/key.js
+          if [ -n "$CLEAN_SB_URL" ]; then printf 'window.__SUPABASE_URL="%s";\n' "$CLEAN_SB_URL" >> docs/key.js; fi
+          if [ -n "$CLEAN_SB_KEY" ]; then printf 'window.__SUPABASE_KEY="%s";\n' "$CLEAN_SB_KEY" >> docs/key.js; fi
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
