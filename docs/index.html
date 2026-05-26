@@ -3143,7 +3143,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
 
   const handleGenerate = async () => {
     const { apiKey, _src } = lmCfgStorage.get();
-    if (!apiKey) { setAiError("No API key configured. Go to Settings → CLAUDE API."); return; }
+    if (!apiKey) { setAiError("No API key configured. Go to SETTINGS → CLAUDE API."); return; }
     setAiLoading(true);
     setAiError(null);
     try {
