@@ -3063,6 +3063,10 @@ function inferDaysFromLogs(week, dayList) {
       const m = l.dayLabel && l.dayLabel.match(/(\d+)/);
       return m ? `d${m[1]}` === d.id : false;
     });
+    const dayEntries = weekLogs.filter(l => {
+      const m = l.dayLabel && l.dayLabel.match(/(\d+)/);
+      return m ? `d${m[1]}` === d.id : false;
+    });
     // Expected total from program definition — exercises never opened have no localStorage entry,
     // so counting only from localStorage keys undercounts and produces false 100% readings.
     const expectedTotal = d.exercises.reduce((acc, ex) => {
@@ -3093,11 +3097,19 @@ function inferDaysFromLogs(week, dayList) {
     else if (entry && pct === null) status = "skipped"; // COMPLETE pressed but no sets recorded
     else if (entry && pct === 0) status = "partial";    // COMPLETE pressed, sets exist but none ticked
     else status = "skipped";
+    const logNotes = dayEntries.map(e => {
+      const parts = [];
+      if (e.notes) parts.push(e.notes);
+      if (e.backPain && parseFloat(e.backPain) > 0) parts.push(`back pain ${e.backPain}/10`);
+      if (e.techniqueFeel) parts.push(`technique: ${e.techniqueFeel}`);
+      if (e.energyLevel) parts.push(`energy: ${e.energyLevel}`);
+      return parts.join(", ");
+    }).filter(Boolean).join(" | ");
     result[d.id] = {
       status,
       loggedDate: entry ? entry.date : null,
       pct,
-      notes: "",
+      notes: logNotes,
     };
   });
   return result;
@@ -3113,7 +3125,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     const days = {};
     dayList.forEach(d => {
       const sv = savedDays[d.id];
-      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||"" };
+      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||inferred[d.id]?.notes||"" };
     });
     return { rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days };
   });
@@ -3129,7 +3141,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     const days = {};
     dl.forEach(d => {
       const sv = savedDays[d.id];
-      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||"" };
+      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||inferred[d.id]?.notes||"" };
     });
     setForm({ rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days });
     setExpanded(false);
@@ -3181,7 +3193,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     const days = {};
     dl.forEach(d => {
       const sv = savedDays[d.id];
-      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||"" };
+      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||inferred[d.id]?.notes||"" };
     });
     setForm(prev => ({ ...prev, days }));
     setExpanded(true);
@@ -3883,7 +3895,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.8 · 2026-05-26
+                PROGRAM v2.8.1 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
