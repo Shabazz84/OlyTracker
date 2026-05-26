@@ -68,7 +68,7 @@ const sbSync = (() => {
   async function upsertSets(lsKey, setsArr) {
     try {
       const m = lsKey.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
-      if (!m) return;
+      if (!m) { console.warn('sbSync.upsertSets: bad key format:', lsKey); return; }
       const week = parseInt(m[2]), dayId = m[3], exName = m[4];
       const rows = setsArr.map((s, i) => ({
         id: `${lsKey}_${i}`, week, day_id: dayId, exercise_name: exName,
