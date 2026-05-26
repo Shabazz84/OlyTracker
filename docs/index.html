@@ -2449,7 +2449,8 @@ function SyncSection() {
     setMigrating(true);
     setStatus(null);
     try {
-      const logs = JSON.parse(localStorage.getItem('oly_logs') || '{}');
+      let logs = {};
+      try { logs = JSON.parse(localStorage.getItem('oly_logs') || '{}'); } catch {}
       await Promise.all(Object.entries(logs).map(([id, e]) => sbSync.upsertSession(id, e)));
 
       const setKeys = Object.keys(localStorage).filter(k => k.startsWith('sets_'));
@@ -2458,14 +2459,15 @@ function SyncSection() {
         catch { return Promise.resolve(); }
       }));
 
-      const reviews = JSON.parse(localStorage.getItem('oly_reviews') || '{}');
+      let reviews = {};
+      try { reviews = JSON.parse(localStorage.getItem('oly_reviews') || '{}'); } catch {}
       await Promise.all(Object.entries(reviews).map(([w, r]) => sbSync.upsertReview(parseInt(w), r)));
 
       const sCount = Object.keys(logs).length;
       const rCount = Object.keys(reviews).length;
       setStatus(`✓ Migrated ${sCount} sessions · ${setKeys.length} set records · ${rCount} reviews`);
     } catch(err) {
-      setStatus(`Error: ${err.message}`);
+      setStatus(`Error: ${err?.message || String(err)}`);
     }
     setMigrating(false);
   }
