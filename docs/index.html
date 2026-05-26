@@ -3337,26 +3337,28 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
         <div style={{marginBottom:14,padding:"12px 14px",background:"var(--bg2)",borderRadius:8,border:"1px solid var(--gold)33"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
             <span style={{fontSize:9,color:"var(--gold)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>AI REVIEW</span>
+            {form.ai.loadRecommendation && (
             <span style={{fontSize:9,fontFamily:"'DM Mono',monospace",letterSpacing:0.5,
               color:form.ai.loadRecommendation==="advance"?"#5a9e45":form.ai.loadRecommendation==="reduce"?"#c94f3a":"#d4a843",
               background:form.ai.loadRecommendation==="advance"?"#5a9e4522":form.ai.loadRecommendation==="reduce"?"#c94f3a22":"#d4a84322",
               padding:"1px 7px",borderRadius:8}}>
               {form.ai.loadRecommendation.toUpperCase()}
             </span>
+            )}
           </div>
-          <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.7,marginBottom:form.ai.flags.length>0?10:0}}>
+          <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.7,marginBottom:(form.ai.flags||[]).length>0?10:0}}>
             {form.ai.narrative}
           </div>
-          {form.ai.flags.length > 0 && (
+          {(form.ai.flags||[]).length > 0 && (
             <>
               <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:5}}>NEXT WEEK FLAGS</div>
-              {form.ai.flags.map((f,i) => (
+              {(form.ai.flags||[]).map((f,i) => (
                 <div key={i} style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:4}}>
                   <span style={{fontSize:9,fontFamily:"'DM Mono',monospace",flexShrink:0,
                     color:f.action==="skip"?"#c94f3a":"#d4a843",
                     background:f.action==="skip"?"#c94f3a22":"#d4a84322",
                     padding:"1px 6px",borderRadius:8}}>
-                    {f.action.toUpperCase()}
+                    {(f.action||"reduce").toUpperCase()}
                   </span>
                   <span style={{fontSize:10,color:"var(--text)"}}>{f.exercise}</span>
                   <span style={{fontSize:9,color:"var(--text3)"}}>— {f.reason}</span>
@@ -3896,7 +3898,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.8.2 · 2026-05-26
+                PROGRAM v2.8.3 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
