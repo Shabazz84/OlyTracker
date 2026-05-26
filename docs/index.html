@@ -3174,6 +3174,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     const saved = reviewStorage.save(week, { ...form, confirmed:true });
     if (!saved) return;
     setForm(prev => ({ ...prev, confirmed:true }));
+    setExpanded(false);
     onSaved(saved);
   };
 
@@ -3895,7 +3896,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.8.1 · 2026-05-26
+                PROGRAM v2.8.2 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4643,8 +4644,28 @@ function OlyTracker() {
   );
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { err: null }; }
+  static getDerivedStateFromError(e) { return { err: e }; }
+  componentDidCatch(e) { console.error('OlyTracker crash:', e); }
+  render() {
+    if (this.state.err) return (
+      <div style={{padding:24,fontFamily:"'DM Mono',monospace",color:"#c94f3a",fontSize:12,lineHeight:1.7}}>
+        <div style={{marginBottom:8,fontSize:14,fontWeight:"bold"}}>⚠ Something went wrong</div>
+        <div style={{marginBottom:16,color:"#888"}}>{String(this.state.err)}</div>
+        <button onClick={()=>this.setState({err:null})}
+          style={{padding:"8px 16px",borderRadius:6,border:"1px solid #c94f3a",background:"transparent",
+            color:"#c94f3a",cursor:"pointer",fontFamily:"'DM Mono',monospace",fontSize:11}}>
+          TRY AGAIN
+        </button>
+      </div>
+    );
+    return this.props.children;
+  }
+}
+
 const root=ReactDOM.createRoot(document.getElementById('root'));
-root.render(<OlyTracker/>);
+root.render(<ErrorBoundary><OlyTracker/></ErrorBoundary>);
 </script>
 </body>
 </html>
