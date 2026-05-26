@@ -269,6 +269,9 @@ function parseAiResponse(text) {
         loadRecommendation:  ["advance","hold","reduce"].includes(p.loadRecommendation) ? p.loadRecommendation : "hold",
         skipExercises:       Array.isArray(p.skipExercises)       ? p.skipExercises       : [],
         reduceLoadExercises: Array.isArray(p.reduceLoadExercises) ? p.reduceLoadExercises : [],
+        substitutions:       Array.isArray(p.substitutions)
+          ? p.substitutions.map(s => ({ skip: String(s.skip||""), sub: String(s.sub||"") }))
+          : [],
         flags:               Array.isArray(p.flags)
           ? p.flags.map(f => ({
               day:      typeof f.day      === "string" ? f.day      : "",
@@ -281,7 +284,7 @@ function parseAiResponse(text) {
       };
     } catch {}
   }
-  return { narrative: text, loadRecommendation: "hold", skipExercises: [], reduceLoadExercises: [], flags: [], generatedAt: new Date().toISOString() };
+  return { narrative: text, loadRecommendation: "hold", skipExercises: [], reduceLoadExercises: [], substitutions: [], flags: [], generatedAt: new Date().toISOString() };
 }
 
 function buildReviewPrompt(week, weekData, formData, isSummer) {
@@ -324,11 +327,14 @@ RESPONSE FORMAT — output ONLY a \`\`\`json block, nothing else:
   "loadRecommendation": "advance" | "hold" | "reduce",
   "skipExercises": ["Exact Exercise Name As Listed Below", ...],
   "reduceLoadExercises": ["Exact Exercise Name As Listed Below", ...],
+  "substitutions": [
+    { "skip": "Skipped Exercise Name", "sub": "Substitute exercise name + sets/reps/load" }
+  ],
   "flags": [
     { "day": "d1", "exercise": "Exact Exercise Name", "action": "skip" | "reduce" }
   ]
 }
-Keep flags concise — one entry per affected exercise per day. Use ONLY exercise names exactly as they appear in PLANNED EXERCISES below.`;
+Substitution rules: for every skipped exercise, provide one substitute that preserves the training stimulus without loading the injured structure. Keep sub descriptions short (e.g. "Snatch Deadlift 4×4 @ 80kg"). Use ONLY exercise names in skipExercises/reduceLoadExercises exactly as they appear in PLANNED EXERCISES below.`;
 
   const user = `WEEK ${week} — ${weekData.phase} (${weekData.load})
 Focus: ${weekData.focus}
@@ -3362,11 +3368,15 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
           {(form.ai.skipExercises||[]).length > 0 && (
             <div style={{marginBottom:8}}>
               <div style={{fontSize:9,color:"#c94f3a",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:4}}>SKIP</div>
-              {(form.ai.skipExercises||[]).map((ex,i) => (
-                <div key={i} style={{fontSize:10,color:"var(--text)",marginBottom:2,paddingLeft:6,borderLeft:"2px solid #c94f3a44"}}>
-                  {ex}
-                </div>
-              ))}
+              {(form.ai.skipExercises||[]).map((ex,i) => {
+                const sub = (form.ai.substitutions||[]).find(s=>s.skip===ex);
+                return (
+                  <div key={i} style={{marginBottom:4,paddingLeft:6,borderLeft:"2px solid #c94f3a44"}}>
+                    <div style={{fontSize:10,color:"var(--text)"}}>{ex}</div>
+                    {sub && <div style={{fontSize:9,color:"#5a9e45",marginTop:1}}>↳ {sub.sub}</div>}
+                  </div>
+                );
+              })}
             </div>
           )}
           {(form.ai.reduceLoadExercises||[]).length > 0 && (
@@ -3939,7 +3949,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.9.1 · 2026-05-26
+                PROGRAM v2.9.2 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
