@@ -3519,10 +3519,15 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
         <div key={d.id} style={{background:"var(--bg2)",borderRadius:8,
           padding:"10px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
           {(() => {
-            const dayFlags = activeFlags.filter(f => f.day === d.id);
-            return dayFlags.length > 0 ? (
+            const daySkip   = d.exercises.filter(e => prevSkip.includes(e.name));
+            const dayReduce = d.exercises.filter(e => prevReduce.includes(e.name));
+            const chips = [
+              ...daySkip.map(e   => ({action:"skip",   exercise:e.name})),
+              ...dayReduce.map(e => ({action:"reduce",  exercise:e.name})),
+            ];
+            return chips.length > 0 ? (
               <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:6}}>
-                {dayFlags.map((f,i) => (
+                {chips.map((f,i) => (
                   <span key={i} style={{fontSize:8,fontFamily:"'DM Mono',monospace",
                     color:f.action==="skip"?"#c94f3a":"#d4a843",
                     background:f.action==="skip"?"#c94f3a22":"#d4a84322",
@@ -3932,7 +3937,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.8.8 · 2026-05-26
+                PROGRAM v2.8.9 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
