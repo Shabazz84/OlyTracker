@@ -2255,6 +2255,146 @@ function CalendarHeatmap({logs}){
   );
 }
 
+function AnalyticsTab({ prs, logs, week }) {
+  const setsData = useMemo(() => {
+    const d = {};
+    Object.keys(localStorage).filter(k => k.startsWith('sets_')).forEach(k => {
+      try { d[k] = JSON.parse(localStorage.getItem(k) || '[]'); } catch {}
+    });
+    return d;
+  }, []);
+
+  const completionByWeek = useMemo(() => {
+    const counts = {};
+    Object.values(logs).forEach(l => { if (l.week) counts[l.week] = (counts[l.week] || 0) + 1; });
+    const maxW = Math.max(week, ...Object.keys(counts).map(Number), 1);
+    return Array.from({ length: maxW }, (_, i) => ({ label: `W${i+1}`, sessions: counts[i+1] || 0 }));
+  }, [logs, week]);
+
+  const exFreq = useMemo(() => {
+    const m = {};
+    Object.entries(setsData).forEach(([key, arr]) => {
+      const match = key.match(/^sets_w\d+_d\d+_(.+)$/);
+      if (!match) return;
+      const exName = match[1].replace(/_/g, ' ').split(' — ')[0];
+      if (!m[exName]) m[exName] = 0;
+      arr.forEach(s => { if (s.done) m[exName]++; });
+    });
+    return Object.entries(m).filter(([,v]) => v > 0).sort((a,b) => b[1]-a[1]).slice(0, 12)
+      .map(([name, sets]) => ({ name, sets }));
+  }, [setsData]);
+
+  const PR_LIFTS = [
+    { key: 'Snatch (Floor)', label: 'SNATCH', color: 'var(--gold)' },
+    { key: 'Clean & Jerk', label: 'C&J', color: 'var(--blue)' },
+    { key: 'Clean', label: 'CLEAN', color: 'var(--green)' },
+    { key: 'Back Squat', label: 'BACK SQUAT', color: 'var(--purple)' },
+    { key: 'Hang Power Snatch', label: 'HNG PWR SNATCH', color: 'var(--red)' },
+  ];
+
+  const sec = { marginBottom: 28 };
+  const hd = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 20, letterSpacing: 1, color: 'var(--text)', marginBottom: 14 };
+  const sub = { fontSize: 9, color: 'var(--text3)', fontFamily: "'DM Mono',monospace", marginBottom: 8, letterSpacing: 1.5 };
+
+  return (
+    <div className="fade">
+
+      {/* Sync status pill */}
+      <div style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 12px',
+        borderRadius:8, background:'var(--bg1)', border:'1px solid var(--border)', marginBottom:20 }}>
+        <div style={{ width:7, height:7, borderRadius:'50%', background: sbSync.ready ? 'var(--green)' : 'var(--text3)', flexShrink:0 }}/>
+        <span style={{ fontSize:10, color: sbSync.ready ? 'var(--text2)' : 'var(--text3)', fontFamily:"'DM Mono',monospace" }}>
+          {sbSync.ready ? 'SUPABASE CONNECTED · DATA PERSISTED' : 'SUPABASE NOT CONFIGURED · LOCALSTORAGE ONLY'}
+        </span>
+      </div>
+
+      {/* Weekly sessions chart */}
+      <div style={sec}>
+        <div style={hd}>SESSIONS PER WEEK</div>
+        <div style={sub}>LOGGED SESSIONS (TARGET: 5)</div>
+        {completionByWeek.length > 0 ? (
+          <>
+            <div style={{ display:'flex', gap:3, alignItems:'flex-end', height:80, background:'var(--bg)', borderRadius:6, padding:'8px 6px 4px' }}>
+              {completionByWeek.map((w, i) => {
+                const h = Math.max(0, (w.sessions / 5) * 60);
+                const col = w.sessions >= 5 ? 'var(--green)' : w.sessions >= 3 ? 'var(--gold)' : w.sessions > 0 ? 'var(--red)' : 'var(--bg3)';
+                return (
+                  <div key={i} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'flex-end', height:64 }}>
+                    <div style={{ width:'100%', height:h, background:col, borderRadius:'2px 2px 0 0', minHeight: w.sessions > 0 ? 3 : 0, transition:'height 0.2s' }}/>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display:'flex', justifyContent:'space-between', marginTop:4 }}>
+              {[0, Math.floor(completionByWeek.length/2), completionByWeek.length-1]
+                .filter((v,i,a) => a.indexOf(v)===i)
+                .map(i => (
+                  <span key={i} style={{ fontSize:8, color:'var(--text3)', fontFamily:"'DM Mono',monospace" }}>
+                    {completionByWeek[i]?.label}
+                  </span>
+                ))}
+            </div>
+          </>
+        ) : (
+          <div style={{ color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace" }}>No sessions logged yet.</div>
+        )}
+      </div>
+
+      {/* PR Progression */}
+      <div style={sec}>
+        <div style={hd}>PR PROGRESSION</div>
+        {PR_LIFTS.map(lift => {
+          const entry = prs[lift.key];
+          if (!entry?.history?.length || entry.history.length < 2) return null;
+          const chartData = [...entry.history]
+            .sort((a, b) => (a.date||'').localeCompare(b.date||''))
+            .map(h => ({ date: h.date, weight: h.weight, label: h.date?.slice(5)||'' }));
+          return (
+            <div key={lift.key} style={{ marginBottom:20 }}>
+              <div style={sub}>{lift.label}</div>
+              <SVGLineChart data={chartData} height={100}
+                series={[{ key:'weight', color:lift.color, label:`${lift.label} (kg)` }]} />
+            </div>
+          );
+        })}
+        {PR_LIFTS.every(l => !prs[l.key]?.history || prs[l.key].history.length < 2) && (
+          <div style={{ color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace" }}>Log PRs to see progression charts.</div>
+        )}
+      </div>
+
+      {/* Exercise frequency */}
+      <div style={sec}>
+        <div style={hd}>TOP EXERCISES</div>
+        <div style={sub}>COMPLETED SETS ACROSS ALL WEEKS</div>
+        {exFreq.length > 0 ? (
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {exFreq.map((ex, i) => {
+              const pct = Math.round((ex.sets / exFreq[0].sets) * 100);
+              return (
+                <div key={ex.name} style={{ display:'flex', alignItems:'center', gap:10 }}>
+                  <span style={{ width:16, fontSize:9, color:'var(--text3)', fontFamily:"'DM Mono',monospace", textAlign:'right', flexShrink:0 }}>{i+1}</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+                      <span style={{ fontSize:12, color:'var(--text)', fontFamily:"'Bebas Neue',sans-serif", letterSpacing:0.3 }}>{ex.name}</span>
+                      <span style={{ fontSize:9, color:'var(--text2)', fontFamily:"'DM Mono',monospace" }}>{ex.sets} sets</span>
+                    </div>
+                    <div style={{ height:4, background:'var(--bg2)', borderRadius:2 }}>
+                      <div style={{ height:'100%', width:`${pct}%`, background:'var(--gold)', borderRadius:2 }}/>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace" }}>Complete sets to see exercise rankings.</div>
+        )}
+      </div>
+
+    </div>
+  );
+}
+
 function Reports({prs, logs, week}){
   const setsData=useMemo(()=>{
     const d={};
@@ -3730,7 +3870,7 @@ function OlyTracker() {
           </div>
           <div style={{display:"flex",gap:0,overflowX:"auto",WebkitOverflowScrolling:"touch",
             scrollbarWidth:"none",msOverflowStyle:"none"}}>
-            {[["program","PROGRAM"],["mobility","MOBILITY"],["supps","SUPPS"],["log","LOG"],["prs","PRs"],["reports","REPORTS"],["system","SYSTEM"]].map(([id,lbl])=>(
+            {[["program","PROGRAM"],["mobility","MOBILITY"],["supps","SUPPS"],["log","LOG"],["prs","PRs"],["reports","REPORTS"],["analytics","ANALYTICS"],["system","SYSTEM"]].map(([id,lbl])=>(
               <button key={id} onClick={()=>setTab(id)} style={{
                 padding:"9px 12px",cursor:"pointer",fontSize:10,fontWeight:600,letterSpacing:1.5,
                 border:"none",background:"transparent",fontFamily:"'DM Mono',monospace",
@@ -4313,6 +4453,7 @@ function OlyTracker() {
 
         {/* ═══ REPORTS ═══ */}
         {tab==="reports" && <Reports prs={prs} logs={logs} week={week}/>}
+        {tab==="analytics" && <AnalyticsTab prs={prs} logs={logs} week={week}/>}
 
         {/* ═══ SYSTEM ═══ */}
         {tab==="system" && <SystemTab week={week}/>}
