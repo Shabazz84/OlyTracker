@@ -220,9 +220,10 @@ const lmCfgStorage = {
   get:  () => {
     try {
       const stored = JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || LM_CFG_DEFAULT;
-      if (!stored.apiKey && window.__CLAUDE_KEY) stored.apiKey = window.__CLAUDE_KEY;
+      if (!stored.apiKey && window.__CLAUDE_KEY) { stored.apiKey = window.__CLAUDE_KEY; stored._src = "deployed"; }
+      else if (stored.apiKey) stored._src = "localStorage";
       return stored;
-    } catch { return { apiKey: window.__CLAUDE_KEY || "" }; }
+    } catch { return { apiKey: window.__CLAUDE_KEY || "", _src: "deployed" }; }
   },
   save: (cfg) => { try { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); } catch {} return cfg; },
 };
@@ -247,7 +248,7 @@ async function callClaude(systemPrompt, userPrompt, apiKey) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    const keyHint = `(key: ${cleanKey.slice(0,12)}…)`;
+    const keyHint = `(key[${cleanKey.length}]: ${cleanKey.slice(0,20)}…${cleanKey.slice(-4)})`;
     throw new Error(`Claude API ${res.status}: ${err.error?.message || res.statusText} ${keyHint}`);
   }
   const data = await res.json();
@@ -3141,7 +3142,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
   const removeInj = (i)         => setForm(f => ({ ...f, injuries:f.injuries.filter((_,idx) => idx!==i) }));
 
   const handleGenerate = async () => {
-    const { apiKey } = lmCfgStorage.get();
+    const { apiKey, _src } = lmCfgStorage.get();
     if (!apiKey) { setAiError("No API key configured. Go to Settings → CLAUDE API."); return; }
     setAiLoading(true);
     setAiError(null);
@@ -3151,7 +3152,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
       const parsed = parseAiResponse(raw);
       setForm(f => ({ ...f, ai: parsed }));
     } catch (e) {
-      setAiError(e.message || "Claude API unreachable. Check your API key in Settings.");
+      setAiError((e.message || "Claude API unreachable.") + ` [src:${_src}]`);
     } finally {
       setAiLoading(false);
     }
