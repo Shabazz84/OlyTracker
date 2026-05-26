@@ -258,10 +258,12 @@ async function callClaude(systemPrompt, userPrompt, apiKey) {
 
 function parseAiResponse(text) {
   if (typeof text !== "string") text = String(text ?? "");
-  const match = text.match(/```json\n?([\s\S]*?)\n?```/);
-  if (match) {
+  const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  const objMatch   = text.match(/\{[\s\S]*\}/);
+  const jsonStr    = fenceMatch ? fenceMatch[1] : (objMatch ? objMatch[0] : null);
+  if (jsonStr) {
     try {
-      const p = JSON.parse(match[1]);
+      const p = JSON.parse(jsonStr);
       return {
         narrative:           p.narrative           ?? text,
         loadRecommendation:  ["advance","hold","reduce"].includes(p.loadRecommendation) ? p.loadRecommendation : "hold",
@@ -589,7 +591,7 @@ const PR_ALL = [
   "Back Squat","Front Squat","Clean Pull","Deadlift","RDL Pull","Snatch Deadlift",
   "Klokov Squats","Klokov Deadlift","Klokov Trapi","Berestov Squats",
   "Snatch (Floor)","Hang Power Snatch","Muscle Snatch","Snatch Balance","Snatch High Pull",
-  "Clean","Clean & Jerk","Push Jerk","Jerk","Power Clean","Hang Power Clean",
+  "Clean","Clean & Jerk","Push Jerk","Jerk from Rack","Jerk","Power Clean","Hang Power Clean",
   "Overhead Press","Wide Overhead Press","Push Press","Overhead Squat","Sots Press","Behind Neck Press",
   "Good Morning","T-Bar Row","Lat Pulldown","Pull Up","Incline Barbell Press","Flat Bench Press",
   "Romanian Deadlift","Seated Cable Row","Lunge (Barbell)",
@@ -3898,7 +3900,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.8.3 · 2026-05-26
+                PROGRAM v2.8.5 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
