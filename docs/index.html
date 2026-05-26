@@ -843,7 +843,9 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) 
                 setSets(updated);
                 if(sessionKey) {
                   try {
-                    await storage.set(`sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`, JSON.stringify(updated));
+                    const k = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+                    await storage.set(k, JSON.stringify(updated));
+                    sbSync.upsertSets(k, updated);
                     if(onSetsChange) onSetsChange();
                   } catch {}
                 }
@@ -860,7 +862,9 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) 
                   setSets(updated);
                   if(sessionKey) {
                     try {
-                      await storage.set(`sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`, JSON.stringify(updated));
+                      const k = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+                      await storage.set(k, JSON.stringify(updated));
+                      sbSync.upsertSets(k, updated);
                       if(onSetsChange) onSetsChange();
                     } catch {}
                   }
