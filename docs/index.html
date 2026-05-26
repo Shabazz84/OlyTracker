@@ -3608,6 +3608,58 @@ function migratePRs(raw){
   return out;
 }
 
+// Derive PR history from logged set data — fills gaps left by manual entry
+function rebuildPRsFromLogs(currentPrs, currentLogs){
+  // Build date map: `w{week}_{dayId}` -> ISO date string
+  const dateMap={};
+  Object.values(currentLogs).forEach(entry=>{
+    if(entry.week&&entry.date&&entry.dayName) dateMap[`w${entry.week}_${entry.dayName}`]=entry.date;
+  });
+
+  // Scan all sets keys: sets_w{week}_{dayId}_{exercise_name_underscored}
+  const byExDate={}; // { exName: { date: maxWeight } }
+  Object.keys(localStorage).filter(k=>k.startsWith('sets_')).forEach(k=>{
+    const m=k.match(/^sets_(w\d+_(d\d+))_(.+)$/);
+    if(!m) return;
+    const sessionKey=m[1];
+    const exName=m[3].replace(/_/g,' ');
+    const date=dateMap[sessionKey];
+    if(!date) return;
+    try{
+      const sets=JSON.parse(localStorage.getItem(k)||'[]');
+      const weights=sets.filter(s=>s.done&&parseFloat(s.weight)>0).map(s=>parseFloat(s.weight));
+      if(!weights.length) return;
+      const max=Math.max(...weights);
+      if(!byExDate[exName]) byExDate[exName]={};
+      if(!byExDate[exName][date]||max>byExDate[exName][date]) byExDate[exName][date]=max;
+    }catch{}
+  });
+
+  if(!Object.keys(byExDate).length) return currentPrs;
+
+  const updated={...currentPrs};
+  Object.entries(byExDate).forEach(([exName,byDate])=>{
+    const existing=updated[exName]||{history:[]};
+    const existingHistory=existing.history||[];
+    const existingDates=new Set(existingHistory.map(h=>h.date));
+    const newEntries=Object.entries(byDate)
+      .filter(([date])=>!existingDates.has(date))
+      .map(([date,weight])=>({weight,date,reps:1}));
+    if(!newEntries.length) return;
+    const history=[...existingHistory,...newEntries]
+      .sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    const best=history.reduce((b,h)=>h.weight>(b?.weight||0)?h:b,null);
+    const isNewMax=!existing.weight||best.weight>=existing.weight;
+    updated[exName]={
+      weight:isNewMax?best.weight:existing.weight,
+      date:isNewMax?best.date:existing.date,
+      reps:existing.reps||1,
+      history,
+    };
+  });
+  return updated;
+}
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
@@ -3648,6 +3700,7 @@ function OlyTracker() {
   useEffect(()=>{load();},[]);
 
   async function load() {
+    let finalPrs={}, finalLogs={};
     try {
       const [p,l,w,s] = await Promise.allSettled([
         storage.get("oly_prs"),
@@ -3656,16 +3709,17 @@ function OlyTracker() {
         storage.get("oly_summer"),
       ]);
       if(p.status==="fulfilled"&&p.value){
-        const raw=JSON.parse(p.value.value);
-        setPrs(migratePRs(raw));
+        finalPrs=migratePRs(JSON.parse(p.value.value));
+        setPrs(finalPrs);
       }else{
         const seeded={};
         Object.entries(SEED_PRS).forEach(([lift,entry])=>{
           seeded[lift]={...entry,history:[{weight:entry.weight,date:entry.date,reps:entry.reps}]};
         });
+        finalPrs=seeded;
         setPrs(seeded);await storage.set("oly_prs",JSON.stringify(seeded));
       }
-      if(l.status==="fulfilled"&&l.value) setLogs(JSON.parse(l.value.value));
+      if(l.status==="fulfilled"&&l.value){finalLogs=JSON.parse(l.value.value);setLogs(finalLogs);}
       if(w.status==="fulfilled"&&w.value) setWeek(JSON.parse(w.value.value));
       if(s.status==="fulfilled"&&s.value) setIsSummer(JSON.parse(s.value.value));
       // Load supplements
@@ -3675,26 +3729,38 @@ function OlyTracker() {
       ]);
       if(sc.status==="fulfilled"&&sc.value) setSuppHistory(JSON.parse(sc.value.value)||{});
       if(sn.status==="fulfilled"&&sn.value) setSuppNotes(sn.value.value);
-      // Pull from Supabase on startup (takes priority over localStorage)
+      // Pull from Supabase on startup
       if (sbSync.ready) {
         try {
           const remote = await sbSync.pullAll();
           if (remote.sessions.length > 0 || remote.sets.length > 0 || remote.reviews.length > 0) {
             await applySupabaseData(remote);
+            // applySupabaseData updates logs state; re-read from localStorage so rebuild sees it
+            try{const v=localStorage.getItem('oly_logs');if(v)finalLogs=JSON.parse(v);}catch{}
           }
-        } catch { /* silent — continue with localStorage data */ }
+        } catch { /* silent */ }
       }
-      // Pull from Gist on startup (takes priority over localStorage)
+      // Pull from Gist on startup
       const gcfg=JSON.parse(localStorage.getItem("oly_gist")||"null");
       if(gcfg?.token&&gcfg?.id){
         try{
           const remote=await gist.read(gcfg.token,gcfg.id);
-          if(remote.version===1) await applyRemoteData(remote);
+          if(remote.version===1){
+            await applyRemoteData(remote);
+            if(remote.oly_prs) finalPrs=migratePRs(remote.oly_prs);
+            if(remote.oly_logs) finalLogs=remote.oly_logs;
+          }
           const updated={...gcfg,lastSync:new Date().toISOString()};
           setGistCfg(updated);
           localStorage.setItem("oly_gist",JSON.stringify(updated));
           setSyncStatus("ok");
         }catch{setSyncStatus("error");}
+      }
+      // Rebuild PR history from logged set data
+      const rebuilt=rebuildPRsFromLogs(finalPrs,finalLogs);
+      if(JSON.stringify(rebuilt)!==JSON.stringify(finalPrs)){
+        setPrs(rebuilt);
+        try{await storage.set("oly_prs",JSON.stringify(rebuilt));}catch{}
       }
     } catch{setPrs(migratePRs(SEED_PRS));}
     setLoading(false);
@@ -3949,7 +4015,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.9.6 · 2026-05-26
+                PROGRAM v2.9.7 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
