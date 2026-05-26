@@ -1929,10 +1929,11 @@ function OverviewCards({logs,week,setsData,dateMap}){
   const atwPrev=calcATW(d60.toISOString().slice(0,10),d30.toISOString().slice(0,10));
   const atwDelta=atwNow&&atwPrev?((atwNow-atwPrev)/atwPrev*100).toFixed(1):null;
 
-  // Block info
-  const blockWeek=week<=6?week:week<=10?week-6:week-10;
-  const blockTotal=week<=6?6:week<=10?4:6;
-  const blockName=week<=6?'HYPERTROPHY':week<=10?'TECHNIQUE':'STRENGTH';
+  // Block info — derive from program start, not stored week
+  const programWeek=Math.max(1,Math.min(28,Math.floor((Date.now()-new Date("2026-05-19").getTime())/(7*24*3600*1000))+1));
+  const blockWeek=programWeek<=6?programWeek:programWeek<=10?programWeek-6:programWeek-10;
+  const blockTotal=programWeek<=6?6:programWeek<=10?4:6;
+  const blockName=programWeek<=6?'HYPERTROPHY':programWeek<=10?'TECHNIQUE':'STRENGTH';
 
   const card=(color,label,value,sub)=>(
     <div style={{background:'var(--bg1)',border:`1px solid ${color}33`,borderRadius:8,padding:'12px 14px'}}>
@@ -2364,7 +2365,7 @@ function AnalyticsTab({ prs, logs, week }) {
         <div style={hd}>PR PROGRESSION</div>
         {PR_LIFTS.map(lift => {
           const entry = prs[lift.key];
-          if (!entry?.history?.length || entry.history.length < 2) return null;
+          if (!entry?.history?.length) return null;
           const chartData = [...entry.history]
             .sort((a, b) => (a.date||'').localeCompare(b.date||''))
             .map(h => ({ date: h.date, weight: h.weight, label: h.date?.slice(5)||'' }));
@@ -2376,7 +2377,7 @@ function AnalyticsTab({ prs, logs, week }) {
             </div>
           );
         })}
-        {PR_LIFTS.every(l => !prs[l.key]?.history || prs[l.key].history.length < 2) && (
+        {PR_LIFTS.every(l => !prs[l.key]?.history?.length) && (
           <div style={{ color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace" }}>Log PRs to see progression charts.</div>
         )}
       </div>
@@ -3615,7 +3616,7 @@ function OlyTracker() {
   const [logEditKey,setLogEditKey] = useState(null);
   const [prTab,setPrTab]     = useState("key");
   const [progTab,setProgTab] = useState("program");
-  const PROGRAM_START_MS = new Date("2026-05-20").getTime();
+  const PROGRAM_START_MS = new Date("2026-05-19").getTime();
   const currentWeek = Math.max(1, Math.min(28, Math.floor((Date.now() - PROGRAM_START_MS) / (7*24*3600*1000)) + 1));
   const [progViewWeek, setProgViewWeek] = useState(currentWeek);
   const [suppHistory,setSuppHistory] = useState({});
@@ -3949,7 +3950,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.9.2 · 2026-05-26
+                PROGRAM v2.9.4 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
