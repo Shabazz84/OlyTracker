@@ -3034,9 +3034,17 @@ function LmSettingsPanel() {
       <div style={{fontSize:9,color:"var(--text3)",marginBottom:10,lineHeight:1.5}}>
         Model: <span style={{color:"var(--text2)"}}>claude-sonnet-4-6</span>
       </div>
-      <Btn small onClick={save} style={saved?{color:"#5a9e45",borderColor:"#5a9e45"}:{color:"var(--gold)",borderColor:"var(--gold)"}}>
-        {saved ? "✓ SAVED" : "SAVE"}
-      </Btn>
+      <div style={{display:"flex",gap:8,alignItems:"center"}}>
+        <Btn small onClick={save} style={saved?{color:"#5a9e45",borderColor:"#5a9e45"}:{color:"var(--gold)",borderColor:"var(--gold)"}}>
+          {saved ? "✓ SAVED" : "SAVE"}
+        </Btn>
+        {window.__CLAUDE_KEY && (
+          <Btn small onClick={()=>{lmCfgStorage.save({apiKey:""});setCfg({apiKey:window.__CLAUDE_KEY});setSaved(true);clearTimeout(timerRef.current);timerRef.current=setTimeout(()=>setSaved(false),2000);}}
+            style={{color:"var(--text3)",borderColor:"var(--border)"}}>
+            USE DEPLOYED KEY
+          </Btn>
+        )}
+      </div>
     </div>
   );
 }
