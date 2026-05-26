@@ -229,11 +229,12 @@ const lmCfgStorage = {
 
 // ── Claude API client ─────────────────────────────────────────────────────────
 async function callClaude(systemPrompt, userPrompt, apiKey) {
+  const cleanKey = (apiKey || "").trim();
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": apiKey,
+      "x-api-key": cleanKey,
       "anthropic-version": "2023-06-01",
       "anthropic-dangerous-direct-browser-access": "true",
     },
@@ -246,7 +247,8 @@ async function callClaude(systemPrompt, userPrompt, apiKey) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(`Claude API ${res.status}: ${err.error?.message || res.statusText}`);
+    const keyHint = `(key: ${cleanKey.slice(0,12)}…)`;
+    throw new Error(`Claude API ${res.status}: ${err.error?.message || res.statusText} ${keyHint}`);
   }
   const data = await res.json();
   if (!data.content?.length) throw new Error("Claude returned no content");
