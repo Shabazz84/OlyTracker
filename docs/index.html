@@ -209,6 +209,7 @@ const reviewStorage = {
     const all = reviewStorage.getAll();
     all[week] = { ...data, week, savedAt: new Date().toISOString() };
     try { localStorage.setItem(REVIEWS_KEY, JSON.stringify(all)); } catch { return null; }
+    sbSync.upsertReview(week, data);
     return all[week];
   },
 };
@@ -692,6 +693,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) 
       try {
         const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
         await storage.set(key, JSON.stringify(updated));
+        sbSync.upsertSets(key, updated);
         if (onSetsChange) onSetsChange();
       } catch {}
     }
@@ -3576,6 +3578,7 @@ function OlyTracker() {
     }};
     setLogs(updated);
     try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
+    sbSync.upsertSession(key, updated[key]);
     setLogForm(f=>({...f,date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
     setLogEditKey(null);
     setLogModal(false);
@@ -3589,6 +3592,7 @@ function OlyTracker() {
     delete updated[key];
     setLogs(updated);
     try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
+    sbSync.deleteSession(key);
   }
   const isLogged=(w)=>Object.values(logs).some(l=>l.week===w);
 
