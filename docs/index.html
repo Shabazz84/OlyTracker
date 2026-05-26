@@ -241,7 +241,7 @@ async function callClaude(systemPrompt, userPrompt, apiKey) {
     },
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
-      max_tokens: 1200,
+      max_tokens: 4096,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     }),
@@ -696,6 +696,9 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
     setSets(updated);
     if (field === "done" && value === true) {
       const w = parseFloat(updated[idx].weight);
+      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(ex.name, w);
+    } else if (field === "weight" && updated[idx].done) {
+      const w = parseFloat(value);
       if (!isNaN(w) && w > 0 && onNewPR) onNewPR(ex.name, w);
     }
     if (sessionKey) {
@@ -3925,7 +3928,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.8.5 · 2026-05-26
+                PROGRAM v2.8.6 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
