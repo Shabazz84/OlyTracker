@@ -669,7 +669,7 @@ function generateWeights(loadStr) {
 }
 
 // ── Exercise Card ─────────────────────────────────────────────────────────────
-function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) {
+function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, onNewPR}) {
   const [open, setOpen] = useState(false);
   const [sets, setSets] = useState(() => {
     const count = typeof ex.sets === "number" ? ex.sets :
@@ -694,6 +694,10 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload}) 
   async function updateSet(idx, field, value) {
     const updated = sets.map((s, i) => i === idx ? {...s, [field]: value} : s);
     setSets(updated);
+    if (field === "done" && value === true) {
+      const w = parseFloat(updated[idx].weight);
+      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(ex.name, w);
+    }
     if (sessionKey) {
       try {
         const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
@@ -3784,6 +3788,27 @@ function OlyTracker() {
 
   function showToast(msg){setToast(msg);setTimeout(()=>setToast(null),2500);}
 
+  function prKeyFor(exName) {
+    const base = exName.split(' — ')[0].trim();
+    if (PR_ALL.includes(base)) return base;
+    if (PR_ALL.includes(exName)) return exName;
+    return null;
+  }
+
+  async function handleAutoPR(exName, weight) {
+    const key = prKeyFor(exName);
+    if (!key) return;
+    const existing = prs[key];
+    if (existing && weight <= existing.weight) return;
+    const today = new Date().toISOString().slice(0,10);
+    const history = [...(existing?.history||[]), {weight, date:today, reps:1}];
+    const entry = {weight, date:today, reps:1, history};
+    const updated = {...prs, [key]: entry};
+    setPrs(updated);
+    try{await storage.set("oly_prs",JSON.stringify(updated));}catch{}
+    showToast(`🏆 NEW PR — ${key}: ${weight} kg`);
+  }
+
   async function saveWeek(w){setWeek(w);try{await storage.set("oly_week",JSON.stringify(w));}catch{}}
   async function toggleSummer(v){
     setIsSummer(v);
@@ -4140,6 +4165,7 @@ function OlyTracker() {
               {day.exercises.map((ex,i)=>(
                 <ExCard key={`${week}_${day.id}_${ex.name}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
                   onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                  onNewPR={handleAutoPR}
                 />
               ))}
 
