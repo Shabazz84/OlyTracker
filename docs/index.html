@@ -3095,7 +3095,8 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     const savedDays = saved?.days || {};
     const days = {};
     dayList.forEach(d => {
-      days[d.id] = { ...inferred[d.id], notes: savedDays[d.id]?.notes || "" };
+      const sv = savedDays[d.id];
+      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||"" };
     });
     return { rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days };
   });
@@ -3110,7 +3111,8 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     const savedDays = saved?.days || {};
     const days = {};
     dl.forEach(d => {
-      days[d.id] = { ...inferred[d.id], notes: savedDays[d.id]?.notes || "" };
+      const sv = savedDays[d.id];
+      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||"" };
     });
     setForm({ rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days });
     setExpanded(false);
@@ -3161,7 +3163,8 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     const savedDays = saved?.days || {};
     const days = {};
     dl.forEach(d => {
-      days[d.id] = { ...inferred[d.id], notes: savedDays[d.id]?.notes || "" };
+      const sv = savedDays[d.id];
+      days[d.id] = { ...inferred[d.id], ...(sv?.status?{status:sv.status}:{}), ...(sv?.pct!=null?{pct:sv.pct}:{}), notes:sv?.notes||"" };
     });
     setForm(prev => ({ ...prev, days }));
     setExpanded(true);
@@ -3225,8 +3228,13 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
                     {ds.loggedDate}
                   </span>
                 )}
-                <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:"auto"}}>
-                  {ds.pct !== null && ds.pct !== undefined ? `${ds.pct}% sets` : "no sets"}
+                <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:"auto",display:"inline-flex",alignItems:"center",gap:1}}>
+                  <input type="number" min="0" max="100" inputMode="numeric"
+                    value={ds.pct ?? ""}
+                    onChange={e=>setDay(d.id,{pct:e.target.value===""?null:Math.min(100,Math.max(0,parseInt(e.target.value)||0))})}
+                    style={{width:26,background:"transparent",border:"none",borderBottom:"1px solid var(--border2)",
+                      color:"var(--text3)",fontFamily:"'DM Mono',monospace",fontSize:9,textAlign:"right",padding:0,outline:"none"}}
+                  />% sets
                 </span>
                 {fromLog && (
                   <button onClick={()=>setDay(d.id,{status:ds.status==="done"?"partial":ds.status==="partial"?"skipped":"done"})}
