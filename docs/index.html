@@ -3600,6 +3600,14 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
   );
 }
 
+function migratePRs(raw){
+  const out={};
+  Object.entries(raw).forEach(([lift,entry])=>{
+    out[lift]=entry.history?entry:{...entry,history:entry.weight!=null?[{weight:entry.weight,date:entry.date??'',reps:entry.reps??1}]:[]};
+  });
+  return out;
+}
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
@@ -3649,11 +3657,7 @@ function OlyTracker() {
       ]);
       if(p.status==="fulfilled"&&p.value){
         const raw=JSON.parse(p.value.value);
-        const migrated={};
-        Object.entries(raw).forEach(([lift,entry])=>{
-          migrated[lift]=entry.history?entry:{...entry,history:entry.weight!=null?[{weight:entry.weight,date:entry.date??'',reps:entry.reps??1}]:[]};
-        });
-        setPrs(migrated);
+        setPrs(migratePRs(raw));
       }else{
         const seeded={};
         Object.entries(SEED_PRS).forEach(([lift,entry])=>{
@@ -3692,7 +3696,7 @@ function OlyTracker() {
           setSyncStatus("ok");
         }catch{setSyncStatus("error");}
       }
-    } catch{setPrs(SEED_PRS);}
+    } catch{setPrs(migratePRs(SEED_PRS));}
     setLoading(false);
   }
 
@@ -3760,7 +3764,7 @@ function OlyTracker() {
   }
 
   async function applyRemoteData(data){
-    if(data.oly_prs){setPrs(data.oly_prs);await storage.set("oly_prs",JSON.stringify(data.oly_prs));}
+    if(data.oly_prs){const m=migratePRs(data.oly_prs);setPrs(m);await storage.set("oly_prs",JSON.stringify(m));}
     if(data.oly_logs){setLogs(data.oly_logs);await storage.set("oly_logs",JSON.stringify(data.oly_logs));}
     if(data.oly_week!==undefined){setWeek(data.oly_week);await storage.set("oly_week",JSON.stringify(data.oly_week));}
     if(data.oly_summer!==undefined){setIsSummer(data.oly_summer);await storage.set("oly_summer",JSON.stringify(data.oly_summer));}
@@ -3950,7 +3954,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v2.9.4 · 2026-05-26
+                PROGRAM v2.9.5 · 2026-05-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4474,7 +4478,7 @@ function OlyTracker() {
                       const text = await file.text();
                       const data = JSON.parse(text);
                       if(data.version !== 1) { showToast("❌ Invalid backup file"); return; }
-                      if(data.oly_prs) { setPrs(data.oly_prs); await storage.set("oly_prs",JSON.stringify(data.oly_prs)); }
+                      if(data.oly_prs) { const m=migratePRs(data.oly_prs); setPrs(m); await storage.set("oly_prs",JSON.stringify(m)); }
                       if(data.oly_logs) { setLogs(data.oly_logs); await storage.set("oly_logs",JSON.stringify(data.oly_logs)); }
                       if(data.oly_week) { setWeek(data.oly_week); await storage.set("oly_week",JSON.stringify(data.oly_week)); }
                       if(data.oly_summer !== undefined) { setIsSummer(data.oly_summer); await storage.set("oly_summer",JSON.stringify(data.oly_summer)); }
