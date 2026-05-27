@@ -4527,7 +4527,7 @@ function OlyTracker() {
 
               {/* Exercises */}
               {day.exercises.map((ex,i)=>(
-                <ExCard key={`${week}_${day.id}_${ex.name}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
+                <ExCard key={`${week}_${day.id}_${ex.id}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
                   onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
                   onNewPR={handleAutoPR}
                 />
