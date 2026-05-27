@@ -19,13 +19,8 @@ Defined once at the top of `docs/index.html` (before `DAYS_SUMMER`), as a flat o
 
 ```javascript
 const EXERCISE_CATALOG = {
-  // id, name, type, note
-  muscle_snatch: {
-    id: 'muscle_snatch',
-    name: 'Muscle Snatch',
-    type: 'snatch',
-    note: 'Session opener — no leg drive, pure arm pull. 50% effort. Ingrain the pattern.'
-  },
+  // id, name, type
+  muscle_snatch: { id: 'muscle_snatch', name: 'Muscle Snatch', type: 'snatch' },
   // ... ~160 total entries
 };
 
@@ -39,7 +34,8 @@ function getEx(id) { return EXERCISE_CATALOG[id]; }
 | `id` | string | Slug — primary identity everywhere |
 | `name` | string | Canonical display name |
 | `type` | `'snatch' \| 'cj' \| 'strength' \| 'accessory'` | Used for grouping and color coding |
-| `note` | string | Coaching note / description. Empty string if none. |
+
+**No `note` field.** All exercise notes (`ex.note`) are removed from both `EXERCISE_CATALOG` and `DAYS_SUMMER` entries. Notes can be added back later once a proper authoring flow exists. The day-specific protocol edge case (e.g. Wed ceiling warnings) is resolved by this decision — nothing to carry over.
 
 ### Exercise Types
 
@@ -485,5 +481,5 @@ PROGRAM | EXERCISES | MOBILITY | SUPPS | LOG | PRs | REPORTS | ANALYTICS | SYSTE
 **Scope check:** This is one bounded feature with two work streams (data migration + UI). Suitable for a single implementation plan.
 
 **Ambiguity check:**
-- Day-specific protocol notes (e.g. "⚠️ WED: Hard stop 3pm") currently live in `ex.note`. After migration these move to catalog `note` (shared across all days the exercise appears). If day-specific overrides are needed, a `day_note` field can be added to program entries — this is an edge case, not blocking.
+- All `ex.note` fields are removed — no day-specific note edge case.
 - Exercises not in the current mapping table (future additions) will fail migration gracefully — key left untouched with a console warning.
