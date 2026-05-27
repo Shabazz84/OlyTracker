@@ -173,31 +173,29 @@ const injectStyles = () => {
 
 // ── PRs from FitNotes ─────────────────────────────────────────────────────────
 const SEED_PRS = {
-  "Back Squat":        {weight:118,date:"2026-05-15",reps:1},
-  "Clean Pull":        {weight:120,date:"2025-11-05",reps:3},
-  "Deadlift":          {weight:115,date:"2025-08-25",reps:3},
-  "Klokov Squats":     {weight:107,date:"2025-11-28",reps:1},
-  "Front Squat":       {weight:102,date:"2025-10-03",reps:2},
-  "RDL Pull":          {weight:102,date:"2026-01-17",reps:3},
-  "Lat Pulldown":      {weight:105,date:"2025-08-25",reps:5},
-  "Snatch High Pull":  {weight:92, date:"2025-09-27",reps:4},
-  "Snatch Deadlift":   {weight:92, date:"2025-11-18",reps:4},
-  "Klokov Deadlift":   {weight:92, date:"2025-10-15",reps:4},
-  "T-Bar Row":         {weight:77, date:"2025-10-17",reps:5},
-  "Good Morning":      {weight:75, date:"2025-11-05",reps:5},
-  "Overhead Press":    {weight:62, date:"2025-09-20",reps:2},
-  "Hang Power Snatch": {weight:62, date:"2026-01-17",reps:1},
-  "Muscle Snatch":     {weight:58, date:"2025-12-23",reps:1},
-  "Snatch Balance":    {weight:55, date:"2025-12-23",reps:3},
-  "Snatch (Floor)":    {weight:55, date:"2025-11-01",reps:2},
-  "Clean":             {weight:80, date:"2025-xx-xx",reps:1},
-  "Clean & Jerk":      {weight:65, date:"2025-xx-xx",reps:1},
-  "Push Jerk":         {weight:60, date:"2025-04-11",reps:1},
-  "Overhead Squat":    {weight:50, date:"2025-10-20",reps:4},
-  "Sots Press":        {weight:30, date:"2025-10-22",reps:5},
-  "Flat Bench Press":  {weight:98, date:"2024-12-16",reps:2},
-  "Klokov Trapi":      {weight:72, date:"2025-10-06",reps:5},
-  "Berestov Squats":   {weight:82, date:"2025-11-15",reps:1},
+  back_squat:        {weight:118, date:"2026-05-15", reps:1},
+  clean_pull:        {weight:120, date:"2025-11-05", reps:3},
+  deadlift:          {weight:115, date:"2025-08-25", reps:3},
+  klokov_squat:      {weight:107, date:"2025-11-28", reps:1},
+  front_squat:       {weight:102, date:"2025-10-03", reps:2},
+  rdl:               {weight:102, date:"2026-01-17", reps:3},
+  lat_pulldown:      {weight:105, date:"2025-08-25", reps:5},
+  snatch_high_pull:  {weight:92,  date:"2025-09-27", reps:4},
+  snatch_deadlift:   {weight:92,  date:"2025-11-18", reps:4},
+  good_morning:      {weight:75,  date:"2025-11-05", reps:5},
+  overhead_press:    {weight:62,  date:"2025-09-20", reps:2},
+  hang_power_snatch: {weight:62,  date:"2026-01-17", reps:1},
+  muscle_snatch:     {weight:58,  date:"2025-12-23", reps:1},
+  snatch_balance:    {weight:55,  date:"2025-12-23", reps:3},
+  snatch:            {weight:55,  date:"2025-11-01", reps:2},
+  clean:             {weight:80,  date:"2025-01-01", reps:1},
+  clean_and_jerk:    {weight:65,  date:"2025-01-01", reps:1},
+  push_jerk:         {weight:60,  date:"2025-04-11", reps:1},
+  overhead_squat:    {weight:50,  date:"2025-10-20", reps:4},
+  sots_press:        {weight:30,  date:"2025-10-22", reps:5},
+  bench_press:       {weight:98,  date:"2024-12-16", reps:2},
+  klokov_trapi:      {weight:72,  date:"2025-10-06", reps:5},
+  berestov_squat:    {weight:82,  date:"2025-11-15", reps:1},
 };
 
 // ── Review storage ────────────────────────────────────────────────────────────
@@ -820,13 +818,14 @@ const TYPE_META = {
 };
 
 const PR_ALL = [
-  "Back Squat","Front Squat","Clean Pull","Deadlift","RDL Pull","Snatch Deadlift",
-  "Klokov Squats","Klokov Deadlift","Klokov Trapi","Berestov Squats",
-  "Snatch (Floor)","Hang Power Snatch","Muscle Snatch","Snatch Balance","Snatch High Pull",
-  "Clean","Clean & Jerk","Push Jerk","Jerk from Rack","Jerk","Power Clean","Hang Power Clean",
-  "Overhead Press","Wide Overhead Press","Push Press","Overhead Squat","Sots Press","Behind Neck Press",
-  "Good Morning","T-Bar Row","Lat Pulldown","Pull Up","Incline Barbell Press","Flat Bench Press",
-  "Romanian Deadlift","Seated Cable Row","Lunge (Barbell)",
+  'back_squat','front_squat','clean_pull','deadlift','rdl','snatch_deadlift',
+  'klokov_squat','klokov_trapi','berestov_squat',
+  'snatch','hang_power_snatch','muscle_snatch','snatch_balance','snatch_high_pull',
+  'clean','clean_and_jerk','push_jerk','jerk_from_rack',
+  'power_clean','hang_power_clean',
+  'overhead_press','wide_overhead_press','push_press','overhead_squat','sots_press','behind_neck_press',
+  'good_morning','lat_pulldown','pull_up','incline_barbell_press','bench_press',
+  'rdl','cable_row','lunge',
 ];
 
 // ── UI primitives ─────────────────────────────────────────────────────────────
@@ -2531,11 +2530,11 @@ function AnalyticsTab({ prs, logs, week }) {
   }, [setsData]);
 
   const PR_LIFTS = [
-    { key: 'Snatch (Floor)', label: 'SNATCH', color: 'var(--gold)' },
-    { key: 'Clean & Jerk', label: 'C&J', color: 'var(--blue)' },
-    { key: 'Clean', label: 'CLEAN', color: 'var(--green)' },
-    { key: 'Back Squat', label: 'BACK SQUAT', color: 'var(--purple)' },
-    { key: 'Hang Power Snatch', label: 'HNG PWR SNATCH', color: 'var(--red)' },
+    { key: 'snatch',            label: 'SNATCH',         color: 'var(--gold)'   },
+    { key: 'clean_and_jerk',    label: 'C&J',            color: 'var(--blue)'   },
+    { key: 'clean',             label: 'CLEAN',          color: 'var(--green)'  },
+    { key: 'back_squat',        label: 'BACK SQUAT',     color: 'var(--purple)' },
+    { key: 'hang_power_snatch', label: 'HNG PWR SNATCH', color: 'var(--red)'    },
   ];
 
   const sec = { marginBottom: 28 };
@@ -3894,7 +3893,7 @@ function rebuildPRsFromLogs(currentPrs, currentLogs){
     const m=k.match(/^sets_(w\d+_(d\d+))_(.+)$/);
     if(!m) return;
     const sessionKey=m[1];
-    const exName=m[3].replace(/_/g,' ').split(' — ')[0].trim();
+    const exName=m[3]; // already a slug after migration
     const date=dateMap[sessionKey];
     if(!date) return;
     try{
@@ -4157,10 +4156,8 @@ function OlyTracker() {
 
   function showToast(msg){setToast(msg);setTimeout(()=>setToast(null),2500);}
 
-  function prKeyFor(exName) {
-    const base = exName.split(' — ')[0].trim();
-    if (PR_ALL.includes(base)) return base;
-    if (PR_ALL.includes(exName)) return exName;
+  function prKeyFor(exId) {
+    if (PR_ALL.includes(exId)) return exId;
     return null;
   }
 
@@ -4175,7 +4172,7 @@ function OlyTracker() {
     const updated = {...prs, [key]: entry};
     setPrs(updated);
     try{await storage.set("oly_prs",JSON.stringify(updated));}catch{}
-    showToast(`🏆 NEW PR — ${key}: ${weight} kg`);
+    showToast(`🏆 NEW PR — ${getEx(key)?.name || key}: ${weight} kg`);
   }
 
   async function saveWeek(w){setWeek(w);try{await storage.set("oly_week",JSON.stringify(w));}catch{}}
@@ -4729,7 +4726,7 @@ function OlyTracker() {
                 <div style={{marginBottom:12}}>
                   <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>LIFT</label>
                   <Sel value={newPR.lift} onChange={e=>setNewPR(p=>({...p,lift:e.target.value}))}>
-                    {PR_ALL.map(l=><option key={l} value={l}>{l}</option>)}
+                    {PR_ALL.map(l=><option key={l} value={l}>{getEx(l)?.name || l}</option>)}
                   </Sel>
                 </div>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
