@@ -3837,6 +3837,45 @@ function migratePRs(raw){
   return out;
 }
 
+function migrateExerciseKeysV1() {
+  if (localStorage.getItem('oly_ex_migration_v1')) return;
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('sets_'));
+  keys.forEach(k => {
+    const m = k.match(/^(sets_w\d+_d\d+)_(.+)$/);
+    if (!m) return;
+    const prefix = m[1], namePart = m[2];
+    const slug = EXERCISE_NAME_TO_SLUG[namePart];
+    if (!slug || slug === namePart) return;
+    const newKey = `${prefix}_${slug}`;
+    if (newKey === k) return;
+    const val = localStorage.getItem(k);
+    if (val) localStorage.setItem(newKey, val);
+    localStorage.removeItem(k);
+  });
+  localStorage.setItem('oly_ex_migration_v1', '1');
+}
+
+function migratePRKeysV1() {
+  if (localStorage.getItem('oly_pr_migration_v1')) return;
+  try {
+    const raw = localStorage.getItem('oly_prs');
+    if (!raw) { localStorage.setItem('oly_pr_migration_v1', '1'); return; }
+    const prs = JSON.parse(raw);
+    const migrated = {};
+    Object.entries(prs).forEach(([name, entry]) => {
+      const slug = PR_NAME_TO_SLUG[name] || name;
+      if (!migrated[slug]) {
+        migrated[slug] = entry;
+      } else {
+        // Merge if same slug maps from two old names — keep higher weight
+        if ((entry.weight||0) > (migrated[slug].weight||0)) migrated[slug] = entry;
+      }
+    });
+    localStorage.setItem('oly_prs', JSON.stringify(migrated));
+  } catch {}
+  localStorage.setItem('oly_pr_migration_v1', '1');
+}
+
 // Derive PR history from logged set data — fills gaps left by manual entry
 function rebuildPRsFromLogs(currentPrs, currentLogs){
   // Build date map: `w{week}_{dayId}` -> ISO date string
@@ -3961,6 +4000,8 @@ function OlyTracker() {
       ]);
       if(sc.status==="fulfilled"&&sc.value) setSuppHistory(JSON.parse(sc.value.value)||{});
       if(sn.status==="fulfilled"&&sn.value) setSuppNotes(sn.value.value);
+      migrateExerciseKeysV1();
+      migratePRKeysV1();
       // Pull from Supabase on startup
       if (sbSync.ready) {
         try {
