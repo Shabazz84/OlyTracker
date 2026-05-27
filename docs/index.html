@@ -909,7 +909,8 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
     return Array.from({length: count}, () => ({done: false, weight: null}));
   });
 
-  const m = TYPE_META[ex.type];
+  const catalog = getEx(ex.id);
+  const m = TYPE_META[catalog.type];
   const load = phase === 0 ? ex.l1 : ex.l2;
   const weightData = generateWeights(load);
   const doneCount = sets.filter(s => s.done).length;
@@ -919,7 +920,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
 
   // Report progress to parent
   useEffect(() => {
-    if (onProgress) onProgress(ex.name, doneCount, totalSets);
+    if (onProgress) onProgress(ex.id, doneCount, totalSets);
   }, [doneCount]);
 
   // Persist set state to storage
@@ -928,14 +929,14 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
     setSets(updated);
     if (field === "done" && value === true) {
       const w = parseFloat(updated[idx].weight);
-      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(ex.name, w);
+      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(ex.id, w);
     } else if (field === "weight" && updated[idx].done) {
       const w = parseFloat(value);
-      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(ex.name, w);
+      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(ex.id, w);
     }
     if (sessionKey) {
       try {
-        const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+        const key = `sets_${sessionKey}_${ex.id}`;
         await storage.set(key, JSON.stringify(updated));
         sbSync.upsertSets(key, updated);
         if (onSetsChange) onSetsChange();
@@ -946,7 +947,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
   // Load persisted state on mount or when forced by sync pull
   useEffect(() => {
     if (!sessionKey) return;
-    const key = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+    const key = `sets_${sessionKey}_${ex.id}`;
     storage.get(key).then(result => {
       if (result) {
         try {
@@ -984,7 +985,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
             fontFamily:"'Bebas Neue',sans-serif", fontSize:17, letterSpacing:0.3,
             textDecoration: allDone ? "line-through" : "none",
             color: allDone ? "var(--text3)" : "var(--text)",
-          }}>{ex.name}</span>
+          }}>{catalog.name}</span>
         </div>
 
         <div style={{display:"flex", gap:6, alignItems:"center"}}>
@@ -1087,7 +1088,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
                 setSets(updated);
                 if(sessionKey) {
                   try {
-                    const k = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+                    const k = `sets_${sessionKey}_${ex.id}`;
                     await storage.set(k, JSON.stringify(updated));
                     sbSync.upsertSets(k, updated);
                     if(onSetsChange) onSetsChange();
@@ -1106,7 +1107,7 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
                   setSets(updated);
                   if(sessionKey) {
                     try {
-                      const k = `sets_${sessionKey}_${ex.name.replace(/\s+/g,'_')}`;
+                      const k = `sets_${sessionKey}_${ex.id}`;
                       await storage.set(k, JSON.stringify(updated));
                       sbSync.upsertSets(k, updated);
                       if(onSetsChange) onSetsChange();
