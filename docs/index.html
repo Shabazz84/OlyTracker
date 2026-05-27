@@ -3888,8 +3888,8 @@ function rebuildPRsFromLogs(currentPrs, currentLogs){
     if(day) dateMap[`w${entry.week}_${day.id}`]=entry.date;
   });
 
-  // Scan all sets keys: sets_w{week}_{dayId}_{exercise_name_underscored}
-  const byExDate={}; // { exName: { date: maxWeight } }
+  // Scan all sets keys: sets_w{week}_{dayId}_{exercise_id}
+  const byExDate={}; // { exId: { date: maxWeight } }
   Object.keys(localStorage).filter(k=>k.startsWith('sets_')).forEach(k=>{
     const m=k.match(/^sets_(w\d+_(d\d+))_(.+)$/);
     if(!m) return;
