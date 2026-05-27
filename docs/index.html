@@ -291,7 +291,7 @@ function buildReviewPrompt(week, weekData, formData, isSummer) {
   const dayList = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
 
   const exerciseList = dayList.map(d =>
-    `${d.label}: ${d.exercises.map(e => e.name).join(", ")}`
+    `${d.label}: ${d.exercises.map(e => getEx(e.id)?.name || e.id).join(", ")}`
   ).join("\n");
 
   const weekLog = dayList.map(d => {
@@ -3762,11 +3762,11 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
           padding:"10px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
           {(() => {
             const exs = d.exercises || [];
-            const daySkip   = exs.filter(e => prevSkip.includes(e.name));
-            const dayReduce = exs.filter(e => prevReduce.includes(e.name));
+            const daySkip   = exs.filter(e => prevSkip.includes(getEx(e.id)?.name || e.id));
+            const dayReduce = exs.filter(e => prevReduce.includes(getEx(e.id)?.name || e.id));
             const chips = [
-              ...daySkip.map(e   => ({action:"skip",   exercise:e.name})),
-              ...dayReduce.map(e => ({action:"reduce",  exercise:e.name})),
+              ...daySkip.map(e   => ({action:"skip",   exercise:getEx(e.id)?.name || e.id})),
+              ...dayReduce.map(e => ({action:"reduce",  exercise:getEx(e.id)?.name || e.id})),
             ];
             return chips.length > 0 ? (
               <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:6}}>
