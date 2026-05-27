@@ -45,11 +45,11 @@ WHERE exercise_id IS NULL;
 
 -- Step 3: Rebuild row IDs to use slug-based format
 -- New ID format: sets_w{week}_{day_id}_{exercise_id}_{set_index}
--- Insert new rows with slug-based IDs
-INSERT INTO sets (id, week, day_id, exercise_id, set_index, done, weight, updated_at)
+-- Include exercise_name in INSERT to satisfy NOT NULL until it's dropped in Step 5
+INSERT INTO sets (id, week, day_id, exercise_id, exercise_name, set_index, done, weight, updated_at)
 SELECT
   CONCAT('sets_w', week, '_', day_id, '_', exercise_id, '_', set_index),
-  week, day_id, exercise_id, set_index, done, weight, updated_at
+  week, day_id, exercise_id, exercise_name, set_index, done, weight, updated_at
 FROM sets
 WHERE id != CONCAT('sets_w', week, '_', day_id, '_', exercise_id, '_', set_index)
 ON CONFLICT (id) DO NOTHING;
