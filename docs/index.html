@@ -69,9 +69,9 @@ const sbSync = (() => {
     try {
       const m = lsKey.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
       if (!m) { console.warn('sbSync.upsertSets: bad key format:', lsKey); return; }
-      const week = parseInt(m[2]), dayId = m[3], exName = m[4];
+      const week = parseInt(m[2]), dayId = m[3], exId = m[4];
       const rows = setsArr.map((s, i) => ({
-        id: `${lsKey}_${i}`, week, day_id: dayId, exercise_name: exName,
+        id: `${lsKey}_${i}`, week, day_id: dayId, exercise_id: exId,
         set_index: i, done: !!s.done, weight: s.weight ?? null,
       }));
       await sb.from('sets').upsert(rows);
@@ -4080,7 +4080,7 @@ function OlyTracker() {
     if (remote.sets.length > 0) {
       const setsMap = {};
       remote.sets.forEach(s => {
-        const k = `sets_w${s.week}_${s.day_id}_${s.exercise_name}`;
+        const k = `sets_w${s.week}_${s.day_id}_${s.exercise_id}`;
         if (!setsMap[k]) setsMap[k] = [];
         setsMap[k][s.set_index] = { done: s.done, weight: s.weight };
       });
