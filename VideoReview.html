@@ -694,7 +694,7 @@ function annotateFrames(poseFrames) {
 
 // ── Claude API Client ──────────────────────────────────────────────────────────
 
-function buildPrompt(exercise, annotatedFrames, poseFrames, refCount) {
+function buildPrompt(exercise, annotatedFrames, poseFrames, refCount, refLabel) {
   const exerciseLabel = EXERCISES.find(e => e.id === exercise)?.label || exercise;
   const cues   = CUES[exercise]   || [];
   const phases = PHASES[exercise] || [];
@@ -744,7 +744,7 @@ CV DATA (computer vision analysis of ${annotatedFrames.length} frames):
 ${cvSummary}
 ${barDeviation}
 
-${refCount > 0 ? `The first ${refCount} images are REFERENCE FRAMES showing elite technique — use these as the comparison standard.
+${refCount > 0 ? `The first ${refCount} images are REFERENCE FRAMES showing elite technique (${refLabel}) — use these as the comparison standard.
 The remaining ${annotatedFrames.length} images are the ATHLETE FRAMES to analyze: pose skeleton + bar path overlay.
 ` : ''}The images attached show these frames with the pose skeleton (green=confident, yellow=estimated joints) and the blue bar path trajectory drawn on each frame.
 
@@ -786,13 +786,15 @@ COACHING:
 Write 2-4 sentences. Be specific and actionable. Reference actual angles or bar path data where relevant. Prioritise the most impactful correction. Mention back pain implications if relevant.`;
 }
 
-async function callClaude(apiKey, exercise, annotatedFrames, poseFrames) {
-  const refFrames = getSelectedSet(exercise, null)?.frames ?? null;
+async function callClaude(apiKey, exercise, annotatedFrames, poseFrames, selectedRefId) {
+  const refSet    = getSelectedSet(exercise, selectedRefId);
+  const refFrames = refSet ? refSet.frames : null;
   const refCount  = refFrames ? refFrames.length : 0;
-  const prompt = buildPrompt(exercise, annotatedFrames, poseFrames, refCount);
+  const refLabel  = refSet ? refSet.label : '';
+  const prompt = buildPrompt(exercise, annotatedFrames, poseFrames, refCount, refLabel);
 
   const refBlocks = refFrames ? [
-    { type: 'text', text: 'REFERENCE FRAMES — elite technique example (compare to athlete below):' },
+    { type: 'text', text: `REFERENCE FRAMES — elite technique example (${refLabel}):` },
     ...refFrames.map(f => ({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: f.b64 } }))
   ] : [];
   const imageBlocks = annotatedFrames.map(f => ({
@@ -1156,19 +1158,17 @@ function FrameLightbox({ annotatedFrames, phases, framePhases, startIndex, onClo
 
 
 // ── Reference Frames Strip ─────────────────────────────────────────────────────
-function ReferenceFramesStrip({ exercise }) {
-  const refSet = getSelectedSet(exercise, null);
-  const frames = refSet?.frames ?? null;
-  if (!frames) return null;
-  const label = refSet?.label ?? exercise;
+function ReferenceFramesStrip({ exercise, selectedRefId }) {
+  const set = getSelectedSet(exercise, selectedRefId);
+  if (!set) return null;
   return (
     <div style={{background:'var(--bg2)',border:'1px solid var(--border2)',borderRadius:6,padding:16,marginBottom:16}}>
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
         <div style={{fontSize:10,color:'var(--text2)',letterSpacing:1}}>REFERENCE LIFT</div>
-        <div style={{fontSize:10,color:'var(--gold)',opacity:0.7}}>{label}</div>
+        <div style={{fontSize:10,color:'var(--gold)',opacity:0.7}}>{set.label}</div>
       </div>
       <div style={{display:'flex',gap:6,overflowX:'auto',paddingBottom:6}}>
-        {frames.map((f, i) => (
+        {set.frames.map((f, i) => (
           <div key={i} style={{flexShrink:0,textAlign:'center'}}>
             <img
               src={'data:image/jpeg;base64,' + f.b64}
@@ -1179,6 +1179,19 @@ function ReferenceFramesStrip({ exercise }) {
           </div>
         ))}
       </div>
+      {set.youtubeId && (
+        <div style={{marginTop:12}}>
+          <div style={{fontSize:10,color:'var(--text3)',letterSpacing:1,marginBottom:6}}>REFERENCE VIDEO</div>
+          <div style={{position:'relative',paddingBottom:'56.25%',height:0,overflow:'hidden',borderRadius:4}}>
+            <iframe
+              src={`https://www.youtube.com/embed/${set.youtubeId}?rel=0&modestbranding=1`}
+              style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',border:'none'}}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1400,7 +1413,7 @@ h1{font-size:26px;letter-spacing:2px;color:#d4a843;margin-bottom:4px}
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
 }
 
-function Results({ exercise, annotatedFrames, poseFrames, claudeResult }) {
+function Results({ exercise, annotatedFrames, poseFrames, claudeResult, selectedRefId }) {
   if (!claudeResult) return null;
   const { structured, coaching, raw } = claudeResult;
   const phases = PHASES[exercise] || [];
@@ -1442,10 +1455,38 @@ function Results({ exercise, annotatedFrames, poseFrames, claudeResult }) {
       </div>
       <CoachingText text={coaching} />
       <PhaseTimeline phases={phases} phaseData={structured.phases} />
-      <ReferenceFramesStrip exercise={exercise} />
+      <ReferenceFramesStrip exercise={exercise} selectedRefId={selectedRefId} />
       <KeyFramesStrip annotatedFrames={annotatedFrames} phases={phases} framePhases={structured.frame_phases} />
       <CueChecklist cues={cues} cueData={structured.cues} />
       <BodyDiagram bodyFlags={structured.body_flags} />
+    </div>
+  );
+}
+
+// ── Reference Selector ────────────────────────────────────────────────
+function ReferenceSelector({ exercise, selectedRefId, onSelect }) {
+  const sets = getRefSets(exercise);
+  if (!sets || sets.length < 2) return null;
+  const activeId = selectedRefId ?? sets[0].id;
+  return (
+    <div style={{marginTop:12,marginBottom:4}}>
+      <div style={{fontSize:11,color:'var(--text2)',letterSpacing:1,marginBottom:6}}>REFERENCE</div>
+      <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+        {sets.map(s => (
+          <button
+            key={s.id}
+            onClick={() => onSelect(s.id)}
+            style={{
+              padding:'5px 10px',fontSize:11,borderRadius:3,cursor:'pointer',
+              background: s.id === activeId ? 'rgba(212,168,67,0.12)' : 'var(--bg2)',
+              border: `1px solid ${s.id === activeId ? 'var(--gold)' : 'var(--border2)'}`,
+              color: s.id === activeId ? 'var(--gold)' : 'var(--text2)',
+            }}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1464,6 +1505,7 @@ function App() {
   const [annotated,    setAnnotated]    = useState(null);
   const [poseFrames,   setPoseFrames]   = useState(null);
   const [result,       setResult]       = useState(null);
+  const [selectedRefId, setSelectedRefId] = useState(null);
 
   const canAnalyze = !!videoEl && !!apiKey && !loading;
 
@@ -1502,7 +1544,7 @@ function App() {
       const af = annotateFrames(pf);
 
       setLoadingMsg('Sending to Claude…');
-      const claudeResult = await callClaude(apiKey, exercise, af, pf);
+      const claudeResult = await callClaude(apiKey, exercise, af, pf, selectedRefId);
 
       setPoseFrames(pf);
       setAnnotated(af);
@@ -1538,7 +1580,7 @@ function App() {
         <div style={{fontSize:11,color:'var(--text2)',letterSpacing:1,marginBottom:6}}>EXERCISE</div>
         <select
           value={exercise}
-          onChange={e => { setExercise(e.target.value); setResult(null); }}
+          onChange={e => { setExercise(e.target.value); setResult(null); setSelectedRefId(null); }}
           style={{
             width:'100%',background:'var(--bg2)',border:'1px solid var(--border2)',
             borderRadius:4,padding:'10px 12px',color:'var(--text)',fontSize:14
@@ -1547,6 +1589,12 @@ function App() {
           {EXERCISES.map(ex => <option key={ex.id} value={ex.id}>{ex.label}</option>)}
         </select>
       </div>
+
+      <ReferenceSelector
+        exercise={exercise}
+        selectedRefId={selectedRefId}
+        onSelect={setSelectedRefId}
+      />
 
       {/* Upload zone */}
       <UploadZone onVideoReady={handleVideoReady} onError={setError} />
@@ -1603,6 +1651,7 @@ function App() {
           annotatedFrames={annotated}
           poseFrames={poseFrames}
           claudeResult={result}
+          selectedRefId={selectedRefId}
         />
       )}
 
