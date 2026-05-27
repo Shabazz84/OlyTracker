@@ -2500,6 +2500,174 @@ function CalendarHeatmap({logs}){
   );
 }
 
+function ExercisesTab() {
+  const [filter, setFilter] = React.useState('all');
+  const [search, setSearch] = React.useState('');
+  const [openId, setOpenId] = React.useState(null);
+
+  const TYPE_ORDER = ['snatch','cj','strength','accessory'];
+  const TYPE_LABELS = { snatch:'SNATCH', cj:'C&J', strength:'STRENGTH', accessory:'ACCESSORY' };
+
+  // Exercises currently in the program (for badge)
+  const inProgram = React.useMemo(() => {
+    const s = new Set();
+    DAYS_SUMMER.forEach(d => d.exercises.forEach(e => s.add(e.id)));
+    return s;
+  }, []);
+
+  // Best logged weight per exercise (from localStorage)
+  const bestWeights = React.useMemo(() => {
+    const bw = {};
+    Object.keys(localStorage).filter(k => k.startsWith('sets_')).forEach(k => {
+      const m = k.match(/^sets_w\d+_d\d+_(.+)$/);
+      if (!m) return;
+      const exId = m[1];
+      try {
+        const sets = JSON.parse(localStorage.getItem(k) || '[]');
+        sets.forEach(s => {
+          if (s.done && parseFloat(s.weight) > 0) {
+            bw[exId] = Math.max(bw[exId] || 0, parseFloat(s.weight));
+          }
+        });
+      } catch {}
+    });
+    return bw;
+  }, []);
+
+  const allExercises = Object.values(EXERCISE_CATALOG);
+  const q = search.toLowerCase();
+
+  const filtered = allExercises.filter(ex => {
+    if (filter !== 'all' && ex.type !== filter) return false;
+    if (q && !ex.name.toLowerCase().includes(q) && !ex.id.includes(q)) return false;
+    return true;
+  });
+
+  const grouped = TYPE_ORDER.map(type => ({
+    type,
+    label: TYPE_LABELS[type],
+    items: filtered.filter(ex => ex.type === type),
+  })).filter(g => g.items.length > 0);
+
+  const typeColor = { snatch:'var(--blue)', cj:'var(--red)', strength:'var(--gold)', accessory:'var(--text3)' };
+
+  return (
+    <div className="fade">
+      {/* Search */}
+      <input
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="Search exercises..."
+        style={{
+          width:'100%', background:'var(--bg1)', border:'1px solid var(--border)',
+          borderRadius:8, padding:'10px 14px', color:'var(--text)', fontSize:13,
+          fontFamily:"'DM Sans',sans-serif", marginBottom:10,
+        }}
+      />
+
+      {/* Type filter chips */}
+      <div style={{display:'flex', gap:6, marginBottom:16, flexWrap:'wrap'}}>
+        {[['all','ALL'], ...TYPE_ORDER.map(t => [t, TYPE_LABELS[t]])].map(([val, lbl]) => (
+          <button key={val} onClick={() => setFilter(val)} style={{
+            fontSize:9, fontFamily:"'DM Mono',monospace", letterSpacing:1.5,
+            padding:'4px 10px', borderRadius:12, cursor:'pointer',
+            background: filter === val ? (val === 'all' ? 'var(--text3)' : typeColor[val]) : 'var(--bg2)',
+            color: filter === val ? '#000' : 'var(--text3)',
+            border: `1px solid ${filter === val ? (val === 'all' ? 'var(--text3)' : typeColor[val]) : 'var(--border)'}`,
+            fontWeight: filter === val ? 700 : 400,
+          }}>{lbl}</button>
+        ))}
+      </div>
+
+      {/* Count */}
+      <div style={{fontSize:9, color:'var(--text3)', fontFamily:"'DM Mono',monospace", marginBottom:12, letterSpacing:1}}>
+        {filtered.length} EXERCISES
+      </div>
+
+      {/* Groups */}
+      {grouped.map(group => (
+        <div key={group.type} style={{marginBottom:20}}>
+          <div style={{
+            fontFamily:"'Bebas Neue',sans-serif", fontSize:18, letterSpacing:1,
+            color: typeColor[group.type], marginBottom:8,
+          }}>
+            {group.label} <span style={{fontSize:12, color:'var(--text3)'}}>{group.items.length}</span>
+          </div>
+          <div style={{display:'flex', flexDirection:'column', gap:1}}>
+            {group.items.map((ex, i) => {
+              const isOpen = openId === ex.id;
+              const best = bestWeights[ex.id];
+              const prog = inProgram.has(ex.id);
+              return (
+                <div key={ex.id} style={{
+                  background:'var(--bg1)', border:'1px solid var(--border)',
+                  borderRadius: i === 0 ? '8px 8px 0 0' : i === group.items.length - 1 ? '0 0 8px 8px' : '0',
+                  borderTop: i > 0 ? 'none' : undefined,
+                }}>
+                  <div
+                    onClick={() => setOpenId(isOpen ? null : ex.id)}
+                    style={{
+                      padding:'10px 14px', cursor:'pointer',
+                      display:'flex', alignItems:'center', justifyContent:'space-between',
+                    }}
+                  >
+                    <div style={{display:'flex', alignItems:'center', gap:8}}>
+                      <div style={{
+                        width:6, height:6, borderRadius:'50%', flexShrink:0,
+                        background: typeColor[ex.type],
+                      }}/>
+                      <span style={{
+                        fontFamily:"'Bebas Neue',sans-serif", fontSize:15, letterSpacing:0.3,
+                        color:'var(--text)',
+                      }}>{ex.name}</span>
+                      {prog && (
+                        <span style={{
+                          fontSize:7, fontFamily:"'DM Mono',monospace", letterSpacing:1,
+                          background:'var(--gold)', color:'#000', padding:'1px 5px', borderRadius:3,
+                          fontWeight:700,
+                        }}>PROG</span>
+                      )}
+                    </div>
+                    <div style={{display:'flex', alignItems:'center', gap:8}}>
+                      {best != null && (
+                        <span style={{
+                          fontSize:9, color:'var(--gold)', fontFamily:"'DM Mono',monospace",
+                        }}>{best} kg</span>
+                      )}
+                      <span style={{fontSize:9, color:'var(--text3)'}}>{isOpen ? '▾' : '▸'}</span>
+                    </div>
+                  </div>
+                  {isOpen && (
+                    <div style={{
+                      padding:'8px 14px 12px', borderTop:'1px solid var(--border)',
+                      background:'var(--bg)',
+                    }}>
+                      <div style={{fontSize:9, color:'var(--text3)', fontFamily:"'DM Mono',monospace", letterSpacing:1}}>
+                        {ex.id}
+                      </div>
+                      {best != null && (
+                        <div style={{marginTop:6, fontSize:11, color:'var(--text2)'}}>
+                          Best logged: <span style={{color:'var(--gold)', fontWeight:600}}>{best} kg</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      {filtered.length === 0 && (
+        <div style={{color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace", padding:'20px 0'}}>
+          No exercises match your filter.
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AnalyticsTab({ prs, logs, week }) {
   const setsData = useMemo(() => {
     const d = {};
@@ -4314,7 +4482,7 @@ function OlyTracker() {
           </div>
           <div style={{display:"flex",gap:0,overflowX:"auto",WebkitOverflowScrolling:"touch",
             scrollbarWidth:"none",msOverflowStyle:"none"}}>
-            {[["program","PROGRAM"],["mobility","MOBILITY"],["supps","SUPPS"],["log","LOG"],["prs","PRs"],["reports","REPORTS"],["analytics","ANALYTICS"],["system","SYSTEM"],["settings","SETTINGS"]].map(([id,lbl])=>(
+            {[["program","PROGRAM"],["exercises","EXERCISES"],["mobility","MOBILITY"],["supps","SUPPS"],["log","LOG"],["prs","PRs"],["reports","REPORTS"],["analytics","ANALYTICS"],["system","SYSTEM"],["settings","SETTINGS"]].map(([id,lbl])=>(
               <button key={id} onClick={()=>setTab(id)} style={{
                 padding:"9px 12px",cursor:"pointer",fontSize:10,fontWeight:600,letterSpacing:1.5,
                 border:"none",background:"transparent",fontFamily:"'DM Mono',monospace",
@@ -4569,6 +4737,9 @@ function OlyTracker() {
             </>}
           </div>
         )}
+
+        {/* ═══ EXERCISES ═══ */}
+        {tab==="exercises" && <ExercisesTab/>}
 
         {/* ═══ MOBILITY ═══ */}
         {tab==="mobility" && <MobilityTab/>}
