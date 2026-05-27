@@ -2135,7 +2135,7 @@ function OverviewCards({logs,week,setsData,dateMap}){
 
   // ATW last 30d vs prev 30d
   const exRepsMap={};
-  DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{const r=parseRepsNum(ex.reps);exRepsMap[ex.name]=r;const base=ex.name.split(' — ')[0];if(base!==ex.name&&exRepsMap[base]==null)exRepsMap[base]=r;}));
+  DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{exRepsMap[ex.id]=parseRepsNum(ex.reps);}));
   function calcATW(fromStr,toStr){
     let ton=0,reps=0;
     Object.entries(setsData).forEach(([key,setArr])=>{
@@ -2143,7 +2143,7 @@ function OverviewCards({logs,week,setsData,dateMap}){
       if(!m||!Array.isArray(setArr))return;
       const date=dateMap[m[1]];
       if(!date||date<fromStr||date>toStr)return;
-      const exReps=exRepsMap[m[2].replace(/_/g,' ')]||3;
+      const exReps=exRepsMap[m[2]]||3;
       setArr.forEach(s=>{if(s.done&&parseFloat(s.weight)>0){ton+=parseFloat(s.weight)*exReps;reps+=exReps;}});
     });
     return reps>0?(ton/reps):null;
@@ -2198,7 +2198,7 @@ function OverviewCards({logs,week,setsData,dateMap}){
 
 function LoadDevelopment({setsData,dateMap}){
   const exRepsMap=useMemo(()=>{
-    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{const r=parseRepsNum(ex.reps);m[ex.name]=r;const base=ex.name.split(' — ')[0];if(base!==ex.name&&m[base]==null)m[base]=r;}));return m;
+    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.id]=parseRepsNum(ex.reps);}));return m;
   },[]);
 
   const sessions=useMemo(()=>{
@@ -2207,8 +2207,8 @@ function LoadDevelopment({setsData,dateMap}){
       const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
       if(!m||!Array.isArray(setArr))return;
       const[,sk,,, exRaw]=m;
-      const exName=exRaw.replace(/_/g,' ').split(' — ')[0];
-      const exReps=exRepsMap[exName]||3;
+      const exId=exRaw;
+      const exReps=exRepsMap[exId]||3;
       if(!s[sk])s[sk]={key:sk,week:+m[2],dayId:m[3],tonnage:0,reps:0};
       setArr.forEach(st=>{
         if(st.done&&parseFloat(st.weight)>0){
@@ -2283,7 +2283,7 @@ function ExerciseBreakdown({setsData,dateMap}){
   const [openEx,setOpenEx]=useState(null);
 
   const exRepsMap=useMemo(()=>{
-    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{const r=parseRepsNum(ex.reps);m[ex.name]=r;const base=ex.name.split(' — ')[0];if(base!==ex.name&&m[base]==null)m[base]=r;}));return m;
+    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.id]=parseRepsNum(ex.reps);}));return m;
   },[]);
 
   const exercises=useMemo(()=>{
@@ -2292,20 +2292,20 @@ function ExerciseBreakdown({setsData,dateMap}){
       const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
       if(!m||!Array.isArray(setArr))return;
       const[,sk,wk,dk,exRaw]=m;
-      const exName=exRaw.replace(/_/g,' ').split(' — ')[0];
-      const exReps=exRepsMap[exName]||3;
+      const exId=exRaw;
+      const exReps=exRepsMap[exId]||3;
       const date=dateMap[sk]||null;
       const doneSets=setArr.filter(s=>s.done&&parseFloat(s.weight)>0);
       if(doneSets.length===0)return;
-      if(!map[exName])map[exName]={name:exName,sessions:[],best:0,totalTon:0,totalReps:0};
+      if(!map[exId])map[exId]={id:exId,name:getEx(exId)?.name||exId,sessions:[],best:0,totalTon:0,totalReps:0};
       const maxW=Math.max(...doneSets.map(s=>parseFloat(s.weight)));
-      map[exName].sessions.push({sk,week:+wk,dayId:dk,date,label:`W${wk} ${dk.toUpperCase()}`,sets:setArr,maxW});
-      map[exName].best=Math.max(map[exName].best,maxW);
-      doneSets.forEach(s=>{map[exName].totalTon+=parseFloat(s.weight)*exReps;map[exName].totalReps+=exReps;});
+      map[exId].sessions.push({sk,week:+wk,dayId:dk,date,label:`W${wk} ${dk.toUpperCase()}`,sets:setArr,maxW});
+      map[exId].best=Math.max(map[exId].best,maxW);
+      doneSets.forEach(s=>{map[exId].totalTon+=parseFloat(s.weight)*exReps;map[exId].totalReps+=exReps;});
     });
-    const PR_KEYS=new Set(['Snatch (Floor)','Clean & Jerk','Back Squat','Deadlift','Flat Bench Press']);
+    const PR_KEYS=new Set(['snatch','clean_and_jerk','back_squat','deadlift','bench_press']);
     return Object.values(map)
-      .filter(ex=>!PR_KEYS.has(ex.name))
+      .filter(ex=>!PR_KEYS.has(ex.id))
       .map(ex=>({...ex,
         atw:ex.totalReps>0?+(ex.totalTon/ex.totalReps).toFixed(1):null,
         sessions:ex.sessions.sort((a,b)=>(a.date||a.label).localeCompare(b.date||b.label)),
@@ -2322,8 +2322,8 @@ function ExerciseBreakdown({setsData,dateMap}){
   return (
     <div style={{display:'flex',flexDirection:'column',gap:1}}>
       {exercises.map((ex,ei)=>{
-        const isOpen=openEx===ex.name;
-        const exReps=exRepsMap[ex.name]||3;
+        const isOpen=openEx===ex.id;
+        const exReps=exRepsMap[ex.id]||3;
         const sparkSessions=[...ex.sessions].slice(-12);
         const sparkMax=Math.max(...sparkSessions.map(s=>s.maxW),1);
         const sparkMin=Math.min(...sparkSessions.map(s=>s.maxW))*0.9;
@@ -2331,9 +2331,9 @@ function ExerciseBreakdown({setsData,dateMap}){
         const xi=i=>sparkSessions.length===1?W/2:pad+i*(W-2*pad)/(sparkSessions.length-1);
         const yi=w=>H-pad-((w-sparkMin)/(sparkMax-sparkMin||1))*(H-2*pad);
         return (
-          <div key={ex.name} style={{background:'var(--bg1)',border:'1px solid var(--border)',
+          <div key={ex.id} style={{background:'var(--bg1)',border:'1px solid var(--border)',
             borderRadius:ei===0?'8px 8px 0 0':ei===exercises.length-1?'0 0 8px 8px':'0',borderTop:ei>0?'none':undefined}}>
-            <div onClick={()=>setOpenEx(isOpen?null:ex.name)}
+            <div onClick={()=>setOpenEx(isOpen?null:ex.id)}
               style={{padding:'10px 14px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
               <div>
                 <div style={{fontSize:9,color:isOpen?'var(--gold)':'var(--text)',fontFamily:"'DM Mono',monospace",fontWeight:isOpen?600:400,letterSpacing:0.5}}>
@@ -2380,7 +2380,7 @@ function ExerciseBreakdown({setsData,dateMap}){
                   {[...ex.sessions].reverse().map((sess,si)=>{
                     const isBest=sess.maxW===ex.best;
                     const doneSets=sess.sets.filter(s=>s.done&&parseFloat(s.weight)>0);
-                    const sessReps=exRepsMap[ex.name]||3;
+                    const sessReps=exRepsMap[ex.id]||3;
                     const sessTon=doneSets.reduce((a,s)=>a+parseFloat(s.weight)*sessReps,0);
                     const sessATW=doneSets.length>0?(sessTon/(doneSets.length*sessReps)).toFixed(1):null;
                     return (
@@ -2521,7 +2521,8 @@ function AnalyticsTab({ prs, logs, week }) {
     Object.entries(setsData).forEach(([key, arr]) => {
       const match = key.match(/^sets_w\d+_d\d+_(.+)$/);
       if (!match) return;
-      const exName = match[1].replace(/_/g, ' ').split(' — ')[0];
+      const exId = match[1];
+      const exName = getEx(exId)?.name || exId;
       if (!m[exName]) m[exName] = 0;
       arr.forEach(s => { if (s.done) m[exName]++; });
     });
