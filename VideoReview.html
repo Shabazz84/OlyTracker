@@ -521,15 +521,17 @@ const MAX_HEIGHT  = 720;
 
 function seekTo(video, time) {
   return new Promise(resolve => {
-    video.addEventListener('seeked', () => setTimeout(resolve, 100), { once: true });
+    video.addEventListener('seeked', () => setTimeout(resolve, 150), { once: true });
     video.currentTime = time;
   });
 }
 
 function videoToCanvas(video) {
-  const scale = Math.min(1, MAX_HEIGHT / video.videoHeight);
-  const w = Math.round(video.videoWidth * scale);
-  const h = Math.round(video.videoHeight * scale);
+  const vw = video.videoWidth, vh = video.videoHeight;
+  if (!vw || !vh) return null;
+  const scale = Math.min(1, MAX_HEIGHT / vh);
+  const w = Math.round(vw * scale);
+  const h = Math.round(vh * scale);
   const canvas = document.createElement('canvas');
   canvas.width = w; canvas.height = h;
   canvas.getContext('2d').drawImage(video, 0, 0, w, h);
@@ -553,6 +555,7 @@ async function extractFrames(videoEl, startTime = 0, endTime = null) {
     const t = startTime + (i / (FRAME_COUNT - 1)) * windowLen;
     await seekTo(videoEl, t);
     const canvas = videoToCanvas(videoEl);
+    if (!canvas) { console.warn('Frame', i, 'at t=', t.toFixed(2), 'skipped — video not decoded'); continue; }
     frames.push({ index: i, timestamp: parseFloat(t.toFixed(2)), canvas });
   }
   return frames;
