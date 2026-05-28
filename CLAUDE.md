@@ -1,5 +1,12 @@
 # CLAUDE.md — OlyTracker
 
+## Development Rules
+
+- **Version bump on every commit that touches `docs/index.html`** — update `PROGRAM v<X.Y.Z> · <date>` in the header before committing. No exceptions, including minor fixes. Format: `major.minor.patch` (e.g. v2.7.1 → v2.7.2 for a patch).
+- **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
+
+---
+
 ## Project Purpose
 
 Extract transcripts from selected YouTube/web coaching sources focused on Olympic weightlifting, synthesize their programming philosophies, and use the combined knowledge base to build a personalized training program and interactive tracker for a specific athlete.

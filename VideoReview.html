@@ -1654,8 +1654,13 @@ function App() {
         display:'flex',alignItems:'center',justifyContent:'space-between',
         padding:'20px 0 16px',borderBottom:'1px solid var(--border)'
       }}>
-        <div style={{fontFamily:"'Bebas Neue'",fontSize:28,letterSpacing:2,color:'var(--gold)'}}>
-          LIFT REVIEW
+        <div>
+          <div style={{fontFamily:"'Bebas Neue'",fontSize:28,letterSpacing:2,color:'var(--gold)'}}>
+            LIFT REVIEW
+          </div>
+          <div style={{fontSize:8,color:'var(--text3)',letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.7}}>
+            v1.0.0 · 2026-05-28
+          </div>
         </div>
         <button onClick={() => setShowSettings(true)} style={{
           background:'none',border:'1px solid var(--border2)',borderRadius:4,
