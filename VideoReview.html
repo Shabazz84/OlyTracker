@@ -790,7 +790,7 @@ async function callClaude(apiKey, exercise, annotatedFrames, poseFrames, selecte
   const refSet    = getSelectedSet(exercise, selectedRefId);
   const refFrames = refSet ? refSet.frames : null;
   const refCount  = refFrames ? refFrames.length : 0;
-  const refLabel  = refSet ? refSet.label : '';
+  const refLabel  = refSet?.label || 'elite technique';
   const prompt = buildPrompt(exercise, annotatedFrames, poseFrames, refCount, refLabel);
 
   const refBlocks = refFrames ? [
@@ -1184,6 +1184,8 @@ function ReferenceFramesStrip({ exercise, selectedRefId }) {
           <div style={{fontSize:10,color:'var(--text3)',letterSpacing:1,marginBottom:6}}>REFERENCE VIDEO</div>
           <div style={{position:'relative',paddingBottom:'56.25%',height:0,overflow:'hidden',borderRadius:4}}>
             <iframe
+              title={`Reference video: ${set.label}`}
+              loading="lazy"
               src={`https://www.youtube.com/embed/${set.youtubeId}?rel=0&modestbranding=1`}
               style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',border:'none'}}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1475,6 +1477,7 @@ function ReferenceSelector({ exercise, selectedRefId, onSelect }) {
         {sets.map(s => (
           <button
             key={s.id}
+            type="button"
             onClick={() => onSelect(s.id)}
             style={{
               padding:'5px 10px',fontSize:11,borderRadius:3,cursor:'pointer',
