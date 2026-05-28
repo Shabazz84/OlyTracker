@@ -1449,15 +1449,17 @@ h1{font-size:26px;letter-spacing:2px;color:#d4a843;margin-bottom:4px}
 
 function computePhaseTiming(poseFrames, framePhases) {
   const map = {};
-  poseFrames.forEach((f, i) => {
+  const len = Math.min(poseFrames.length, framePhases.length);
+  for (let i = 0; i < len; i++) {
+    const f = poseFrames[i];
     const phase = framePhases[i];
-    if (!phase) return;
+    if (!phase) continue;
     if (!map[phase]) map[phase] = { firstTs: f.timestamp, lastTs: f.timestamp };
     else {
       map[phase].firstTs = Math.min(map[phase].firstTs, f.timestamp);
       map[phase].lastTs  = Math.max(map[phase].lastTs,  f.timestamp);
     }
-  });
+  }
   return Object.entries(map).map(([phase, { firstTs, lastTs }]) => ({
     phase,
     firstTs,
@@ -1487,7 +1489,7 @@ function PhaseTimingRow({ poseFrames, framePhases }) {
               color: durationS > 0 ? 'var(--gold)' : 'var(--text3)',
               fontSize:11, fontFamily:"'DM Mono',monospace", marginLeft:4
             }}>
-              {durationS > 0 ? `(${durationS.toFixed(1)}s)` : '(<1 frame)'}
+              {durationS > 0 ? `(${durationS.toFixed(2)}s)` : '(<1 frame)'}
             </div>
           </div>
         ))}
