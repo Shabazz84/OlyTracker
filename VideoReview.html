@@ -1447,6 +1447,55 @@ h1{font-size:26px;letter-spacing:2px;color:#d4a843;margin-bottom:4px}
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
 }
 
+function computePhaseTiming(poseFrames, framePhases) {
+  const map = {};
+  poseFrames.forEach((f, i) => {
+    const phase = framePhases[i];
+    if (!phase) return;
+    if (!map[phase]) map[phase] = { firstTs: f.timestamp, lastTs: f.timestamp };
+    else {
+      map[phase].firstTs = Math.min(map[phase].firstTs, f.timestamp);
+      map[phase].lastTs  = Math.max(map[phase].lastTs,  f.timestamp);
+    }
+  });
+  return Object.entries(map).map(([phase, { firstTs, lastTs }]) => ({
+    phase,
+    firstTs,
+    lastTs,
+    durationS: parseFloat((lastTs - firstTs).toFixed(2)),
+  }));
+}
+
+function PhaseTimingRow({ poseFrames, framePhases }) {
+  if (!poseFrames?.length || !framePhases?.length) return null;
+  const timing = computePhaseTiming(poseFrames, framePhases);
+  if (!timing.length) return null;
+  return (
+    <div style={{background:'var(--bg2)', border:'1px solid var(--border2)',
+                 borderRadius:6, padding:'12px 16px', marginBottom:16}}>
+      <div style={{fontSize:10, color:'var(--text2)', letterSpacing:1, marginBottom:8}}>
+        PHASE TEMPO — estimated from {poseFrames.length} frames
+      </div>
+      <div style={{display:'flex', flexDirection:'column', gap:4}}>
+        {timing.map(({ phase, firstTs, lastTs, durationS }) => (
+          <div key={phase} style={{display:'flex', alignItems:'center', gap:8, fontSize:12}}>
+            <div style={{width:110, color:'var(--text)', flexShrink:0}}>{phase}</div>
+            <div style={{color:'var(--text2)', fontSize:11, fontFamily:"'DM Mono',monospace"}}>
+              {firstTs.toFixed(1)}s → {lastTs.toFixed(1)}s
+            </div>
+            <div style={{
+              color: durationS > 0 ? 'var(--gold)' : 'var(--text3)',
+              fontSize:11, fontFamily:"'DM Mono',monospace", marginLeft:4
+            }}>
+              {durationS > 0 ? `(${durationS.toFixed(1)}s)` : '(<1 frame)'}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Results({ exercise, annotatedFrames, poseFrames, claudeResult, selectedRefId }) {
   if (!claudeResult) return null;
   const { structured, coaching, raw } = claudeResult;
@@ -1489,6 +1538,7 @@ function Results({ exercise, annotatedFrames, poseFrames, claudeResult, selected
       </div>
       <CoachingText text={coaching} />
       <PhaseTimeline phases={phases} phaseData={structured.phases} />
+      <PhaseTimingRow poseFrames={poseFrames} framePhases={structured.frame_phases} />
       <ReferenceFramesStrip exercise={exercise} selectedRefId={selectedRefId} />
       <KeyFramesStrip annotatedFrames={annotatedFrames} phases={phases} framePhases={structured.frame_phases} />
       <CueChecklist cues={cues} cueData={structured.cues} />
