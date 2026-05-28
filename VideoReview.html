@@ -46,6 +46,7 @@ const EXERCISES = [
   { id: 'snatch_pull', label: 'Snatch Pull' },
   { id: 'jerk_rack',   label: 'Jerk from Rack' },
   { id: 'split_jerk',  label: 'Split Jerk' },
+  { id: 'back_squat',  label: 'Back Squat' },
 ];
 
 const STATUS_COLOR = { ok: 'var(--green)', warn: 'var(--yellow)', fail: 'var(--red)' };
@@ -64,9 +65,9 @@ const PHASE_VISUAL = {
   'Jerk Drive':  'bar moving upward off shoulders, legs extending explosively, athlete beginning to move under bar',
   'Lockout':     'bar fully overhead, arms locked out, athlete standing or split stance with bar locked',
   'Finish':      'bar at peak height, athlete fully extended on toes, no longer under bar',
-  'Descent':     'bar overhead, athlete squatting down with bar locked out above',
-  'Bottom':      'athlete in full squat with bar locked overhead',
-  'Ascent':      'athlete standing up from squat with bar overhead',
+  'Descent':     'athlete lowering into squat, hips moving back and down, knees tracking over toes, torso leaning forward',
+  'Bottom':      'athlete at full depth below parallel, hips below knee crease, chest up',
+  'Ascent':      'athlete driving up from bottom, hips rising, knees pushing out, returning to standing',
   'Dip':         'bar at shoulders, slight knee bend, torso vertical',
   'Split Catch': 'bar locked overhead, athlete in split stance, front foot forward with knee bent ~90 degrees, back leg extended behind, torso vertical under bar, arms fully locked out',
   'Drive':       'legs pushing through floor, bar leaving shoulders upward',
@@ -161,6 +162,7 @@ const PHASES = {
   snatch_pull: ['Setup','First Pull','Transition','Second Pull','Finish'],
   jerk_rack:   ['Setup','Dip','Drive','Lockout','Recovery'],
   split_jerk:  ['Setup','Dip','Drive','Split Catch','Recovery'],
+  back_squat:  ['Setup','Descent','Bottom','Ascent'],
 };
 
 // ── Cue library ────────────────────────────────────────────────────────────────
@@ -480,6 +482,36 @@ const CUES = {
     { cue:'Bar stays locked overhead throughout recovery', phase:'Recovery', body:'shoulders', source:'Torokhtiy',
       detail:'Never unlock elbows during step-back. Bar must remain completely fixed overhead until both feet are under it.' },
   ],
+  back_squat: [
+    // Setup
+    { cue:'Stand wider than shoulder-width — hips sit between heels, not over toes', phase:'Setup', body:'hips', source:"Nino's Squat",
+      detail:'Long femurs demand a wider stance to reduce forward knee travel requirements. Narrow stance forces excessive torso lean and overloads the posterior chain moment arm.' },
+    { cue:'Turn toes out 30–45 degrees — reduces ankle dorsiflexion demand', phase:'Setup', body:'knees', source:"Nino's Squat",
+      detail:'Without toe turnout, longer femurs create unrealistic ankle dorsiflexion demands at normal stance width. Toes out allows hips to sit between heels without extreme ankle flexion.' },
+    { cue:'Bar sits on upper trap shelf, not on neck — elbows slightly forward', phase:'Setup', body:'upper_back', source:'Torokhtiy',
+      detail:'Bar rests on muscular upper traps, not bony cervical spine. Elbows slightly forward (not flared back) creates the shelf and engages upper back.' },
+    { cue:'Brace hard — intra-abdominal pressure before knees break', phase:'Setup', body:'lower_back', source:'Klokov',
+      detail:'Fill belly with air and lock trunk before any descent. Descending into an unbraced position loads passive structures instead of the core.' },
+    // Descent
+    { cue:'Knees must travel forward over toes — allow this, do not block it', phase:'Descent', body:'knees', source:"Nino's Squat",
+      detail:'Inadequate forward knee travel forces the torso to tip forward disproportionately, shifting load to the posterior chain. Let knees track over toes to maintain manageable back angle.' },
+    { cue:'Forward lean is normal for long femurs — it is not a fault', phase:'Descent', body:'upper_back', source:'Torokhtiy',
+      detail:'Long-femur athletes will always lean more than short-femur lifters at the same depth. Fighting this lean creates compensatory patterns — accept the lean and train hip drive.' },
+    { cue:'Drive knees out throughout the entire movement', phase:'Descent', body:'knees', source:'Klokov',
+      detail:'Knee valgus is most likely at the sticking point. Actively push knees out from start of descent through lockout — this is a conscious cue every single rep.' },
+    { cue:'Work ankle dorsiflexion — wider stance reduces but does not eliminate the demand', phase:'Descent', body:'knees', source:"Nino's Squat",
+      detail:'Even with wide stance and toe turnout, some forward knee travel is required for depth. Ankle dorsiflexion cannot be bypassed and must be trained as a separate priority.' },
+    // Bottom
+    { cue:'Hip crease must descend below knee crease — non-negotiable depth', phase:'Bottom', body:'hips', source:'Torokhtiy',
+      detail:'Depth is non-negotiable for weightlifting-specific squatting. A parallel or high squat does not train the receiving positions required in snatch and clean.' },
+    { cue:'Weight through full foot in the hole — not just heels', phase:'Bottom', body:'knees', source:'Klokov',
+      detail:'At the bottom, pressure distributes across the whole foot. Heel-only pressure shifts load backward and reduces quad drive on the way up.' },
+    // Ascent
+    { cue:'Lead ascent with chest up — back angle recovers as hips rise', phase:'Ascent', body:'upper_back', source:'Torokhtiy',
+      detail:'Think "chest up" not "hips up" to initiate the ascent. If hips rise faster than chest off the bottom, the lift turns into a good morning through the sticking point.' },
+    { cue:'Squat at weights where position never breaks — long femurs allow less margin', phase:'Ascent', body:'upper_back', source:"Nino's Squat",
+      detail:'Long-femur lifters are pushed out of position more easily under load. Nino squats at weights that always look easy — maintain this standard to build the pattern correctly.' },
+  ]
 };
 
 // ── CV Utilities ───────────────────────────────────────────────────────────────
