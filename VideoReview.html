@@ -544,23 +544,28 @@ function videoToCanvas(video) {
 }
 
 async function extractFrames(videoEl, startTime = 0, endTime = null) {
-  const totalDuration = videoEl.duration;
+  // Use a fresh off-DOM video element — avoids CSS (width:1px/opacity:0) causing videoWidth===0
+  const video = document.createElement('video');
+  video.muted = true;
+  video.preload = 'auto';
+  video.src = videoEl.currentSrc || videoEl.src;
+  await new Promise((resolve, reject) => {
+    const tid = setTimeout(() => reject(new Error('Video load timed out. Try a smaller file.')), 20000);
+    video.addEventListener('loadeddata', () => { clearTimeout(tid); resolve(); }, { once: true });
+    video.addEventListener('error', () => { clearTimeout(tid); reject(new Error('Could not load video for frame extraction.')); }, { once: true });
+    video.load();
+  });
+  const totalDuration = video.duration;
   if (!totalDuration || totalDuration < 2) throw new Error('Video must be at least 2 seconds long.');
   const end = endTime ?? totalDuration;
   const windowLen = end - startTime;
   if (windowLen < 0.5) throw new Error('Lift window must be at least 0.5 seconds.');
-  // Prime the video decoder — some browsers don't decode frames until playback starts
-  try {
-    await videoEl.play();
-    await new Promise(r => setTimeout(r, 80));
-    videoEl.pause();
-  } catch (_) {}
   const frames = [];
   for (let i = 0; i < FRAME_COUNT; i++) {
     const t = startTime + (i / (FRAME_COUNT - 1)) * windowLen;
-    await seekTo(videoEl, t);
-    const canvas = videoToCanvas(videoEl);
-    if (!canvas) { console.warn('Frame', i, 'at t=', t.toFixed(2), 'skipped — video not decoded'); continue; }
+    await seekTo(video, t);
+    const canvas = videoToCanvas(video);
+    if (!canvas) { console.warn('Frame', i, 'at t=', t.toFixed(2), 'skipped'); continue; }
     frames.push({ index: i, timestamp: parseFloat(t.toFixed(2)), canvas });
   }
   if (!frames.length) throw new Error('No frames could be extracted. Try a different video format or file.');
@@ -1665,7 +1670,7 @@ function App() {
             LIFT REVIEW
           </div>
           <div style={{fontSize:8,color:'var(--text3)',letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.7}}>
-            v1.0.1 · 2026-05-29
+            v1.0.2 · 2026-05-29
           </div>
         </div>
         <button onClick={() => setShowSettings(true)} style={{
