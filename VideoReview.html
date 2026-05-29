@@ -521,14 +521,19 @@ const MAX_HEIGHT  = 720;
 
 function seekTo(video, time) {
   return new Promise(resolve => {
-    video.addEventListener('seeked', () => setTimeout(resolve, 150), { once: true });
+    video.addEventListener('seeked', () => {
+      // Poll until frame data is available (readyState >= 2 = HAVE_CURRENT_DATA)
+      let t = 0;
+      const poll = () => (video.readyState >= 2 || t++ > 12) ? resolve() : setTimeout(poll, 50);
+      poll();
+    }, { once: true });
     video.currentTime = time;
   });
 }
 
 function videoToCanvas(video) {
   const vw = video.videoWidth, vh = video.videoHeight;
-  if (!vw || !vh) return null;
+  if (!vw || !vh) return null;  // only null if metadata genuinely missing
   const scale = Math.min(1, MAX_HEIGHT / vh);
   const w = Math.round(vw * scale);
   const h = Math.round(vh * scale);
@@ -558,6 +563,7 @@ async function extractFrames(videoEl, startTime = 0, endTime = null) {
     if (!canvas) { console.warn('Frame', i, 'at t=', t.toFixed(2), 'skipped — video not decoded'); continue; }
     frames.push({ index: i, timestamp: parseFloat(t.toFixed(2)), canvas });
   }
+  if (!frames.length) throw new Error('No frames could be extracted. Try a different video format or file.');
   return frames;
 }
 
@@ -1659,7 +1665,7 @@ function App() {
             LIFT REVIEW
           </div>
           <div style={{fontSize:8,color:'var(--text3)',letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.7}}>
-            v1.0.0 · 2026-05-28
+            v1.0.1 · 2026-05-29
           </div>
         </div>
         <button onClick={() => setShowSettings(true)} style={{
