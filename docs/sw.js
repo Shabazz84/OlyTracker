@@ -1,8 +1,9 @@
-const CACHE = "olytracker-v4";
+const CACHE = "olytracker-v5";
 
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./app.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -11,7 +12,6 @@ const APP_SHELL = [
 const CDN = [
   "https://unpkg.com/react@18/umd/react.production.min.js",
   "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js",
-  "https://unpkg.com/@babel/standalone/babel.min.js",
 ];
 
 self.addEventListener("install", e => {
