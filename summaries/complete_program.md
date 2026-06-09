@@ -98,16 +98,15 @@ Then: 5 min aerobic (bike or walk) + mobility flow (thoracic rotation, hip flexo
 7. Front Rack Holds — 3×20s @ 80 kg *(new)*
 8. Dead Bug — 3×10/side
 
-**D3 — Front Squat + OHS Development (Wed ⭐⭐)**
+**D3 — Front Squat + OHS + Quad Hypertrophy (Wed ⭐⭐)**
 1. Muscle Snatch — 2×3 (opener)
-2. Snatch Balance — 3×3 *(new — lead-up before OHS)*
-3. Front Squat — Daily Max Single + 3×4 volume
-4. Overhead Squat — 4×4 *(upgraded from 3×3; co-primary with SB)*
-5. Snatch High Pull — 3×4
+2. Snatch Balance — 3×3 *(lead-up before OHS)*
+3. Front Squat — Daily Max Single + 3×4 volume — **Pause FS (Ph1, Wks 1–3) → Dynamic FS (Ph2, Wks 4–6)** *(tall-lifter sequencing, see below)*
+4. Belt Squat — 3×10 *(new — back-sparing quad mass, tall-lifter protocol)*
+5. Overhead Squat — 4×4 *(co-primary with SB)*
 6. RDL — 4×6
-7. GHR — 3×10
-8. Plank — 3×50s
-*Hard stop 3pm. If short on time: drop 1 FS volume set.*
+7. Plank — 3×50s
+*GHR dropped here (already on D1). Hard stop 3pm. If short on time: drop Belt Squat or 1 FS volume set.*
 
 **D4 — Jerk Priority (Thu ⭐⭐)**
 1. Muscle Snatch — 2×3 (opener)
@@ -121,14 +120,30 @@ Then: 5 min aerobic (bike or walk) + mobility flow (thoracic rotation, hip flexo
 9. Pallof Press — 3×10/side
 *5.5h sleep day — no grinding on jerk singles*
 
-**D5 — Active Hypertrophy + Technique (Sat ⭐⭐)**
+**D5 — Klokov + Quad Hypertrophy / Tall-Lifter (Sat ⭐⭐)**
 1. Muscle Snatch — 2×3 (opener)
-2. Klokov Squat — 3×5 @ 65–70% of D1 single *(no max singles)*
-3. Berestov Squat — 3×9
-4. Lunge — 3×8/leg
-5. Face Pull — 3×15
-6. Ab Wheel — 3×8–10
-*No PRs. No max effort. Tissue day.*
+2. Klokov Squat — singles / 3×3 @ 80% (the one axial squat; alternates by week)
+3. Belt Squat — 3×12 *(new — back-sparing quad mass; **replaces Berestov Squat**, which was back-loading volume)*
+4. Split Squat — 3×8/leg *(forward-knee, replaces generic Lunge)*
+5. Single-Leg Squat — 3×8/leg *(new — BW → DB → front-rack progression; isolates quad, back unloaded)*
+6. Face Pull — 3×15
+7. Ab Wheel — 3×8–10
+*No PRs. No max effort. This is the quad-hypertrophy tissue day — every leg movement except Klokov spares the spine.*
+
+---
+
+### Tall-Lifter Squat Protocol (added 2026-06-09)
+
+Sourced from Sika Strength ×2, Telander/Aita, and Pavlukhin (see `master_synthesis.md` §4). Targets the athlete's #1 limiter — long-femur OHS/squat depth — without loading the back. Three independent coaches converge on the same blueprint (very high confidence).
+
+- **Build the missing quad mass with back-sparing movements:** Belt Squat (D3 + D5), forward-knee Split Squat and Single-Leg Squat (D5). Tall lifters are quad-deficient and posterior-biased; these load the legs with near-zero spinal shear.
+- **Pause → Dynamic Front Squat sequencing (resolves the Pavlukhin conflict):**
+  - **Phase 1 (Wks 1–3): PAUSE Front Squat** — pause halfway down to *teach* the upright, knees-forward position and constant quad tension. A teaching tool.
+  - **Phase 2 (Wks 4–6): DYNAMIC Front Squat** — spring out of the hole, no slow eccentric, so squat *power* transfers to the clean recovery. (Pavlukhin: paused squats are negative transfer long-term — they teach stopping in the hole.)
+  - This pause→dynamic, position→power arc also matches Aita's corrective→specific sequencing.
+- **Squat cues (all squats):** knees forward the *whole* rep ("control the knees → control the quads"); natural lumbar extension, **no hip thrust at the top**; ear stacked over shoulder; mid-bar (acromion shelf) placement; stance ~shoulder-width, toes ~15°.
+- **Daily ankle/hip mobility** is the depth ceiling and a *months-long* project — see the new **DAILY ANKLE** tab in the tracker (loaded dorsiflexion 90 s–2 min × 3–5/side, barbell calf smash, heavy calf stretch, empty-bar pause squats, runner's lunge, banded couch stretch).
+- **Midline isometrics** (plank / back-extension hold / side plank) build to 90 s then progress the variation — anti-good-morning trunk, back-pain priority.
 
 ---
 
@@ -147,9 +162,9 @@ New loading zone. Prioritize technique over weight on every set. Feel each posit
 |-----|---------|------|-----------|-------|
 | D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 / BS single / Klokov single | 50 / 40 / feel 95–105 / feel 90–100 | GM 4×8·50, Pull-up 4×6·BW+5, GHR 3×8·5 | MS opener 2×3·42 |
 | D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 58 / 85 | PP 4×5·50, SP 3×5·38, Trapi 4×8·55, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·42 |
-| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 38 / feel 82–90 / 72 / 40 | SHP 3×4·70, RDL 4×6·75, GHR 3×10·BW, Plank 3×50s | MS opener 2×3·42. Hard stop 3pm |
+| D3 Wed ⭐⭐ | SB 3×3 / **Pause FS** single / FS vol 3×4 / OHS 4×4 | 38 / feel 82–90 / 72 / 40 | Belt Squat 3×10·70, SHP 3×4·70, RDL 4×6·75, Plank 3×50s | MS opener 2×3·42. Hard stop 3pm. Pause FS — teach position |
 | D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 52 / 50 | C&J 4×(1+2)·55, Sots 3×5·25, BNP 3×6·35, Pallof 3×10 | MS opener 2×3·40. 5.5h sleep — no grinding |
-| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 62 / 60 | Lunge 3×8/leg·40, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·42. No PRs |
+| D5 Sat ⭐⭐ | Klokov 3×5 / **Belt Squat 3×12** | 62 / 65 | Split Squat 3×8/leg·40, Single-Leg 3×8·BW, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·42. No PRs. Quad tissue day |
 
 ## Week 2 — Phase 1 · 65–72% TM · +2.5 kg primary lifts
 
@@ -160,9 +175,9 @@ Loads up 2.5 kg across primary barbell lifts from Week 1. Same technique standar
 |-----|---------|------|-----------|-------|
 | D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 / BS single / Klokov single | 52 / 42 / feel 100–110 / feel 93–103 | GM 4×8·52, Pull-up 4×6·BW+5, GHR 3×8·7 | MS opener 2×3·44 |
 | D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 60 / 87 | PP 4×5·52, SP 3×5·40, Trapi 4×8·57, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·44 |
-| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 40 / feel 86–94 / 76 / 42 | SHP 3×4·73, RDL 4×6·77, GHR 3×10·BW, Plank 3×55s | MS opener 2×3·44. Hard stop 3pm |
+| D3 Wed ⭐⭐ | SB 3×3 / **Pause FS** single / FS vol 3×4 / OHS 4×4 | 40 / feel 86–94 / 76 / 42 | Belt Squat 3×10·72, SHP 3×4·73, RDL 4×6·77, Plank 3×55s | MS opener 2×3·44. Hard stop 3pm. Pause FS |
 | D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 55 / 52 | C&J 4×(1+2)·57, Sots 3×5·27, BNP 3×6·37, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
-| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 64 / 62 | Lunge 3×8/leg·42, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
+| D5 Sat ⭐⭐ | Klokov 3×5 / **Belt Squat 3×12** | 64 / 67 | Split Squat 3×8/leg·42, Single-Leg 3×8·BW, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
 
 ## Week 3 — Phase 1 · 65–72% TM · +2.5 kg from Week 2 · Phase 1 peak
 
@@ -173,9 +188,9 @@ Jerk: if 57 kg prescribed sets feel very easy, note it — Phase 2 daily max sta
 |-----|---------|------|-----------|-------|
 | D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 3×3 / BS single / Klokov single | 54 / 44 / feel 105–113 / feel 96–106 | GM 4×8·55, Pull-up 4×6·BW+7, GHR 3×8·8 | MS opener 2×3·44 |
 | D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 62 / 90 | PP 4×5·55, SP 3×5·42, Trapi 4×8·60, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·44 |
-| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 42 / feel 90–98 / 80 / 44 | SHP 3×4·76, RDL 4×6·80, GHR 3×10·BW, Plank 3×60s | MS opener 2×3·44. Hard stop 3pm |
+| D3 Wed ⭐⭐ | SB 3×3 / **Pause FS** single / FS vol 3×4 / OHS 4×4 | 42 / feel 90–98 / 80 / 44 | Belt Squat 3×10·75, SHP 3×4·76, RDL 4×6·80, Plank 3×60s | MS opener 2×3·44. Hard stop 3pm. Last week Pause FS |
 | D4 Thu ⭐⭐ | Jerk 4×3 / Push Press 4×5 | 57 / 54 | C&J 4×(1+2)·60, Sots 3×5·28, BNP 3×6·40, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep |
-| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 65 / 64 | Lunge 3×8/leg·44, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
+| D5 Sat ⭐⭐ | Klokov 3×5 / **Belt Squat 3×12** | 65 / 70 | Split Squat 3×8/leg·44, Single-Leg 3×8·BW, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·44. No PRs |
 
 ---
 
@@ -196,9 +211,9 @@ First week of daily max jerk singles. Open conservatively — target ~60–62 kg
 |-----|---------|------|-----------|-------|
 | D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 / BS single / Klokov single | 56 / 46 / feel 107–115 / feel 98–108 | GM 4×8·57, Pull-up 4×6·BW+8, GHR 3×8·10 | MS opener 2×3·46. OHS now 4 sets |
 | D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 64 / 92 | PP 4×5·57, SP 3×5·44, Trapi 4×8·62, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·46 |
-| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 44 / feel 92–100 / 83 / 46 | SHP 3×4·78, RDL 4×6·82, GHR 3×10·5, Plank 3×60s | MS opener 2×3·46. Hard stop 3pm |
+| D3 Wed ⭐⭐ | SB 3×3 / **Dynamic FS** single / FS vol 3×4 / OHS 4×4 | 44 / feel 92–100 / 83 / 46 | Belt Squat 3×10·77, SHP 3×4·78, RDL 4×6·82, Plank 3×60s | MS opener 2×3·46. Hard stop 3pm. Dynamic FS — fast out of the hole |
 | D4 Thu ⭐⭐ | **Jerk daily max / Back-off 2×3·85% / PP 4×5** | feel ~60–65 / calc / 56 | C&J 4×(1+2)·62, Sots 3×5·30, BNP 3×6·42, Pallof 3×10 | MS opener 2×3·42. 5.5h sleep. Conservative first single. Back-off starts this week |
-| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 67 / 66 | Lunge 3×8/leg·46, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
+| D5 Sat ⭐⭐ | Klokov 3×5 / **Belt Squat 3×12** | 67 / 72 | Split Squat 3×8/leg·46, Single-Leg 3×8·BW+DB, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
 
 ## Week 5 — Phase 2 · 72–80% TM · +2.5 kg · Split footwork begins
 
@@ -209,9 +224,9 @@ Split jerk footwork drills begin on D4 — unloaded, footwork and landing only.
 |-----|---------|------|-----------|-------|
 | D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 / BS single / Klokov single | 58 / 48 / feel 110–118 / feel 100–110 | GM 4×8·60, Pull-up 4×6·BW+10, GHR 3×8·10 | MS opener 2×3·46 |
 | D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 66 / 95 | PP 4×5·60, SP 3×5·46, Trapi 4×8·64, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·46 |
-| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 46 / feel 95–102 / 86 / 48 | SHP 3×4·80, RDL 4×6·85, GHR 3×10·5, Plank 3×65s | MS opener 2×3·46. Hard stop 3pm |
+| D3 Wed ⭐⭐ | SB 3×3 / **Dynamic FS** single / FS vol 3×4 / OHS 4×4 | 46 / feel 95–102 / 86 / 48 | Belt Squat 3×10·80, SHP 3×4·80, RDL 4×6·85, Plank 3×65s | MS opener 2×3·46. Hard stop 3pm. Dynamic FS |
 | D4 Thu ⭐⭐ | **Jerk daily max / Back-off 2×3·85% / PP 4×5** | feel ~63–68 / calc / 58 | C&J 4×(1+2)·64, Sots 3×5·30, BNP 3×6·44, **Split footwork 3×5·unloaded**, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep. Footwork: stance only, no bar |
-| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 68 / 68 | Lunge 3×8/leg·48, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
+| D5 Sat ⭐⭐ | Klokov 3×5 / **Belt Squat 3×12** | 68 / 75 | Split Squat 3×8/leg·48, Single-Leg 3×8·BW+DB, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·46. No PRs |
 
 ## Week 6 — Phase 2 · 72–80% TM · Phase 2 peak · Prepare for deload
 
@@ -222,9 +237,9 @@ Target jerk: 67–70 kg if form solid on D4. BS single: attempt 115–118 kg if 
 |-----|---------|------|-----------|-------|
 | D1 Mon ⭐⭐⭐ | HPS 5×3 / OHS 4×3 / BS single / Klokov single | 60 / 50 / feel 112–118 / feel 103–113 | GM 4×8·62, Pull-up 4×6·BW+10, GHR 3×8·12 | MS opener 2×3·48. OHS target 50 kg — Block 1 milestone |
 | D2 Tue ⭐⭐⭐ | HPC 5×3 / Clean Pull 4×4 | 68 / 97 | PP 4×5·62, SP 3×5·48, Trapi 4×8·66, FRH 3×20s·80, Dead Bug 3×10 | MS opener 2×3·48 |
-| D3 Wed ⭐⭐ | SB 3×3 / FS single / FS vol 3×4 / OHS 4×4 | 48 / feel 97–102 / 88 / 50 | SHP 3×4·83, RDL 4×6·88, GHR 3×10·8, Plank 3×65s | MS opener 2×3·48. Hard stop 3pm |
+| D3 Wed ⭐⭐ | SB 3×3 / **Dynamic FS** single / FS vol 3×4 / OHS 4×4 | 48 / feel 97–102 / 88 / 50 | Belt Squat 3×10·82, SHP 3×4·83, RDL 4×6·88, Plank 3×65s | MS opener 2×3·48. Hard stop 3pm. Dynamic FS |
 | D4 Thu ⭐⭐ | **Jerk daily max / Back-off 2×3·85% / PP 4×5** | feel ~65–70 / calc / 60 | C&J 4×(1+2)·66, Sots 3×5·32, BNP 3×6·46, Split footwork 3×5·unloaded, Pallof 3×10 | MS opener 2×3·44. 5.5h sleep. Phase 2 peak single |
-| D5 Sat ⭐⭐ | Klokov 3×5 / Berestov 3×9 | 70 / 70 | Lunge 3×8/leg·50, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·48. No PRs |
+| D5 Sat ⭐⭐ | Klokov 3×5 / **Belt Squat 3×12** | 70 / 78 | Split Squat 3×8/leg·50, Single-Leg 3×8·BW+DB, Face Pull 3×15, Ab Wheel 3×8 | MS opener 2×3·48. No PRs |
 
 ---
 
@@ -239,9 +254,9 @@ Film every session. Lowest fatigue of the block — best week to spot technical 
 |-----|---------|------|-----------|-------|
 | D1 Mon ⭐⭐⭐ | HPS 3×3 / OHS 2×3 / BS 3×1·95 (no max) | 56 / 44 / 95 | GM 2×8·57, Pull-up 2×6·BW+5, GHR 2×8·8 | MS opener 2×3·44. No Klokov singles. Technique priority |
 | D2 Tue ⭐⭐⭐ | HPC 3×3 / Clean Pull 2×4 | 64 / 90 | PP 3×5·55, SP 2×5·42, Trapi 2×8·60, FRH 2×20s·80 | MS opener 2×3·44 |
-| D3 Wed ⭐⭐ | SB 2×3 / FS 3×1·85 / FS vol 2×4 / OHS 2×4 | 38 / 85 / 80 / 44 | SHP 2×4·76, RDL 2×6·80, GHR 2×10·BW, Plank 2×60s | MS opener 2×3·44. Hard stop 3pm |
+| D3 Wed ⭐⭐ | SB 2×3 / **Dynamic FS** 3×1·85 / FS vol 2×4 / OHS 2×4 | 38 / 85 / 80 / 44 | Belt Squat 2×10·70, SHP 2×4·76, RDL 2×6·80, Plank 2×60s | MS opener 2×3·44. Hard stop 3pm |
 | D4 Thu ⭐⭐ | Jerk 3×3 / Push Press 2×5 | 57 / 54 | C&J 2×(1+2)·60, Sots 2×5·28, BNP 2×6·40, Split footwork 2×5·unloaded | MS opener 2×3·42. 5.5h sleep. Prescribed only, no singles, no back-off |
-| D5 Sat ⭐⭐ | Klokov 2×5 / Berestov 2×9 | 64 / 64 | Lunge 2×8/leg·44, Face Pull 2×15 | MS opener 2×3·44. Light only |
+| D5 Sat ⭐⭐ | Klokov 2×5 / **Belt Squat 2×12** | 64 / 68 | Split Squat 2×8/leg·44, Single-Leg 2×8·BW, Face Pull 2×15 | MS opener 2×3·44. Light only |
 
 ---
 

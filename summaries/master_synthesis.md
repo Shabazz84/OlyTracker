@@ -47,6 +47,7 @@
 | **Accessory volume** | Pavlukhin (minimal); Torokhtiy (extensive circuits); Catalyst (10–15 min cap) | **Tiered approach:** Weeks 1–3: Lower accessory (5–10 min: core only). Weeks 4–6: Moderate accessory (10–15 min: posterior chain + core + one upper-back exercise). Post-block: Variable based on recovery. |
 | **Push jerk vs. split jerk timeline** | Pavlukhin (split drills early); Catalyst (push jerk continuation); Webster (split jerk post-foundation) | **Decision:** Maintain push jerk as primary load vehicle (weeks 1–6). Week 4+: Introduce split jerk drills **unloaded** (3 min/session, footwork + landing mechanics). Week 7 (strength block): Load split jerks at 40–50%, progressive ramp. Full split jerk loading week 10+. |
 | **Intensity percentage vs. RPE** | Pavlukhin (RPE/feel); Dozer (fixed %); Catalyst (RPE primary) | **Dual system:** Use fixed percentages (70–80%) as baseline; adjust daily ±5% based on RPE and sleep score (1–10 scale). If sleep <5, drop to 65–70%. If RPE feels easy at prescribed load, add 2–5 kg. This bridges structure + responsiveness. |
+| **Paused vs. dynamic squats** | Pavlukhin (pauses = *negative* transfer — teach stopping in the hole, kill fast recovery from the clean; squat must train power/spring); Sika + Telander/Aita (pause front squat = primary tall-lifter technique drill to groove the upright knees-forward pattern) | **Sequence by purpose, not either/or:** Use **pause front squats early** (hypertrophy/technique phase) to *teach position* — the tall-lifter pattern and quad tension this athlete lacks. Then **migrate to fast, full-ROM dynamic squats** (spring out, no slow eccentric) as you approach the strength/specificity phase, so squat power transfers to the clean recovery. This is exactly Aita's corrective→specific, complex→simple progression. Net: pauses are a *teaching tool with an expiry date*, not the long-term squat. |
 
 ---
 
@@ -58,7 +59,11 @@
 | **Catalyst** | "Body Over Bar" principle (vertical leg extension drives lift, not arm tension) | Tall snatch + snatch balance emphasis (3x/week). Teaches athlete to prioritize leg drive, not shoulder pull. Reduces arm/shoulder fatigue in push jerk. |
 | **Dozer** | Load positioning before load magnitude (front rack holds, OHS holds = training, not prerequisites) | Week 1–2: Accumulate rack position/OHS holds (3×30–45 sec @ 50–60 kg). Improves proprioception under load without full lift complexity. |
 | **Pavlukhin** | Speed over force ("if pull feels slow, load is too high for technical state") | Session feedback rule: If snatch feels "heavy" at 70 kg, reduce to 65 kg or switch to snatch high pull. Never grind through slow pulls during hypertrophy block. |
+| **Pavlukhin (loading & transfer)** | (1) The **"reps → max" prediction rule is a myth** — nervous-system dependent, survivorship bias; don't infer a max from a rep set. (2) **Stall fix = add a squat-only session**, not more classic lifts. (3) **Sets scale with training level** (beginner ~9 heavy series/wk; advanced 12–20). (4) **Positive vs negative transfer (Zatsiorsky)** — accessories must load the *specific working angle/stretch*. (5) **Don't train lifts in pieces**; **belt only ≥90%, braced into the abdomen.** | Treat program TM%/estimated-max as a *rough* guide confirmed by feel (reinforces feel-based loading). If Block 1 progress flattens, **add a 4th squat-focused session** (respect night-shift cap) before adding lift volume. **Scissor/split-lunge as tendon prep at the receiving angle** (BW → bar → load, 10/leg, both sides, no failure reps) — confirms the existing "lunge for jerk tendon dev even without split jerk" note. Keep beltless work up to ~90%. |
 | **Sika** | Position-over-loading (70% perfect > 90% flawed); Mobility = performance ceiling | Weekly video review (self-film snatch/clean @ 75 kg). Halt sets where form degrades; don't chase reps if position breaks. |
+| **Sika (tall-lifter squat)** | Deep upright squat is *built*, not genetic — quad-dominant knees-forward pattern + mid-bar (acromion) placement + dedicated ankle/hip mobility + quad hypertrophy. Rejects the "stand wider, push hips back, settle for parallel" tall-lifter fixes. | **Directly addresses this athlete's #1 limiter (long-femur OHS/squat depth).** Drive knees forward the *whole* rep ("control knees → control quads"); hold natural lumbar extension, no hip thrust at top; ear over shoulder. Build quads via belt squat / heels-raised goblet / forward-knee split squat (back-sparing). Daily ankle protocol (barbell calf-roll → heavy calf stretch → empty-bar pause squat). |
+| **Telander / Aita (long-leg squat)** | **Rep-range targeting** — for long legs, *both* very high reps and very heavy singles/doubles migrate load onto the back; live in the rep range where technique stays perfect. Pause front squat to ingrain knee-over-toe; single-leg squat to isolate quads with the back unloaded. | **[VERY HIGH CONFIDENCE — 3 sources agree: Sika ×2 + Telander/Aita]** All three give the same fix: keep the main squat technically perfect at a *moderate* rep range, then build quads with back-sparing accessories (belt/goblet/single-leg). Sika adds the work-capacity rationale (start high-volume, hold it long), a temporary just-above-parallel bridge drill, heavy daily ankle dosing, and a midline isometric ladder. See "Tall-Lifter Squat Protocol" in §4. |
+| **Aita (exercise-selection method)** | **Fault-driven selection ("1+1≠2")** — don't map one fault to one fix. Build a *pool* of similar corrective movements that hit the root causes, prioritize by overlap, sequence corrective→specific. Variability drives skill acquisition. Minimum lift menu: classic + power + overhead-strength (snatch); classic + power + front squat (clean); power jerk + push press (jerk). | **The self-coaching engine — pairs with Klokov video review + in-app AI Video Review.** Method: film → name the fault → list root causes (bar path / position / weakness / balance) and affected phase → build corrective pool → train top of the list → migrate to the classic lift. Validates current menu; **power jerk + push press matches this athlete's no-split-jerk constraint exactly.** See "Self-Coaching Exercise Selection" in §4. |
 | **Torokhtiy** | Scapular-driven patterns (retract/tension throughout pull; extend from thoracic, not lumbar) | Pre-pull cue: "Scapulae back and down." During pull: "Elbows high and wide." This directly reduces lumbar compensation (critical for back pain). |
 | **Webster** | Receiving position mastery first (squat snatch > power snatch) | Prioritize snatch balance (4–5x/week) + full-depth OHS catches (2–3 sec pauses). Power snatch is accessory-only during foundation. |
 | **Last Man Org** | LMS "Micro-weight" philosophy (high volume @ 50–70% = hypertrophy without spinal compression) | Weeks 1–2: Deliberately run "light week" (all lifts at 60–65%, +2 reps). Builds volume tolerance, confidence, and movement groove. |
@@ -144,6 +149,51 @@
     - Pallof press: 3×8/side @ moderate (spinal stability)
     - Suitcase carries: 2×30 m/side @ 20 kg (asymmetrical strength)
 
+### **Tall-Lifter Squat Protocol (Sika ×2 + Telander/Aita — added 2026-06-09)**
+*Targets the long-femur OHS/squat-depth ceiling without loading the back. **Three independent coaches converge on the same blueprint — treat as VERY HIGH confidence.** The signature flaw they all diagnose: knees shoot back early → hips back → torso folds forward (squat becomes a good morning). Whole protocol = stop that. Layer into Day 1 (legs/posterior) and Day 3 (legs + snatch stability).*
+
+13. **Main squat: perfect technique at a moderate rep range** (Telander/Aita + Sika)
+    - Pause front squat (pause halfway down) as the primary squat-technique drill: forces upright torso, reinforces knee-over-toe and constant quad pressure, kills the loose bouncy rebound — 4×3–5. **Expiry date (see §2 "Paused vs. dynamic squats"):** pauses are for *teaching position* in the hypertrophy/technique phase — migrate to fast, full-ROM dynamic squats (spring out, no slow eccentric) as you approach the strength phase, so squat power transfers to the clean recovery (Pavlukhin: pauses = negative transfer long-term)
+    - **Volume rule (Sika):** open the cycle with *higher-volume* working sets at ~65–70% / 3–5 reps where positions stay flawless, and keep high-volume leg-accessory work in for a long stretch — tall lifters lack quad *work capacity*, not just strength
+    - For long legs, **avoid both** very high reps *and* grinding singles/doubles — both shove load onto the back
+    - *Why:* keeps the back out of it and trains the legs to hold position; front rack also feeds clean rack
+
+14. **Quad hypertrophy for depth** (build the missing tissue — tall lifters lack quad mass)
+    - Belt squat (or dip-belt/old lifting-belt + chain off boxes): 3–4×8–10, heavy — quad-dominant, near-zero spinal load. Tempo: sit consciously slow, no bottom bounce, drive from the leg
+    - Single-leg squat (back fully unloaded, isolates quad): progression **BW → dumbbells → front-rack barbell → back-rack last** (back-rack early risks turning into a good morning) — 3×8/side
+    - Heels-raised narrow-stance goblet squat (block, not a plate, behind heels): 3×10–12, big knee ROM
+    - Forward-knee split squat (drive knee forward, not vertical hip drop): 3×8–12/side @ 15–20% BW each hand
+    - *Temporary bridge drill (Sika):* heels-raised, narrow, toes-forward squat to **just above parallel** — keeps hips forward, keeps constant quad tension (no bottom bounce), and lets depth-training continue while ankle mobility lags. Short-term only, drop once ankles open up.
+    - *Why:* Quad size + forward-knee strength is what holds an upright torso at depth; all four spare the back-pain athlete
+
+15. **Daily ankle/hip protocol** (mobility = the depth ceiling; this is a *months-long* project, not weeks — Sika needed ~6 months)
+    - **Ankle (most important):** loaded bent-knee stretch with **15–25 kg on the knee** driving it over the toe (or bodyweight on a step pushing down), held **long: 90 s–2 min**, **3–5 sets/side, every day**. Plus barbell calf-roll 1 min/side ×3–4 and empty-bar pause squats 5–10 reps.
+    - **Hips:** roll TFL/glutes 1 min → runner's lunge (push-up position, foot by hand, elbow to floor) 1 min/side → banded couch stretch (esp. for desk/sitting time)
+    - **Shoulder/upper back:** open enough to stack hands narrow on the mid-bar (acromion) shelf — tight shoulders force wide hands → weak upper back → forward lean
+    - *Why:* Long tibias → poorer ankle mobility; dorsiflexion + hip opening unlock the deep, upright bottom the snatch catch needs. Heavy + long-duration because a daily-walking calf/Achilles unit ignores a light stretch.
+    - *Note:* fold the ankle protocol into the app's Mobility tab as a named daily routine; expect months of consistency
+
+16. **Midline control: anterior + posterior + anti-rotation isometrics** (Sika — anti-good-morning trunk; back-pain priority)
+    - One per session, 2–3×/week: anterior = plank; posterior = prone back-extension hold (or glute-bridge hold); anti-rotation = side plank
+    - **Isometric ladder:** 3–5 sets, start 15–30 s, +5–10 s/week, build to **90 s**, then switch to a harder variation (plank → Superman plank; back-extension hold → heels-anchored raised) and rebuild to 90 s
+    - *Why:* tall lifters have more leverage on the trunk under load; a strong braced midline is what stops the hips kicking back and the chest dropping — directly protects the lower back
+
+### **Self-Coaching Exercise Selection (Aita — added 2026-06-09)**
+*A repeatable method for fixing technical faults from video — the process behind picking accessories, not a fixed prescription. Use it with the Klokov video-review habit and the in-app AI Video Review tool.*
+
+- **Minimum exercise menu** (confirms the current program is built right):
+  - Snatch → classic snatch + power snatch + overhead strength (OHS / snatch balance)
+  - Clean → classic clean + power clean + front squat
+  - Jerk → **power jerk + push press** ← exactly fits this athlete's push-jerk-only constraint; push press builds the drive power and lockout that jerks alone don't
+- **Fault-fix loop** (run whenever video shows a recurring fault):
+  1. Name the fault (e.g. *jumping forward in the snatch*)
+  2. List root causes — bar path · loss of position · physical weakness (back too weak to hold over bar? legs too weak to stay upright?) · balance — and the phase it lives in (first pull / at knee / finish-turnover)
+  3. Build a **pool** of corrective movements (≈10–20), not one "magic" fix:
+     - *phase-specific:* tempo lifts, pull-to-knee + lift complexes, pause at / above / below knee
+     - *bar-path/balance:* no-feet (can't jump forward), no-contact (stops over-kicking the hip), pause lifts
+  4. Prioritize the movements that **appear repeatedly** across causes; train from the top of the list
+- **Sequencing rule (per mesocycle):** target the fault first (most corrective movements as primary) → migrate toward specificity (the classic lift) → move complex→simple as load rises → keep variability (rotate close variations weekly or week-to-week). Apply directly to Block 2 (Technique Consolidation).
+
 ---
 
 ## 5. TOP 10 TECHNIQUE CUES (Priority Ranked)
@@ -188,6 +238,12 @@
    - Wide stance = longer pull = higher chance of forward bar drift
    - Cue: "Feet narrow, toes slightly out"
    - **Checkmark:** Mark floor position; replicate each rep
+
+> **Squat-depth cues (Sika, tall lifter) — support the OHS limiter above:**
+> - **"Knees forward the whole rep"** — push knees forward through the entire squat and keep them there; don't shove them forward early then kick hips back. *"Control the knees → control the quads."*
+> - **"Natural lumbar extension, no hip thrust at top"** — set the back in its natural arch and hold it the whole set; never thrust hips forward at lockout (back-pain safe).
+> - **"Ear over shoulder"** — neutral head; tight upper backs drift the head forward and wreck leg drive.
+> - **Bar placement:** mid-bar / hybrid on the acromion (between high- and low-bar) for an upright torso; stance ~shoulder-width, toes ~15° (not 45°).
 
 ---
 
