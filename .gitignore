@@ -10,3 +10,4 @@ dist/
 build/
 .env
 docs/key.js
+node_modules/

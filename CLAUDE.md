@@ -2,8 +2,11 @@
 
 ## Development Rules
 
-- **Version bump on every commit that touches `docs/index.html`** — update `PROGRAM v<X.Y.Z> · <date>` in the header before committing. No exceptions, including minor fixes. Format: `major.minor.patch` (e.g. v2.7.1 → v2.7.2 for a patch).
+- **App source of truth is `docs/src/app.jsx`** (NOT the HTML). The app is React + JSX. `index.html` is now a thin shell that loads pre-transpiled `docs/app.js`. **Never edit `docs/app.js` by hand** — it is generated. Edit `docs/src/app.jsx`, then run `npm run build` (esbuild → `docs/app.js`). Use `npm run watch` during development. The in-browser Babel transpiler was removed (was ~2.8 MB + per-load transpile cost).
+- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.1.0 · 2026-06-09`.
 - **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
+- **Cloud sync is Supabase only.** The GitHub Gist sync path was removed — `sbSync` (defined inline in `index.html`) auto-syncs sessions/sets/reviews on every mutation and pulls on startup. Don't reintroduce a second sync backend.
+- **`docs/key.js` holds secrets** (gitignored, not deployed to Pages). The `__CLAUDE_KEY` there only works locally; a browser cannot hold a Claude key securely — for production AI review, proxy through a serverless function. The Supabase publishable key is safe to expose.
 
 ---
 
