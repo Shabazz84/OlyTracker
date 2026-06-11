@@ -3,7 +3,7 @@
 ## Development Rules
 
 - **App source of truth is `docs/src/app.jsx`** (NOT the HTML). The app is React + JSX. `index.html` is now a thin shell that loads pre-transpiled `docs/app.js`. **Never edit `docs/app.js` by hand** — it is generated. Edit `docs/src/app.jsx`, then run `npm run build` (esbuild → `docs/app.js`). Use `npm run watch` during development. The in-browser Babel transpiler was removed (was ~2.8 MB + per-load transpile cost).
-- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.1.0 · 2026-06-09`.
+- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.3.1 · 2026-06-11`.
 - **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
 - **Cloud sync is Supabase only.** The GitHub Gist sync path was removed — `sbSync` (defined inline in `index.html`) auto-syncs sessions/sets/reviews on every mutation and pulls on startup. Don't reintroduce a second sync backend.
 - **`docs/key.js` holds secrets** (gitignored, not deployed to Pages). The `__CLAUDE_KEY` there only works locally; a browser cannot hold a Claude key securely — for production AI review, proxy through a serverless function. The Supabase publishable key is safe to expose.
@@ -30,7 +30,7 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 | Clean Pull      | 120 kg × 3                                            |
 | Snatch High Pull | 92 kg × 4                                            |
 | Back Squat      | 118 kg × 1 (May 2026)                                 |
-| Front Squat     | 102 kg × 2                                            |
+| Front Squat     | 102 kg × 3 × 4 sets (Jun 2026) — est. 1RM ~116 kg     |
 | Overhead Squat  | 50 kg × 4 — primary snatch limiter                    |
 | Overhead Press  | 62 kg × 2                                             |
 | Experience      | Intermediate strength athlete mid-transition to OLY   |
@@ -50,7 +50,7 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 |---------------|-------------|
 | Snatch        | 63 kg       |
 | Clean & Jerk  | 72 kg       |
-| Front Squat   | 102 kg      |
+| Front Squat   | 116 kg      |
 | Back Squat    | 118 kg      |
 | Push Press    | 65 kg       |
 | Clean Pull    | 120 kg      |
