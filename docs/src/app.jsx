@@ -285,16 +285,14 @@ const DAYS_SUMMER = [
     ]
   },
   {
-    id:"d5", label:"DAY 5", name:"Klokov + Quad Hypertrophy (Tall-Lifter)",
+    id:"d5", label:"DAY 5", name:"Quad Hypertrophy + Lunge (Back-Sparing)",
     schedule:"Saturday", color:"#8b5cf6", sleep:"partial",
     maxLoad: false,
-    focus:["Klokov Squat 4×6 hypertrophy","Belt Squat — back-sparing quad mass","Split / single-leg knees-forward work"],
+    focus:["Belt Squat — back-sparing quad mass","Split squat — jerk-lunge tendon prep (Pavlukhin)","Active hypertrophy — no PRs"],
     exercises:[
       {id:"muscle_snatch",         sets:2,     reps:"3",      l1:"42–46 kg",   l2:"44–48 kg"  },
-      {id:"klokov_squat",          sets:4,     reps:"6",      l1:"75–85 kg",   l2:"82–92 kg"  },
       {id:"belt_squat",            sets:3,     reps:"12",     l1:"60–80 kg",   l2:"70–90 kg"  },
       {id:"split_squat",           sets:3,     reps:"8/leg",  l1:"40–50 kg",   l2:"46–56 kg"  },
-      {id:"single_leg_squat",      sets:3,     reps:"8/leg",  l1:"BW",         l2:"BW+DB 8–12" },
       {id:"face_pull",             sets:3,     reps:"15",     l1:"Light",      l2:"Light-Med" },
       {id:"ab_wheel",              sets:3,     reps:"8–10",   l1:"BW",         l2:"BW"        },
     ]
@@ -319,8 +317,8 @@ const PROGRAM_B1 = [
      secondary:"SB 3×3·35, RDL 4×6·75, OHS 4×4·40, Plank 3×50s",notes:"MS opener 2×3·42. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"52 kg / 50 kg",
      secondary:"C&J 4×(1+2)·55, Sots 3×5·25, BNP 3×6·35, Pallof 3×10",notes:"MS opener 2×3·40. 5.5h sleep"},
-    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Klokov 4×6 / Belt Squat 3×12",load:"76 kg / 65 kg",
-     secondary:"Split Squat 3×8/leg·40, Single-Leg 3×8·BW, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·42. Klokov 4×6 rep work — no PRs. Quad-hypertrophy tissue day — back-sparing"},
+    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"65 kg",
+     secondary:"Split Squat 3×8/leg·40, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·42. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
   {week:2,phase:"Phase 1",load:"Hypertrophy · 65–75%",focus:"+2.5 kg from Week 1",
    note:"Same structure, loads up. Jerk: 4×2·55. D1 OHS: 3×3. D3: SB+OHS 4×4. FS = PAUSE front squat (Ph1).",
@@ -333,8 +331,8 @@ const PROGRAM_B1 = [
      secondary:"SB 3×3·37, RDL 4×6·77, OHS 4×4·42, Plank 3×50s",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"55 kg / 52 kg",
      secondary:"C&J 4×(1+2)·57, Sots 3×5·27, BNP 3×6·37, Pallof 3×10",notes:"MS opener 2×3·42. 5.5h sleep"},
-    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Klokov 4×6 / Belt Squat 3×12",load:"78 kg / 67 kg",
-     secondary:"Split Squat 3×8/leg·42, Single-Leg 3×8·BW, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·44. Klokov 4×6 rep work — no PRs. Quad-hypertrophy tissue day"},
+    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"67 kg",
+     secondary:"Split Squat 3×8/leg·42, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·44. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
   {week:3,phase:"Phase 1",load:"Hypertrophy · 65–75%",focus:"Last Phase 1 week. Lock in positions",
    note:"Confirm positions are solid before Phase 2. Jerk: 4×2·57. D1 OHS: 3×3. D3: SB+OHS 4×4. Last week of PAUSE FS — dynamic FS begins Wk4.",
@@ -347,8 +345,8 @@ const PROGRAM_B1 = [
      secondary:"SB 3×3·38, RDL 4×6·80, OHS 4×4·44, Plank 3×60s",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — last week of pause reps. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"57 kg / 54 kg",
      secondary:"C&J 4×(1+2)·60, Sots 3×5·28, BNP 3×6·40, Pallof 3×10",notes:"MS opener 2×3·42. 5.5h sleep"},
-    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Klokov 4×6 / Belt Squat 3×12",load:"80 kg / 70 kg",
-     secondary:"Split Squat 3×8/leg·44, Single-Leg 3×8·BW, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·44. Klokov 4×6 rep work — no PRs. Quad-hypertrophy tissue day"},
+    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"70 kg",
+     secondary:"Split Squat 3×8/leg·44, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·44. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
   {week:4,phase:"Phase 2",load:"Hypertrophy · 72–82%",focus:"Jerk daily max begins. OHS → 4 sets. FS → dynamic",
    note:"First jerk singles: open ~60–62 kg. Auto-reg: no grinding misses. D1 OHS now 4×3. D3 OHS 4×4 throughout. FS Phase 2: 4×6 load climbs (controlled tempo) — quad mass + position carry to the clean recovery (Pavlukhin).",
@@ -361,8 +359,8 @@ const PROGRAM_B1 = [
      secondary:"SB 3×3·39, RDL 4×6·82, OHS 4×4·46, Plank 3×60s",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max / Push Press 4×5",load:"feel ~60–65 / 56 kg",
      secondary:"C&J 4×(1+2)·62, Sots 3×5·30, BNP 3×6·42, Pallof 3×10",notes:"MS opener 2×3·42. 5.5h sleep. Conservative first single"},
-    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Klokov 4×6 / Belt Squat 3×12",load:"82 kg / 72 kg",
-     secondary:"Split Squat 3×8/leg·46, Single-Leg 3×8·BW+DB, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·46. Klokov 4×6 rep work — no PRs. Quad-hypertrophy tissue day"},
+    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"72 kg",
+     secondary:"Split Squat 3×8/leg·46, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·46. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
   {week:5,phase:"Phase 2",load:"Hypertrophy · 72–82%",focus:"Jerk auto-reg familiar. Push higher",
    note:"Target jerk: last week's max +2.5 kg if it was clean. BS: push toward 115.",
@@ -375,8 +373,8 @@ const PROGRAM_B1 = [
      secondary:"SB 3×3·40, RDL 4×6·85, OHS 4×4·48, Plank 3×65s",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max / Push Press 4×5",load:"feel ~63–68 / 58 kg",
      secondary:"C&J 4×(1+2)·64, Sots 3×5·30, BNP 3×6·44, Pallof 3×10",notes:"MS opener 2×3·44. 5.5h sleep"},
-    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Klokov 4×6 / Belt Squat 3×12",load:"84 kg / 75 kg",
-     secondary:"Split Squat 3×8/leg·48, Single-Leg 3×8·BW+DB, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·46. Klokov 4×6 rep work — no PRs. Quad-hypertrophy tissue day"},
+    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"75 kg",
+     secondary:"Split Squat 3×8/leg·48, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·46. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
   {week:6,phase:"Phase 2",load:"Hypertrophy · 72–82%",focus:"Phase 2 peak. Prepare for deload",
    note:"Last heavy week. Jerk target: 67–70 kg. BS: attempt 115–118 kg if strong.",
@@ -389,8 +387,8 @@ const PROGRAM_B1 = [
      secondary:"SB 3×3·42, RDL 4×6·88, OHS 4×4·50, Plank 3×65s",notes:"MS opener 2×3·48. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max / Push Press 4×5",load:"feel ~65–70 / 60 kg",
      secondary:"C&J 4×(1+2)·66, Sots 3×5·32, BNP 3×6·46, Pallof 3×10",notes:"MS opener 2×3·44. 5.5h sleep. Phase 2 peak single"},
-    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Klokov 4×6 / Belt Squat 3×12",load:"87 kg / 78 kg",
-     secondary:"Split Squat 3×8/leg·50, Single-Leg 3×8·BW+DB, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·48. Klokov 4×6 rep work — no PRs. Quad-hypertrophy tissue day"},
+    {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"78 kg",
+     secondary:"Split Squat 3×8/leg·50, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·48. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
   {week:7,phase:"Deload",load:"Same loads · Sets −40%",focus:"Volume −40%. No PRs. Technique priority",
    note:"Film every session. Fatigue is low — best week to catch form errors.",
@@ -404,7 +402,7 @@ const PROGRAM_B1 = [
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 3×3 / Push Press 2×5",load:"57 kg / 54 kg",
      secondary:"C&J 2×(1+2)·60, Sots 2×5·28, BNP 2×6·40",notes:"MS opener 2×3·42. 5.5h sleep. Prescribed only"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 2×12",load:"68 kg",
-     secondary:"Split Squat 2×8/leg·44, Single-Leg 2×8·BW, Face Pull 2×15",notes:"MS opener 2×3·44. Klokov dropped for deload — Belt Squat only. Deload volume"},
+     secondary:"Split Squat 2×8/leg·44, Face Pull 2×15",notes:"MS opener 2×3·44. Belt Squat only. Deload volume"},
   ]},
   {week:8,phase:"Test",load:"1RM attempts",focus:"Test: HPS, HPC, FS, Jerk, OHS",
    note:"No volume — warm-up and max attempts only. Rest 3–5 min between. Stop at first miss.",
@@ -998,7 +996,7 @@ function ScheduleView() {
     {day:"Wednesday",work:"7pm→7:30am",   sleep:"Full night",  hrs:"7–8h", quality:"⭐⭐",   session:"Day 3 — Moderate", note:"Work starts 7pm"},
     {day:"Thursday", work:"7pm→7:30am",   sleep:"8:30am→2pm",  hrs:"5.5h", quality:"⭐⭐",   session:"Day 4 — Jerk (summer)", note:"Summer only"},
     {day:"Friday",   work:"7pm→7:30am",   sleep:"Post-shift sleep", hrs:"5.5h", quality:"❌",    session:"Rest", note:"Sleep after shift"},
-    {day:"Saturday", work:"7pm→7:30am",   sleep:"8:30am→2pm",  hrs:"5.5h", quality:"⭐⭐",   session:"Day 5 — Klokov + Berestov + Lunges", note:"Summer only"},
+    {day:"Saturday", work:"7pm→7:30am",   sleep:"8:30am→2pm",  hrs:"5.5h", quality:"⭐⭐",   session:"Day 5 — Quad Hypertrophy + Lunges", note:"Summer only"},
     {day:"Sunday",   work:"Finish 7:30am",sleep:"Recovery",    hrs:"Full", quality:"❌",    session:"Rest only", note:"Last shift ends"},
   ];
   return (
@@ -4258,7 +4256,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.3.1 · 2026-06-11
+                PROGRAM v3.3.2 · 2026-06-11
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
