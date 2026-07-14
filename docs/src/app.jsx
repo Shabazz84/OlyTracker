@@ -234,9 +234,7 @@ const DAYS_SUMMER = [
       {id:"hang_power_snatch",     sets:5,     reps:"3",      l1:"48–52 kg",   l2:"50–53 kg"  },
       {id:"back_squat",            sets:"4–6", reps:"1",      l1:"95–118 kg",  l2:"100–120 kg"},
       {id:"overhead_squat",        sets:4,     reps:"3",      l1:"40–48 kg",   l2:"46–54 kg"  },
-      {id:"good_morning",          sets:4,     reps:"8",      l1:"50–60 kg",   l2:"55–65 kg"  },
       {id:"weighted_pull_up",      sets:4,     reps:"6–8",    l1:"BW+5 kg",    l2:"BW+8 kg"   },
-      {id:"ghr",                   sets:3,     reps:"8",      l1:"5–10 kg",    l2:"8–12 kg"   },
     ]
   },
   {
@@ -248,11 +246,7 @@ const DAYS_SUMMER = [
       {id:"muscle_snatch",         sets:2,     reps:"3",      l1:"42–46 kg",   l2:"44–48 kg"  },
       {id:"hang_power_clean",      sets:5,     reps:"3",      l1:"56–60 kg",   l2:"60–63 kg"  },
       {id:"clean_pull",            sets:4,     reps:"4",      l1:"85–95 kg",   l2:"90–100 kg" },
-      {id:"incline_barbell_press", sets:4,     reps:"8",      l1:"58–68 kg",   l2:"63–73 kg"  },
       {id:"weighted_dips",         sets:4,     reps:"8",      l1:"BW+20 kg",   l2:"BW+25 kg"  },
-      {id:"klokov_trapi",          sets:4,     reps:"8",      l1:"55–62 kg",   l2:"60–67 kg"  },
-      {id:"wide_overhead_press",   sets:4,     reps:"6",      l1:"35–42 kg",   l2:"40–47 kg"  },
-      {id:"dead_bug",              sets:3,     reps:"10/side",l1:"BW",         l2:"BW"        },
     ]
   },
   {
@@ -262,11 +256,9 @@ const DAYS_SUMMER = [
     focus:["Front Squat 4×6 hypertrophy: pause (Ph1) → controlled (Ph2), ≤80% cap","OHS stability","Posterior chain — RDL"],
     exercises:[
       {id:"muscle_snatch",         sets:2,     reps:"3",      l1:"42–46 kg",   l2:"44–48 kg"  },
-      {id:"snatch_balance",        sets:3,     reps:"3",      l1:"35–42 kg",   l2:"40–48 kg"  },
       {id:"front_squat",           sets:4,     reps:"6",      l1:"82–86 kg",   l2:"87–90 kg"  },
       {id:"rdl",                   sets:4,     reps:"6",      l1:"75–85 kg",   l2:"80–90 kg"  },
       {id:"overhead_squat",        sets:4,     reps:"4",      l1:"40–48 kg",   l2:"46–54 kg"  },
-      {id:"plank",                 sets:3,     reps:"50s",    l1:"BW",         l2:"BW"        },
     ]
   },
   {
@@ -277,11 +269,8 @@ const DAYS_SUMMER = [
     exercises:[
       {id:"muscle_snatch",         sets:2,     reps:"3",      l1:"40–44 kg",   l2:"42–46 kg"  },
       {id:"jerk_from_rack",        sets:"6–8", reps:"1",      l1:"52–60 kg",   l2:"56–64 kg"  },
-      {id:"push_press",            sets:4,     reps:"5",      l1:"50–56 kg",   l2:"54–60 kg"  },
       {id:"clean_and_jerk",        sets:4,     reps:"1+2",    l1:"55–62 kg",   l2:"58–65 kg"  },
       {id:"sots_press",            sets:3,     reps:"5",      l1:"25–30 kg",   l2:"28–33 kg"  },
-      {id:"behind_neck_press",     sets:3,     reps:"6",      l1:"35–42 kg",   l2:"40–46 kg"  },
-      {id:"pallof_press",          sets:3,     reps:"10/side",l1:"Light",      l2:"Light-Med" },
     ]
   },
   {
