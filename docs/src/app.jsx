@@ -3399,6 +3399,23 @@ function inferDaysFromLogs(week, dayList) {
   return result;
 }
 
+const COMPLETION_DAY_IDS = ["d1", "d2", "d3", "d4"];
+
+function isWeekComplete(week) {
+  const inferred = inferDaysFromLogs(week, DAYS_SCHOOL);
+  return COMPLETION_DAY_IDS.every(id => {
+    const status = inferred[id]?.status;
+    return status === "done" || status === "partial";
+  });
+}
+
+function computeCurrentWeek() {
+  for (let w = 1; w <= 28; w++) {
+    if (!isWeekComplete(w)) return w;
+  }
+  return 28;
+}
+
 function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
   const dayList = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
 
@@ -3985,8 +4002,7 @@ function OlyTracker() {
   const [logEditKey,setLogEditKey] = useState(null);
   const [prTab,setPrTab]     = useState("key");
   const [progTab,setProgTab] = useState("program");
-  const PROGRAM_START_MS = new Date("2026-05-19").getTime();
-  const currentWeek = Math.max(1, Math.min(28, Math.floor((Date.now() - PROGRAM_START_MS) / (7*24*3600*1000)) + 1));
+  const currentWeek = computeCurrentWeek();
   const [progViewWeek, setProgViewWeek] = useState(currentWeek);
   const [suppHistory,setSuppHistory] = useState({});
   const [suppNotes,setSuppNotes]     = useState("");
