@@ -738,8 +738,8 @@ function generateWeights(loadStr) {
   } else {
     base = parseFloat(nums[0]);
   }
-  const min = Math.max(5, Math.round((base * 0.85) / 2.5) * 2.5);
-  const max = Math.round((base * 1.15) / 2.5) * 2.5;
+  const min = Math.max(5, Math.round((base * 0.80) / 2.5) * 2.5);
+  const max = Math.round((base * 1.30) / 2.5) * 2.5;
   const weights = [];
   for (let w = min; w <= max; w = Math.round((w + 2.5) * 10) / 10) {
     weights.push(w);
@@ -4261,7 +4261,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.4.0 · 2026-07-14
+                PROGRAM v3.4.1 · 2026-07-20
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
