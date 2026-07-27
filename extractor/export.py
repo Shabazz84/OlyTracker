@@ -33,6 +33,17 @@ def transcript_path(channel_name: str, video_id: str, title: str) -> Path:
     return get_channel_dir(channel_name) / f"{video_id}_{safe_title}.txt"
 
 
+def get_audio_dir(channel_name: str) -> Path:
+    """Return the channel subdirectory path for downloaded audio tracks."""
+    return Path(config.AUDIO_DIR) / sanitize_name(channel_name)
+
+
+def audio_path(channel_name: str, video_id: str, title: str) -> Path:
+    """Return the full path to a downloaded audio file."""
+    safe_title = sanitize_name(title)
+    return get_audio_dir(channel_name) / f"{video_id}_{safe_title}.mp3"
+
+
 def exists(channel_name: str, video_id: str, title: str) -> bool:
     """Check if a transcript file already exists."""
     return transcript_path(channel_name, video_id, title).exists()

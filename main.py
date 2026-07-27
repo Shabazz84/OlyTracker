@@ -8,7 +8,9 @@ import config
 from extractor.channel import get_channel_videos, channel_name_from_url
 from extractor.playlist import get_playlist_videos
 from extractor.transcript import fetch_transcript
-from extractor.export import exists, save_transcript, merge_transcripts
+from extractor.audio import download_audio
+from extractor.whisper_transcribe import transcribe_audio
+from extractor.export import exists, save_transcript, merge_transcripts, audio_path
 from extractor.web import scrape_url, save_web_transcript
 from extractor.telegram import parse_export, save_telegram_transcript
 
@@ -141,6 +143,41 @@ def process_playlist(url: str, force: bool = False, max_videos: int | None = Non
     return extracted, skipped, errors
 
 
+def process_playlist_whisper(url: str, force: bool = False, max_videos: int | None = None) -> tuple[int, int, int]:
+    """Download real audio and transcribe locally with Whisper.
+
+    Slower than scraping YouTube captions but far more accurate — worth it
+    for Russian-language weightlifting terminology that auto-captions mangle.
+    """
+    playlist_id = url.split("list=")[-1][:24]
+    name = f"playlist_{playlist_id}"
+    logger.info(f"Playlist (whisper): {name}")
+    videos = get_playlist_videos(url, max_videos=max_videos)
+    extracted = skipped = errors = 0
+    for video in videos:
+        vid_id = video["video_id"]
+        title = video["title"]
+        if not force and exists(name, vid_id, title):
+            skipped += 1
+            continue
+        audio_file = audio_path(name, vid_id, title)
+        downloaded = download_audio(vid_id, audio_file)
+        time.sleep(config.AUDIO_DOWNLOAD_DELAY)
+        if not downloaded:
+            errors += 1
+            continue
+        result = transcribe_audio(audio_file)
+        if result is None:
+            errors += 1
+            continue
+        save_transcript(name, vid_id, title, result["language"], result["text"])
+        _maybe_summarize(name, vid_id, title, result["text"])
+        extracted += 1
+    if extracted > 0:
+        merge_transcripts(name)
+    return extracted, skipped, errors
+
+
 def process_web() -> int:
     saved = 0
     for url in config.WEB_SOURCES:
@@ -170,6 +207,9 @@ def main() -> None:
     parser.add_argument("--summarize-only", action="store_true", help="Run summarizer on existing transcripts")
     parser.add_argument("--force", action="store_true", help="Re-download existing transcripts")
     parser.add_argument("--max", type=int, help="Max videos per channel/playlist")
+    parser.add_argument("--whisper", action="store_true",
+                        help="Download real audio and transcribe locally with Whisper "
+                             "instead of scraping YouTube auto-captions (--playlist only)")
     parser.add_argument("--priority-oly", action="store_true", help="Only Golovinsky OLY channel")
     parser.add_argument("--suffix", default="", help="Tag appended to summary filenames, e.g. 'claude'")
     parser.add_argument("--synthesize", action="store_true", help="Generate master synthesis (not yet implemented)")
@@ -214,7 +254,10 @@ def main() -> None:
         _add(*process_channel(args.channel, force=args.force, max_videos=args.max,
                               title_keywords=kw))
     elif args.playlist:
-        _add(*process_playlist(args.playlist, force=args.force, max_videos=args.max))
+        if args.whisper:
+            _add(*process_playlist_whisper(args.playlist, force=args.force, max_videos=args.max))
+        else:
+            _add(*process_playlist(args.playlist, force=args.force, max_videos=args.max))
     elif args.web:
         saved = process_web()
         logger.info(f"Web: saved {saved} pages")

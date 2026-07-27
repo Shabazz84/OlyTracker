@@ -40,11 +40,27 @@ YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "")
 
 TRANSCRIPT_DIR = "transcripts"
 SUMMARY_DIR = "summaries"
+AUDIO_DIR = "audio"
 
 TRANSCRIPT_LANGUAGES = ["ru", "uk", "en"]
 REQUEST_DELAY = 1.5
 MAX_VIDEOS = None
 SKIP_MISSING = True
+
+# ── Local Whisper transcription (faster-whisper) ──────────────────────────────
+# Used via --whisper: downloads real audio and transcribes locally instead of
+# scraping YouTube's auto-generated captions (which are low quality for
+# Russian weightlifting terminology).
+WHISPER_MODEL = "large-v3"
+WHISPER_DEVICE = "cuda"
+WHISPER_COMPUTE_TYPE = "float16"
+
+# yt-dlp audio download auth: prefer a live browser cookie jar (set to
+# "firefox", "edge", etc.) over the static data/cookies.txt export below —
+# a live jar survives YouTube's bot-check better since it's never stale.
+# None = fall back to data/cookies.txt if present.
+YTDLP_COOKIES_BROWSER = None
+AUDIO_DOWNLOAD_DELAY = 4.0  # seconds between yt-dlp audio downloads (bot-check mitigation)
 
 OLLAMA_BASE_URL = "http://localhost:11434"
 OLLAMA_MODEL = "qwen2.5:32b"
