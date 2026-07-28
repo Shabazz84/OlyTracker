@@ -115,6 +115,43 @@ def process_channel(url: str, force: bool = False, max_videos: int | None = None
     return extracted, skipped, errors
 
 
+def process_channel_whisper(url: str, force: bool = False, max_videos: int | None = None,
+                            title_keywords: list[str] | None = None) -> tuple[int, int, int]:
+    """Download real audio and transcribe locally with Whisper (channel variant)."""
+    channel_name = channel_name_from_url(url)
+    logger.info(f"Channel (whisper): {channel_name} ({url})")
+    videos = get_channel_videos(url, max_videos=max_videos)
+    logger.info(f"  {len(videos)} videos found")
+    if title_keywords:
+        kw_lower = [k.lower() for k in title_keywords]
+        before = len(videos)
+        videos = [v for v in videos if any(k in v["title"].lower() for k in kw_lower)]
+        logger.info(f"  {len(videos)} after OLY keyword filter (was {before})")
+    extracted = skipped = errors = 0
+    for video in videos:
+        vid_id = video["video_id"]
+        title = video["title"]
+        if not force and exists(channel_name, vid_id, title):
+            skipped += 1
+            continue
+        audio_file = audio_path(channel_name, vid_id, title)
+        downloaded = download_audio(vid_id, audio_file)
+        time.sleep(config.AUDIO_DOWNLOAD_DELAY)
+        if not downloaded:
+            errors += 1
+            continue
+        result = transcribe_audio(audio_file)
+        if result is None:
+            errors += 1
+            continue
+        save_transcript(channel_name, vid_id, title, result["language"], result["text"])
+        _maybe_summarize(channel_name, vid_id, title, result["text"])
+        extracted += 1
+    if extracted > 0:
+        merge_transcripts(channel_name)
+    return extracted, skipped, errors
+
+
 def process_playlist(url: str, force: bool = False, max_videos: int | None = None) -> tuple[int, int, int]:
     playlist_id = url.split("list=")[-1][:24]
     name = f"playlist_{playlist_id}"
@@ -209,7 +246,7 @@ def main() -> None:
     parser.add_argument("--max", type=int, help="Max videos per channel/playlist")
     parser.add_argument("--whisper", action="store_true",
                         help="Download real audio and transcribe locally with Whisper "
-                             "instead of scraping YouTube auto-captions (--playlist only)")
+                             "instead of scraping YouTube auto-captions (--channel or --playlist)")
     parser.add_argument("--priority-oly", action="store_true", help="Only Golovinsky OLY channel")
     parser.add_argument("--suffix", default="", help="Tag appended to summary filenames, e.g. 'claude'")
     parser.add_argument("--synthesize", action="store_true", help="Generate master synthesis (not yet implemented)")
@@ -251,8 +288,12 @@ def main() -> None:
     if args.channel:
         is_oly = any(p in args.channel for p in config.OLY_PRIORITY_CHANNELS)
         kw = config.OLY_VIDEO_KEYWORDS if is_oly else None
-        _add(*process_channel(args.channel, force=args.force, max_videos=args.max,
-                              title_keywords=kw))
+        if args.whisper:
+            _add(*process_channel_whisper(args.channel, force=args.force, max_videos=args.max,
+                                          title_keywords=kw))
+        else:
+            _add(*process_channel(args.channel, force=args.force, max_videos=args.max,
+                                  title_keywords=kw))
     elif args.playlist:
         if args.whisper:
             _add(*process_playlist_whisper(args.playlist, force=args.force, max_videos=args.max))
