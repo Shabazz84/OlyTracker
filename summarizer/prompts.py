@@ -3,7 +3,7 @@
 ATHLETE_CONTEXT = (
     "Athlete context: intermediate strength athlete transitioning to Olympic "
     "weightlifting. 102.5 kg bodyweight, Back Squat 118 kg, Clean 80 kg, "
-    "Jerk 65 kg (push jerk only — NO split jerk), OHS 50 kg (primary snatch "
+    "Jerk 65 kg (push/power jerk; split jerk not yet trained), OHS 50 kg (primary snatch "
     "limiter). Chronic back pain. Night shift worker (Wed–Sun). "
     "Goal: 6-week hypertrophy block then technique/strength."
 )

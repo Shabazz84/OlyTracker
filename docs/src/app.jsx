@@ -168,7 +168,7 @@ ATHLETE PROFILE:
 - 102.5 kg bodyweight, intermediate strength background transitioning to Olympic weightlifting
 - Bests: Back Squat 118 kg, Front Squat 102 kg, Clean 80 kg, Jerk ~65 kg, OHS 50 kg
 - Jerk is far behind clean — priority weak point. OHS stability is the primary snatch ceiling.
-- Chronic back pain (manageable). Push jerk only — NO split jerk.
+- Chronic back pain (manageable). Push/power jerk only so far — split jerk not yet trained, but no longer off-limits.
 - Night shifts Wed–Sun 7pm–7:30am (5.5h sleep Thu/Sat training days).
 - Current block: Block 1 Hypertrophy Foundation — no full competition lifts from floor.
 
@@ -4261,7 +4261,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.4.1 · 2026-07-20
+                PROGRAM v3.5.0 · 2026-07-28
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>

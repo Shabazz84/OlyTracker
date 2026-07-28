@@ -26,7 +26,7 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 | Hang Power Snatch | 62 kg (best logged)                                 |
 | Full Snatch     | 55 kg floor (Nov 2025)                                |
 | Best Clean      | 80 kg                                                 |
-| Best Jerk       | ~65 kg (push/power jerk only — NO split jerk)         |
+| Best Jerk       | ~65 kg (push/power jerk; split jerk not yet trained)  |
 | Clean Pull      | 120 kg × 3                                            |
 | Snatch High Pull | 92 kg × 4                                            |
 | Back Squat      | 118 kg × 1 (May 2026)                                 |
@@ -39,8 +39,7 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 | Training days   | 5 days/week (summer) → 4 days/week (school term Aug+) |
 | Work schedule   | Night shifts Wed–Sun, 7pm→7:30am                      |
 | Limitations     | Chronic back pain (manageable, not acute)             |
-|                 | No scissors/split jerk                                |
-| Weak points     | Jerk (far behind clean), OHS stability                |
+| Weak points     | Jerk (far behind clean), OHS stability, split jerk (untrained) |
 | Strong points   | Clean pull strength, posterior chain, squat           |
 | Influences      | Klokov, Berestov already visible in training log      |
 
@@ -132,7 +131,7 @@ Load the base. Per Torokhtiy: raise average training weight by 4% to add 10 kg t
 - Modified Bulgarian: singles used but introduced gradually — starting too heavy = regression
 - Total stress accounting: life stress + training stress = total load on the bar
 - Upper body (lats, chest) directly improves snatch bar control and C&J fixation
-- Lunge squats for jerk tendon development even without split jerk
+- Lunge squats for jerk tendon development — direct prep for the split jerk transition
 - Program is a guide, not a contract — adjust to daily state
 
 **Application:** Phase 1/2 block structure mirrors his model. Night shift load reductions. Extra jerk volume addresses primary weak point.
@@ -323,7 +322,7 @@ Load the base. Per Torokhtiy: raise average training weight by 4% to add 10 kg t
 | 10 | 8-week cycle ending in testing | Berestov |
 | 11 | 4–6 exercises/session, each with named purpose | Everett, Golovinsky |
 | 12 | Back pain: no spinal load under flexion; upright posture always | All (implicitly) |
-| 13 | No split jerk — push jerk only; build lunge strength for future | Pavlukhin |
+| 13 | Split jerk untrained but no longer off-limits — build lunge strength to support the transition | Pavlukhin |
 | 14 | Night shift = reduced session — technique only at 60–65% | Pavlukhin (total stress) |
 | 15 | OHS stability is the snatch ceiling — prioritize it | Program data (50 kg OHS) |
 | 16 | Mobility is the root of performance — sports-specific protocols daily | Webster |
