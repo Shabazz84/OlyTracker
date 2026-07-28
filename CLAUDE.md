@@ -137,6 +137,8 @@ Load the base. Per Torokhtiy: raise average training weight by 4% to add 10 kg t
 
 **Application:** Phase 1/2 block structure mirrors his model. Night shift load reductions. Extra jerk volume addresses primary weak point.
 
+**Also extracted:** a Telegram group chat (`transcripts/telegram/pavlukhin.txt`, 2,510 messages, `summaries/telegram_pavlukhin/`) — training logs and discussion from multiple students in Pavlukhin's group, distinct from his YouTube channel. Keep the `telegram_` prefix on the summary folder — it's easy to mistake for `pavlukhinweightlifting/` otherwise.
+
 ---
 
 ### 2. Dmitry Berestov / Berestov Team — @athletists | berestovteam.ru | t.me/ATLETISTY
@@ -150,6 +152,8 @@ Load the base. Per Torokhtiy: raise average training weight by 4% to add 10 kg t
 - Build on correct patterns — don't fixate on errors
 
 **Application:** 8-week block = Berestov's 2-month cycle. Lead-up exercises justify hang variations and positional work. "Build on correct patterns" is critical given back pain — compensatory patterns under load become permanent.
+
+**⚠️ Data quality (2026-07-27):** the `@athletists` YouTube channel (61 videos) was extracted via YouTube auto-captions, not Whisper — Claude's summary pass refused to synthesize a channel philosophy from it, flagging most of the source as corrupted/incoherent transcription (same root cause fixed for the Klokov playlist in `docs/superpowers/...`/config.py's `AUDIO_DOWNLOAD_DELAY` work). An earlier local-LLM pass over the same bad data produced a fluent but unverified "Stable Foundation Protocol" — kept at `summaries/athletists/channel_summary.UNRELIABLE_qwen_hallucination.md`, do not use. The principles above come from `berestovteam.ru` (web scrape, now `summaries/web_berestovteamru/`) and the Telegram export (`summaries/telegram_atletisty/`), not the YouTube channel. Re-extract `@athletists` with `--whisper` before trusting anything from it.
 
 ---
 
@@ -276,6 +280,33 @@ Load the base. Per Torokhtiy: raise average training weight by 4% to add 10 kg t
 
 ---
 
+### 9. Max Aita / Sika Strength — @sikastrength
+**Background:** American weightlifting/strength coach, founder of Sika Strength. (No verified competitive credentials on file — unlike the Olympic-medalist coaches above, this entry is scoped from channel content only.)
+
+**Key principles:**
+- Position over loading — perfect reps at 70% beat flawed reps at 90%; load masks positional deficiencies
+- 6–16 week blocks; technical mastery takes years, not sessions
+- Full ROM under load is the primary mobility strategy, not isolated static stretching
+- Pain (>6/10) is a stop signal, not something to train through
+- Fault-driven accessory selection: identify the fault → break down root cause (bar path/position/weakness/balance) → build a *pool* of corrective variations → prioritize by cross-category overlap → progress corrective→specific across a mesocycle
+- "1+1≠2" — don't map one fault to one magic exercise; rotate through a pool of similar variations for varied exposure (skill-acquisition variability)
+
+**Application:** Minimum-exercise-list principle validates the current program's menu (power variations, OHS, front squat, push press). The fault-driven method is the self-coaching engine pairing with Klokov's video-review principle and the in-app AI Video Review tool. Also the primary source (with Telander, #10) behind the tall-lifter squat protocol shipped in v3.2.0 — see Principles #17–18.
+
+---
+
+### 10. Zack Telander — single video (feat. Max Aita)
+**Background:** Strength coach; one video pulled specifically for tall-lifter squat mechanics (`strength_development_for_long_legs_w_max_aita`), not a full channel extraction — no entry in `config.py` CHANNELS.
+
+**Key principles:**
+- Long-limbed lifters have poor squat leverage — load migrates to the (relatively stronger) back at both very-high-rep and very-heavy-single extremes; live in the rep range where technique stays perfect
+- Pause front squat (front rack forces upright torso, pause reinforces knee-over-toe, quad loading)
+- Belt squat / single-leg squat as back-sparing quad builders, specifically because they force light loads that isolate the legs
+
+**Application:** Independent second source alongside Sika Strength prescribing the identical fix for the same limiter — high-confidence consensus behind the shipped tall-lifter squat protocol (v3.2.0, DAILY ANKLE tab). See Principles #17–18.
+
+---
+
 ## Synthesized Programming Principles
 
 | # | Principle | Source(s) |
@@ -296,6 +327,8 @@ Load the base. Per Torokhtiy: raise average training weight by 4% to add 10 kg t
 | 14 | Night shift = reduced session — technique only at 60–65% | Pavlukhin (total stress) |
 | 15 | OHS stability is the snatch ceiling — prioritize it | Program data (50 kg OHS) |
 | 16 | Mobility is the root of performance — sports-specific protocols daily | Webster |
+| 17 | Long-limbed lifters: squat depth is gated by ankle dorsiflexion, not hip mobility — load it heavy and hold it long, daily, for months (Sika needed ~6) | Sika (Max Aita), Telander, Torokhtiy, Klokov |
+| 18 | Long-limbed squatters: load migrates to the back at both very-high-rep and very-heavy-single extremes — live in the rep range where technique stays perfect; build quads with back-sparing accessories (belt squat, single-leg squat) | Sika (Max Aita), Telander |
 
 ---
 

@@ -214,7 +214,9 @@ def summarize_all(force: bool = False, channel_filter: str | None = None,
 
         for f in files:
             if rel.parts and rel.parts[0] == "telegram":
-                source_name = f.stem
+                # Prefixed so e.g. "pavlukhin" (Telegram group chat) can't be
+                # mistaken for "pavlukhinweightlifting" (his YouTube channel).
+                source_name = f"telegram_{f.stem}"
                 out_dir = sroot / sanitize_name(source_name)
             else:
                 source_name = "_".join(rel.parts)
