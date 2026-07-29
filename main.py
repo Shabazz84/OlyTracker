@@ -249,8 +249,8 @@ def main() -> None:
                              "instead of scraping YouTube auto-captions (--channel or --playlist)")
     parser.add_argument("--priority-oly", action="store_true", help="Only Golovinsky OLY channel")
     parser.add_argument("--suffix", default="", help="Tag appended to summary filenames, e.g. 'claude'")
-    parser.add_argument("--synthesize", action="store_true", help="Generate master synthesis (not yet implemented)")
-    parser.add_argument("--cue-index", action="store_true", help="Generate cue index (not yet implemented)")
+    parser.add_argument("--synthesize", action="store_true", help="Generate master synthesis from all channel summaries")
+    parser.add_argument("--cue-index", action="store_true", help="Generate Dozer + Webster technique cue index")
     args = parser.parse_args()
 
     if args.extract_only:
@@ -275,7 +275,8 @@ def main() -> None:
         return
 
     if args.cue_index:
-        logger.info("--cue-index: not yet implemented")
+        from summarizer.cue_indexer import generate_cue_index
+        generate_cue_index(force=args.force)
         return
 
     totals = {"extracted": 0, "skipped": 0, "errors": 0}
