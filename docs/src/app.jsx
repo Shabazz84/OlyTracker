@@ -4075,9 +4075,13 @@ function OlyTracker() {
   }
 
   async function applySupabaseData(remote) {
+    // Supabase is the source of truth once sync is on — every mutation pushes
+    // immediately, so a pull rebuilds each domain from scratch rather than
+    // merging onto stale local state. Merging previously left deleted rows
+    // (e.g. a repeated/cleared week) stuck in localStorage forever, since
+    // nothing ever pruned an ID that no longer existed remotely.
     if (remote.sessions.length > 0) {
-      const existing = JSON.parse(localStorage.getItem('oly_logs') || '{}') || {};
-      const logsObj = { ...existing };
+      const logsObj = {};
       remote.sessions.forEach(s => {
         logsObj[s.id] = {
           week: s.week, dayName: s.day_name, dayLabel: s.day_label,
@@ -4091,6 +4095,9 @@ function OlyTracker() {
       await storage.set('oly_logs', JSON.stringify(logsObj));
     }
     if (remote.sets.length > 0) {
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('sets_w')) localStorage.removeItem(k);
+      });
       const setsMap = {};
       remote.sets.forEach(s => {
         const k = `sets_w${s.week}_${s.day_id}_${s.exercise_id}`;
@@ -4103,8 +4110,7 @@ function OlyTracker() {
       setSyncRevision(r => r + 1);
     }
     if (remote.reviews.length > 0) {
-      const existing = JSON.parse(localStorage.getItem('oly_reviews') || '{}') || {};
-      const revObj = { ...existing };
+      const revObj = {};
       remote.reviews.forEach(r => {
         revObj[r.week] = {
           rating: r.rating, energyTrend: r.energy_trend,
@@ -4261,7 +4267,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.0 · 2026-07-28
+                PROGRAM v3.5.1 · 2026-07-29
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
