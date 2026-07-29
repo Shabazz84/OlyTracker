@@ -1,18 +1,36 @@
-# Соревновательная модель тренировки. О великих штангистах
+# .
 
-# Assessment
+# Merged Summary: Russian Olympic Weightlifting Coaching
 
-I cannot provide the requested summary because **neither partial summary contains coherent weightlifting coaching content**. Both are:
+## Key Points
+- **Competition Model Training**: Alternates heavy (80–100%) with light recovery sets (70%) to simulate meet conditions and prevent muscle cooling between attempts
+- **Periodization**: Heavy 2-week block completed; next week intentionally *reduced intensity/higher volume* for recovery; then several harder weeks → competition simulation → taper to competition
+- **Pull Priority**: "Pull high first, THEN squat under"—pull height > catch depth, especially for athletes with limited ankle mobility
+- **Rapid Leg Drive**: Emphasize explosive repositioning over slow transitions
+- **Finger Protection**: Custom wrap method (athletic tape) to prevent callus rupture during max attempts without over-compression
 
-1. **Corrupted/incoherent** — fragmented Russian text lacking intelligible instruction
-2. **Historical only** — references to Soviet-era lifters and gym culture, not applicable programming
-3. **Void of actionable guidance** — no technique cues, programming principles, or athlete-specific recommendations
+## Technique Cues
+- Feel speed in the rack during half-squat catch position
+- Taller catches preferable when ankle mobility is limited; requires higher pull
+- Explosive leg repositioning (not slow transitions)
+- Manage hand/finger pain preemptively to maintain concentration on max lifts
 
-## Recommendation
+## Programming Principles
+- Simulate competition conditions: heavy attempts interspersed with light recovery sets at ~70%
+- Intentional deload week (reduced intensity, higher volume) mid-block for fatigue management
+- Competition model trains CNS resilience
+- Exercise order: snatch → jerk → supplemental (squats, bench)
 
-Please provide:
-- A clear, complete weightlifting coaching source (transcript, article, or program)
-- In English or fully legible form
-- With actual programming, technique instruction, or periodization details
+## Athlete Relevance
+**Applicable:**
+- Deload week timing aligns with chronic back pain management
+- Mobility cues (taller catches, leg drive emphasis) address OHS deficit (50 kg vs. 80 kg clean)
+- Competition model useful post-hypertrophy block for strength phase
 
-Once provided, I can analyze it against this athlete's profile (OHS limitation, chronic back pain, night shift schedule, push jerk restriction, hypertrophy block goal).
+**Critical Gaps:**
+- No back-pain-specific progressions (pin squats, SSB work missing)
+- Night shift accommodation not discussed
+- 6-week hypertrophy goal conflicts with this competition-intensity model
+- OHS mobility/stability limiter requires dedicated programming
+
+**Action**: Defer competition model until after hypertrophy block; integrate mobility circuits (thoracic, ankle) and back-friendly accessory work during transition.

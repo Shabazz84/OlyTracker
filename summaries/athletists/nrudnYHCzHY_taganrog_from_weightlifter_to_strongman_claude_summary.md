@@ -1,24 +1,13 @@
 # Taganrog. From weightlifter to STRONGMAN
 
-# Summary
+## Summary
 
-## Key Points
-No actionable content available. Source material is casual Russian-language vlog commentary with poor audio quality, fragmented speech, and entertainment focus rather than structured coaching instruction.
+**No applicable content identified.**
 
-## Technique Cues
-None extractable.
+All three partial summaries are from unstructured Russian-language gym conversations/vlogs featuring strongman training (log press, kettlebells) and casual banter. None contain:
+- Olympic weightlifting technique instruction
+- Periodized programming guidance
+- Recovery or load management strategies
+- Sport-specific coaching relevant to snatch/clean/jerk development
 
-## Programming Principles
-None extractable.
-
-## Athlete Relevance
-Not applicable. Source does not address:
-- Back pain management
-- Overhead strength (OHS limiter)
-- Split jerk development
-- Night shift recovery protocols
-- Hypertrophy block programming
-
----
-
-**Recommendation:** Provide coherent coaching transcript or article for analysis.
+**Recommendation:** Source does not support the athlete's 6-week hypertrophy block or subsequent technique/strength phases. Alternative resources needed for intermediate OLY coaching with chronic back pain considerations and night shift accommodation.

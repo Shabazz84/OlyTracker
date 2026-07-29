@@ -1,15 +1,38 @@
-# Что такое тяжелая атлетика
+# athletists
 
-# Summary: Not Applicable
+## Summary
 
-## Assessment
-Both partial summaries are **not weightlifting coaching content**. They are Russian-language video essays covering Olympic weightlifting history, competition rules, and competition vlogs—without structured coaching, technique cues, or programming guidance.
+**No actionable coaching content identified.**
 
-## Recommendation
-No coherent coaching summary can be merged from these sources. To develop a 6-week hypertrophy block followed by technique/strength work for this athlete, you will need:
+All three source segments lack programming, technique detail, or athlete-specific guidance:
 
-- **Technique sources**: Split jerk progression (critical gap), overhead squat mobility/strength work (50 kg OHS is the stated snatch limiter)
-- **Programming sources**: Hypertrophy-phase structure for intermediate lifters; back-friendly accessory work (chronic back pain context)
-- **Night shift accommodation**: Training frequency/recovery adjustments for Wed–Sun schedule
+1. **Historical/facility overview** — context only, no coaching
+2. **Live competition commentary** — motivational remarks and generic cues ("pull higher," "legs strong," "don't grip with hands") without structured application
+3. **Motivational monologue** — personal narrative, no technical or programming content
 
-**Current sources are unsuitable for this purpose.**
+---
+
+## Key Points
+None applicable to this athlete's profile.
+
+## Technique Cues
+Generic observations only:
+- "Pull higher" (snatch/clean finish phase)
+- "Legs strong/powerful" (drive emphasis)
+- "Don't grip with hands" (upper body tension)
+
+These are too vague for an intermediate athlete with specific limiters (OHS weakness, power jerk→split jerk transition, chronic back pain).
+
+## Programming Principles
+None provided.
+
+## Athlete Relevance
+**Not relevant.** Source material does not address:
+- 6-week hypertrophy block structure
+- OHS development protocol
+- Back pain management during training
+- Night shift recovery adaptation
+- Push/power jerk progression to split jerk
+- Individual periodization
+
+**Recommendation:** Discard these sources and consult structured programming designed for intermediate lifters with mobility-limited snatch technique and chronic back considerations.

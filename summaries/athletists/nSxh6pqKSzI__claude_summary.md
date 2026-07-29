@@ -1,25 +1,22 @@
-# Одно упражнение на все тело! Удержи-ка! Тяжелая атлетика
+# ! -!
 
-# Analysis Result
+# Summary Assessment
 
-**Unable to provide merged summary.**
+**Unsuitable for synthesis.** The source material consists of casual gym vlog transcripts and social conversation rather than structured coaching content. 
 
-The provided partial summaries contain **no weightlifting coaching content**. Both sections are explicitly identified as non-coaching material:
-- Section 1: Casual vlog about sightseeing with tangential gym mentions
-- Section 2: Incoherent text with no actionable guidance
+The fragments mention:
+- Jerk dip mechanics (short range, powerful ascent)
+- General warm-up principle (light/relaxed → heavy/intense)
+- Recovery anecdote (salt baths)
 
-## To proceed, provide:
+However, these are **insufficient for meaningful analysis** given your athlete's specific needs:
 
-1. **A coherent weightlifting coaching source** (article, program, video transcript, etc.)
-2. **Relevant to the athlete's profile:**
-   - Hypertrophy block design
-   - OHS/snatch technique development
-   - Back pain management in squats/pulls
-   - Push jerk progression toward split jerk
-   - Night shift training periodization
+| Athlete Need | Source Coverage |
+|---|---|
+| OHS limitation (50 kg) | None |
+| Split jerk development (not yet trained) | Only push jerk referenced |
+| Chronic back pain management | None |
+| Hypertrophy block programming | None |
+| Night shift recovery optimization | None |
 
-**Current material yields no sections to complete:**
-- ✗ Key Points
-- ✗ Technique Cues
-- ✗ Programming Principles
-- ✗ Athlete Relevance
+**Recommendation:** Replace with structured coaching content (e.g., technical analysis video, periodized program design, or recovery protocol for shift workers) to generate actionable athlete-specific guidance.

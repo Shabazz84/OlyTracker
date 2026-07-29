@@ -1,35 +1,28 @@
-# Показатель мастерства в тяжелой атлетике
+# athletists
 
-# Analysis: Russian weightlifting coaching content
-
-**This is a weightlifting technique/coaching video transcript** (Russian language). Content focuses on evaluating technical mastery in Olympic lifting.
-
-## Extracted Content Relevant to Your Athlete Profile:
-
-### 1. **Programming & Technical Development Principles**
-- Whole movements are poor control metrics; break into **phases** to measure progress
-- Technical development must be **managed with clear indicators** (Vorobiev methodology)
-- Use auxiliary exercises to refine individual phases (common in beginner programs per Berestov team)
-
-### 2. **Technique Cues - Clean (Jerk Relevant)**
-- **Pull phase**: Generate necessary bar velocity to catch it in a full squat
-- **Transition timing**: Bar must still be airborne when you initiate your descent
-- **Common error**: Catching in half-squat (easier, but masks poor pull speed and limits load)
-- **Key metric**: Difference between half-squat and full-squat clean weights indicates technical efficiency
-  - Elite: full squat catch is *heavier* (e.g., Berestov: 180 kg half-squat, 190 kg full squat = +10 kg difference)
-  - Beginner: often reverse (more weight in half-squat = poor pull speed)
-
-### 3. **Technical Mastery Indicators**
-- **Pull height reduction** with increased mastery (lighter athletes pull lower)
-- **Pull speed vs. squat depth coordination**—must synchronize, not overshoot bar
-- **Half-squat to full-squat differential** = best indicator of pull effectiveness
-
-### 4. **Relevant to Your Profile**
-- **OHS 50 kg limiter**: Video emphasizes your catch position is the bottleneck, not strength alone
-- **Push jerk only**: You're likely catching heavy loads shallow; full-squat progression would improve efficiency
-- **Back pain**: Deep squat positioning demands mobility work (implied but not detailed)
-- **Chronic back pain + night shifts**: No recovery advice provided in this transcript
+**This is weightlifting content.** (Russian language educational video transcription on Olympic weightlifting technique.)
 
 ---
 
-**Recommendation for you**: Focus on improving clean pull-to-full-squat transition (currently weak link per your OHS deficit). Test half-squat vs. full-squat clean differential to quantify improvement.
+## EXTRACTED ANALYSIS FOR THIS ATHLETE:
+
+### 1. **Programming Principles**
+- None explicitly stated. Content focuses on technique assessment, not periodization.
+
+### 2. **Technique Cues - Clean (Relevant)**
+- **Power position vs. full squat catch trade-off:** Catching in a shallower position (half squat) requires more bar velocity but less hamstring/ankle mobility demand. Full squat catch demands faster descent speed and deeper mobility but allows lower initial bar height.
+- **Key metric:** Compare half-squat clean max vs. full-squat clean max. Larger gap indicates better squat catch technique. This athlete shows **OHS 50 kg (limiter)** — suggests limited ankle/hip mobility and squat depth; half-squat cleans likely easier initially.
+- **Optimal approach:** Descent speed and depth coordination matter more than raw power; mismatched timing = bar drives athlete into platform.
+
+### 3. **Exercise Recommendations**
+- **Power cleans** (half squat variation) as technical entry point before full squat cleans
+- Compare performance metrics between catching depths to diagnose limiting factor
+
+### 4. **Recovery/Mobility Advice**
+- **DIRECTLY RELEVANT:** Ankle/hip mobility required for deep squat catches. OHS limitation (50 kg) suggests this is primary constraint. Mobility work essential before heavy squat-catch progression.
+- Chronic back pain note: Text emphasizes coordinated technique prevents excessive platform loading; poor timing worse than shallow depth.
+
+### 5. **Athlete-Specific Relevance**
+- **Night-shift fatigue** may impair descent speed/control—prioritize fresh CNS work
+- **Split jerk not trained:** Text discusses squat-catch efficiency; later applies to jerk footwork/depth
+- Start with **half-squat cleans** before splitting—establishes bar pathway control with less mobility demand

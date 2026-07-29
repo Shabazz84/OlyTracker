@@ -1,29 +1,36 @@
-# Базовая тренировка по тяжелой атлетике. Berestov team
+# . Berestov team
 
-# Merged Summary: Weightlifting Programming for Intermediate Athlete
+# Merged Weightlifting Summary
 
 ## Key Points
-- **3-session/week structure**: (1) Snatch-focused technical day (fresh CNS), (2) Jerk day, (3) Base day (heavy squats, pulls, classical lifts)
-- **Snatch inclusion non-negotiable**: minimum 2x/week, ideally daily
-- **Intensity distribution**: Snatch ~70–90%, pull variants 70–90%, accessories lighter
-- **Adaptive recovery model**: Adjust load based on daily mobility/pain signals, not rigid percentages; calf tightness is a deload indicator
-- **Monday anchor**: Technical work on fresh CNS; Friday heavy base work fits progressive fatigue structure
+- **3x/week minimum snatch exposure** is non-negotiable for technical maintenance; vary intensity and complexity by day
+- **Intensity is contextual**: Written plan (90%) adapts to daily readiness—drop to 70–80% if discomfort (wrist, elbow, shoulder, back) appears
+- **Snatch progression pathway**: Splits → Snatch from blocks → Full snatch only when technique stabilizes
+- **Fatigue accumulation across week**: Train fresh (complex/technical), moderate (ballistic), high fatigue (base work)
+- **Body signals override program**: Calf spasm, back flare-ups, or night-shift fatigue warrant load reduction and lighter week for reset
 
 ## Technique Cues
-- **Snatch from blocks** (knee height): Emphasizes second pull speed/back angle, reduces leg demand—ideal for intermediate athletes and back-pain management
-- **Snatch pull**: Drive vertical leg extension first, emphasize backarch from traps (no reverse C-curve or momentum-driven head throw)
-- **Foot positioning**: Full foot floor contact during pull; avoid jumping backward
-- **Head position**: Stay neutral; drive power through upper back, not head movement
-- **Jerk emphasis**: Front shoulder stability and anterior deltoid strength critical for push jerk development
+**Snatch from Blocks (above knee):**
+- Full foot pressure into floor = foundation for clean leg drive and back extension
+- Common error: unstable foot placement; correcting this stabilizes entire pull
+- Bar stays close to legs; angles pre-set for efficient leg/back drive
+
+**Snatch Splits (Partial):**
+- Teaches leg/back drive mechanics with lower lumbar demand
+- Ideal when fatigued (prevents form breakdown)
+- Cap at ≤80% intensity; use as technical maintenance tool
+
+**General mechanics:** Leg, back, and trapezius drive simultaneously; bar path close to legs throughout
 
 ## Programming Principles
-- Snatch from blocks prioritized over full snatch for this athlete (reduces spinal load, builds pulling mechanics)
-- Front deltoid/shoulder stability work is primary accessory (addresses OHS limiter)
-- Progressive fatigue: Technical work early week (Monday), heavy base late week (Friday)
-- Recovery flexibility: Adjust intensity within sessions based on athlete's reported stiffness, pain, or fatigue state
+- **Monday** (Snatch-focused): Full snatch, snatch pulls at higher intensity when fresh
+- **Wednesday** (Clean & Jerk day): Moderate fatigue; full clean/jerk work
+- **Friday** (Base day): Heavy squats, pulls, + 1 snatch variant (blocks or splits) at ≤80%
+- **Hypertrophy block structure**: Heavy squat/pull work on strength days; ladder squats (ascending/descending rep schemes) for volume + intensity balance
+- **Recovery strategy**: Detect fatigue early → implement light week → reset refreshed for heavier loading
 
 ## Athlete Relevance
-- **OHS limiter (50 kg)**: Directly addressed via front delt/shoulder stability emphasis
-- **Push jerk only**: Jerk day structure naturally accommodates push jerk variants and pressing work
-- **Chronic back pain**: Snatch-from-blocks approach reduces spinal compression vs. full snatches; monitor squat loads
-- **Night shift (Wed–Sun)**: Monday technical work is optimal; plan around Wed–Sun fatigue by prioritizing quality over volume mid-week and anchoring intensity Friday
+✅ **Chronic back pain + night shift fatigue**: Prioritize readiness-based intensity adaptation; avoid full snatches when sleep-deprived or symptomatic  
+✅ **OHS limiter (50 kg)**: Snatch splits and blocks work (Mon, Fri) directly address shoulder/thoracic stability without lumbar stress  
+✅ **6-week hypertrophy block**: Heavy squats/pulls Mon–Wed, snatch partial work Fri; integrate split snatches to maintain technique while building strength  
+✅ **Back pain management**: Snatch splits < blocks < full snatch in lumbar demand; reserve full snatch for Wed (post-weekend recovery) when fatigue is lowest

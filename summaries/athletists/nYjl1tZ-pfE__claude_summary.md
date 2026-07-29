@@ -1,17 +1,27 @@
-# Рывок с подставки. Уход в ножницы. Тяжелая атлетика
+# .   .
 
-# Unable to Process
+# Summary Assessment
 
-The source material provided does not contain actionable weightlifting coaching content suitable for analysis.
+## Key Points
+**Limited actionable content identified.** The source material consists primarily of Russian-language gym entertainment/vlog content with minimal structured coaching instruction. Only one coherent technical concept extracted:
 
-**Issues:**
-- Both summaries explicitly state the source is degraded, colloquial vlog/livestream transcript, not structured coaching material
-- No coherent technique cues, programming principles, or training guidance extractable
-- Content flagged as tangential gym banter rather than instructional material
+- **Snatch pulls from blocks**: Elevate platform to elongate pulling phase and strengthen back endurance in extended pull position.
 
-**To proceed, provide:**
-1. Clear English transcript (or translation) of coaching material
-2. Structured coaching notes/articles (not raw vlog transcription)
-3. Content with explicit technique instruction, program design, or athlete-specific guidance
+## Technique Cues
+1. **High pull**: Legs drive first; arms remain passive ("ropes"), not actively pulling. Arm tension compromises receiving position mechanics and delays bar entry.
+2. **Snatch receiving position**: Initiate "cover" (receiving posture) at movement start, not mid-pull.
+3. **Front squat**: 6-second eccentric to maintain tension through full range and prevent passive collapse.
 
-I can then produce a targeted summary addressing this athlete's specific needs: chronic back pain management, split jerk development, overhead stability (OHS limiter), and night-shift training logistics.
+## Programming Principles
+- Block-based pulling variations to address specific weak points (back endurance in extended position).
+- Tempo-controlled eccentrics for tension maintenance.
+
+## Athlete Relevance
+**Minimal direct application to your profile.** The source does not address:
+- Chronic back pain management or accommodation
+- Night shift recovery protocols
+- OHS limitation (your stated primary snatch limiter)
+- Split jerk development pathway
+- Hypertrophy block structure (your stated 6-week focus)
+
+**Actionable takeaway**: Snatch pulls from blocks may support pulling strength, but programming should be integrated within a back-pain-aware framework and your specific OHS/jerk development needs. Recommend sport-specific coaching resource review.

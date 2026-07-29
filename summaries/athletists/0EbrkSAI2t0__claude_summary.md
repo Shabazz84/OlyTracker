@@ -1,20 +1,29 @@
-# Тянем, не прихватываем и толкаем ровненько. Тяжелая атлетика
+# ,     .
 
-## Summary
+# Unable to Provide Analysis
 
-**No coherent weightlifting coaching content identified.**
+## Summary of Source Material
 
-All three source summaries are classified as non-coaching material: Russian-language stream transcripts consisting of casual conversation, anecdotes, and commentary without structured programming, technique instruction, or evidence-based coaching principles.
+All four partial summaries indicate the source material consists of **Russian-language podcast/vlog transcripts** containing:
+- Weightlifting competition anecdotes and athlete stories
+- Casual gym banter and personal goals
+- Fragmented jerk technique mentions without structured coaching
+- Off-topic discussions (snowboarding, aesthetics, logistics)
 
----
+## Why Analysis Cannot Be Completed
+
+The source lacks:
+- **Structured programming guidance** (sets, reps, intensity, periodization)
+- **Systematic technique instruction** (cues applicable to OHS deficits, split jerk development, back pain management)
+- **Training principles** coherently explained
+- **Actionable coaching recommendations**
 
 ## Recommendation
 
-To produce a meaningful analysis using your requested framework, provide sources that contain:
+To provide a useful analysis for this intermediate Olympic weightlifter, please share:
+1. **Actual coaching articles/transcripts** with program design details
+2. **Technical instruction** on snatch/clean/jerk or accessory movements
+3. **Periodization framework** for the 6-week hypertrophy block
+4. **Sport-specific guidance** addressing OHS limitations or split jerk progression
 
-- **Programming structure** (volume/intensity/frequency guidance)
-- **Technique cues** (movement-specific instruction)
-- **Exercise selection** (rationale for exercise choice)
-- **Periodization principles** (block/microcycle design)
-
-These sources cannot be merged into actionable guidance for your intermediate athlete transitioning to Olympic weightlifting with chronic back pain and a 6-week hypertrophy → strength block goal.
+**Current source material is unsuitable for coaching analysis.**

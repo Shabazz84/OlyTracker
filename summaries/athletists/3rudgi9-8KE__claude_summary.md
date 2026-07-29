@@ -1,31 +1,28 @@
-# Рывковая с утра, толчковая - вечером. Это сборы, детка
-
-# Summary: Insufficient Source Material
+# ,  - .  ,
 
 ## Key Points
-None reliably extractable. The provided sources are:
-- Primarily social/conversational content from a 2022 Russian training camp
-- Fragmented, poorly transcribed audio with corrupted Russian-language dialogue
-- Lacking coherent coaching instruction
+
+- **Technique-Strength Integration:** Strength and technique must develop equally; high technique with low strength (or vice versa) is ineffective.
+- **Exercise Order:** Complex Olympic movements (snatch/clean) should be performed first while muscles are fresh; heavy accessory work follows to prevent fatigue-induced technical breakdown.
+- **Grip Width Sensitivity:** Minor grip adjustments significantly impact bar path and catch stability; individual optimization is critical.
+- **Weekly Structure:** Light entry session → 2 snatch/jerk sessions at ~80% intensity for technique → strength session + recovery (sauna).
 
 ## Technique Cues
-**Snatch grip width**: Experiment with wider grip positioning for consistency (mentioned in passing; minimal detail).
 
-**Leg extension mechanics**: Poor leg drive/incomplete extension can contribute to chronic back pain; drilling proper finishing patterns may help.
+- **Grip Width:** Test slightly wider and narrower positions to identify optimal bar path and stability for your catch. This directly applies to your OHS limitation (50 kg).
+- **Bar Path Control:** Emphasis on snatch pull technique (leg extension, bar control) as foundational.
+- **Hip/Back Positioning:** Clean positioning requires attention to hip placement and back angle to support your chronic back pain management.
 
 ## Programming Principles
-**Periodized camp structure** (single reference):
-- Light intro session → 2× technique work (80% intensity) → 1× heavy strength session → recovery (sauna) → varied supplemental work (pulls/cleans from blocks)
-- Principle: Avoid heavy supplemental work *before* technical lifts
 
-**Recovery**: Sauna post-training noted for recovery.
+- **Movement Sequencing:** Prioritize technical Olympic movements when CNS fatigue is minimal.
+- **Intensity for Technique Work:** ~80% intensity for snatch/jerk sessions balances load with technical precision.
+- **Recovery Integration:** Built-in rest days and passive recovery (sauna) between heavy sessions support adaptation.
 
 ## Athlete Relevance
-**Limited applicability.** No direct guidance for:
-- 6-week hypertrophy block structure
-- OHS limiter development (athlete's primary weakness at 50 kg)
-- Night-shift training adaptation
-- Chronic back pain management (only generic mention of leg drive correlation)
-- Push jerk → split jerk transition
 
-**Recommendation**: Provide clean, coherent coaching source material for actionable analysis.
+**Limited direct application:** Source is camp documentary footage, not a structured program. However:
+- **OHS weakness (50 kg):** Grip width optimization principle is actionable.
+- **Chronic back pain:** Technique-first approach and hip/back positioning cues apply; mobility work (hamstring/hip stretching, spinal flexion) may support recovery management.
+- **Night shift schedule (Wed–Sun):** Not addressed; camp assumes standard training availability.
+- **Split jerk training:** Not discussed; jerk-specific application unclear.

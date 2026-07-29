@@ -1,12 +1,33 @@
-# Тяжелая атлетика для любого возраста. Команда Дмитрия Берестова
+# .
 
-**Not about weightlifting coaching.**
+## Key Points
+- Amateur lifters benefit from 3x/week training frequency with emphasis on recovery and psychological balance
+- Progressive overload via 1 kg increments is effective for intermediate lifters
+- Training partners at similar strength levels provide competition and motivation
+- Expect delayed-onset muscle soreness and conditioning adaptations after extended layoffs; this normalizes over time
+- Recovery modalities (sleep, sauna) support training adaptation
 
-This is a Russian-language YouTube channel introduction/vlog transcript discussing amateur weightlifting culture, gym atmosphere, and personal fitness journeys. It contains no structured programming, technique cues, or specific coaching guidance relevant to the athlete's profile.
+## Technique Cues
+*None provided in source material.*
 
-**Minimal extractable content:**
-- Recovery: mentions sleep as primary recovery tool, sauna use, light training on fatigue days
-- Philosophy: 3x/week training frequency mentioned as sustainable for amateur lifters balancing work/life
-- General: amateur vs. professional athlete mindset differences
+## Programming Principles
+- **Frequency**: 3x/week training with adequate recovery between sessions
+- **Load progression**: 1 kg increments for sustainable advancement
+- **Partner selection**: Match training partners to current strength level for appropriate competition stimulus
+- **Adaptation timeline**: Allow 4+ weeks for soreness normalization and conditioning adaptation post-layoff
 
-**Not applicable to this athlete's needs** (no periodization structure, technique work, or back pain management addressed).
+## Athlete Relevance
+**Limited direct applicability.** Source is conversational gym culture content, not structured coaching.
+
+**Potentially useful:**
+- 3x/week frequency may suit night shift schedule (Wed–Sun)
+- Partner training could support motivation during 6-week hypertrophy block
+
+**Not addressed:**
+- Hypertrophy block programming
+- Snatch technique or OHS development
+- Chronic back pain management
+- Night shift accommodation strategies
+- Split jerk progression
+
+Recommend sport-specific weightlifting coaching resources for this athlete's goals.

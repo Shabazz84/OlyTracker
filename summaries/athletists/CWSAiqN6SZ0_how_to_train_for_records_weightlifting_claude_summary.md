@@ -4,32 +4,32 @@
 
 ## Key Points
 
-- **Slow pull drill (3 sec to knee, ~75% intensity)** teaches position control and angle awareness before explosive work—particularly useful for intermediate lifters and those with technique deficits.
-- **Consistency over breaks:** Avoid 1+ week training gaps; maintain regular training despite shift work schedule to prevent detraining.
-- **Pre-competition heaviness is normal.** 2–3 days before competition, reduce intensity to ~80% max; use classical movements for psychological confidence.
-- **Grip width affects front rack comfort:** Narrower grip = higher torso/easier load placement; wider grip = lower position/harder lockout. Individual variation requires experimentation.
-- **Technique is individualized.** Avoid one-size-fits-all cues; athletes must develop feel for load and find solutions through experimentation.
+- **Pull exercises** (snatch/clean/jerk pulls) recover faster than lower body work; jerk pulls tolerate 100–110% of jerk max without competition consequence.
+- **Slow-tempo pulling** (3-second pull to knee level) develops angular awareness and body control; applicable for intermediate lifters refining technique.
+- **Back squat** transfers directly to snatch/clean positions and is superior for leg strength development vs. front squat.
+- **Jerk variation flexibility**: Power jerk is valid long-term; split jerk need not be forced if power jerk works better—matches athlete's current approach.
+- **Grip width individualization**: Test via trial-and-error; narrower grip = higher front rack position = easier clean receipt.
+- **Pre-competition intensity**: 80% for amateurs 2 days out; light, positive training beats heavy loads as meet approaches.
+- **Consistency > intermittent training**: Avoid 1+ week breaks to prevent detraining cycles.
 
 ## Technique Cues
 
-- **Pull position:** Keep torso upright longer before hip extension; avoid early back extension. Prioritize speed under bar over foot positioning.
-- **Leg drive timing** matters more than spread pattern.
-- **Back squat (relevant to back pain):** Maintain vertical torso with rigid spine posture; controlled descent, explosive ascent; secure bar on traps with elbow positioning for spinal support.
-- **Effort matching:** Develop feel for load—effort should scale with weight, not remain uniform across all intensities.
+- **Snatch pull**: 3-second controlled tempo to knee, then explosive finish; prevents premature back extension (height loss).
+- **Back squat positioning**: Bar slightly below C7 on traps (not on neck); elbows back, rigid spinal position (neutral lower back, no excessive arch); 1.5–2 steps from rack; shoulder-width stance.
+- **Jerk foot contact**: Debate between full-foot vs. toe-rise; individual variation acceptable.
+- **OHS/snatch limitation**: Poor snatch positioning (early extension) reinforces weak overhead stability; grip adjustment may improve front rack height and OHS strength.
 
 ## Programming Principles
 
-- Maintain training frequency during shift work (Wed–Sun schedule) to avoid detraining gaps.
-- Pre-competition week: classical movements (snatch, clean, jerk, squat, pull variations) provide psychological reassurance; accessory work can mentally reset if preferred.
+- **Conservative loading for back pain**: 50% of max BS example (70, 120, 170, 220 kg × 5 sets) suitable for chronic back issues.
+- **Tempo variation**: Slow descent, powerful ascent on back squat.
+- **Pull volume tolerance**: Pulls recover faster than leg work; can program higher frequency/volume on upper body pulls during hypertrophy block.
+- **Back squat priority**: Preferred over front squat for OHS/snatch strength development due to angle transfer and reduced knee stress.
 
 ## Athlete Relevance
 
-**Directly applicable:**
-- **Slow pull drill** addresses OHS limiter (50 kg) and chronic back pain via position control and spinal stability work.
-- **Consistency principle** critical for Wed–Sun night shift schedule—prioritize frequency over duration.
-- **Back squat spine cues** support back pain management.
-
-**Not applicable:**
-- No split jerk progression (athlete only does push jerk).
-- No hypertrophy block structure for 6-week plan.
-- No back-pain-specific prehab or periodization framework.
+- **Back pain management**: Neutral spine emphasis and conservative loading (50% approach) align with chronic back pain; bar placement below C7 avoids neck irritation.
+- **OHS limiter (50 kg)**: Grip width experimentation and improved snatch positioning (avoiding early extension) directly address overhead stability weakness.
+- **Current jerk profile**: Power jerk continuation is validated; no forced split jerk transition needed.
+- **Night-shift recovery**: Pull-heavy emphasis (faster recovery than squats) may suit limited training windows; consistency principle critical for Wed–Sun schedule.
+- **Hypertrophy block fit**: Slow-tempo pulling and back squat tempo work support muscle gain; lighter pre-block intensity (80%) can precede block entry.

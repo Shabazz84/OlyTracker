@@ -1,20 +1,18 @@
 # Do you do a lot of squats? That's not enough for weightlifting!
 
-## Summary
+# Unable to Merge
 
-**Unable to provide requested analysis.**
+Both source summaries indicate the original materials are **not suitable for analysis**:
 
-Both source materials are inadequate for synthesis:
+1. **First source**: Corrupted Russian livestream transcript with severe transcription errors—content is incomprehensible.
+2. **Second source**: Rambling monologue lacking structured coaching information, technique cues, or programming guidance.
 
-1. **First source:** Heavily corrupted Russian speech-to-text with indecipherable content despite fragmentary weightlifting references
-2. **Second source:** Unstructured stream commentary lacking coherent coaching instruction
+## What's Needed
 
----
+To provide a useful merged summary for this intermediate athlete, please supply:
 
-## To proceed, provide:
+- **Clear, readable coaching transcript or article** (English preferred)
+- **Structured content** covering technique, programming, or accessory work
+- **Relevant to the athlete's context**: back pain management, split jerk progression, OHS development, or hypertrophy-block design
 
-- **Clear coaching text** (article, structured transcript, or training plan)
-- **English language** preferred or legible source material
-- **Content with explicit coaching principles**, technique cues, or programming details
-
-The athlete profile (102.5 kg, chronic back pain, night shift, OHS limiter, push jerk only) requires reliable guidance—corrupted sources cannot safely inform their program.
+**Current sources contain insufficient coherent data to extract applicable coaching principles.**

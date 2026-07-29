@@ -1,35 +1,29 @@
 # Unnecessary exercises and necessary but forgotten ones. Rashid Itsaev
 
-# Summary: Source Evaluation
+# Merged Summary
 
 ## Key Points
-
-Both partial summaries confirm this is **not a suitable structured coaching source** for your needs. The material consists of Russian-language vlog/social media content mixing entertainment, anecdotes, and fragmented exercise discussion rather than systematic programming guidance.
-
-Minimal extractable content:
-- Foot positioning nuances in squats/pulls (heel vs. toe emphasis)
-- Elbow/wrist mechanics in the jerk
-- Advocacy for explosive accessory work (box step-ups) over certain alternatives
-- One anecdotal reference: front squat at session start using max singles (non-traditional placement)
+- **Mobility foundation**: Goose step (forward) and frog step (reverse) are excellent pre-technical warm-up drills for hip/glute activation before jumping or snatching
+- **Pulling mechanics**: Elbow position critical—keep elbows high and bent during catch; straight arm in pull phase only; "show your armpits" cue for external rotation
+- **Jerk positioning**: Lower head under bar to receive split position effectively
+- **Stance adaptation**: Foot width self-corrects based on individual anatomy; avoid prescriptive positioning
+- **Progressive overload philosophy**: Connective tissue strengthens gradually; avoid trendy exercises without clear transfer to competition
 
 ## Technique Cues
-
-- **Jerk mechanics:** Wrist/elbow positioning emphasized but not detailed
-- **Squat/pull:** Heel vs. toe emphasis mentioned without context
+- **Snatch/OHS**: "Arm like a bow"—maintain bent elbow with high position through catch; external rotation engagement
+- **Pulling**: Straight arm during pull, then rapid elbow flexion to collar; avoid collapsed elbows
+- **Jerk**: Active head withdrawal beneath bar in split
+- **Stance**: Step forward into split (not vertical jump); squat depth non-negotiable
+- **Pre-technical warm-up**: Perform goose step and frog step drills to activate hips/glutes before jumping or snatching
 
 ## Programming Principles
-
-- General emphasis on controlled progression and injury prevention (stated but not applied)
-- Single anecdote about front squat early-session placement lacks generalizability
+- Build connective tissue capacity "bit by bit" before heavy loading
+- Warm-up must precede plyometric/technical work
+- Exercise selection must have clear competition transfer; avoid isolation/trendy movements
+- Progressive loading over time
 
 ## Athlete Relevance
-
-**Not applicable.** This source cannot address your specific context:
-- Chronic back pain management
-- Split jerk progression (you currently push jerk only)
-- OHS limitation (50 kg) — primary snatch constraint
-- 6-week hypertrophy block structure
-- Night shift recovery considerations
-- 102.5 kg bodyweight periodization
-
-**Recommendation:** Seek structured programming from dedicated weightlifting coaching resources (e.g., systematic accessory progressions for OHS; back-safe hypertrophy protocols; split jerk regression pathways).
+- **OHS limiter (50 kg)**: Prioritize elbow/shoulder mobility and archer-arm positioning in warm-up (goose step + mobility drills)
+- **Chronic back pain**: Aligns with gradual progressive overload; avoid sudden loading increases
+- **Night shift (Wed–Sun)**: *Not addressed in source*; recovery window management outside scope
+- **Hypertrophy block ahead**: Mobility foundation now supports higher volume tolerance later

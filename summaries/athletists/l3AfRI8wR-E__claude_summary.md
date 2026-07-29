@@ -1,38 +1,32 @@
-# Рывок. Ширина хвата и углы при старте
+# .
 
-**This text is about Olympic weightlifting snatch technique — specifically grip width and starting position angles.**
+# Weightlifting Analysis: Snatch Start Position & Grip Width
+
+**Language:** Russian (Olympic weightlifting educational content)
 
 ---
 
-## EXTRACTED ANALYSIS
+## Key Extracts for This Athlete:
 
-### 1. **Programming Principles**
-- None directly stated. Content is technique-focused, not programming-focused.
-
-### 2. **Technique Cues for Snatch**
-- **Two foundational rules for snatch start:**
-  1. Minimize distance between knees and bar (bar close to shins)
+### 1. **Technique Cues – Snatch Start Position**
+- **Two foundational rules:**
+  1. Minimize distance between shins and barbell (near-contact)
   2. Shoulders positioned directly over the bar
-- **Grip width:** No universal width exists; depends on morphology and shoulder mobility
-  - General recommendation: as wide as possible without excessive external rotation in shoulders
-  - Wider grip = higher bar elevation but requires good wrist/shoulder flexibility
-  - Narrower grip = higher starting position (raised hips) without violating the two rules
-- **Consequence of grip width:** Start angles (knee, hip, ankle flexion) are *determined by grip width*, not independently chosen
-  - Wider grip = more acute start angles (lower position)
-  - Narrower grip = more open angles (higher position)
+- **Grip width determines start angles** — cannot achieve high start without violating these rules unless narrowing grip
+- Individual morphology dictates actual positioning; don't copy elite lifters directly
+- **Shoulder mobility check:** Verify wrist flexibility limits grip width (test: can you externally rotate shoulders maximally with narrow grip?)
 
-### 3. **Exercise Recommendations**
-- Wrist/shoulder mobility test mentioned (checking external rotation capacity)
-- No specific accessory work recommended
+### 2. **Grip Width Principle**
+- Target: **~2x shoulder width** (wide grip = higher pull + lower catch requirement)
+- Limit: Grip width constrained by wrist/shoulder mobility; avoid excessive external rotation (risk of shoulder instability during overhead fixation)
+- Narrower grip = higher start position (less acute angles); wider grip = lower start position (more acute angles)
 
-### 4. **Recovery/Mobility Advice**
-- **Shoulder mobility screening** before determining grip width
-- Avoiding excessive external rotation risk (causes difficult overhead lockout and standing)
+### 3. **Relevant to Athlete Profile**
+- **OHS 50 kg limiter + chronic back pain:** Author emphasizes individualized positioning over mimicking elite athletes — this applies strongly here
+- **Start position individualization:** At 102.5 kg & intermediate level, establish stable shoulder-over-bar positioning first before chasing wide grip
+- **Wrist mobility work:** Critical prerequisite before expanding grip width
 
-### 5. **Relevance to This Athlete**
-- **HIGH PRIORITY:** This athlete has:
-  - Low OHS (50 kg) — likely mobility/stability limiting snatch
-  - Chronic back pain — tight start positions may aggravate this
-  - Push jerk only — suggests upper body mobility constraints
-  
-- **Application:** Determine snatch grip width conservatively, prioritizing shoulder stability/safety over maximum width. Lower grip width → higher start position → less spinal load initially (beneficial for chronic pain). Test wrist/shoulder mobility first.
+---
+
+## Programming/Recovery Notes:
+*None provided in text.*

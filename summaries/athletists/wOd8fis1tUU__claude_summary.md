@@ -1,31 +1,43 @@
-# К большим весам через тяги и приседания. Рашид Ицаев
+# .
 
 # Merged Summary
 
 ## Key Points
-The source material consists of four Russian-language vlog/coaching commentary fragments that lack coherent structure, reliable technical detail, or systematic programming guidance. Extractable weightlifting content is minimal and fragmented:
 
-- **Pulls are mandatory** (not optional accessory work); heavy pulls build confidence under load and desensitize athletes to competition weights
-- Accessory work targets specific weak points; supplemental exercises are necessary alongside classic lifts for hypertrophy and strength development
-- Jerk performance depends on leg drive and explosive push; grip tension at lockout can limit position
-- Snatch pull requires aggressive hip extension and proper bar path adjustment as weight increases
+These sources are primarily conversational vlogs rather than structured coaching content. Actionable weightlifting guidance is scattered and fragmented.
+
+**Relevant extracted principles:**
+- Warm-up: avoid aggressive pre-workout stretching (preserves 15–20% strength); use post-workout stretching for recovery and lactate clearance
+- Supplementary work (pulls, squats, pauses) builds strength for classic lifts before peak intensity
+- Jerk mechanics: shallow dip ("spring") preferred over deep squat for strength-limited athletes; powerful leg + shoulder drive with bar traveling high (above forehead); finish on toes (calf/trapezius activation)
+- Snatch/clean mechanics: higher elbow position in pull correlates to higher bar trajectory; maintain chest position (accordion posture) in squat/clean
+- Hand grip in snatch: acceptable if maintained through pull without relaxation until post-extension
+- Concentration critical for heavy lift safety
+- Taper strategy: elite lifters maintain 95% intensity 3–4 days pre-competition
 
 ## Technique Cues
-- **Jerk**: Emphasize powerful leg drive → explosive upward push → relax grip tension at lockout if hand position is restricted
-- **Snatch pull**: Aggressive hip extension (подрыв) with bar path adjustment (slight backward lean under heavier loads); straight-line pulls insufficient
-- **Snatch grip/hands**: Maintain consistent hand position at setup; relax hands only *after* the pull completes, not during
+
+- **Jerk:** Shallow dip with powerful leg + shoulder drive; bar path high; finish on toes
+- **Power clean:** Pull knees, exit to toes, catch on shoulders; finish on toes
+- **Snatch/pull:** Higher elbow = higher bar trajectory
+- **Squat/clean position:** Keep chest high (accordion posture)
+- **All movements:** Finish on toes (calf/trapezius engagement)
 
 ## Programming Principles
-- Pulls (heavy, near-maximal) are **mandatory** and non-negotiable
-- Accessory work addresses weak points using bands, heavy weights, and isolation movements
-- Supplemental exercises essential for hypertrophy; classics alone insufficient for growth
-- Exposure training (heavy pulls above competition weights) builds psychological tolerance and technical confidence
+
+- Pyramid sets noted (7, 5, 3, 1, back down); paused reps at 70–80%
+- Supplementary pulls and squats precede heavy classic work
+- Targeted weak-point work (pauses, bands, assistance)
+- Confidence building through graduated exposure to heavy loads
+- Recovery via muscle memory retention
 
 ## Athlete Relevance
-**Limited direct applicability due to source quality.** However, critical gaps remain:
-- **OHS weakness (50 kg)**: Pull-heavy programming + OHS accessory work indicated, but no jerk rack position cues provided
-- **Push jerk only / no split jerk**: No split jerk coaching present in sources; this is a critical limitation
-- **Chronic back pain + night shifts**: No volume management, recovery, or pain-specific modifications discussed
-- **Hypertrophy block goal**: No periodization structure, rep ranges, or intensity distribution provided
 
-**Recommendation**: Source material is insufficient for programming. Request structured English-language resources on split jerk mechanics, overhead squat development, and periodized hypertrophy blocks.
+**Limited applicability.** These sources lack:
+- Periodized hypertrophy block structure
+- Back pain management strategy
+- Night-shift recovery accommodation
+- Programming for OHS limitation (primary snatch blocker at 50 kg)
+- Progression detail for power jerk development (athlete has not trained split jerk)
+
+**Potentially useful:** Shallow jerk dip cue aligns with athlete's current strength profile (weak legs relative to upper body). Supplementary pull/squat emphasis may support 6-week hypertrophy block planning. However, **no structured coaching plan is present in these sources.**

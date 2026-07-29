@@ -1,23 +1,26 @@
-# Рывок. Штанга ближе к голени
+# .
 
-**Language Note:** Text is in Russian about snatch starting position mechanics.
+# Analysis: Snatch Start Position (Russian Coaching Content)
 
----
+## Relevant to Athlete's Profile
 
-## Relevant Extracts for This Athlete:
+**Technique Cues - Snatch Start:**
+1. **Foot placement**: Shoulder-hip width (not shoulder width); feet position determines starting angles
+2. **Grip width influence**: Wider grip = lower start, sharper angles; narrower grip = higher hips, easier start. **General rule: prioritize wider grip** (benefits outweigh drawbacks)
+3. **Two universal rules for correct start:**
+   - Minimize distance between shin and bar (mechanical advantage via reduced moment arm)
+   - Shoulders positioned **directly over the bar**
 
-**1. Technique Cues (Snatch Start Position)**
-- **Bar-to-shin distance:** Keep bar as close to shins as possible to minimize moment arm and reduce effective load on lower back
-  - Example: Moving bar 5cm away from shins increases perceived load from 70kg → 105kg equivalent
-  - Physics principle: reducing horizontal distance between lifter's center of mass and bar's center of mass = easier pull
-- **Foot placement:** Shoulder-width stance with turned-out toes (referenced from prior episodes)
-- **Shoulder position:** Shoulders must be directly above the bar in start position (to be covered in follow-up)
-- **Grip width:** Wider grip = lower start position = sharper knee angles; narrower grip = higher start, easier initiation. **General rule: aim for wider grip** (benefits outweigh drawbacks)
+**Mechanical Principle (Leverage):**
+- Barbell 5cm away from shin = feels ~50% heavier (70kg feels like 105kg)
+- Moving bar closer reduces the force moment arm, making pull mechanically easier
+- Relevant: Athlete has weak OHS (50kg) and is transitioning to Olympic lifting—efficient bar positioning is critical
 
-**2. Directly Relevant to This Athlete:**
-- **Chronic back pain concern:** The detailed explanation of moment arm mechanics is **critical**. Keeping bar tight to shins significantly reduces lumbar load—highly applicable given stated back issues.
-- Not applicable: Night shift, hypertrophy block, split jerk, OHS limitations not addressed.
+## Not Directly Applicable
 
----
+- No specific programming (sets/reps/intensity)
+- No recovery/mobility advice
+- No mention of hypertrophy or periodization
+- No guidance on chronic back pain management
 
-**Bottom line:** Focus on bar proximity to shins to spare your back; wider grip is preferred for snatch mechanics.
+**Takeaway for athlete:** Master close-to-shin positioning and wider snatch grip now to build mechanical efficiency before heavier loading in strength phase.

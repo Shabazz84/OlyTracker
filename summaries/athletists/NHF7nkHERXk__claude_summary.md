@@ -1,5 +1,13 @@
-# Зарубы-зарубы-зарубы!!! Это Таганрог
+# --!!!
 
-**Not weightlifting coaching content.**
+## Summary
 
-This is a Russian-language vlog/narrative transcript mixing personal military service anecdotes, gym atmosphere footage, technique demonstrations, and a stair-climbing challenge. While it contains scattered lifting moments and technique discussion, it lacks structured coaching principles relevant to the athlete's profile.
+**Not applicable for merging.**
+
+Both partial summaries explicitly state that the source material contains no structured weightlifting coaching, programming principles, technique instruction, or training guidance relevant to this athlete's profile.
+
+The source consists of:
+1. Unstructured gym entertainment content (vlog format)
+2. General motivational cues without systematic application
+
+**Recommendation:** These sources do not meet the criteria for analysis. Proceed with alternative coaching materials that include specific programming, technical cues, or exercise prescription.

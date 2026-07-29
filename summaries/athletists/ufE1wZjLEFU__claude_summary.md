@@ -1,20 +1,24 @@
-# Правильный рывок и не болит лобок! Тяжелая атлетика
+# !
 
-## Summary
+## Key Points
+- **Intensity for adaptation**: Working at 80–90% intensity creates organizational stress necessary for progression; heavy loading required (not just technical refinement).
+- **Pull mechanics**: Concentrate force through a single power transfer (legs + back + traps simultaneously) rather than sequentially or "smeared" across the lift. Simultaneous leg and back extension maximizes power.
+- **Split/footwork progression**: Train splits progressively (elevated platform → full-foot drops); distinguish explosive split mechanics from slower jerk drives.
+- **Contact bruising is normal**: Pubic bone contact with bar during pulls normalizes with proper back angle and hip drive refinement.
 
-**Unable to provide analysis.**
+## Technique Cues
+- **Snatch/Clean pull**: Legs and back extend **simultaneously**—sequential extension (back then legs) reduces power output.
+- **Concentrated power transfer**: Single-point force concentration (legs + back + traps) creates height; avoid dispersed/smeared pulling.
+- **Split footwork**: Progress from elevated platforms to full-foot splits; emphasize explosive drop, not slow descent.
+- **Back angle & hip drive**: Correct positioning reduces early bar contact issues without compensation.
 
-The source material consists of two assessment statements confirming that the provided transcripts are:
+## Programming Principles
+- Heavy loading (80–90% intensity) drives adaptation; "smooth" technique work alone insufficient for progression.
+- Accessory work (banded/pin pulls from high position) supports pull mechanics.
 
-1. **Corrupted Russian casual conversation** — poor audio quality, heavy slang, fragmented dialogue with insufficient coherence to extract coaching principles
-2. **Unrelated rambling content** — touches on hormones, personal anecdotes, and tangential topics rather than structured weightlifting coaching
-
-**Neither document contains:**
-- Technique cues
-- Programming structure
-- Actionable coaching guidance
-- Content relevant to the athlete's profile (intermediate OLy lifter, chronic back pain, 6-week hypertrophy block, split jerk deficit)
-
----
-
-**Required:** Provide a clear, structured coaching transcript or training document (preferably in English) to enable analysis aligned with the athlete's context.
+## Athlete Relevance
+**High priority before hypertrophy block:**
+- **OHS limitation + back pain**: Introduce **split jerk training** before heavy loading; simultaneous leg-back extension cue directly applicable to clean technique.
+- **Pull mechanics refinement**: Concentrate leg-back power transfer to improve clean efficiency (current 80 kg suggests pulling power gap).
+- **Back pain consideration**: Proper back angle and hip drive positioning critical—address before 80–90% intensity work.
+- **Night-shift fatigue**: Recovery quality may limit adaptation; monitor intensity progression.

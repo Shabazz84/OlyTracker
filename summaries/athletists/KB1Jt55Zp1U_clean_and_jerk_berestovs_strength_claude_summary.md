@@ -1,43 +1,28 @@
 # Clean and jerk. Berestov's strength.
 
-# Merged Summary
-
 ## Key Points
-The provided sources are **not structured coaching content** for this athlete. Material consists of:
-- General Olympic weightlifting competition simulation concepts (90%→70%→95%→70%→100% structure)
-- Generic jerk technique discussion (hip/knee drive, foot positioning, avoiding toe rise)
-- Equipment/bar positioning commentary
-- Coaching philosophy anecdotes without periodization framework
-
-**Critical gaps:**
-- No snatch-specific work (athlete's primary limiter: 50 kg OHS vs. 80 kg clean = 30 kg deficit)
-- No back pain accommodation strategies
-- No night shift recovery protocols
-- No hypertrophy block design
-- No split jerk progression (athlete currently push jerk only)
-
----
+- Bulgarian-style high-frequency training (snatch/jerk daily to maximal effort) is effective but demands significant recovery capacity; adult athletes face greater fatigue risk than youth
+- Jerk loading progression example: base at ~70% (~130kg), ascending 10kg jumps (140, 150, 160, 180, 190kg), then return to base load between heavy attempts
+- General strength development (back squat, pulls) transfers effectively to Olympic lift performance
+- Weakest link in the kinetic chain should be identified and addressed via mobility work (stretch immobile joints) rather than isolation strengthening alone
 
 ## Technique Cues
-*(Minimal applicable content)*
-- **Jerk:** Hip and knee drive initiation; avoid rising onto toes during dip
-- **Equipment note:** Bar rotation/rack position affected by equipment variation and individual anthropometry
+**Clean/Jerk rack position:**
+- Spine rigid/neutral, elbaction is high
+- Bar rests on shoulders + chest (not forward)
+- Squat descent: controlled, upright torso maintenance
+- Jerk dip-drive: vertical, explosive leg drive
 
----
+**General principle:** Individual anthropometric variation is normal; technique adjustments compensate for structural differences (e.g., pull style may shift based on leverage/weak links)
 
 ## Programming Principles
-*(Not addressed)*
-- No periodization structure provided
-- No hypertrophy-to-strength block framework
-- No intensity/volume recommendations
-
----
+- Free weights prioritized over machines
+- Mandatory core/back work: planks, back extensions, ab exercises combined with heavy compound lifting (not isolation-only)
+- Shoulder mobility work addresses weak links in kinetic chain
+- Load progression balanced with recovery capacity (age and training history dependent)
 
 ## Athlete Relevance
-**Low.** This athlete requires:
-1. **Snatch mobility work** (OHS limiting factor; chronic back pain requires back-friendly loading)
-2. **Split jerk introduction** (not covered)
-3. **Shift-work recovery template** (Wed–Sun nights: sleep, nutrition timing)
-4. **Back-safe hypertrophy accessory selection** (6-week block requires careful exercise choice)
-
-**Recommendation:** Seek structured programming addressing snatch technique, split jerk mechanics, and load management for chronic back pain + irregular sleep schedule.
+- **Chronic back pain:** Rigid spine positioning + core bracing + mobility work directly applicable; avoid forward bar position in rack
+- **OHS limitation (50kg):** Shoulder mobility is the clear bottleneck—prioritize shoulder mobility (stretching) before adding strength
+- **Night shift (Wed–Sun):** High-frequency daily maximal training incompatible without sleep optimization; consider lower frequency for your schedule
+- **Back squat/Clean/Jerk gap:** General strength work (squat, pulls) will support lift performance; continue strength foundation before exclusive technique focus

@@ -248,11 +248,16 @@ def generate_master_synthesis(force: bool = False) -> Path | None:
         logger.info("master_synthesis.md exists — use --force to regenerate")
         return out_path
 
-    # Collect best available roll-up per channel dir.
+    # Collect best available roll-up per channel dir (some sources only ever
+    # got a claude-suffixed roll-up, e.g. athletists/Klokov after Whisper
+    # re-extraction — rglob("channel_summary.md") alone would miss those).
+    dirs = {p.parent for p in sroot.glob("*/channel_summary.md")}
+    dirs |= {p.parent for p in sroot.glob("*/channel_claude_summary.md")}
     rollups = []
-    for p in sorted(sroot.rglob("channel_summary.md")):
-        claude_p = p.parent / "channel_claude_summary.md"
-        rollups.append(claude_p if claude_p.exists() else p)
+    for d in sorted(dirs):
+        claude_p = d / "channel_claude_summary.md"
+        plain_p = d / "channel_summary.md"
+        rollups.append(claude_p if claude_p.exists() else plain_p)
 
     if not rollups:
         logger.warning("No channel summaries found — run --summarize-only first")
