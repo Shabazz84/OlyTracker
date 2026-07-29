@@ -1,0 +1,3 @@
+# Going Enhanced...
+
+The provided text is not about weightlifting coaching principles, technique, or programming for an intermediate athlete; it is a personal announcement by a social media influencer regarding their decision to begin using performance-enhancing drugs (PEDs) and hormones while documenting the process online. It contains no actionable advice on sets, reps, cues, mobility, or recovery strategies relevant to your specific profile.

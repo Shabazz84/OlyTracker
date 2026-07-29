@@ -1,0 +1,5 @@
+# INSANE TRAINING. 200kg Clean and Jerk & more.
+
+The text provided is a transcript from a YouTube video featuring an advanced weightlifter discussing their personal training logs, mindset, and specific lifts. It does **not** contain general coaching principles, structured programming advice for intermediate athletes, or specific recovery protocols suitable for the profile described (chronic back pain, night shift work).
+
+Therefore, no relevant data can be extracted to answer your specific questions regarding programming principles, technique cues, exercise recommendations, or recovery advice tailored to an intermediate athlete with chronic back pain and a night shift schedule. The content focuses on an elite-level athlete's "Elite Program" cycle, which involves high-volume Olympic lifting, specific peak-week deloading strategies, and advanced techniques (e.g., behind-the-neck jerks, block snatches) that may be inappropriate or unsafe for the target profile without significant modification.

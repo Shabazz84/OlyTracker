@@ -1,0 +1,3 @@
+# https://last-man.org/instrukciya-7-samoraschityvayushhijsya-cikl-pod-atleta-troeborca-urovnem-ms-msmk/
+
+The provided text is a corrupted web page containing PHP code injection attempts and an article about powerlifting cycles for elite athletes (MS-MSMK), not Olympic weightlifting. It explicitly states the cycle is **not suitable** for athletes with chronic back pain or those transitioning to new disciplines, and it focuses on traditional powerlifting (squat, bench, deadlift) rather than Olympic lifts (snatch, clean & jerk). Therefore, no relevant data can be extracted for your specific profile.

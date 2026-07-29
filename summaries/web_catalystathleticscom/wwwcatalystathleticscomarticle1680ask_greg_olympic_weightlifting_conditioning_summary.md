@@ -1,0 +1,3 @@
+# https://www.catalystathletics.com/article/1680/Ask-Greg-Olympic-Weightlifting-Conditioning/
+
+**Note:** This text is a general discussion on programming for CrossFit Games competitors versus pure Olympic weightlifters; it does **not** contain specific technical cues, exercise prescriptions, or recovery protocols tailored to the athlete's profile (intermediate lifter, chronic back pain, night shift). The advice provided is theoretical regarding strength vs. conditioning trade-offs and would require significant adaptation to be useful for this specific user without further context from a dedicated weightlifting program design article.

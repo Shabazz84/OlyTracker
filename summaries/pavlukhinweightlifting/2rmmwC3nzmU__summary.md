@@ -1,0 +1,3 @@
+# Качалка для тяжелой атлетики необходима #павлухин #тяжелаяатлетика
+
+The provided text is a transcript of a casual coaching session and promotional announcement for an Olympic weightlifting group in Russia; it contains **no specific programming principles, technique cues, exercise recommendations, or recovery advice** relevant to the athlete's profile (hypertrophy block, chronic back pain, night shift work). The content focuses on general encouragement ("hold balance," "keep closer"), a mention of recent heavy leg training ("squats"), and an announcement for a new group starting September 29th.

@@ -12,3 +12,9 @@ build/
 .env
 docs/key.js
 node_modules/
+*.log
+data/cookies.txt
+.compare_autocaptions/
+bakeoff_compare.txt
+bakeoff_results.json
+.superpowers/

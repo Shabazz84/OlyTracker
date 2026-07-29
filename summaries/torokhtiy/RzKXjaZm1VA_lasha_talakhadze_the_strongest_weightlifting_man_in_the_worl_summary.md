@@ -1,0 +1,3 @@
+# Lasha TALAKHADZE / The STRONGEST weightlifting man in the world & his coach / How to reach 500 kg
+
+This text is a biographical interview with Georgian weightlifting coach Gia Saginadze and his athlete Lasha Talakhadze; it contains **no specific programming principles, technique cues, exercise recommendations, or recovery advice** relevant to an intermediate athlete transitioning to Olympic lifting. The content focuses on general philosophy (discipline, trust in coaches), historical anecdotes about the Georgian team, and motivational quotes rather than actionable coaching data for a beginner/intermediate lifter with chronic back pain or night shift constraints.

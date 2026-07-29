@@ -1,0 +1,3 @@
+# https://www.catalystathletics.com/article/1748/10-Things-New-WOMEN-Weightlifters-Should-Know/
+
+**The text is a general lifestyle and motivational article for new female weightlifters, not a technical coaching guide.** It contains no specific programming principles, technique cues, exercise recommendations, or recovery advice relevant to an intermediate male athlete with chronic back pain and night shift work. The content focuses on gender stereotypes (e.g., "pee when squatting," "skinny jeans"), emotional coping mechanisms, and social dynamics rather than biomechanics, periodization, or injury management for the specified profile.

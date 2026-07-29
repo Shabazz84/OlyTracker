@@ -1,0 +1,3 @@
+# BIG FRIDAY + HUGE FRONT SQUAT
+
+The provided text is a vlog transcript focusing on personal performance updates, product promotions (apparel/supplements), and general encouragement rather than structured coaching advice. It contains **no specific programming principles, technique cues, exercise recommendations, or recovery/mobility advice** suitable for an intermediate athlete with chronic back pain and night shift constraints. The only relevant data points are the athlete's reported lifts (Clean ~80kg/176lbs, Jerk 45kg/99lbs, Front Squat 220lbs) and a mention of "max out Friday" programming, which is insufficient for your specific profile without further context.

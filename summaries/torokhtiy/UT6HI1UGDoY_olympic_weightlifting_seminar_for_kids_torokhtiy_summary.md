@@ -1,0 +1,3 @@
+# Olympic Weightlifting Seminar for Kids / TOROKHTIY
+
+This text is not about weightlifting coaching, programming, or technique; it is a transcript of a video tour of a large Ukrainian school (specifically the "Shkola" in Kharkiv) and its sports facilities. The content focuses on the school's size, history, computer classes featuring Counter-Strike, a fitness hall where some strength training occurs incidentally, and a general overview of the stadium and locker rooms. It contains no specific programming principles, technique cues, exercise recommendations, or recovery advice relevant to an intermediate weightlifter with chronic back pain.

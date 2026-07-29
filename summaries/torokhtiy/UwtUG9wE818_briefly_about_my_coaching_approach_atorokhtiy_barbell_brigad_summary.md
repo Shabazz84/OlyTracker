@@ -1,0 +1,3 @@
+# Briefly about my coaching approach / A.TOROKHTIY & Barbell Brigade
+
+The provided text is a vlog transcript featuring an athlete discussing a training session with Olympic champion Sergey; it contains **no specific programming principles, exercise recommendations, or structured recovery advice**. It only offers two general technique observations: 1) Avoid pushing knees too far forward/spraying them out during the jerk descent, and 2) Larger athletes may benefit from a wider foot stance in the jerk to maintain an upright torso. The text does not address the athlete's chronic back pain, night shift schedule, or specific hypertrophy goals.

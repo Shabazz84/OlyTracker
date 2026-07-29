@@ -1,0 +1,3 @@
+# https://www.catalystathletics.com/article/1716/Ask-Greg-The-Effects-of-Leg-Length-Gut-Size-on-the-Olympic-/
+
+The provided text is a technical article discussing anthropometric adaptations (leg length, gut size) in Olympic weightlifting starting positions and pull mechanics; it does **not** contain specific programming principles, exercise recommendations for hypertrophy, recovery protocols for night shift workers, or advice tailored to an intermediate athlete with chronic back pain. Therefore, no relevant data points can be extracted from this text alone to address the user's specific profile goals.

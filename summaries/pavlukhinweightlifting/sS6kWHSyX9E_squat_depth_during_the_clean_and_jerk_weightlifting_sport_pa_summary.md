@@ -1,0 +1,3 @@
+# Squat depth during the clean and jerk #weightlifting #sport #pavlukhin
+
+The provided text is a transcript of a coach correcting an athlete's squat depth and timing during a lift (likely a snatch or clean pull), emphasizing the "physics" of shorter movement paths and utilizing the stretch-shortening cycle ("tendon energy"). However, **it does not contain specific programming principles, exercise recommendations, recovery advice, or mobility protocols** relevant to the 6-week hypertrophy block, night shift schedule, or chronic back pain mentioned in your athlete profile. The text is purely a technical correction snippet regarding squat depth and speed, lacking the broader context required to answer points 1–5 for this specific case study.

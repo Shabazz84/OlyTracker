@@ -1,0 +1,3 @@
+# Training PROGRAM [ENG SUB] Тренировочная программа / A.TOROKHTIY (weightlifting)
+
+The provided text is a general introduction to a weightlifting programming methodology and does not contain specific advice tailored to the athlete's profile (intermediate lifter with back pain, night shift work, or specific lift goals). It discusses general principles of percentage-based training, frequency variations (3 vs. 6 days/week), and the importance of understanding program logic, but offers no concrete exercise recommendations, technique cues, recovery protocols, or periodization details for this specific user.

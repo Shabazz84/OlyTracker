@@ -1,0 +1,4 @@
+# last_manorgtagruki
+
+*Tag index page — skipped (not substantive content)*
+

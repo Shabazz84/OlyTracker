@@ -1,0 +1,7 @@
+# https://www.catalystathletics.com/article/2174/Ask-Greg-Strengthening-the-Lower-Back/
+
+1. **Programming Principles**: Focus on low-fatigue accessory work (back extensions) integrated into warm-ups; prioritize position maintenance over speed in deadlift variations; use 3-second pauses at specific floor heights to build tension and stamina for extension.
+2. **Technique Cues**: Avoid rushing the bar off the floor; ensure a solid arch is set before initiating movement; prevent shoulders from tipping too far forward of the bar during the first pull to reduce excessive force on the back.
+3. **Exercise Recommendations**: Floating snatch deadlifts (primary); Snatch segment deadlifts/pulls with 3-second pauses at 1 inch and knee height; Weighted back extensions holding weight behind the neck; Unweighted static holds in extension; Weighted planks for trunk stability.
+4. **Recovery/Mobility Advice**: Perform daily warm-up sets of unweighted back extensions (3x10) alternating with static holds (10–30 seconds); avoid serious fatigue during these accessory movements; hold the extended position for one second on weighted reps to emphasize full spinal extension.
+5. **Profile Relevance**: The text specifically addresses chronic back pain by diagnosing potential technical flaws in the snatch (rushing, poor first pull) that may be causing more strain than the clean despite lighter loads; it prescribes "floating" and paused deadlifts to correct these specific mechanical failures without inducing significant systemic fatigue.

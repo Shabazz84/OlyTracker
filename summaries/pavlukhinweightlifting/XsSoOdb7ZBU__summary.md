@@ -1,0 +1,3 @@
+# Держи мозг разогретым #павлухин #харьковский #тяжелаяатлетика ￼
+
+The provided text is a Russian transcript discussing the concept of an "attack" (a specific warm-up strategy for competitions) attributed to Ivan Abadjiev, followed by promotional material for webinars. It contains **no information** regarding programming principles, technique cues, exercise recommendations, recovery advice, or specific guidance for the athlete's profile (intermediate lifter, back pain, night shift). The text is not a coaching guide but rather an explanation of a competition mindset concept and an advertisement.
