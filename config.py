@@ -76,7 +76,9 @@ LLM_MAX_TOKENS = 1400
 # ── Claude API (Anthropic) — faster alternative to local LLM ─────────────────
 USE_CLAUDE_API = True
 CLAUDE_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-CLAUDE_MODEL = "claude-haiku-4-5"  # ~$1.50 total for 396 videos; swap to claude-sonnet-4-6 for higher quality
+CLAUDE_MODEL = "claude-haiku-4-5"  # ~$1.50 total for 396 videos — per-video/channel summaries
+CLAUDE_SYNTHESIS_MODEL = "claude-sonnet-5"  # master_synthesis.md is the single highest-leverage
+# output of the whole pipeline (21 sources → one document) — worth the extra cost over Haiku.
 
 SUMMARIZE_ON_EXTRACT = True
 

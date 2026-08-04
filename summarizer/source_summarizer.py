@@ -269,7 +269,18 @@ def generate_master_synthesis(force: bool = False) -> Path | None:
         tag = " [claude]" if "claude" in p.name else ""
         blocks.append(f"### Source: {name}{tag}\n\n{p.read_text(encoding='utf-8')}")
     combined = "\n\n".join(blocks)
-    combined = _chunk(combined, config.SUMMARY_CHUNK_TOKENS * 4)[0]
+
+    # Sonnet's context window comfortably fits every roll-up we have today (tens of
+    # thousands of tokens) — only guard against a pathological future blow-up rather
+    # than silently dropping sources the way a small fixed cap did before.
+    combined_tokens = _ntokens(combined)
+    synthesis_cap = config.SUMMARY_CHUNK_TOKENS * 20
+    if combined_tokens > synthesis_cap:
+        logger.warning(
+            f"combined source summaries ({combined_tokens} tokens) exceed the "
+            f"{synthesis_cap}-token synthesis cap — truncating; some sources will be dropped"
+        )
+        combined = _chunk(combined, synthesis_cap)[0]
 
     try:
         text = chat(
@@ -277,6 +288,7 @@ def generate_master_synthesis(force: bool = False) -> Path | None:
                 athlete_context=prompts.ATHLETE_CONTEXT, summaries=combined
             ),
             max_tokens=8000,
+            model=config.CLAUDE_SYNTHESIS_MODEL,
         )
     except LLMError as e:
         logger.error(f"master synthesis failed: {e}")

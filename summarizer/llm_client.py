@@ -33,17 +33,20 @@ def _get_claude_client():
     return _claude_client
 
 
-def _claude_chat(prompt: str, system: str | None, max_tokens: int | None) -> str:
+def _claude_chat(prompt: str, system: str | None, max_tokens: int | None, model: str | None) -> str:
     client = _get_claude_client()
     system_msg = system or "You are a concise weightlifting analyst."
     try:
         msg = client.messages.create(
-            model=config.CLAUDE_MODEL,
+            model=model or config.CLAUDE_MODEL,
             max_tokens=max_tokens or config.LLM_MAX_TOKENS,
             system=system_msg,
             messages=[{"role": "user", "content": prompt}],
         )
-        return msg.content[0].text
+        text_blocks = [b.text for b in msg.content if getattr(b, "type", None) == "text"]
+        if not text_blocks:
+            raise LLMError(f"no text block in Claude response (blocks: {[getattr(b, 'type', '?') for b in msg.content]})")
+        return "".join(text_blocks)
     except Exception as e:
         raise LLMError(f"Claude API request failed: {e}") from e
 
@@ -76,8 +79,13 @@ def _lm_studio_chat(prompt: str, system: str | None, max_tokens: int | None) -> 
     return _strip_thinking(content)
 
 
-def chat(prompt: str, system: str | None = None, max_tokens: int | None = None) -> str:
+def chat(prompt: str, system: str | None = None, max_tokens: int | None = None,
+         model: str | None = None) -> str:
     """Send a prompt to the configured LLM backend (Claude API or LM Studio).
+
+    Args:
+        model: Claude model override (Claude API backend only). Ignored for LM Studio,
+            which always uses config.LLM_MODEL.
 
     Returns:
         The assistant's reply text.
@@ -86,5 +94,5 @@ def chat(prompt: str, system: str | None = None, max_tokens: int | None = None) 
         LLMError: On network failure, auth error, or malformed response.
     """
     if getattr(config, "USE_CLAUDE_API", False):
-        return _claude_chat(prompt, system, max_tokens)
+        return _claude_chat(prompt, system, max_tokens, model)
     return _lm_studio_chat(prompt, system, max_tokens)
