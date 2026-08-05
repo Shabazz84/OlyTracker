@@ -5,7 +5,7 @@ status: active
 phase: Mature training tracker app v3.5.7 (React + Supabase); master-synthesis program gaps closed, knowledge base and program now in sync
 progress: 90
 blocked_on: none
-next_step: Continue program/tracker refinements; keep version bumps + rebuilds. Optional follow-up: broader pass through master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression targets) beyond the two gaps already closed
+next_step: "Continue program/tracker refinements; keep version bumps + rebuilds. Optional follow-up: broader pass through master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression targets) beyond the two gaps already closed"
 updated: 2026-08-05
 tags: [react, esbuild, supabase, weightlifting, training, claude-api, whisper]
 stack:
