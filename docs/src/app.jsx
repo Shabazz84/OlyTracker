@@ -3296,8 +3296,7 @@ function SystemTab({week}) {
             {[
               "Reverse Hyperextension × 3×15 (or back extension as substitute)",
               "Dead Bug × 3×10 per side",
-              "McGill Big Three: curl-up · side plank · bird dog — 10 min total",
-              "Daily morning: Bird Dog × 10 per side as activation",
+              "Core bracing (McGill Big Three + Bird Dog): see DAILY CORE in the Mobility tab — do it daily, not just on back-focused days",
             ].map((r,i) => (
               <div key={i} style={{fontSize:11,color:"var(--text2)",marginBottom:8,paddingLeft:8,
                 borderLeft:"2px solid var(--green)44",lineHeight:1.4}}>{r}</div>
@@ -4285,7 +4284,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.6 · 2026-08-04
+                PROGRAM v3.5.7 · 2026-08-05
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
