@@ -260,6 +260,7 @@ const DAYS_SUMMER = [
       {id:"front_squat",           sets:4,     reps:"6",      l1:"82–86 kg",   l2:"87–90 kg"  },
       {id:"rdl",                   sets:4,     reps:"6",      l1:"75–85 kg",   l2:"80–90 kg"  },
       {id:"overhead_squat",        sets:4,     reps:"4",      l1:"40–48 kg",   l2:"46–54 kg"  },
+      {id:"pallof_press",          sets:3,     reps:"10",     l1:"Light",      l2:"Light-Med" },
     ]
   },
   {
@@ -305,7 +306,7 @@ const PROGRAM_B1 = [
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"HPC 5×3 / Clean Pull 4×4",load:"58 kg / 85 kg",
      secondary:"Inc Press 4×8·58, Dips 4×8·BW+20, Trapi 4×8·55, Wide OHP 4×6·35, Dead Bug 3×10, OHS 2×3·40",notes:"MS opener 2×3·42"},
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"Pause FS 4×6 (≤80% TM)",load:"82 kg",
-     secondary:"SB 3×3·35, RDL 4×6·75, OHS 4×4·40, Plank 3×50s",notes:"MS opener 2×3·42. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
+     secondary:"SB 3×3·35, RDL 4×6·75, OHS 4×4·40, Plank 3×50s, Pallof 3×10",notes:"MS opener 2×3·42. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"52 kg / 50 kg",
      secondary:"C&J 4×(1+2)·55, Split Jerk 4×3 (empty bar), BNP 3×6·35, Pallof 3×10, OHS 2×3·40",notes:"MS opener 2×3·40. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"65 kg",
@@ -319,7 +320,7 @@ const PROGRAM_B1 = [
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"HPC 5×3 / Clean Pull 4×4",load:"60 kg / 87 kg",
      secondary:"Inc Press 4×8·62, Dips 4×8·BW+20, Trapi 4×8·57, Wide OHP 4×6·37, Dead Bug 3×10, OHS 2×3·42",notes:"MS opener 2×3·44"},
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"Pause FS 4×6 (≤80% TM)",load:"84 kg",
-     secondary:"SB 3×3·37, RDL 4×6·77, OHS 4×4·42, Plank 3×50s",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
+     secondary:"SB 3×3·37, RDL 4×6·77, OHS 4×4·42, Plank 3×50s, Pallof 3×10",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"55 kg / 52 kg",
      secondary:"C&J 4×(1+2)·57, Split Jerk 4×3 (empty bar), BNP 3×6·37, Pallof 3×10, OHS 2×3·42",notes:"MS opener 2×3·42. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"67 kg",
@@ -333,7 +334,7 @@ const PROGRAM_B1 = [
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"HPC 5×3 / Clean Pull 4×4",load:"62 kg / 90 kg",
      secondary:"Inc Press 4×8·65, Dips 4×8·BW+22, Trapi 4×8·60, Wide OHP 4×6·40, Dead Bug 3×10, OHS 2×3·44",notes:"MS opener 2×3·44"},
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"Pause FS 4×6 (≤80% TM)",load:"86 kg",
-     secondary:"SB 3×3·38, RDL 4×6·80, OHS 4×4·44, Plank 3×60s",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — last week of pause reps. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
+     secondary:"SB 3×3·38, RDL 4×6·80, OHS 4×4·44, Plank 3×60s, Pallof 3×10",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — last week of pause reps. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"57 kg / 54 kg",
      secondary:"C&J 4×(1+2)·60, Split Jerk 4×3 (empty bar), BNP 3×6·40, Pallof 3×10, OHS 2×3·44",notes:"MS opener 2×3·42. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"70 kg",
@@ -347,7 +348,7 @@ const PROGRAM_B1 = [
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"HPC 5×3 / Clean Pull 4×4",load:"62 kg / 92 kg",
      secondary:"Dips 4×8·BW+24, OHS 2×3·46",notes:"MS opener 2×3·46"},
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 4×6 (≤80% TM)",load:"87 kg",
-     secondary:"RDL 4×6·82, OHS 4×4·46",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
+     secondary:"RDL 4×6·82, OHS 4×4·46, Pallof 3×10",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max",load:"feel ~60–65",
      secondary:"C&J 4×(1+2)·62, Split Jerk 4×3 (empty bar), OHS 2×3·46",notes:"MS opener 2×3·42. 5.5h sleep. Conservative first single"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"72 kg",
@@ -361,7 +362,7 @@ const PROGRAM_B1 = [
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"HPC 5×3 / Clean Pull 4×4",load:"62 kg / 95 kg",
      secondary:"Dips 4×8·BW+24, OHS 2×3·48",notes:"MS opener 2×3·46"},
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 4×6 (≤80% TM)",load:"89 kg",
-     secondary:"RDL 4×6·85, OHS 4×4·48",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
+     secondary:"RDL 4×6·85, OHS 4×4·48, Pallof 3×10",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max",load:"feel ~63–68",
      secondary:"C&J 4×(1+2)·64, Split Jerk 4×3 (empty bar), OHS 2×3·48",notes:"MS opener 2×3·44. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"75 kg",
@@ -375,7 +376,7 @@ const PROGRAM_B1 = [
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"HPC 5×3 / Clean Pull 4×4",load:"63 kg / 97 kg",
      secondary:"Dips 4×8·BW+26, OHS 2×3·50",notes:"MS opener 2×3·48"},
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 4×6 (≤80% TM)",load:"90 kg",
-     secondary:"RDL 4×6·88, OHS 4×4·50",notes:"MS opener 2×3·48. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
+     secondary:"RDL 4×6·88, OHS 4×4·50, Pallof 3×10",notes:"MS opener 2×3·48. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap). Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max",load:"feel ~65–70",
      secondary:"C&J 4×(1+2)·66, Split Jerk 4×3 (empty bar), OHS 2×3·50",notes:"MS opener 2×3·44. 5.5h sleep. Phase 2 peak single"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"78 kg",
@@ -389,7 +390,7 @@ const PROGRAM_B1 = [
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"HPC 3×3 / Clean Pull 2×4",load:"64 kg / 90 kg",
      secondary:"Dips 2×8·BW+20, OHS 2×3·44",notes:"MS opener 2×3·44"},
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 3×6 (deload)",load:"80 kg",
-     secondary:"RDL 2×6·80, OHS 2×4·44",notes:"MS opener 2×3·44. Hard stop 3pm. FS 3×6 light — deload volume. Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
+     secondary:"RDL 2×6·80, OHS 2×4·44, Pallof 3×10",notes:"MS opener 2×3·44. Hard stop 3pm. FS 3×6 light — deload volume. Pain-gate: back pain >3/10 pre-session → drop load ~40% or sub machine-equivalent."},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 3×3",load:"57 kg",
      secondary:"C&J 2×(1+2)·60, Split Jerk 4×3 (empty bar), OHS 2×3·44",notes:"MS opener 2×3·42. 5.5h sleep. Prescribed only"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 2×12",load:"68 kg",
@@ -4269,7 +4270,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.4 · 2026-08-04
+                PROGRAM v3.5.5 · 2026-08-04
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
