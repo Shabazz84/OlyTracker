@@ -270,7 +270,7 @@ const DAYS_SUMMER = [
       {id:"muscle_snatch",         sets:2,     reps:"3",      l1:"40–44 kg",   l2:"42–46 kg"  },
       {id:"jerk_from_rack",        sets:"6–8", reps:"1",      l1:"52–60 kg",   l2:"56–64 kg"  },
       {id:"clean_and_jerk",        sets:4,     reps:"1+2",    l1:"55–62 kg",   l2:"58–65 kg"  },
-      {id:"sots_press",            sets:3,     reps:"5",      l1:"25–30 kg",   l2:"28–33 kg"  },
+      {id:"split_jerk",            sets:4,     reps:"3",      l1:"Empty bar",  l2:"Empty bar" },
     ]
   },
   {
@@ -305,7 +305,7 @@ const PROGRAM_B1 = [
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"Pause FS 4×6 (≤80% TM)",load:"82 kg",
      secondary:"SB 3×3·35, RDL 4×6·75, OHS 4×4·40, Plank 3×50s",notes:"MS opener 2×3·42. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"52 kg / 50 kg",
-     secondary:"C&J 4×(1+2)·55, Sots 3×5·25, BNP 3×6·35, Pallof 3×10",notes:"MS opener 2×3·40. 5.5h sleep"},
+     secondary:"C&J 4×(1+2)·55, Split Jerk 4×3 (empty bar), BNP 3×6·35, Pallof 3×10",notes:"MS opener 2×3·40. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"65 kg",
      secondary:"Split Squat 3×8/leg·40, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·42. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
@@ -319,7 +319,7 @@ const PROGRAM_B1 = [
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"Pause FS 4×6 (≤80% TM)",load:"84 kg",
      secondary:"SB 3×3·37, RDL 4×6·77, OHS 4×4·42, Plank 3×50s",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — pause reps teach position + build tissue. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"55 kg / 52 kg",
-     secondary:"C&J 4×(1+2)·57, Sots 3×5·27, BNP 3×6·37, Pallof 3×10",notes:"MS opener 2×3·42. 5.5h sleep"},
+     secondary:"C&J 4×(1+2)·57, Split Jerk 4×3 (empty bar), BNP 3×6·37, Pallof 3×10",notes:"MS opener 2×3·42. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"67 kg",
      secondary:"Split Squat 3×8/leg·42, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·44. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
@@ -333,7 +333,7 @@ const PROGRAM_B1 = [
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"Pause FS 4×6 (≤80% TM)",load:"86 kg",
      secondary:"SB 3×3·38, RDL 4×6·80, OHS 4×4·44, Plank 3×60s",notes:"MS opener 2×3·44. Hard stop 3pm. PAUSE FS — last week of pause reps. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 4×2 / Push Press 4×5",load:"57 kg / 54 kg",
-     secondary:"C&J 4×(1+2)·60, Sots 3×5·28, BNP 3×6·40, Pallof 3×10",notes:"MS opener 2×3·42. 5.5h sleep"},
+     secondary:"C&J 4×(1+2)·60, Split Jerk 4×3 (empty bar), BNP 3×6·40, Pallof 3×10",notes:"MS opener 2×3·42. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"70 kg",
      secondary:"Split Squat 3×8/leg·44, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·44. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
@@ -347,7 +347,7 @@ const PROGRAM_B1 = [
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 4×6 (≤80% TM)",load:"87 kg",
      secondary:"RDL 4×6·82, OHS 4×4·46",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max",load:"feel ~60–65",
-     secondary:"C&J 4×(1+2)·62, Sots 3×5·30",notes:"MS opener 2×3·42. 5.5h sleep. Conservative first single"},
+     secondary:"C&J 4×(1+2)·62, Split Jerk 4×3 (empty bar)",notes:"MS opener 2×3·42. 5.5h sleep. Conservative first single"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"72 kg",
      secondary:"Split Squat 3×8/leg·46, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·46. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
@@ -361,7 +361,7 @@ const PROGRAM_B1 = [
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 4×6 (≤80% TM)",load:"89 kg",
      secondary:"RDL 4×6·85, OHS 4×4·48",notes:"MS opener 2×3·46. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max",load:"feel ~63–68",
-     secondary:"C&J 4×(1+2)·64, Sots 3×5·30",notes:"MS opener 2×3·44. 5.5h sleep"},
+     secondary:"C&J 4×(1+2)·64, Split Jerk 4×3 (empty bar)",notes:"MS opener 2×3·44. 5.5h sleep"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"75 kg",
      secondary:"Split Squat 3×8/leg·48, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·46. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
@@ -375,7 +375,7 @@ const PROGRAM_B1 = [
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 4×6 (≤80% TM)",load:"90 kg",
      secondary:"RDL 4×6·88, OHS 4×4·50",notes:"MS opener 2×3·48. Hard stop 3pm. FS 4×6 controlled tempo — drive quad mass. FS held ≤80% (Wed cap)"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk daily max",load:"feel ~65–70",
-     secondary:"C&J 4×(1+2)·66, Sots 3×5·32",notes:"MS opener 2×3·44. 5.5h sleep. Phase 2 peak single"},
+     secondary:"C&J 4×(1+2)·66, Split Jerk 4×3 (empty bar)",notes:"MS opener 2×3·44. 5.5h sleep. Phase 2 peak single"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 3×12",load:"78 kg",
      secondary:"Split Squat 3×8/leg·50, Face Pull 3×15, Ab Wheel 3×8",notes:"MS opener 2×3·48. Belt Squat quad pump — no PRs. Back-sparing tissue day"},
   ]},
@@ -389,7 +389,7 @@ const PROGRAM_B1 = [
     {id:"d3",label:"D3 Wed ⭐⭐",primary:"FS 3×6 (deload)",load:"80 kg",
      secondary:"RDL 2×6·80, OHS 2×4·44",notes:"MS opener 2×3·44. Hard stop 3pm. FS 3×6 light — deload volume"},
     {id:"d4",label:"D4 Thu ⭐⭐",primary:"Jerk 3×3",load:"57 kg",
-     secondary:"C&J 2×(1+2)·60, Sots 2×5·28",notes:"MS opener 2×3·42. 5.5h sleep. Prescribed only"},
+     secondary:"C&J 2×(1+2)·60, Split Jerk 4×3 (empty bar)",notes:"MS opener 2×3·42. 5.5h sleep. Prescribed only"},
     {id:"d5",label:"D5 Sat ⭐⭐ ☀️",primary:"Belt Squat 2×12",load:"68 kg",
      secondary:"Split Squat 2×8/leg·44, Face Pull 2×15",notes:"MS opener 2×3·44. Belt Squat only. Deload volume"},
   ]},
@@ -4267,7 +4267,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.1 · 2026-07-29
+                PROGRAM v3.5.2 · 2026-08-04
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
