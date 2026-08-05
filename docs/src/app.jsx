@@ -1140,6 +1140,19 @@ const MOBILITY = {
        area:"hip flexors", desc:"Couch stretch (rear knee down, rear foot up the wall, upright torso) with a band looped high on the rear thigh pulling the hip forward. The distraction lets you relax deeper. Critical for a night-shift sitter — tight hip flexors cap squat depth."},
     ]
   },
+  core: {
+    label:"DAILY — CORE BRACING (McGill Big Three)",
+    color:"#8b5cf6", time:"6–8 min",
+    note:"Spinal-endurance bracing, not spinal flexion — safe for chronic back pain and worth doing before every single session, regardless of what's on the day's menu. These three drills train the core isometrically instead of through crunching/flexion, which is exactly what a back-pain athlete needs.",
+    drills:[
+      {name:"McGill Curl-Up", duration:"3×8 (8s hold each)", tool:"Floor",
+       area:"core", desc:"Lie on your back, one knee bent with foot flat, other leg straight. Hands under the small of your back to preserve its natural arch. Lift only your head and shoulders slightly off the floor — no spinal flexion, no crunching. Hold 8s, lower slowly. This trains ab bracing isometrically without loading the lumbar spine in flexion."},
+      {name:"Side Plank", duration:"3×20–30s/side", tool:"Floor",
+       area:"core", desc:"Forearm on the floor, body in a straight line from ankles to shoulders, hips lifted off the floor. Hold. Trains anti-lateral-flexion — the obliques and QL working isometrically to keep the spine level, directly relevant to staying square under an asymmetric bar path."},
+      {name:"Bird Dog Hold", duration:"3×8/side (5–8s hold each rep)", tool:"Floor",
+       area:"core", desc:"On hands and knees, extend opposite arm and leg until level with the torso, keeping the spine neutral (no rotation or sagging). Hold 5–8s, return with control, alternate sides. Trains anti-rotation and anti-extension together — the exact stability pattern that keeps the low back safe when bar position pulls the torso off-center."},
+    ]
+  },
   bed: {
     label:"BEFORE BED — SHIFT NIGHTS (5 min, floor only)",
     color:"#4a90d9", time:"5 min",
@@ -1172,6 +1185,7 @@ function DrillCard({drill}) {
     "hip flexors":"#c94f3a", "lat/shoulder":"#5a9e45", "back/hips":"#8b5cf6",
     "full chain":"var(--gold)", "shoulder/lat":"#d4a843", "shoulder/elbow":"#d4a843",
     "shoulder/thoracic":"#4a90d9", "full back":"var(--text2)", "lat/thoracic":"#5a9e45",
+    "core":"#8b5cf6",
   };
   const tc = toolColors[drill.tool] || "var(--text2)";
   const ac = areaColors[drill.area] || "var(--text2)";
@@ -1206,6 +1220,7 @@ function MobilityTab() {
     {id:"jerk",    label:"D4 PRE",     data:MOBILITY.pre.jerk},
     {id:"active",  label:"D5 PRE",     data:MOBILITY.pre.active},
     {id:"ankle",   label:"DAILY ANKLE", data:MOBILITY.ankle},
+    {id:"core",    label:"DAILY CORE",  data:MOBILITY.core},
     {id:"post",    label:"POST",        data:MOBILITY.post},
     {id:"bed",     label:"BEDTIME",     data:MOBILITY.bed},
   ];
@@ -4270,7 +4285,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.5 · 2026-08-04
+                PROGRAM v3.5.6 · 2026-08-04
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
