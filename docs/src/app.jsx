@@ -3427,10 +3427,15 @@ function isWeekComplete(week) {
 }
 
 function computeCurrentWeek() {
-  for (let w = 1; w <= 28; w++) {
-    if (!isWeekComplete(w)) return w;
-  }
-  return 28;
+  // Furthest-progress based, not strict-linear: a single day logged late or
+  // never (e.g. a missed session from months ago) must not permanently freeze
+  // the badge on that old week while later weeks are actively being trained.
+  let logs = {};
+  try { logs = JSON.parse(localStorage.getItem("oly_logs") || "{}"); } catch {}
+  const loggedWeeks = Object.values(logs).map(l => l.week).filter(w => typeof w === "number" && w >= 1);
+  if (loggedWeeks.length === 0) return 1;
+  const maxLoggedWeek = Math.min(Math.max(...loggedWeeks), 28);
+  return isWeekComplete(maxLoggedWeek) ? Math.min(maxLoggedWeek + 1, 28) : maxLoggedWeek;
 }
 
 function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
@@ -4284,7 +4289,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.7 · 2026-08-05
+                PROGRAM v3.5.8 · 2026-08-07
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
