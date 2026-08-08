@@ -23,6 +23,12 @@ PLAYLISTS = [
     "https://youtube.com/playlist?list=PLf-VoST4p_FpSx1M4hV2RY4IsupbJhMU1",
 ]
 
+# last-man.org is deliberately excluded: a 619-page scrape of it (still under
+# transcripts/web/last_manorg/, gitignored) turned out to carry a site-wide
+# WordPress theme compromise (a PHP eval() backdoor + gambling spam-link
+# injection on every page). The summarization pipeline filtered it out before
+# it reached any summary or master_synthesis.md, but the site itself is still
+# compromised — do not re-add it or scrape it again.
 WEB_SOURCES = [
     "https://berestovteam.ru",
     "https://www.catalystathletics.com/article/",
