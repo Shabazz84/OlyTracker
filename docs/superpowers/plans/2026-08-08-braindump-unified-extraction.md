@@ -258,7 +258,8 @@ vault so the Phase 1 watcher never indexes it."
 
 **Interfaces:**
 - Consumes: Task 1's transcript files. From Brain_Dump: `indexer.note_parser.parse_note(raw) -> ParsedNote(body, tags, word_count, source_type, title, created_at, source, extracted_at, equipment)`; `indexer.chunker.chunk_note(body, stem, chunk_chars, overlap_chars, *, granular=False) -> list[Chunk]`; `indexer.chunker.embed_text(chunk) -> str`; `indexer.vector_store.Point(id, vector, payload, sparse_vector=None)`, `point_id(note_path, chunk_index) -> str`, `QdrantStore(host, collection, vector_size, distance)`; `indexer.embedder.OllamaEmbedder(host, model).embed(texts) -> list[list[float]]`.
-- Produces: `synthesis.index.EXCLUDED_SOURCES: frozenset[str]`; `synthesis.index.is_excluded(path: Path) -> bool`; `synthesis.index.build_points(raw: str, note_path: str, vectors: list[list[float]], chunk_chars: int, overlap_chars: int) -> list[Point]`; `synthesis.index.chunks_for(raw: str, note_path: str, chunk_chars: int, overlap_chars: int) -> list[Chunk]`; `synthesis.index.index_dir(transcript_dir, store, embedder, *, chunk_chars: int, overlap_chars: int) -> int` returning the number of notes indexed.
+- Produces: `synthesis.index.EXCLUDED_SOURCES: frozenset[str]`; `synthesis.index.is_excluded(path: Path) -> bool`; `synthesis.index.prepare(raw: str, note_path: str, chunk_chars: int, overlap_chars: int) -> tuple[ParsedNote, list[Chunk]]`; `synthesis.index.build_points(parsed, chunks, note_path: str, vectors: list[list[float]]) -> list[Point]`; `synthesis.index.index_dir(transcript_dir, store, embedder, *, chunk_chars: int, overlap_chars: int) -> int` returning the number of notes indexed.
+- **Chunk once.** `prepare()` parses and chunks; `build_points()` consumes that result. Do not re-parse or re-chunk inside `build_points` — across ~1,936 transcripts that doubles the work for nothing.
 
 - [ ] **Step 1: Add config**
 
@@ -344,10 +345,12 @@ def test_is_excluded_rejects_last_manorg():
 
 
 def test_build_points_carries_source_attribution():
-    vectors = [[0.1, 0.2, 0.3, 0.4]]
-    points = sindex.build_points(NOTE, "snatch-basics-abc12345.md", vectors,
-                                 chunk_chars=1200, overlap_chars=200)
-    assert len(points) == 1
+    parsed, chunks = sindex.prepare(NOTE, "snatch-basics-abc12345.md",
+                                    chunk_chars=1200, overlap_chars=200)
+    vectors = [[0.1, 0.2, 0.3, 0.4]] * len(chunks)
+    points = sindex.build_points(parsed, chunks, "snatch-basics-abc12345.md", vectors)
+
+    assert len(points) == len(chunks)
     payload = points[0].payload
     assert payload["note_path"] == "snatch-basics-abc12345.md"
     assert payload["source"] == "https://youtube.com/watch?v=abc"
@@ -357,10 +360,20 @@ def test_build_points_carries_source_attribution():
 
 
 def test_build_points_is_deterministic():
-    vectors = [[0.1, 0.2, 0.3, 0.4]]
-    a = sindex.build_points(NOTE, "n.md", vectors, chunk_chars=1200, overlap_chars=200)
-    b = sindex.build_points(NOTE, "n.md", vectors, chunk_chars=1200, overlap_chars=200)
+    parsed, chunks = sindex.prepare(NOTE, "n.md", chunk_chars=1200, overlap_chars=200)
+    vectors = [[0.1, 0.2, 0.3, 0.4]] * len(chunks)
+
+    a = sindex.build_points(parsed, chunks, "n.md", vectors)
+    b = sindex.build_points(parsed, chunks, "n.md", vectors)
+
     assert [p.id for p in a] == [p.id for p in b]
+
+
+def test_prepare_parses_and_chunks_once():
+    parsed, chunks = sindex.prepare(NOTE, "n.md", chunk_chars=1200, overlap_chars=200)
+    assert parsed.source == "https://youtube.com/watch?v=abc"
+    assert chunks
+    assert all(c.body for c in chunks)
 
 
 def test_index_dir_skips_excluded_and_indexes_the_rest(tmp_path):
@@ -449,16 +462,25 @@ def is_excluded(path: Path) -> bool:
     return any(bad in name or bad in parts for bad in EXCLUDED_SOURCES)
 
 
-def build_points(raw: str, note_path: str, vectors: list[list[float]],
-                 chunk_chars: int, overlap_chars: int) -> list[Point]:
-    """Turn one transcript file into Qdrant points.
+def prepare(raw: str, note_path: str, chunk_chars: int, overlap_chars: int):
+    """Parse one transcript file and chunk its body — once.
 
-    `vectors` must line up 1:1 with the chunks this same function derives from
-    `raw` — callers embed in a separate step so embedding can be batched.
+    Returns `(parsed, chunks)`. Callers embed `chunks` and hand both back to
+    `build_points`, so nothing re-parses or re-chunks the same file.
     """
     parsed = parse_note(raw)
-    stem = Path(note_path).stem
-    chunks = chunk_note(parsed.body, stem, chunk_chars, overlap_chars)
+    chunks = chunk_note(parsed.body, Path(note_path).stem,
+                        chunk_chars, overlap_chars)
+    return parsed, chunks
+
+
+def build_points(parsed, chunks, note_path: str,
+                 vectors: list[list[float]]) -> list[Point]:
+    """Turn a prepared transcript into Qdrant points.
+
+    `vectors` must line up 1:1 with `chunks` — callers embed in a separate step
+    so embedding can be batched.
+    """
     now = _now_iso()
     return [
         Point(
@@ -481,13 +503,6 @@ def build_points(raw: str, note_path: str, vectors: list[list[float]],
     ]
 
 
-def chunks_for(raw: str, note_path: str, chunk_chars: int, overlap_chars: int):
-    """The chunk list `build_points` will use — exposed so callers embed the
-    exact same texts, in the exact same order."""
-    parsed = parse_note(raw)
-    return chunk_note(parsed.body, Path(note_path).stem, chunk_chars, overlap_chars)
-
-
 def index_dir(transcript_dir, store, embedder, *, chunk_chars: int,
               overlap_chars: int) -> int:
     """Index every non-excluded transcript in `transcript_dir`. Returns the
@@ -502,12 +517,12 @@ def index_dir(transcript_dir, store, embedder, *, chunk_chars: int,
             continue
         raw = path.read_text(encoding="utf-8", errors="replace")
         note_path = path.name
-        chunks = chunks_for(raw, note_path, chunk_chars, overlap_chars)
+        parsed, chunks = prepare(raw, note_path, chunk_chars, overlap_chars)
         if not chunks:
             logger.warning("no chunks (empty body): %s", note_path)
             continue
         vectors = embedder.embed([embed_text(c) for c in chunks])
-        points = build_points(raw, note_path, vectors, chunk_chars, overlap_chars)
+        points = build_points(parsed, chunks, note_path, vectors)
         # Delete-then-upsert AFTER a successful embed, matching the Phase 1
         # consumer: if embedding fails, stale vectors remain rather than the
         # note going unindexed entirely.
