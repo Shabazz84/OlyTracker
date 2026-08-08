@@ -21,6 +21,18 @@ Keep the bar close to the body through the second pull. Finish the extension
 before pulling under the bar.
 """
 
+# Real BRAINDUMP filenames are `slugify(title, source)` = `<title-slug>-<sha1(source)[:8]>.md`
+# — the domain never appears in the filename, only in the frontmatter `source:`.
+LAST_MAN_NOTE = """---
+source: https://last-man.org/blockedsrsbenchpress/
+source_type: web
+title: Bench Press Article
+extracted_at: '2026-08-08T00:00:00Z'
+---
+
+Some backdoor-laced content that must never reach the retrievable corpus.
+"""
+
 
 class _FakeEmbedder:
     def __init__(self):
@@ -45,6 +57,21 @@ class _FakeStore:
 
     def upsert(self, points):
         self.points.extend(points)
+
+
+class _FlakyEmbedder:
+    """Fails on the Nth `embed()` call (1-indexed), succeeds otherwise —
+    used to prove index_dir isolates a per-file embed failure."""
+
+    def __init__(self, fail_on_call):
+        self.fail_on_call = fail_on_call
+        self.calls = 0
+
+    def embed(self, texts):
+        self.calls += 1
+        if self.calls == self.fail_on_call:
+            raise RuntimeError("boom")
+        return [[float(len(t)), 1.0, 0.0, 0.0] for t in texts]
 
 
 def test_is_excluded_rejects_last_manorg():
@@ -119,3 +146,107 @@ def test_index_dir_skips_empty_note(tmp_path):
 
     assert n == 0
     assert store.points == []
+
+
+# ── Finding 1: source-URL exclusion layer ──────────────────────────────────────
+
+def test_is_excluded_source_matches_domain_regardless_of_filename():
+    assert sindex.is_excluded_source("https://last-man.org/blockedsrsbenchpress/")
+
+
+def test_is_excluded_source_case_insensitive():
+    assert sindex.is_excluded_source("https://LAST-MAN.ORG/foo")
+
+
+def test_is_excluded_source_allows_normal_source():
+    assert not sindex.is_excluded_source("https://youtube.com/watch?v=abc")
+
+
+def test_is_excluded_source_tolerates_missing_source():
+    assert not sindex.is_excluded_source(None)
+    assert not sindex.is_excluded_source("")
+
+
+def test_index_dir_skips_note_by_source_domain_even_without_filename_hint(tmp_path):
+    # Slugified filename per BRAINDUMP's vault_writer.slugify carries no domain
+    # substring — exclusion must catch this via frontmatter `source`, not the
+    # filename, or a future last-man.org extraction sails straight through.
+    (tmp_path / "bench-press-article-deadbeef.md").write_text(
+        LAST_MAN_NOTE, encoding="utf-8")
+    (tmp_path / "snatch-basics-abc12345.md").write_text(NOTE, encoding="utf-8")
+
+    store, embedder = _FakeStore(), _FakeEmbedder()
+    n = sindex.index_dir(tmp_path, store, embedder,
+                         chunk_chars=1200, overlap_chars=200)
+
+    assert n == 1
+    assert {p.payload["note_path"] for p in store.points} == {
+        "snatch-basics-abc12345.md"}
+
+
+# ── Finding 2: build_points length check ───────────────────────────────────────
+
+def test_build_points_raises_on_vector_chunk_length_mismatch():
+    parsed, chunks = sindex.prepare(NOTE, "n.md", chunk_chars=1200, overlap_chars=200)
+    assert chunks  # sanity: there is something to mismatch against
+
+    with pytest.raises(ValueError) as exc_info:
+        sindex.build_points(parsed, chunks, "n.md", vectors=[])
+
+    msg = str(exc_info.value)
+    assert str(len(chunks)) in msg
+    assert "0" in msg
+
+
+# ── Finding 3: per-file error isolation ─────────────────────────────────────────
+
+def test_index_dir_continues_after_embed_failure(tmp_path):
+    (tmp_path / "a-abc12345.md").write_text(NOTE, encoding="utf-8")
+    (tmp_path / "b-abc12345.md").write_text(NOTE, encoding="utf-8")
+
+    store = _FakeStore()
+    embedder = _FlakyEmbedder(fail_on_call=1)  # "a" sorts first and fails
+
+    n = sindex.index_dir(tmp_path, store, embedder,
+                         chunk_chars=1200, overlap_chars=200)
+
+    assert n == 1
+    assert {p.payload["note_path"] for p in store.points} == {"b-abc12345.md"}
+
+
+def test_index_dir_continues_after_read_error(tmp_path, monkeypatch):
+    (tmp_path / "a-abc12345.md").write_text(NOTE, encoding="utf-8")
+    (tmp_path / "b-abc12345.md").write_text(NOTE, encoding="utf-8")
+
+    store, embedder = _FakeStore(), _FakeEmbedder()
+    real_read_text = Path.read_text
+
+    def flaky_read_text(self, *args, **kwargs):
+        if self.name == "a-abc12345.md":
+            raise OSError("disk gremlin")
+        return real_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", flaky_read_text)
+
+    n = sindex.index_dir(tmp_path, store, embedder,
+                         chunk_chars=1200, overlap_chars=200)
+
+    assert n == 1
+    assert {p.payload["note_path"] for p in store.points} == {"b-abc12345.md"}
+
+
+def test_index_dir_does_not_report_all_failures_as_success(tmp_path, caplog):
+    (tmp_path / "a-abc12345.md").write_text(NOTE, encoding="utf-8")
+
+    store = _FakeStore()
+    embedder = _FlakyEmbedder(fail_on_call=1)
+
+    with caplog.at_level("INFO"):
+        n = sindex.index_dir(tmp_path, store, embedder,
+                             chunk_chars=1200, overlap_chars=200)
+
+    assert n == 0
+    assert any(
+        "1 failed" in rec.getMessage() or "failed=1" in rec.getMessage()
+        for rec in caplog.records
+    ), "expected a logged summary reporting the failure count"
