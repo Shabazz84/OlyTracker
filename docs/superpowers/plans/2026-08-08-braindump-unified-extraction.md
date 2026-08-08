@@ -848,9 +848,16 @@ def _p(text, n=1):
 
 def test_athlete_context_appears_only_in_the_synthesis_prompt():
     assert "{athlete_context}" in sprompts.SYNTHESIS_PROMPT
+    # Topic questions must carry no athlete-SPECIFIC marker. General coaching
+    # vocabulary ("back pain", "overhead squat") is exactly what we want to
+    # retrieve on and is not a leak; what must never appear is this athlete's
+    # identifying profile, which would bias the retrieval query itself.
     for topic in sprompts.TOPICS:
-        assert "102.5" not in topic.question
-        assert "back pain" not in topic.question.lower()
+        q = topic.question.lower()
+        assert "102.5" not in q
+        assert "ohs 50" not in q
+        assert "night shift" not in q
+        assert "primary snatch limiter" not in q
 
 
 def test_gather_marks_topics_with_no_hits_as_uncovered(monkeypatch):
