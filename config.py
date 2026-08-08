@@ -107,3 +107,20 @@ DOZER_CUE_KEYWORDS = ["back", "demon", "snatch receive", "overhead squat", "jerk
 
 WEBSTER_CHANNEL_HANDLE = "sonnywebsterGB"
 WEBSTER_MOBILITY_KEYWORDS = ["mobility", "flexibility", "thoracic", "shoulder", "hip", "ankle", "stretch"]
+
+# ── BRAINDUMP integration ─────────────────────────────────────────────────────
+# OlyTracker no longer extracts anything. BRAINDUMP is the sole extractor; we
+# index the raw transcripts it persists and retrieve from them for the master
+# synthesis. See docs/superpowers/specs/2026-08-07-braindump-unified-extraction-design.md
+BRAINDUMP_PATH = os.getenv("BRAINDUMP_PATH", r"D:\Programming\Brain_Dump")
+BRAINDUMP_CONFIG = os.getenv("BRAINDUMP_CONFIG", "config.yaml")
+
+# Our OWN collection. Never braindump_hybrid — transcript chunks must not
+# compete with summary chunks in the Telegram bot's retrieval budget.
+SYNTHESIS_COLLECTION = "oly_transcripts"
+
+# Retrieval budget for synthesis. Deliberately far above the chat path's
+# qdrant.max_chunks=5: a synthesis section needs breadth, a chat answer does not.
+SYNTHESIS_MAX_CHUNKS = 30
+
+MASTER_SYNTHESIS_PATH = "summaries/master_synthesis.md"
