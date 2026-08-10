@@ -21,7 +21,19 @@ PROFILE_MARKERS = ["102.5 kg", "OHS 50 kg", "primary snatch limiter"]
 #: - synthesis/prompts.py: the one place it's allowed to drive an LLM call.
 #: - CLAUDE.md: documents the athlete profile as reference data (a table),
 #:   not as a prompt fragment — that's the whole point of Finding I1's fix.
-ALLOWED = {"synthesis/prompts.py", "CLAUDE.md"}
+#: - summaries/master_synthesis.md: the pipeline's OUTPUT. ATHLETE_CONTEXT is
+#:   injected once at the final synthesis call by design, so the document's
+#:   "Application to This Athlete" section necessarily restates the profile.
+#:   Flagging it would fail the build on a correct run — the bias this guard
+#:   exists to catch is the profile entering artifacts that are STORED AND
+#:   RETRIEVED (per-video/per-channel summaries), never the terminal output.
+#:   Only this exact file is allowed; anything else under summaries/ (e.g. a
+#:   reintroduced per-video summary) still fails.
+ALLOWED = {
+    "synthesis/prompts.py",
+    "CLAUDE.md",
+    "summaries/master_synthesis.md",
+}
 
 #: Directories excluded entirely, relative to ROOT (matched as a path-part
 #: prefix, so "docs/superpowers" excludes everything under it).
@@ -60,19 +72,67 @@ def _scanned_files():
 
 
 def test_athlete_profile_appears_only_in_allowed_files():
-    offenders = []
+    offenders = _offenders()
+    assert offenders == [], (
+        f"athlete profile leaked into: {offenders}. It belongs only in "
+        f"synthesis/prompts.py (as a prompt) and CLAUDE.md (as reference "
+        f"data) — see the 2026-08-07 unified-extraction spec."
+    )
+
+
+def _offenders() -> list[str]:
+    """The scan, factored out so the guard's behaviour can be exercised against
+    real files on disk rather than only against whatever the repo happens to
+    contain right now."""
+    found = []
     for path in _scanned_files():
         rel = path.relative_to(ROOT).as_posix()
         if rel in ALLOWED:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         if any(marker in text for marker in PROFILE_MARKERS):
-            offenders.append(rel)
-    assert offenders == [], (
-        f"athlete profile leaked into: {offenders}. It belongs only in "
-        f"synthesis/prompts.py (as a prompt) and CLAUDE.md (as reference "
-        f"data) — see the 2026-08-07 unified-extraction spec."
-    )
+            found.append(rel)
+    return found
+
+
+def test_master_synthesis_may_restate_the_profile():
+    """A correct synthesis run restates the profile in its "Application to This
+    Athlete" section — ATHLETE_CONTEXT enters once, at that final call. The
+    guard must not fail the build for that.
+
+    Regression: the marker list uses "102.5 kg" (spaced) while the generated
+    document happened to write "102.5kg", so this only ever passed by accident
+    of formatting. A run that spelled it the other way failed the build.
+    """
+    target = ROOT / "summaries" / "master_synthesis.md"
+    existed = target.exists()
+    original = target.read_text(encoding="utf-8") if existed else None
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        target.write_text(
+            "# Synthesis\n\n## Application to This Athlete\n"
+            "Bodyweight 102.5 kg; OHS 50 kg is the primary snatch limiter.\n",
+            encoding="utf-8",
+        )
+        assert "summaries/master_synthesis.md" not in _offenders()
+    finally:
+        if existed:
+            target.write_text(original, encoding="utf-8")
+        else:
+            target.unlink()
+
+
+def test_profile_in_any_other_summaries_file_still_fails():
+    """Allowing the terminal output must not blanket-exempt summaries/. A
+    reintroduced per-video summary carrying the profile is the exact bias this
+    guard exists to catch."""
+    target = ROOT / "summaries" / "_leak_probe_summary.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        target.write_text("Athlete bodyweight 102.5 kg.\n", encoding="utf-8")
+        assert "summaries/_leak_probe_summary.md" in _offenders()
+    finally:
+        target.unlink()
 
 
 def test_extractor_package_is_gone():
