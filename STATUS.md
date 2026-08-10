@@ -2,10 +2,10 @@
 name: OlyTracker
 category: fitness
 status: active
-phase: Tracker app mature at v3.5.8 (React + Supabase); knowledge-pipeline rebuild COMPLETE — Task 6 migration run, oly_transcripts populated (1,933 notes / 21,123 chunks) and master_synthesis.md regenerated from cited passages, all 3 bias checks pass
-progress: 95
+phase: Tracker app mature at v3.5.8 (React + Supabase); knowledge-pipeline rebuild COMPLETE and PROVEN END-TO-END — oly_transcripts populated (1,933 notes / 21,123 chunks), master_synthesis.md regenerated from cited passages, 3/3 bias checks pass, and one live extraction now feeds both consumers
+progress: 97
 blocked_on: none
-next_step: "Two open items. (1) Deploy Brain_Dump to the Z840 — the box is a plain scp'd directory 20 files behind master with 3 missing, has no processing.transcript_dir and no vault_writer.write_transcript, so NEW extractions still discard the raw transcript; this blocks Task 6 Step 8 (paste a YouTube link to the bot, confirm the slug lands in BOTH braindump/transcripts/ and vault/BRAINDUMP/youtube/). Decide minimal (transcript persistence only, restart braindump-ingest) vs full sync (also ships the never-deployed equipment feature to 4 live services + adds an equipment payload index to braindump_hybrid). (2) Persist the numbered context block next to master_synthesis.md — retrieval reorders between runs, so citation numbers are not reproducible and cannot be audited after the fact. Deferred: purge the compromised last_manorg corpus from this repo; master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression)"
+next_step: "Task 6 is fully done (all 9 steps). Open items: (1) SECURITY — a live Telegram bot token sits in the Z840's journal (3 tokenized api.telegram.org URLs, Jul 11/13, httpx logging request URLs at INFO); silence that logger BEFORE rotating so the replacement doesn't land there too. (2) Persist the numbered context block next to master_synthesis.md — retrieval reorders near-tied results between runs, so citation numbers are not reproducible and cannot be audited after the fact. (3) Re-run `python main.py index` to pick up transcripts extracted since the migration (idempotent). (4) Deploy Brain_Dump's remaining 20-file drift (equipment feature + spool fixes) as its own deliberate change — the migration deployed only transcript persistence. Deferred: purge the compromised last_manorg corpus from this repo; master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression)"
 updated: 2026-08-10
 tags: [react, esbuild, supabase, weightlifting, training, claude-api, whisper]
 stack:
@@ -82,5 +82,20 @@ Two findings worth carrying forward: the 0.570 noise ceiling comes not from holl
 gated by content, not tuning; and citation numbers are **not reproducible across runs**
 because retrieval reorders near-tied results, so the numbered context needs persisting
 alongside the output before any citation can be audited later.
+
+BRAINDUMP is now the sole extractor in practice, not just on paper. The minimal
+transcript-persistence deploy went to the Z840 (2 files + one config key,
+`braindump-ingest` restarted, `braindump_hybrid` untouched at 6,050), and a live
+YouTube extraction produced the same slug in both `braindump/transcripts/` (35 KB
+verbatim, 3,264 words) and `vault/BRAINDUMP/youtube/` (4.4 KB summary, 556 words)
+from a single download.
+
+That first extraction also justified the architecture out loud. The video is
+«Почему штангисты не качают грудь и бицепс» with Olympic champion Berestov —
+**штангисты means weightlifters** — and the Qwen vault note titled it "Why
+**Powerlifters** Don't Train Chest and Biceps." The summarizer changed the sport;
+the raw transcript did not. Indexing vault notes would have fed that into the
+synthesis as powerlifting advice from a weightlifting champion. Equipment-feature
+drift on the box (20 files) is still undeployed, deliberately, as its own change.
 
 <!-- status/progress updated 2026-08-09; correct as needed -->

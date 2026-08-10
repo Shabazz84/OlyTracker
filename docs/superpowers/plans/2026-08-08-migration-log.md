@@ -2,9 +2,10 @@
 
 **Run date:** 2026-08-09 → 2026-08-10
 **Plan:** `2026-08-08-braindump-unified-extraction.md`, Task 6
-**Outcome:** Migration complete. `oly_transcripts` populated, `master_synthesis.md`
-regenerated from retrieved passages, all three bias checks pass. Step 8
-(end-to-end check on a fresh extraction) is **outstanding** — see "Not done".
+**Outcome:** Migration complete, **all 9 steps done**. `oly_transcripts` populated,
+`master_synthesis.md` regenerated from retrieved passages, all three bias checks
+pass, and the end-to-end check confirms a single extraction now feeds both
+consumers.
 
 ---
 
@@ -235,30 +236,88 @@ regression tests: one asserting the terminal output may restate the profile, one
 asserting any *other* file under `summaries/` still fails. Suite: **39 passing**
 (was 37).
 
-## 7. Not done
+## 7. Step 8 — end-to-end single-source check ✅
 
-- **Step 8 (end-to-end single-source check)** — requires pasting a fresh YouTube
-  link to the Telegram bot and confirming the slug lands in both
-  `braindump/transcripts/` and `vault/BRAINDUMP/youtube/`. Needs a human action,
-  **and it is blocked on the deploy below.**
+Deployed the minimal transcript-persistence change first (see §8), then pasted a
+fresh YouTube link to the Telegram bot. One extraction, both consumers, same
+`b922d1ee` slug written at 15:17:
 
-- **The Z840's Brain_Dump is stale — this was not in the plan.** `~/braindump` is
-  a plain deployed directory (no `.git`), and it is **20 files behind** local
-  master with **3 missing** (`indexer/equipment_registry.py`,
-  `telegram_bot/equipment_filter.py`, `telegram_bot/pending_ingest.py`) — the
-  entire equipment-filter feature plus the spool fixes were never deployed.
-  Critically, it has no `processing.transcript_dir` key and no
-  `vault_writer.write_transcript`, so **new extractions do not persist
-  transcripts yet**.
+| Consumer | Path | Size | Words |
+|---|---|---|---|
+| Raw transcript | `braindump/transcripts/` | 35,108 B | 3,264 |
+| Vault note | `vault/BRAINDUMP/youtube/` | 4,411 B | 556 |
 
-  The back-catalog migration did **not** need it: OlyTracker only imports
-  `indexer.{chunker,errors,note_parser,vector_store,config_loader,embedder}` and
-  `query.retriever`, and the stale versions are additively compatible (the
-  equipment parameters all default to `None`; `retrieve_hybrid`'s signature
-  matches the positional call). Verified by file-level diff before proceeding —
-  which is why Steps 1–7 ran against the box untouched.
+Both carry the same `source` URL (`youtube.com/watch?v=IKrSr1i9rZg`) and their
+bodies differ, which is the point: the vault gets the summary, the transcript
+keeps fidelity.
 
-  Deploying is a separate decision, because the minimal change (transcript
-  persistence) and the full sync (which ships the equipment feature to four live
-  services and includes a Qdrant payload-index migration) have very different
-  blast radii.
+**This first live extraction immediately demonstrated the reason the design
+indexes transcripts rather than vault notes.** The video is
+«Почему штангисты не качают грудь и бицепс» featuring Olympic weightlifting
+champion Dmitry Berestov. **штангисты** = *weightlifters*. The Qwen-generated
+vault note renders it:
+
+> "Why **Powerlifters** Don't Train Chest and Biceps … **Powerlifters** prioritize
+> total body mass and functional strength over isolated hypertrophy"
+
+The summarizer silently changed the sport. Had OlyTracker indexed vault notes,
+that passage would have entered `master_synthesis.md` as powerlifting guidance
+attributed to an Olympic weightlifting champion. The raw transcript says
+«как качаются штангисты … табу для штангиста» and carries no such error. This is
+the 2026-07-28 bake-off's predicted failure mode, caught on the very first
+extraction through the new path — a stronger argument for the architecture than
+anything in the original spec.
+
+Note: the new transcript is on disk but **not yet in `oly_transcripts`** —
+indexing is a separate `python main.py index` run (idempotent, delete-then-upsert
+on a deterministic point ID), not automatic.
+
+## 8. Deploy — the Z840's Brain_Dump was stale (not in the plan)
+
+`~/braindump` is a plain deployed directory (no `.git`), and it was **20 files
+behind** local master with **3 missing** (`indexer/equipment_registry.py`,
+`telegram_bot/equipment_filter.py`, `telegram_bot/pending_ingest.py`) — the entire
+equipment-filter feature plus the spool fixes had never been deployed. It had no
+`processing.transcript_dir` key and no `vault_writer.write_transcript`, so new
+extractions were discarding the raw transcript.
+
+The back-catalog migration did **not** need it: OlyTracker only imports
+`indexer.{chunker,errors,note_parser,vector_store,config_loader,embedder}` and
+`query.retriever`, and the stale versions are additively compatible (the equipment
+parameters all default to `None`; `retrieve_hybrid`'s signature matches the
+positional call). Verified by file-level diff before proceeding — which is why
+Steps 1–7 ran against the box untouched.
+
+**Deployed minimal, not a full sync** (deliberate choice): the migration needed
+only transcript persistence, and shipping the equipment feature as a side effect
+would have restarted four live services *and* mutated `braindump_hybrid` — the
+collection Step 7 had just verified as unchanged (`ensure_collection()` adds an
+equipment payload index). Keeping them separate preserves attribution if
+something breaks later.
+
+What was deployed:
+
+| | |
+|---|---|
+| Files | `processing/vault_writer.py`, `processing/cli.py` |
+| Config | `processing.transcript_dir: ./transcripts` merged **by hand** (backup: `config.yaml.pre-transcript-persistence`); the repo's `equipment:` block deliberately **not** copied |
+| Restarted | `braindump-ingest` only |
+| Untouched | bot, consumer, watcher; `braindump_hybrid` still 6,050/green |
+
+`WorkingDirectory=/home/ivanb/braindump`, so the relative `./transcripts`
+resolves to the same directory holding the back-catalog — new extractions land
+beside the 1,936 migrated notes, which is what makes a later `index` run pick
+them up with no extra wiring.
+
+Verified: service active, `NRestarts 0 -> 0`, zero tracebacks, queue drained, and
+`write_transcript` produces frontmatter that round-trips through the same
+`parse_note` the indexer uses. Then confirmed for real by §7's live extraction.
+
+**Pre-existing issue found, NOT caused by this deploy:** `verify.sh` reports 3
+tokenized Telegram URLs in the ingest journal, dated **Jul 11 and Jul 13**.
+`httpx` logs request URLs at INFO and the bot token rides inside the
+`api.telegram.org/bot<TOKEN>/…` path, so a live token sits in the journal.
+Silence that logger *before* rotating, or the replacement lands there too.
+
+**Still undeployed by design:** the equipment-filter feature and spool fixes. That
+remains its own deliberate deploy, with its own verification.
