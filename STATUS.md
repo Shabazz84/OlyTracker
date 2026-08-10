@@ -2,11 +2,11 @@
 name: OlyTracker
 category: fitness
 status: active
-phase: Tracker app mature at v3.5.8 (React + Supabase); knowledge-pipeline rebuild MERGED to master and pushed (5/5 code tasks, final review clean) — awaiting the one-time Z840 migration that populates it
-progress: 90
+phase: Tracker app mature at v3.5.8 (React + Supabase); knowledge-pipeline rebuild COMPLETE — Task 6 migration run, oly_transcripts populated (1,933 notes / 21,123 chunks) and master_synthesis.md regenerated from cited passages, all 3 bias checks pass
+progress: 95
 blocked_on: none
-next_step: "Run Task 6 of docs/superpowers/plans/2026-08-08-braindump-unified-extraction.md — the one-time Z840 migration (copy back-catalog excluding last_manorg, deploy the indexer, SMOKE-TEST retrieval on 50 files before the full ~1,936-file run, then regenerate master_synthesis.md and run the 3 bias checks). Deferred: purge the compromised last_manorg corpus from this repo; master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression)"
-updated: 2026-08-09
+next_step: "Two open items. (1) Deploy Brain_Dump to the Z840 — the box is a plain scp'd directory 20 files behind master with 3 missing, has no processing.transcript_dir and no vault_writer.write_transcript, so NEW extractions still discard the raw transcript; this blocks Task 6 Step 8 (paste a YouTube link to the bot, confirm the slug lands in BOTH braindump/transcripts/ and vault/BRAINDUMP/youtube/). Decide minimal (transcript persistence only, restart braindump-ingest) vs full sync (also ships the never-deployed equipment feature to 4 live services + adds an equipment payload index to braindump_hybrid). (2) Persist the numbered context block next to master_synthesis.md — retrieval reorders between runs, so citation numbers are not reproducible and cannot be audited after the fact. Deferred: purge the compromised last_manorg corpus from this repo; master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression)"
+updated: 2026-08-10
 tags: [react, esbuild, supabase, weightlifting, training, claude-api, whisper]
 stack:
   - component: Claude API client (sole surviving summarizer module)
@@ -65,10 +65,22 @@ refactor there can break this repo while Brain_Dump's own tests stay green. The 
 symbols and the `config.yaml` keys this depends on are listed under "External Consumers"
 in `D:\Programming\Brain_Dump\CLAUDE.md`.
 
-Not yet exercised against real data: `oly_transcripts` is empty and `master_synthesis.md`
-is still the old biased version until the Task 6 migration runs. The migration's 50-file
-retrieval smoke-test is a required gate, not a formality — the 0.58 similarity threshold was
-calibrated on English summary chunks in a mixed-domain vault, and this corpus is verbatim,
-largely Russian speech queried with English topic questions, where cosine scores run lower.
+The Task 6 migration ran 2026-08-10 (log: `docs/superpowers/plans/2026-08-08-migration-log.md`).
+`oly_transcripts` holds 1,933 notes / 21,123 chunks (3 skipped: silent Shorts with empty
+bodies), and `master_synthesis.md` is regenerated from retrieved passages — **138 citations
+where the archived version had 0**. All three bias checks pass; 15/15 spot-checked claims
+verified against real source text.
+
+The retrieval gate earned its keep by failing first. On a 57-file sample 2 of 7 topics
+returned zero passages, which looked like the predicted 0.58-threshold miscalibration; on
+the full corpus all 7 are covered and 0.58 sits correctly between the off-domain floor
+(0.36–0.47) and the in-domain mass (0.58–0.72). The sample result was a sample-size
+artifact, so **the threshold was left alone** and Brain_Dump's shared value stays untouched.
+Two findings worth carrying forward: the 0.570 noise ceiling comes not from hollow chunks
+(`scan-junk` reports 0 junk of 21,123) but from real livestream banter in the corpus — one
+92-chunk note is two coaches discussing VPNs and national parks — so precision here is
+gated by content, not tuning; and citation numbers are **not reproducible across runs**
+because retrieval reorders near-tied results, so the numbered context needs persisting
+alongside the output before any citation can be audited later.
 
 <!-- status/progress updated 2026-08-09; correct as needed -->
