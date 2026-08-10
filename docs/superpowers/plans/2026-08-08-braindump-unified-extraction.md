@@ -1420,6 +1420,34 @@ athlete profile reappears outside synthesis/prompts.py."
 - Consumes: everything from Tasks 1–5.
 - Produces: a populated `oly_transcripts` collection and a regenerated `summaries/master_synthesis.md`.
 
+> **Execution notes (added 2026-08-09, after Tasks 1–5 shipped and passed final review).**
+> Read these before running the steps below — several were written before the code existed.
+>
+> - **Branches, not master.** The code lives on `braindump-unified-extraction` (OlyTracker)
+>   and `oly-transcript-persistence` (Brain_Dump). Check out the right branch in each repo
+>   before running anything, or you will run the old pipeline.
+> - **Step 1's `git add -A` hazard is closed.** `Brain_Dump/.gitignore` now ignores
+>   `transcripts/` (commit `ccd7c06`), so the copied corpus cannot be committed by accident.
+> - **`BRAINDUMP_CONFIG` is now an absolute path** derived from `BRAINDUMP_PATH`
+>   (commit `ec6c69d`). Step 5's `python main.py synthesize` from the OlyTracker directory
+>   works as written; before that fix it died with a `FileNotFoundError` pointing at the
+>   wrong repo. `--transcript-dir` still overrides, and a relative `transcript_dir` from
+>   Brain_Dump's config now resolves against `BRAINDUMP_PATH` rather than your cwd.
+> - **A backend outage no longer masquerades as success.** `index_dir` re-raises
+>   `BackendUnavailable` instead of swallowing it per-file, so a mid-run Ollama/Qdrant drop
+>   exits non-zero. If the full run reports fewer transcripts than expected, that is a real
+>   partial index — re-run it (indexing is idempotent: delete-then-upsert on a deterministic
+>   point ID).
+> - **Step 3's smoke test is a required gate, not a formality.** The `0.58` similarity
+>   threshold was calibrated against English summary chunks in a mixed-domain vault. This
+>   corpus is verbatim, largely Russian speech, queried with English topic questions, where
+>   cosine similarity runs lower. If scores cluster at or just under 0.58, or topics come
+>   back empty, **stop and recalibrate the threshold** rather than indexing 1,900 more files
+>   and concluding the corpus has no coverage.
+> - **Notes with no parseable `source` are now skipped**, not indexed without attribution.
+>   If the back-catalog conversion in Step 1 leaves malformed frontmatter, those files will
+>   be skipped with a logged warning — check the log's skip count against the file count.
+
 - [ ] **Step 1: Copy the back-catalog to the Z840, excluding the compromised source**
 
 The existing 2,554 transcripts are on Windows; the indexer runs on the Z840. `last_manorg` (618 files) is excluded — its raw text carries the PHP backdoor and spam that the old summarization layer was silently stripping.
