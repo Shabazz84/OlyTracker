@@ -1056,7 +1056,7 @@ document, and tells the model explicitly which topics have no coverage."
 **Repo:** `D:\Programming\OlyTracker`
 
 **Files:**
-- Delete: `extractor/` (whole package), `summarizer/source_summarizer.py`, `summarizer/video_summarizer.py`, `summarizer/channel_summarizer.py` (if present), `tests/test_channel.py`, `tests/test_playlist.py`, `tests/test_transcript.py`, `tests/test_web.py`, `tests/test_export.py`, `tests/test_telegram.py`
+- Delete: `extractor/` (whole package), `summarizer/source_summarizer.py`, `summarizer/video_summarizer.py`, `summarizer/channel_summarizer.py` (if present), `summarizer/cue_indexer.py`, `summarizer/prompts.py`, `tests/test_channel.py`, `tests/test_playlist.py`, `tests/test_transcript.py`, `tests/test_web.py`, `tests/test_export.py`, `tests/test_telegram.py`
 - Modify: `summarizer/prompts.py` (strip retired prompts and `ATHLETE_CONTEXT`)
 - Modify: `main.py` (remove extraction subcommands, add `--synthesize`)
 - Rename: `summaries/` → `summaries_archive/`
@@ -1144,9 +1144,24 @@ If `summarizer/channel_summarizer.py` or `summarizer/ollama_client.py` exist, re
 git rm -f summarizer/channel_summarizer.py summarizer/ollama_client.py 2>/dev/null || true
 ```
 
-- [ ] **Step 5: Strip the retired prompts**
+- [ ] **Step 5: Retire the cue indexer and its prompts**
 
-Replace the entire contents of `summarizer/prompts.py` with only what the cue indexer still needs — note `ATHLETE_CONTEXT` is gone and the cue prompts no longer interpolate it:
+**Amended 2026-08-09 after review.** The original plan kept `summarizer/cue_indexer.py` and a trimmed `summarizer/prompts.py`. That is not viable: after this task `cue_indexer.py` breaks four ways — it imports `sanitize_name` from the deleted `extractor/`, imports `_chunk`/`_ntokens` from the deleted `source_summarizer.py`, those helpers need `tiktoken` which Step 7 removes, and it reads/writes `config.SUMMARY_DIR` which Step 3 renames to `summaries_archive/`. Decisively, the rewritten `main.py` (Step 6) has no `cue-index` subcommand, so nothing calls it.
+
+Delete both files:
+
+```bash
+git rm summarizer/cue_indexer.py summarizer/prompts.py
+```
+
+The generated artifact `dozer_cue_index.md` is **not** lost — it lives under `summaries/` and rides along to `summaries_archive/` in Step 3. The code remains in git history if cue indexing is ever revisited, and it would need rewriting against the new transcript corpus regardless.
+
+After this, `summarizer/` contains only `llm_client.py` (and `__init__.py`). Everything else in the package was part of the retired pipeline.
+
+<details>
+<summary>Superseded: the original Step 5 (trimmed prompts kept for the cue indexer)</summary>
+
+The original text replaced `summarizer/prompts.py` with only the cue prompts, stripped of `ATHLETE_CONTEXT`:
 
 ```python
 """Prompts retained for the technique-cue index.
@@ -1203,6 +1218,8 @@ Raw extractions:
 ```
 
 If `summarizer/cue_indexer.py` passes `athlete_context=` into either prompt, remove that keyword argument from those `.format(...)` calls.
+
+</details>
 
 - [ ] **Step 6: Rewrite `main.py`**
 
@@ -1363,10 +1380,9 @@ And under `## Project Structure`, replace the `extractor/` and `summarizer/` tre
 │   ├── prompts.py               # TOPICS + the ONLY ATHLETE_CONTEXT in the repo
 │   └── build.py                 # passages -> master_synthesis.md (Sonnet)
 ├── summarizer/
-│   ├── llm_client.py            # Claude API wrapper
-│   ├── prompts.py               # cue-index prompts only
-│   └── cue_indexer.py
+│   └── llm_client.py            # Claude API wrapper (all that survives the retirement)
 ├── summaries_archive/           # pre-2026-08 output, kept as the bias-fix control
+│                                # (includes dozer_cue_index.md — the artifact outlives its generator)
 ```
 
 Add a note under Development Rules:
