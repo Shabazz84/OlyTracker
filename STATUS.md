@@ -5,7 +5,7 @@ status: active
 phase: Tracker app mature at v3.5.8 (React + Supabase); knowledge-pipeline rebuild COMPLETE and PROVEN END-TO-END — oly_transcripts populated (1,933 notes / 21,123 chunks), master_synthesis.md regenerated from cited passages, 3/3 bias checks pass, and one live extraction now feeds both consumers
 progress: 97
 blocked_on: none
-next_step: "Task 6 is fully done (all 9 steps). Open items: (1) SECURITY — a live Telegram bot token sits in the Z840's journal (3 tokenized api.telegram.org URLs, Jul 11/13, httpx logging request URLs at INFO); silence that logger BEFORE rotating so the replacement doesn't land there too. (2) Persist the numbered context block next to master_synthesis.md — retrieval reorders near-tied results between runs, so citation numbers are not reproducible and cannot be audited after the fact. (3) Re-run `python main.py index` to pick up transcripts extracted since the migration (idempotent). (4) Deploy Brain_Dump's remaining 20-file drift (equipment feature + spool fixes) as its own deliberate change — the migration deployed only transcript persistence. Deferred: purge the compromised last_manorg corpus from this repo; master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression)"
+next_step: "Use `python main.py ask \"<question>\"` as the source of truth for programming decisions — NOT master_synthesis.md, which is one 7-topic LLM view over ~5% of the corpus. Open items: (1) SECURITY — a live Telegram bot token sits in the Z840's journal (3 tokenized api.telegram.org URLs, Jul 11/13, httpx logging request URLs at INFO); silence that logger BEFORE rotating so the replacement doesn't land there too. (2) Persist the numbered context block next to master_synthesis.md — retrieval reorders near-tied results between runs, so citation numbers are not reproducible and cannot be audited after the fact. (3) Re-run `python main.py index` to pick up transcripts extracted since the migration (idempotent). (4) Deploy Brain_Dump's remaining 20-file drift (equipment feature + spool fixes) as its own deliberate change — the migration deployed only transcript persistence. Deferred: purge the compromised last_manorg corpus from this repo; master_synthesis.md's remaining recommendations (front squat primacy, belt squat volume, OHS load progression)"
 updated: 2026-08-10
 tags: [react, esbuild, supabase, weightlifting, training, claude-api, whisper]
 stack:
@@ -21,6 +21,9 @@ stack:
   - component: Topic-driven document synthesis with per-claim citations; refuses to synthesize from zero passages
     lib: anthropic Python SDK (Sonnet)
     path: synthesis/build.py
+  - component: "`main.py ask <question>` — prints source passages verbatim with URLs, makes NO LLM call; the reliable path for program-building"
+    lib: synthesis/retrieve.py::format_for_cli
+    path: main.py::cmd_ask
 ---
 
 Personalized Olympic weightlifting training program + interactive tracker, built
@@ -89,6 +92,22 @@ transcript-persistence deploy went to the Z840 (2 files + one config key,
 YouTube extraction produced the same slug in both `braindump/transcripts/` (35 KB
 verbatim, 3,264 words) and `vault/BRAINDUMP/youtube/` (4.4 KB summary, 556 words)
 from a single download.
+
+The knowledge base is queried with `python main.py ask "<question>"`, which
+prints retrieved passages verbatim with source URLs and makes **no LLM call** —
+with nothing summarizing between transcript and reader, no number can be
+invented. That, not `master_synthesis.md`, is the reliable input for programming
+decisions: the synthesis is one LLM-written view of 7 generic topics over ~155
+passages (97 of 1,933 notes, ~5% of the corpus), useful as a map but to be
+verified with `ask`. Both beat the archived synthesis, which asserted "deload
+every 4th week" and "stop if pain >3/10" with zero citations — claims that
+retrieval shows are unsupported, next to others that are verbatim-accurate, with
+nothing in the document to tell the two apart.
+
+Known corpus gaps, confirmed by retrieval and stated in the synthesis itself:
+night-shift scheduling, programming for a ~102 kg athlete transitioning from
+strength sports, and return-to-load protocols for existing chronic back pain.
+Those need a coach or clinician; the pipeline correctly refuses to invent them.
 
 That first extraction also justified the architecture out loud. The video is
 «Почему штангисты не качают грудь и бицепс» with Olympic champion Berestov —
