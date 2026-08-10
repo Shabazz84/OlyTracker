@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from indexer.chunker import chunk_note, embed_text
+from indexer.errors import BackendUnavailable
 from indexer.note_parser import parse_note
 from indexer.vector_store import Point, point_id
 
@@ -117,12 +118,18 @@ def index_dir(transcript_dir, store, embedder, *, chunk_chars: int,
     """Index every non-excluded transcript in `transcript_dir`. Returns the
     number of notes successfully indexed (not chunks).
 
-    A failure on one file (unreadable file, embedder unavailable, etc.) is
-    logged with the filename and exception, then the loop moves on to the
-    next file rather than aborting the whole ~1,936-file run. The failure
-    count is logged in the completion summary so a run where every file
-    failed is never silently indistinguishable from a clean pass — the
-    return value only ever counts real successes.
+    A failure on one file (unreadable file, malformed note, etc.) is logged
+    with the filename and exception, then the loop moves on to the next file
+    rather than aborting the whole ~1,936-file run. The failure count is
+    logged in the completion summary so a run where every file failed is
+    never silently indistinguishable from a clean pass — the return value
+    only ever counts real successes.
+
+    `BackendUnavailable` (Ollama/Qdrant unreachable) is deliberately NOT
+    caught here — it is an abort condition, not a per-file problem. Catching
+    it as a per-file failure would mean a mid-run outage logs a traceback for
+    every remaining file and still returns a "successful" count. It propagates
+    to the caller, which must treat it as a hard failure (non-zero exit).
     """
     transcript_dir = Path(transcript_dir)
     store.ensure_collection()
@@ -130,18 +137,33 @@ def index_dir(transcript_dir, store, embedder, *, chunk_chars: int,
     failed = 0
 
     for path in sorted(transcript_dir.glob("*.md")):
-        if is_excluded(path):
-            logger.info("skip (excluded source): %s", path.name)
-            continue
         note_path = path.name
         try:
+            if is_excluded(path):
+                logger.info("skip (excluded source): %s", note_path)
+                # Purge any vectors indexed before this source was excluded —
+                # otherwise re-running with a newly-excluded source is a no-op
+                # for exactly the notes it should purge.
+                store.delete_by_note(note_path)
+                continue
+
             raw = path.read_text(encoding="utf-8", errors="replace")
             parsed, chunks = prepare(raw, note_path, chunk_chars, overlap_chars)
+
+            if not parsed.source:
+                # Unparseable/missing frontmatter must fail closed: no source
+                # means no attribution and no way to run the exclusion check
+                # (is_excluded_source(None) is deliberately permissive), and a
+                # citation with no source and no title traces to nothing.
+                logger.warning("skip (no source in frontmatter): %s", note_path)
+                continue
+
             if is_excluded_source(parsed.source):
                 # First point the URL is known — a BRAINDUMP-slugified filename
                 # carries no domain hint, so this can't happen in is_excluded.
                 logger.info("skip (excluded source domain): %s (%s)",
                            note_path, parsed.source)
+                store.delete_by_note(note_path)
                 continue
             if not chunks:
                 logger.warning("no chunks (empty body): %s", note_path)
@@ -155,6 +177,8 @@ def index_dir(transcript_dir, store, embedder, *, chunk_chars: int,
             store.upsert(points)
             indexed += 1
             logger.info("indexed %s (%d chunks)", note_path, len(chunks))
+        except BackendUnavailable:
+            raise
         except Exception:
             failed += 1
             logger.exception("failed to index %s", note_path)

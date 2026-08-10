@@ -113,7 +113,12 @@ WEBSTER_MOBILITY_KEYWORDS = ["mobility", "flexibility", "thoracic", "shoulder", 
 # index the raw transcripts it persists and retrieve from them for the master
 # synthesis. See docs/superpowers/specs/2026-08-07-braindump-unified-extraction-design.md
 BRAINDUMP_PATH = os.getenv("BRAINDUMP_PATH", r"D:\Programming\Brain_Dump")
-BRAINDUMP_CONFIG = os.getenv("BRAINDUMP_CONFIG", "config.yaml")
+# Must default to a path inside BRAINDUMP_PATH, not a bare relative filename —
+# indexer.config_loader.load_config() resolves it against cwd, and OlyTracker
+# has no config.yaml of its own. Running `python main.py synthesize` from this
+# repo (the documented migration runbook) would otherwise fail with
+# "Config not found: config.yaml" instead of finding Brain_Dump's config.
+BRAINDUMP_CONFIG = os.getenv("BRAINDUMP_CONFIG", os.path.join(BRAINDUMP_PATH, "config.yaml"))
 
 # Our OWN collection. Never braindump_hybrid — transcript chunks must not
 # compete with summary chunks in the Telegram bot's retrieval budget.

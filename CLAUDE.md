@@ -371,106 +371,57 @@ olytracker/
 
 ---
 
-## Extraction + Summarization Configuration (`config.py`)
+## Configuration (`config.py`)
 
-```python
-# ── YouTube channels ──────────────────────────────────────────────────────────
-CHANNELS = [
-    "https://www.youtube.com/@pavlukhinweightlifting",   # Pavlukhin — RU, science-based
-    "https://www.youtube.com/@athletists",               # Berestov Team — RU, Olympic champion
-    "https://www.youtube.com/@catalystathletics",        # Greg Everett — EN, comprehensive
-    "https://www.youtube.com/@torokhtiy",                # Torokhtiy — EN, PhD + Olympic champion
-    "https://www.youtube.com/channel/UCvHbRb9z_sIRzO7EHnN66SQ",  # Golovinsky @88Dmitry — RU/UA
-    "https://www.youtube.com/@DozerWeightlifting",               # Dozer — EN, technique + back
-    "https://www.youtube.com/user/sonnywebsterGB",               # Sonny Webster — EN, mobility
-]
+BRAINDUMP is the sole extractor now, so `config.py` no longer drives any
+fetching — the settings that matter are the ones the current pipeline (`index`
+and `synthesize`, see CLI Usage below) actually reads:
 
-PLAYLISTS = [
-    "https://youtube.com/playlist?list=PLf-VoST4p_FpSx1M4hV2RY4IsupbJhMU1",  # Klokov Рывкачи
-]
+- `BRAINDUMP_PATH` / `BRAINDUMP_CONFIG` — where Brain_Dump lives and its
+  `config.yaml`, which supplies Qdrant/Ollama connection info and
+  `processing.transcript_dir`. `BRAINDUMP_CONFIG` must resolve to a real file
+  regardless of cwd — see `tests/test_config.py`.
+- `SYNTHESIS_COLLECTION` — OlyTracker's own Qdrant collection
+  (`oly_transcripts`), kept separate from `braindump_hybrid` so transcript
+  chunks never compete with summary chunks in the Telegram bot's retrieval
+  budget.
+- `SYNTHESIS_MAX_CHUNKS` / `MASTER_SYNTHESIS_PATH` — retrieval budget and
+  output path for `python main.py synthesize`.
+- `USE_CLAUDE_API`, `CLAUDE_API_KEY`, `CLAUDE_MODEL`, `CLAUDE_SYNTHESIS_MODEL`
+  — the LLM backend `summarizer/llm_client.py` calls. `CLAUDE_SYNTHESIS_MODEL`
+  (Sonnet) is used for the single synthesis call specifically because it's the
+  highest-leverage output of the whole pipeline.
 
-# last-man.org is deliberately excluded: a 619-page scrape of it (still under
-# transcripts/web/last_manorg/, gitignored) turned out to carry a site-wide
-# WordPress theme compromise (a PHP eval() backdoor + gambling spam-link
-# injection on every page). The summarization pipeline filtered it out before
-# it reached any summary or master_synthesis.md, but the site itself is still
-# compromised — do not re-add it or scrape it again.
-WEB_SOURCES = [
-    "https://berestovteam.ru",
-    "https://www.catalystathletics.com/article/",
-    "https://blog.torokhtiy.com/",
-    "https://power35.ru/biblioteka/last-man-standing-lms-trenirovki-s-dmitriem-golovinskim-denis-pikljaev/",
-    "https://dozerweightlifting.com/",
-    "https://www.theliftingzone.com/",
-    "https://www.sonnywebster.com/",
-]
-
-TELEGRAM_EXPORT = "data/telegram_atletisty.json"
-
-# ── YouTube API ───────────────────────────────────────────────────────────────
-USE_YOUTUBE_API = False
-YOUTUBE_API_KEY = ""  # or os.getenv("YOUTUBE_API_KEY")
-
-# ── Output paths ──────────────────────────────────────────────────────────────
-TRANSCRIPT_DIR = "transcripts"
-SUMMARY_DIR = "summaries"
-
-# ── Transcript settings ───────────────────────────────────────────────────────
-TRANSCRIPT_LANGUAGES = ["ru", "uk", "en"]
-REQUEST_DELAY = 1.5
-MAX_VIDEOS = None   # None = all; set int to limit for testing
-SKIP_MISSING = True
-
-# ── Local LLM (Ollama) settings ───────────────────────────────────────────────
-OLLAMA_BASE_URL = "http://localhost:11434"
-OLLAMA_MODEL = "qwen2.5:32b"       # Primary — fits on 5070 Ti 16GB at Q4
-OLLAMA_FALLBACK_MODEL = "qwen2.5:14b"  # Fallback if 32B is too slow
-OLLAMA_TIMEOUT = 120               # Seconds per request
-
-# Summarization runs immediately after each transcript is fetched.
-# Set False to extract only (no LLM), then run summarizer separately.
-SUMMARIZE_ON_EXTRACT = True
-
-# Max transcript tokens to send per summarization call.
-# Transcripts longer than this are chunked, summaries merged.
-SUMMARY_CHUNK_TOKENS = 6000
-
-# ── Priority flags ────────────────────────────────────────────────────────────
-OLY_PRIORITY_CHANNELS = [
-    "UCvHbRb9z_sIRzO7EHnN66SQ",  # Golovinsky — OLY videos need manual review
-]
-
-DOZER_CHANNEL_HANDLE = "@DozerWeightlifting"
-DOZER_CUE_INDEX_OUTPUT = "summaries/dozer_cue_index.md"
-DOZER_CUE_KEYWORDS = ["back", "demon", "snatch receive", "overhead squat", "jerk", "position", "cue"]
-
-WEBSTER_CHANNEL_HANDLE = "sonnywebsterGB"
-WEBSTER_MOBILITY_KEYWORDS = ["mobility", "flexibility", "thoracic", "shoulder", "hip", "ankle", "stretch"]
-```
+`config.py` still carries `CHANNELS`, `PLAYLISTS`, `WEB_SOURCES`, and the
+Whisper/yt-dlp settings from the old extraction era — they're unused by any
+current code (nothing in `main.py` or `synthesis/` references them) and are
+kept only as provenance for which sources fed the corpus. Don't extend them;
+BRAINDUMP owns extraction config now.
 
 ---
 
 ## Dependencies
 
 ```
-yt-dlp
-youtube-transcript-api
 requests
 tqdm
-beautifulsoup4
-ollama          # Python client for Ollama API
-tiktoken        # Token counting for chunking
+anthropic       # Claude API — the synthesis LLM backend
+qdrant-client
+PyYAML
+pytest
 ```
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Ollama must be running locally with the target model pulled:
-```bash
-ollama pull qwen2.5:32b
-ollama serve   # if not already running as a service
-```
+`index` and `synthesize` also import Brain_Dump's own modules directly
+(`indexer.*`, off `BRAINDUMP_PATH` on `sys.path`) rather than duplicating
+them, so retrieval behavior can't drift from the pipeline that produced the
+data — see `main.py::_backends`. That means a working Brain_Dump checkout
+with its own dependencies installed (Ollama + Qdrant reachable per its
+`config.yaml`) is required to run `index` or `synthesize`, not just this repo's
+`requirements.txt`.
 
 ---
 
@@ -486,112 +437,75 @@ python main.py synthesize
 
 ---
 
-## Summarization Pipeline
+## Synthesis Pipeline
 
 ### How it works
 
-After each video transcript is fetched, `video_summarizer.py` sends it to Ollama with a structured prompt. If the transcript exceeds `SUMMARY_CHUNK_TOKENS`, it's split into chunks, each summarized separately, then merged into one coherent video summary.
+BRAINDUMP extracts and persists every transcript as an individual Markdown
+note (YAML frontmatter + body) on the Z840. Nothing in OlyTracker touches raw
+video/web content anymore — the pipeline here is two steps:
 
-Once all videos in a channel are summarized, `channel_summarizer.py` feeds all video summaries to Ollama and generates a single `channel_summary.md` — the coaching philosophy, key principles, and athlete-specific applications distilled to ~1000 words.
+1. **`python main.py index`** (run on the Z840) — `synthesis/index.py::index_dir`
+   walks BRAINDUMP's transcript directory, parses and chunks each note
+   (reusing Brain_Dump's own `indexer.chunker`/`indexer.note_parser` so
+   chunking can't drift from the pipeline that produced the data), embeds the
+   chunks, and upserts them into OlyTracker's own Qdrant collection
+   (`config.SYNTHESIS_COLLECTION`, kept separate from `braindump_hybrid`).
+   Notes from excluded sources (`EXCLUDED_SOURCES`, `EXCLUDED_SOURCE_DOMAINS`
+   in `synthesis/index.py` — currently just `last-man.org`, a compromised
+   site) are skipped, and their vectors are actively purged if they were
+   indexed before the exclusion was added. A note with no `source` in its
+   frontmatter is skipped and logged rather than indexed with no attribution.
+2. **`python main.py synthesize`** (run anywhere with LAN access to the Z840)
+   — `synthesis/build.py::gather` retrieves the top passages for each topic in
+   `synthesis/prompts.py::TOPICS` (one retrieval call per topic, no athlete
+   context in the query — retrieval is topic-only so it can't be biased
+   toward one athlete's numbers), then `build_synthesis` makes a **single**
+   Claude Sonnet call with all retrieved passages plus `ATHLETE_CONTEXT`
+   injected once, and writes the result to `config.MASTER_SYNTHESIS_PATH`
+   (`summaries/master_synthesis.md`).
 
-Finally, `python main.py --synthesize` feeds all 8 `channel_summary.md` files to Ollama and generates `master_synthesis.md` — a cross-channel synthesis that identifies consensus principles, conflicts, and athlete-specific recommendations. **This is the file you bring to Claude.ai for program refinement** — it will be compact enough to fit comfortably in context.
+This is the fix for the old pipeline's structural bug: the athlete profile
+used to be injected into six separate summarization prompts (per-video,
+per-channel, and master-synthesis), which pre-distorted every stored
+artifact — a video mentioning nothing about this athlete would still get
+summarized "for" them. Now the profile enters exactly once, at the final
+synthesis call, over passages that were retrieved and stored without it.
+`tests/test_no_athlete_context_leak.py` enforces this structurally by scanning
+the repo for the profile's distinctive markers outside the one file allowed
+to carry them (`synthesis/prompts.py`) plus `CLAUDE.md`'s own reference table.
 
-### Prompts (in `summarizer/prompts.py`)
+### Prompts (`synthesis/prompts.py`)
 
-**Per-video prompt:**
-```
-You are analyzing a weightlifting coaching video transcript.
-Athlete context: intermediate strength athlete transitioning to Olympic weightlifting.
-102.5 kg, Back Squat 118 kg, Clean 80 kg, Jerk 65 kg, OHS 50 kg (limiter).
-Chronic back pain. Push jerk only (no split). Night shift worker.
-
-Extract from this transcript:
-1. Programming principles mentioned (sets/reps/intensity/frequency)
-2. Technique cues for snatch, clean, or jerk
-3. Exercise recommendations
-4. Recovery or mobility advice
-5. Anything specifically relevant to this athlete's profile
-
-Be concise. If the video is not about weightlifting, say so in one line.
-Transcript:
-{transcript}
-```
-
-**Channel roll-up prompt:**
-```
-You have {n} video summaries from the coaching channel "{channel_name}".
-Synthesize these into a single coaching philosophy document covering:
-1. Core training philosophy (3-5 principles)
-2. Programming approach (structure, periodization, intensity)
-3. Key technique cues and exercise preferences
-4. Recovery and mobility approach
-5. How this applies to an intermediate lifter:
-   102.5 kg, BS 118 kg, Clean 80 kg, Jerk 65 kg, OHS 50 kg,
-   chronic back pain, push jerk only, night shift worker
-Keep it under 1000 words. Be direct and specific.
-Video summaries:
-{summaries}
-```
-
-**Master synthesis prompt:**
-```
-You have coaching philosophy summaries from 8 Olympic weightlifting sources:
-Pavlukhin, Berestov, Klokov, Torokhtiy, Everett, Golovinsky, Dozer, Webster.
-
-Generate a master synthesis document covering:
-1. Consensus principles (agreed upon by 3+ sources)
-2. Conflicting recommendations (where coaches disagree) + how to resolve
-3. Unique contributions from each source not covered elsewhere
-4. A prioritized list of program adjustments for this specific athlete:
-   102.5 kg, BS 118 kg, Clean 80 kg, Jerk 65 kg, OHS 50 kg,
-   chronic back pain, push jerk only, night shift Wed-Sun 7pm-7:30am
-5. Top 10 technique cues most relevant to this athlete right now
-
-This document will be used to refine a 6-week hypertrophy program.
-Keep under 2000 words. Be specific and actionable.
-Channel summaries:
-{summaries}
-```
+- `TOPICS` — one `Topic(key, question)` per synthesis theme (snatch, jerk,
+  back_health, periodization, squat, mobility, recovery). Questions are
+  phrased as "what do these coaches say about X", never about what this
+  athlete specifically should do.
+- `ATHLETE_CONTEXT` — the one and only place the athlete profile is
+  serialized for an LLM call.
+- `SYNTHESIS_PROMPT` — the single prompt `build_synthesis` sends, requiring
+  every claim to cite a passage number and forbidding knowledge from outside
+  the retrieved passages. See `synthesis/prompts.py` for the exact text.
 
 ---
 
 ## Output Format
 
-**Per-video transcript** (`transcripts/<channel>/<id>_<title>.txt`):
-```
-Title: <video title>
-Channel: <channel name>
-Language: <ru|uk|en>
-Video ID: <id>
-URL: https://www.youtube.com/watch?v=<id>
-Date: <upload date>
----
-<transcript text — cleaned, no timestamps>
-```
+**Master synthesis** (`summaries/master_synthesis.md`): the only generated
+artifact in the current pipeline. Structured per `SYNTHESIS_PROMPT` —
+consensus principles, conflicts, per-source contributions, application to
+this athlete, all cited to numbered passages that trace back to specific
+indexed transcripts. **This is what you bring to Claude.ai** for program
+refinement.
 
-**Per-video summary** (`summaries/<channel>/<id>_summary.md`):
-```markdown
-# <Video Title>
-**Channel:** <name> | **Date:** <date> | **Language:** <ru|en>
-
-## Key Points
-- ...
-
-## Technique Cues
-- ...
-
-## Programming Principles
-- ...
-
-## Athlete Relevance
-- ...
-```
-
-**Channel summary** (`summaries/<channel>/channel_summary.md`): ~1000 words, structured per roll-up prompt above.
-
-**Master synthesis** (`summaries/master_synthesis.md`): ~2000 words. **This is what you bring to Claude.ai.**
-
-`merged.txt` per channel: raw transcripts concatenated — for Qdrant/BRAINDUMP pipeline ingestion.
+There are no more per-video or per-channel summary files — BRAINDUMP owns the
+raw transcripts (as Markdown notes with frontmatter, not the old
+`transcripts/<channel>/<id>_<title>.txt` layout), and OlyTracker never
+materializes an intermediate summary per video or per channel; retrieval goes
+straight from indexed transcript chunks to the one synthesis call above.
+`summaries_archive/` holds the pre-2026-08 per-video/per-channel output from
+the old pipeline, kept deliberately as the bias-fix control — don't delete it,
+and don't generate anything new in that format.
 
 ---
 
@@ -599,15 +513,17 @@ Date: <upload date>
 
 | Phase | Where | Task |
 |-------|-------|------|
-| 1 | Claude Code | Extract transcripts from all 8 sources |
-| 2 | Claude Code + Ollama | Summarize each video immediately after extraction |
-| 3 | Claude Code + Ollama | Roll up per-channel summaries |
-| 4 | Claude Code + Ollama | Generate `master_synthesis.md` |
-| 5 | **Claude.ai** | Bring `master_synthesis.md` here — refine program + build Phase 2 |
-| 6 | **Claude.ai** | Update OlyTracker app with refined program + cues |
-| 7 | Claude Code | Generate `dozer_cue_index.md` from Dozer + Webster |
-| 8 | Claude Code | Convert OlyTracker HTML → PWA (see PWA section below) |
-| 9 | Optional | Ingest `merged.txt` files into BRAINDUMP/Qdrant |
+| 1 | BRAINDUMP (Z840) | Extract, transcribe, and persist coaching transcripts as Markdown notes — see `Brain_Dump/CLAUDE.md`, not this repo |
+| 2 | `python main.py index` (Z840) | Index BRAINDUMP's persisted notes into `config.SYNTHESIS_COLLECTION` |
+| 3 | `python main.py synthesize` (anywhere on the LAN) | Retrieve per topic, run the single athlete-context synthesis call, write `master_synthesis.md` |
+| 4 | **Claude.ai** | Bring `master_synthesis.md` here — refine the program |
+| 5 | **Claude.ai** | Update the OlyTracker app (`docs/src/app.jsx`) with refined program + cues |
+
+The old Phase-1–8 pipeline (extract with yt-dlp → per-video summary → per-channel
+summary → `dozer_cue_index.md` → PWA conversion) is gone; BRAINDUMP is the sole
+extractor and OlyTracker only indexes and synthesizes. The PWA conversion
+(old Phase 8) is long since done — see Development Rules at the top of this
+file for the current app build process.
 
 ---
 
@@ -713,24 +629,36 @@ bubblewrap build
 
 ## Notes for Claude Code
 
-- Check for existing transcript before fetching — respect `--force`
-- Check for existing summary before summarizing — respect `--force`
-- Language priority: `["ru", "uk", "en"]` — Golovinsky may use Ukrainian
-- Playlist extraction: use `yt-dlp` to enumerate IDs, then pull transcripts per video
-- Sanitize names for filesystem: strip special chars, lowercase, underscores
-- Video title in filename: max 60 chars, sanitized
-- Log all activity to `extraction.log`: channel, video count, skips, errors, timestamps
-- Never hardcode URLs — always read from `config.py` or CLI args
-- Keep all modules independently testable — extractor and summarizer should work standalone
-- Telegram export: parse `message.text` fields only, skip media/service messages
-- Web scraping: `requests` + `BeautifulSoup` — no JS rendering needed
-- `program/week_1-8.json` is consumed by the tracker — never overwrite during extraction
-- If Ollama is unavailable or returns an error, log the failure and continue extraction — don't crash the pipeline
-- If a transcript exceeds `SUMMARY_CHUNK_TOKENS`, split on sentence boundaries, summarize each chunk, then merge chunk summaries with a second LLM call
-- For `--priority-oly` flag: only extract from `OLY_PRIORITY_CHANNELS`, add `[OLY]` tag to output filenames
-- For Dozer: generate `dozer_cue_index.md` — scan summaries for `DOZER_CUE_KEYWORDS`, organize by lift phase: snatch_pull, snatch_receive, clean_pull, clean_receive, jerk_drive, jerk_lockout, back_posterior_chain
-- For Webster: scan summaries for `WEBSTER_MOBILITY_KEYWORDS`, add to `dozer_cue_index.md` under `[WEBSTER]` tag. Flag cues appearing in both Dozer and Webster as `[HIGH_CONFIDENCE]`
-- Token counting: use `tiktoken` with `cl100k_base` encoding for chunk size estimation
-- Night shift flag: session logger includes `post_night_shift: bool` field in records
-- On completion print a summary: channels processed, videos extracted, videos summarized, videos skipped (no transcript), errors
+- **BRAINDUMP is the sole extractor.** Don't reintroduce transcript fetching
+  (yt-dlp, YouTube captions, web scraping, Telegram export parsing) in this
+  repo — that logic lives in `Brain_Dump/`, extracts into Markdown notes with
+  frontmatter, and is out of scope here.
+- Never hardcode URLs or paths — read from `config.py` or CLI args.
+  `BRAINDUMP_CONFIG`/`BRAINDUMP_PATH` in particular must resolve to real
+  files/dirs regardless of the caller's cwd (see Finding C1's fix and
+  `tests/test_config.py`) — this repo's docs explicitly instruct running
+  `python main.py index`/`synthesize` from OlyTracker's own root, not
+  Brain_Dump's.
+- A backend outage (Ollama/Qdrant unreachable) mid-`index` run must abort and
+  exit non-zero — never let a per-file `except Exception` in
+  `synthesis/index.py::index_dir` swallow `BackendUnavailable` and report a
+  partial run as a clean success.
+- Adding a domain to `EXCLUDED_SOURCE_DOMAINS` (`synthesis/index.py`) must
+  purge that source's already-indexed vectors on the next `index` run, not
+  just prevent new ones — exclusion needs to remediate, not just prevent.
+- A transcript note with no `source` in its frontmatter (including one whose
+  frontmatter failed to parse) is skipped and logged, never indexed —  no
+  source means no attribution and no way to run the exclusion check.
+- Citation numbering in `synthesis/build.py::_render_context` must stay one
+  continuous sequence across every covered topic — an uncovered topic
+  contributes no block and consumes no number. See
+  `tests/test_synthesis_build.py`.
+- The athlete profile (`synthesis/prompts.py::ATHLETE_CONTEXT`) must never
+  appear anywhere else in the repo except this file's own Athlete Profile
+  table — `tests/test_no_athlete_context_leak.py` scans the whole repo (code
+  and docs) for its distinctive markers and fails if it reappears.
+- `transcripts/` is gitignored in both repos — never commit raw transcript
+  text. Brain_Dump's corpus in particular includes content pulled from a
+  source with a known site-wide compromise (see `EXCLUDED_SOURCES` above);
+  never run `git add -A` in either repo.
 

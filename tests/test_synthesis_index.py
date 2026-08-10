@@ -7,6 +7,7 @@ import config
 
 sys.path.insert(0, config.BRAINDUMP_PATH)
 
+from indexer.errors import BackendUnavailable  # noqa: E402
 from synthesis import index as sindex  # noqa: E402
 
 
@@ -31,6 +32,17 @@ extracted_at: '2026-08-08T00:00:00Z'
 ---
 
 Some backdoor-laced content that must never reach the retrievable corpus.
+"""
+
+# No `source:` key at all — the same shape produced when note_parser swallows
+# a YAMLError into `fm = {}` (unparseable frontmatter fails closed the same way).
+NO_SOURCE_NOTE = """---
+source_type: youtube
+title: Mystery Video
+extracted_at: '2026-08-08T00:00:00Z'
+---
+
+Content with no attributable source.
 """
 
 
@@ -71,6 +83,21 @@ class _FlakyEmbedder:
         self.calls += 1
         if self.calls == self.fail_on_call:
             raise RuntimeError("boom")
+        return [[float(len(t)), 1.0, 0.0, 0.0] for t in texts]
+
+
+class _OutageEmbedder:
+    """Raises BackendUnavailable on the Nth `embed()` call — simulates Ollama
+    dropping mid-batch, as opposed to a per-file processing error."""
+
+    def __init__(self, fail_on_call):
+        self.fail_on_call = fail_on_call
+        self.calls = 0
+
+    def embed(self, texts):
+        self.calls += 1
+        if self.calls == self.fail_on_call:
+            raise BackendUnavailable("ollama connection refused")
         return [[float(len(t)), 1.0, 0.0, 0.0] for t in texts]
 
 
@@ -250,3 +277,83 @@ def test_index_dir_does_not_report_all_failures_as_success(tmp_path, caplog):
         "1 failed" in rec.getMessage() or "failed=1" in rec.getMessage()
         for rec in caplog.records
     ), "expected a logged summary reporting the failure count"
+
+
+# ── Finding I3: backend outage aborts rather than reporting success ────────────
+
+def test_index_dir_reraises_backend_unavailable_instead_of_swallowing_it(tmp_path):
+    (tmp_path / "a-abc12345.md").write_text(NOTE, encoding="utf-8")
+    (tmp_path / "b-abc12345.md").write_text(NOTE, encoding="utf-8")
+
+    store = _FakeStore()
+    embedder = _OutageEmbedder(fail_on_call=1)  # "a" sorts first and hits the outage
+
+    with pytest.raises(BackendUnavailable):
+        sindex.index_dir(tmp_path, store, embedder,
+                         chunk_chars=1200, overlap_chars=200)
+
+    # Must abort on the outage rather than continuing to "b" and reporting
+    # a clean (or partially-clean) run.
+    assert store.points == []
+
+
+# ── Finding I4: exclusion purges already-indexed vectors, not just prevents new ones ──
+
+def test_index_dir_purges_vectors_when_filename_excluded_on_reindex(tmp_path):
+    (tmp_path / "last_manorg-def67890.md").write_text(NOTE, encoding="utf-8")
+    store, embedder = _FakeStore(), _FakeEmbedder()
+
+    n = sindex.index_dir(tmp_path, store, embedder,
+                         chunk_chars=1200, overlap_chars=200)
+
+    assert n == 0
+    assert store.deleted == ["last_manorg-def67890.md"], (
+        "an excluded note must have its previously-indexed points purged, "
+        "not just be skipped for future indexing"
+    )
+
+
+def test_index_dir_purges_vectors_when_source_domain_excluded_on_reindex(tmp_path):
+    (tmp_path / "bench-press-article-deadbeef.md").write_text(
+        LAST_MAN_NOTE, encoding="utf-8")
+    store, embedder = _FakeStore(), _FakeEmbedder()
+
+    n = sindex.index_dir(tmp_path, store, embedder,
+                         chunk_chars=1200, overlap_chars=200)
+
+    assert n == 0
+    assert store.deleted == ["bench-press-article-deadbeef.md"], (
+        "a note newly excluded by source domain must have its previously-"
+        "indexed points purged on the re-run that adds the domain to "
+        "EXCLUDED_SOURCE_DOMAINS"
+    )
+
+
+# ── Finding I5: unparseable/missing frontmatter fails closed ───────────────────
+
+def test_index_dir_skips_note_with_no_source(tmp_path, caplog):
+    (tmp_path / "mystery-abc12345.md").write_text(NO_SOURCE_NOTE, encoding="utf-8")
+    store, embedder = _FakeStore(), _FakeEmbedder()
+
+    with caplog.at_level("WARNING"):
+        n = sindex.index_dir(tmp_path, store, embedder,
+                             chunk_chars=1200, overlap_chars=200)
+
+    assert n == 0
+    assert store.points == []
+    assert any(
+        "mystery-abc12345.md" in rec.getMessage() for rec in caplog.records
+    ), "expected a warning naming the file with no source"
+
+
+def test_index_dir_skips_only_the_sourceless_note_and_indexes_the_rest(tmp_path):
+    (tmp_path / "mystery-abc12345.md").write_text(NO_SOURCE_NOTE, encoding="utf-8")
+    (tmp_path / "snatch-basics-abc12345.md").write_text(NOTE, encoding="utf-8")
+    store, embedder = _FakeStore(), _FakeEmbedder()
+
+    n = sindex.index_dir(tmp_path, store, embedder,
+                         chunk_chars=1200, overlap_chars=200)
+
+    assert n == 1
+    assert {p.payload["note_path"] for p in store.points} == {
+        "snatch-basics-abc12345.md"}

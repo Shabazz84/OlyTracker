@@ -49,7 +49,14 @@ def cmd_index(args) -> int:
     from indexer.errors import BackendUnavailable
     from synthesis.index import index_dir
 
-    transcript_dir = args.transcript_dir or cfg["processing"]["transcript_dir"]
+    transcript_dir = args.transcript_dir
+    if transcript_dir is None:
+        # cfg["processing"]["transcript_dir"] (e.g. "./transcripts") is relative
+        # to Brain_Dump's root, not the operator's cwd — resolve it against
+        # BRAINDUMP_PATH so `python main.py index` works run from OlyTracker too.
+        transcript_dir = cfg["processing"]["transcript_dir"]
+        if not Path(transcript_dir).is_absolute():
+            transcript_dir = str(Path(config.BRAINDUMP_PATH) / transcript_dir)
     ch = cfg["chunking"]
     try:
         n = index_dir(transcript_dir, store, embedder,
