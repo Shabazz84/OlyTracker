@@ -7,6 +7,10 @@
 - **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
 - **Cloud sync is Supabase only.** The GitHub Gist sync path was removed — `sbSync` (defined inline in `index.html`) auto-syncs sessions/sets/reviews on every mutation and pulls on startup. Don't reintroduce a second sync backend.
 - **`docs/key.js` holds secrets** (gitignored, not deployed to Pages). The `__CLAUDE_KEY` there only works locally; a browser cannot hold a Claude key securely — for production AI review, proxy through a serverless function. The Supabase publishable key is safe to expose.
+- **BRAINDUMP is the sole extractor.** OlyTracker no longer downloads or
+  transcribes anything — see `docs/superpowers/specs/2026-08-07-braindump-unified-extraction-design.md`.
+  The athlete profile lives in exactly one place, `synthesis/prompts.py`;
+  `tests/test_no_athlete_context_leak.py` fails if it reappears elsewhere.
 
 ---
 
@@ -339,21 +343,15 @@ olytracker/
 ├── README.md
 ├── requirements.txt
 ├── config.py                        # All channels, API keys, LLM settings, output paths
-├── extractor/
-│   ├── __init__.py
-│   ├── channel.py                   # Fetch video IDs from channel URL
-│   ├── playlist.py                  # Fetch video IDs from playlist URL
-│   ├── transcript.py                # Fetch and clean transcripts per video
-│   ├── web.py                       # Scrape web sources
-│   ├── telegram.py                  # Parse Telegram Desktop JSON export
-│   └── export.py                    # Save .txt files and merged output
+├── synthesis/
+│   ├── index.py                 # transcripts -> oly_transcripts (runs on Z840)
+│   ├── retrieve.py              # topic query -> citable passages
+│   ├── prompts.py               # TOPICS + the ONLY ATHLETE_CONTEXT in the repo
+│   └── build.py                 # passages -> master_synthesis.md (Sonnet)
 ├── summarizer/
 │   ├── __init__.py
-│   ├── ollama_client.py             # Ollama API wrapper (local LLM via HTTP)
-│   ├── prompts.py                   # All summarization prompts
-│   ├── video_summarizer.py          # Per-video summary generation
-│   ├── channel_summarizer.py        # Roll-up channel summary from video summaries
-│   └── cue_indexer.py               # Dozer + Webster cue extraction and indexing
+│   └── llm_client.py            # Claude API wrapper
+├── summaries_archive/           # pre-2026-08 output, kept as the bias-fix control
 ├── transcripts/                     # Gitignored — raw transcript files
 │   └── <channel_name>/
 │       ├── <video_id>_<title>.txt   # Per-video transcript
@@ -479,41 +477,11 @@ ollama serve   # if not already running as a service
 ## CLI Usage
 
 ```bash
-# Full pipeline: extract + summarize all sources
-python main.py
+# Index BRAINDUMP's persisted transcripts (run ON the Z840)
+python main.py index
 
-# Extract only — no LLM (useful if Ollama not ready)
-python main.py --extract-only
-
-# Summarize only — from existing transcripts
-python main.py --summarize-only
-
-# Single channel (extract + summarize)
-python main.py --channel "https://www.youtube.com/@catalystathletics"
-
-# Single playlist
-python main.py --playlist "https://youtube.com/playlist?list=PLf-VoST4p_FpSx1M4hV2RY4IsupbJhMU1"
-
-# Web sources only
-python main.py --web
-
-# Telegram export only
-python main.py --telegram
-
-# Testing — limit to N videos per channel
-python main.py --max 5
-
-# Force re-download and re-summarize
-python main.py --force
-
-# Only Golovinsky OLY content
-python main.py --priority-oly
-
-# Generate master synthesis from all channel summaries
-python main.py --synthesize
-
-# Generate cue index from Dozer + Webster
-python main.py --cue-index
+# Build master_synthesis.md from retrieval (run anywhere with LAN access)
+python main.py synthesize
 ```
 
 ---

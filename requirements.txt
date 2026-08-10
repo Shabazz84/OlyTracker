@@ -1,8 +1,6 @@
-yt-dlp
-youtube-transcript-api
-faster-whisper
 requests
-beautifulsoup4
-tiktoken
 tqdm
+anthropic
+qdrant-client
+PyYAML
 pytest
