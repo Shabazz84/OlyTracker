@@ -38,6 +38,38 @@ def retrieve_topic(question: str, embedder, store, *, limit: int,
     ]
 
 
+#: Passage characters shown per hit before truncation. Transcript chunks run
+#: ~1200 chars; a screenful of 8 of them is unreadable, and the point of the
+#: command is to scan sources fast, then drill in with --full.
+CLI_SNIPPET_CHARS = 420
+
+
+def format_for_cli(passages: list[Passage], *, full: bool = False,
+                   snippet_chars: int = CLI_SNIPPET_CHARS) -> str:
+    """Human-readable rendering of retrieved passages for `main.py ask`.
+
+    Deliberately NOT summarized: this prints what the coach actually said, with
+    the source URL, so there is nothing between the reader and the transcript
+    that could invent a number. `format_passages` above is the machine-facing
+    sibling that builds the prompt context block.
+    """
+    if not passages:
+        return ("no passages above the similarity threshold — the corpus does "
+                "not cover this. Do not fill the gap from memory.")
+
+    blocks = []
+    for i, p in enumerate(passages, start=1):
+        label = p.title or p.note_path
+        # Transcript bodies are one unwrapped blob; collapse so it reads.
+        body = " ".join(p.text.split())
+        if not full and len(body) > snippet_chars:
+            body = body[:snippet_chars].rstrip() + " …"
+        head = f"[{i}] {p.score:.2f}  {label}"
+        origin = f"     {p.source}" if p.source else None
+        blocks.append("\n".join(x for x in (head, origin, f"     {body}") if x))
+    return "\n\n".join(blocks)
+
+
 def format_passages(passages: list[Passage]) -> str:
     """A numbered context block. The numbers are the citation handles the
     synthesis prompt requires the model to cite, which is what makes every

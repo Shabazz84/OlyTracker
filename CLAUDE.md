@@ -433,7 +433,29 @@ python main.py index
 
 # Build master_synthesis.md from retrieval (run anywhere with LAN access)
 python main.py synthesize
+
+# Ask the corpus a question — prints SOURCE PASSAGES, makes no LLM call
+python main.py ask "how should I program the jerk when it's behind my clean?"
+python main.py ask "overhead squat depth" --limit 15 --full
 ```
+
+**`ask` is the reliable path for program-building, not `synthesize`.**
+`master_synthesis.md` is one narrow view of the corpus (7 generic topics ×
+`SYNTHESIS_MAX_CHUNKS`, ~155 passages ≈ 5% of the indexed notes), written by an
+LLM. `ask` puts a specific question to all 21k chunks and prints what the
+coaches actually said, verbatim, with source URLs — no model sits between the
+transcript and the reader, so no number can be invented. Use it to check any
+claim in `master_synthesis.md`, and to gather cited evidence per programming
+decision. It exits 4 and says so explicitly when nothing clears the threshold;
+that means the corpus does not cover the question — do not fill the gap from
+memory.
+
+The archived `summaries_archive/master_synthesis.md` is the cautionary example:
+it prescribed "deload every 4th week" and "drop 40% if back pain >3/10" in the
+same confident voice as claims that were verbatim-accurate, with no citations
+to tell them apart. `python main.py ask "how often should a weightlifter
+deload"` shows the real source saying frequency "can vary from person to
+person."
 
 ---
 

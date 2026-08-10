@@ -98,6 +98,38 @@ def cmd_synthesize(args) -> int:
     return 0
 
 
+def cmd_ask(args) -> int:
+    """Answer a question with retrieved passages and nothing else.
+
+    No LLM call, by design. `synthesize` exists to produce prose; this exists to
+    let you check what the coaches actually said before trusting any prose about
+    it. The archived master_synthesis.md prescribed "deload every 4th week" and
+    "stop if pain >3/10" — neither traceable to a source, and in the old format
+    there was no way to find that out.
+    """
+    cfg, embedder, store = _backends()
+    from indexer.errors import BackendUnavailable
+    from synthesis import retrieve as sretrieve
+
+    threshold = cfg["qdrant"]["similarity_threshold"]
+    try:
+        passages = sretrieve.retrieve_topic(
+            args.question, embedder, store,
+            limit=args.limit, threshold=threshold)
+    except BackendUnavailable as e:
+        print(f"Z840 unreachable; run again when it's up ({e})", file=sys.stderr)
+        return 3
+
+    if not passages:
+        print(sretrieve.format_for_cli([]), file=sys.stderr)
+        return 4
+
+    print(sretrieve.format_for_cli(passages, full=args.full))
+    print(f"\n{len(passages)} passage(s) above {threshold} "
+          f"from {len({p.note_path for p in passages})} source(s).")
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="olytracker")
     sub = p.add_subparsers(dest="command", required=True)
@@ -109,6 +141,14 @@ def main(argv=None) -> int:
 
     ps = sub.add_parser("synthesize", help="Build master_synthesis.md from retrieval")
     ps.set_defaults(func=cmd_synthesize)
+
+    pa = sub.add_parser("ask", help="Show source passages for a question (no LLM)")
+    pa.add_argument("question", help="e.g. \"how should I program the jerk?\"")
+    pa.add_argument("--limit", type=int, default=8,
+                    help="max passages to show (default 8)")
+    pa.add_argument("--full", action="store_true",
+                    help="print each passage in full instead of a snippet")
+    pa.set_defaults(func=cmd_ask)
 
     args = p.parse_args(argv)
     return args.func(args)
