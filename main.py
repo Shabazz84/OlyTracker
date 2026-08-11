@@ -130,6 +130,41 @@ def cmd_ask(args) -> int:
     return 0
 
 
+def cmd_evidence(args) -> int:
+    """Build the evidence pack: retrieval only, no LLM call.
+
+    This is the input to a cited program rebuild. Every passage it writes is
+    verbatim, so a prescription citing E12.3 can be checked against what the
+    coach actually said.
+    """
+    from datetime import date
+
+    cfg, embedder, store = _backends()
+    from indexer.errors import BackendUnavailable
+    from synthesis import evidence as sev
+
+    threshold = cfg["qdrant"]["similarity_threshold"]
+    try:
+        results = sev.gather_evidence(embedder, store, limit=args.limit,
+                                      threshold=threshold)
+    except BackendUnavailable as e:
+        print(f"Z840 unreachable; run again when it's up ({e})", file=sys.stderr)
+        return 3
+
+    covered = sum(1 for r in results if r.covered)
+    if covered == 0:
+        print("ERROR: no question retrieved anything. The collection is empty "
+              "or misconfigured — this is not a corpus gap.", file=sys.stderr)
+        return 4
+
+    out_dir = args.out or str(Path(config.EVIDENCE_DIR) / date.today().isoformat())
+    out = sev.write_pack(results, out_dir, limit=args.limit,
+                         threshold=threshold,
+                         collection=config.SYNTHESIS_COLLECTION)
+    print(f"wrote {out} ({covered}/{len(results)} questions covered)")
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="olytracker")
     sub = p.add_subparsers(dest="command", required=True)
@@ -149,6 +184,14 @@ def main(argv=None) -> int:
     pa.add_argument("--full", action="store_true",
                     help="print each passage in full instead of a snippet")
     pa.set_defaults(func=cmd_ask)
+
+    pe = sub.add_parser("evidence",
+                        help="Build the evidence pack from the question catalog (no LLM)")
+    pe.add_argument("--out", default=None,
+                    help="Output directory (default: evidence/<today>)")
+    pe.add_argument("--limit", type=int, default=config.EVIDENCE_MAX_CHUNKS,
+                    help="Passages retrieved per question")
+    pe.set_defaults(func=cmd_evidence)
 
     args = p.parse_args(argv)
     return args.func(args)
