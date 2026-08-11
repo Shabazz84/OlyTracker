@@ -50,7 +50,7 @@ twelve passages from two sources is one coach's opinion quoted twelve times.
 | 29 | ankle_mobility | 12 | 8 | |
 | 30 | mobility_dosing | 12 | 7 | |
 
-## The finding that matters most: deload magnitude is one voice
+## Concentration: deload magnitude is one voice *within q4*
 
 Question 4 filled its entire 12-passage budget, which in the table looks like
 the strongest possible coverage. It is not. **All twelve passages are
@@ -58,11 +58,29 @@ Torokhtiy** — ten from a single article
 (`torokhtiy.com/blogs/guides/what-is-a-deload-week-in-weightlifting`) and two
 from another page on the same site.
 
-This is the single most important constraint on the rebuild. The live Block 1
-prescribes a Week 7 deload at "sets −40%". That number cannot be validated
-against consensus here, because there is no consensus to validate it against —
-at best it can be checked against one coach. Any deload claim in the rebuild
-must be attributed to Torokhtiy by name, never phrased as what "coaches say."
+Any deload claim resting on **q4 alone** must be attributed to Torokhtiy by
+name, never phrased as what "coaches say."
+
+### Correction, after reading the pack (2026-08-11)
+
+The paragraph above originally continued: *"at best it can be checked against
+one coach."* **That was wrong**, and the error is instructive enough to leave
+visible rather than quietly delete.
+
+It was inferred from q4's source count without reading q3 and q5, which retrieve
+deload material too. Read whole, the pack holds a genuine **three-way
+disagreement** on deload magnitude:
+
+- **Torokhtiy** — cut both: weight by 40–60%, sets/reps from 5×5 to 2–3×3–5
+  [E4.3, E3.9]; sample week at 40–50% of 1RM [E4.1, E3.1].
+- **Catalyst / Mike Gray's back-off week** — keep load high, cut reps only; a
+  reader notes exactly this contrast [E3.2].
+- **Greg Everett** — a mild cut of both: weights 10–15%, volume 15–25% [E5.11].
+
+The lesson generalizes: **per-question source counts detect concentration, but
+they cannot detect a topic spread across several questions.** A decision-shaped
+catalog deliberately asks about one decision from multiple angles, so evidence
+for it accumulates across question files. Read the pack, not the manifest.
 
 It is also a direct echo of the archived synthesis's failure. That document
 asserted "deload every 4th week" in the same confident voice as claims that
@@ -106,7 +124,13 @@ topic-level view could not have shown at all.
 ## Reading this before the rebuild
 
 - Passage count measures retrieval depth. Source count measures whether anyone
-  agrees. Cite the second.
-- Any claim resting on q4 is Torokhtiy's position, stated as his.
+  agrees within that question. Cite the second.
+- But source count is per-question, and a decision can be spread across several
+  questions — deload evidence sits in q3, q4 and q5. **Read the files, not the
+  table.** The table narrows where to look; it does not settle anything.
+- Any claim resting on q4 alone is Torokhtiy's position, stated as his.
 - Thin questions are not licences to fill from memory. A question that returned
   four passages answers what those four passages answer, and no more.
+- Expect noise. q1 returned 12 passages of which ~5 are on topic (four are about
+  choosing a coach); q2's four include competition banter. Retrieval clearing
+  0.58 is not the same as a passage answering the question asked.
