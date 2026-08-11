@@ -1,4 +1,6 @@
 transcripts/
+# Evidence packs are verbatim transcript text — same rule as transcripts/.
+evidence/
 audio/
 reference_videos/
 data/telegram_atletisty.json
