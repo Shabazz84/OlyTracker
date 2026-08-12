@@ -157,10 +157,14 @@ def cmd_evidence(args) -> int:
               "or misconfigured — this is not a corpus gap.", file=sys.stderr)
         return 4
 
-    out_dir = args.out or str(Path(config.EVIDENCE_DIR) / date.today().isoformat())
+    today = date.today().isoformat()
+    out_dir = args.out or str(Path(config.EVIDENCE_DIR) / today)
+    citations_path = args.citations_out or str(
+        Path("docs") / "programs" / f"{today}-citations.json")
     out = sev.write_pack(results, out_dir, limit=args.limit,
                          threshold=threshold,
-                         collection=config.SYNTHESIS_COLLECTION)
+                         collection=config.SYNTHESIS_COLLECTION,
+                         citations_path=citations_path)
     print(f"wrote {out} ({covered}/{len(results)} questions covered)")
     return 0
 
@@ -191,6 +195,10 @@ def main(argv=None) -> int:
                     help="Output directory (default: evidence/<today>)")
     pe.add_argument("--limit", type=int, default=config.EVIDENCE_MAX_CHUNKS,
                     help="Passages retrieved per question")
+    pe.add_argument("--citations-out", default=None,
+                    help="Where to write the committed citation manifest "
+                         "(default: docs/programs/<today>-citations.json). "
+                         "Deliberately outside evidence/, which is gitignored.")
     pe.set_defaults(func=cmd_evidence)
 
     args = p.parse_args(argv)
