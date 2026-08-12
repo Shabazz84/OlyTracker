@@ -277,3 +277,61 @@ def test_write_pack_without_citations_path_writes_no_manifest(tmp_path):
                          collection="oly")
 
     assert not (out / "citations.json").exists()
+
+
+# ------------------------------------------ write_pack: citations conflicts
+
+
+def test_write_pack_refuses_to_overwrite_a_differing_manifest(tmp_path):
+    """Retrieval reorders near-tied passages between runs, so a second run
+    can produce a different handle->sha256 mapping. Silently replacing an
+    already-committed manifest is the audit-trail gap this guards against."""
+    cit = tmp_path / "committed" / "2026-08-12-citations.json"
+    first = [sev.QuestionResult(_q(), [_p("body one")], True)]
+    second = [sev.QuestionResult(_q(), [_p("body two")], True)]
+
+    sev.write_pack(first, tmp_path / "pack1", limit=12, threshold=0.58,
+                   collection="oly", citations_path=cit)
+    before = cit.read_text(encoding="utf-8")
+
+    with pytest.raises(sev.CitationsConflictError) as exc_info:
+        sev.write_pack(second, tmp_path / "pack2", limit=12, threshold=0.58,
+                       collection="oly", citations_path=cit)
+
+    # named the path and the override in the error, and left the file alone
+    assert str(cit) in str(exc_info.value)
+    assert "overwrite" in str(exc_info.value)
+    assert cit.read_text(encoding="utf-8") == before
+
+
+def test_write_pack_overwrite_true_replaces_a_differing_manifest(tmp_path):
+    cit = tmp_path / "committed" / "2026-08-12-citations.json"
+    first = [sev.QuestionResult(_q(), [_p("body one")], True)]
+    second = [sev.QuestionResult(_q(), [_p("body two")], True)]
+
+    sev.write_pack(first, tmp_path / "pack1", limit=12, threshold=0.58,
+                   collection="oly", citations_path=cit)
+    sev.write_pack(second, tmp_path / "pack2", limit=12, threshold=0.58,
+                   collection="oly", citations_path=cit, overwrite=True)
+
+    written = json.loads(cit.read_text(encoding="utf-8"))
+    expected = sev.build_citations(second, limit=12, threshold=0.58,
+                                   collection="oly")
+    assert written == expected
+
+
+def test_write_pack_is_a_noop_when_new_content_is_byte_identical(tmp_path):
+    """A repeat run that changed nothing must not fail — only a real
+    difference in content should trigger the refusal."""
+    cit = tmp_path / "committed" / "2026-08-12-citations.json"
+    results = [sev.QuestionResult(_q(), [_p("same body")], True)]
+
+    sev.write_pack(results, tmp_path / "pack1", limit=12, threshold=0.58,
+                   collection="oly", citations_path=cit)
+    before = cit.read_text(encoding="utf-8")
+
+    # no overwrite=True passed — must not raise, since content is identical
+    sev.write_pack(results, tmp_path / "pack2", limit=12, threshold=0.58,
+                   collection="oly", citations_path=cit)
+
+    assert cit.read_text(encoding="utf-8") == before

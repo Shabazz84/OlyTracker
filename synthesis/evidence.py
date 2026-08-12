@@ -23,6 +23,17 @@ from synthesis.retrieve import Passage, retrieve_topic
 logger = logging.getLogger(__name__)
 
 
+class CitationsConflictError(Exception):
+    """Raised when write_pack would silently replace a committed citations
+    manifest whose content differs from this run's.
+
+    Retrieval reorders near-tied passages between runs, so a second run on
+    the same date can produce a different handle->sha256 mapping. Since the
+    whole point of the manifest is a re-resolvable citation trail, replacing
+    it without the operator noticing is an audit-trail gap, not a routine
+    overwrite. Pass overwrite=True to replace it deliberately."""
+
+
 @dataclass(frozen=True)
 class QuestionResult:
     question: Question
@@ -203,7 +214,7 @@ def render_readme(results: list[QuestionResult]) -> str:
 
 def write_pack(results: list[QuestionResult], out_dir, *, limit: int,
                threshold: float, collection: str,
-               citations_path=None) -> Path:
+               citations_path=None, overwrite: bool = False) -> Path:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -221,11 +232,27 @@ def write_pack(results: list[QuestionResult], out_dir, *, limit: int,
     if citations_path is not None:
         cit = Path(citations_path)
         cit.parent.mkdir(parents=True, exist_ok=True)
-        cit.write_text(
-            json.dumps(build_citations(results, limit=limit,
-                                       threshold=threshold,
-                                       collection=collection),
-                       indent=2, ensure_ascii=False),
-            encoding="utf-8")
+        new_content = json.dumps(
+            build_citations(results, limit=limit, threshold=threshold,
+                            collection=collection),
+            indent=2, ensure_ascii=False)
+
+        if cit.exists():
+            existing_content = cit.read_text(encoding="utf-8")
+            if existing_content == new_content:
+                pass  # byte-identical — nothing to do, not an error
+            elif not overwrite:
+                raise CitationsConflictError(
+                    f"{cit} already exists and differs from this run's "
+                    "citations (retrieval reorders near-tied passages "
+                    "between runs, so this is expected, not a bug). "
+                    "Refusing to silently replace a committed manifest. "
+                    "Pass overwrite=True (CLI: --overwrite-citations) to "
+                    "replace it deliberately."
+                )
+            else:
+                cit.write_text(new_content, encoding="utf-8")
+        else:
+            cit.write_text(new_content, encoding="utf-8")
 
     return out

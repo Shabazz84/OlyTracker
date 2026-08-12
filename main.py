@@ -161,10 +161,15 @@ def cmd_evidence(args) -> int:
     out_dir = args.out or str(Path(config.EVIDENCE_DIR) / today)
     citations_path = args.citations_out or str(
         Path("docs") / "programs" / f"{today}-citations.json")
-    out = sev.write_pack(results, out_dir, limit=args.limit,
-                         threshold=threshold,
-                         collection=config.SYNTHESIS_COLLECTION,
-                         citations_path=citations_path)
+    try:
+        out = sev.write_pack(results, out_dir, limit=args.limit,
+                             threshold=threshold,
+                             collection=config.SYNTHESIS_COLLECTION,
+                             citations_path=citations_path,
+                             overwrite=args.overwrite_citations)
+    except sev.CitationsConflictError as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 5
     print(f"wrote {out} ({covered}/{len(results)} questions covered)")
     return 0
 
@@ -199,6 +204,13 @@ def main(argv=None) -> int:
                     help="Where to write the committed citation manifest "
                          "(default: docs/programs/<today>-citations.json). "
                          "Deliberately outside evidence/, which is gitignored.")
+    pe.add_argument("--overwrite-citations", action="store_true",
+                    help="Allow replacing an existing citations manifest whose "
+                         "content differs from this run's. Without this flag, "
+                         "a differing manifest at the target path is refused "
+                         "rather than silently replaced (retrieval reorders "
+                         "near-tied passages between runs, so this is not "
+                         "always a no-op).")
     pe.set_defaults(func=cmd_evidence)
 
     args = p.parse_args(argv)

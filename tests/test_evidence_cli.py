@@ -20,9 +20,12 @@ from synthesis.retrieve import Passage  # noqa: E402
 
 
 class _Args:
-    def __init__(self, out=None, limit=12):
+    def __init__(self, out=None, limit=12, citations_out=None,
+                 overwrite_citations=False):
         self.out = out
         self.limit = limit
+        self.citations_out = citations_out
+        self.overwrite_citations = overwrite_citations
 
 
 def _p(text="body"):
@@ -49,7 +52,12 @@ def test_evidence_writes_a_pack_and_exits_zero(monkeypatch, tmp_path):
         sev, "retrieve_topic",
         lambda q, e, s, *, limit, threshold, vocab=None: [_p()])
 
-    rc = cli.cmd_evidence(_Args(out=str(tmp_path)))
+    # citations_out pointed at tmp_path too: cmd_evidence's default path is
+    # the real committed docs/programs/<today>-citations.json, and this stub
+    # question's citations would legitimately differ from that file's
+    # content and trip the CitationsConflictError guard.
+    rc = cli.cmd_evidence(_Args(out=str(tmp_path),
+                                citations_out=str(tmp_path / "citations.json")))
 
     assert rc == 0
     assert (tmp_path / "manifest.json").exists()
