@@ -40,6 +40,7 @@ ALLOWED = {
     "CLAUDE.md",
     "summaries/master_synthesis.md",
     "docs/programs/2026-08-11-block1-rebuild.md",
+    "docs/programs/2026-08-12-block2.md",
 }
 
 #: Directories excluded entirely, relative to ROOT (matched as a path-part
