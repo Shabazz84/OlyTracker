@@ -129,3 +129,10 @@ SYNTHESIS_COLLECTION = "oly_transcripts"
 SYNTHESIS_MAX_CHUNKS = 30
 
 MASTER_SYNTHESIS_PATH = "summaries/master_synthesis.md"
+
+# Evidence packs: one directory per run, written under EVIDENCE_DIR/<date>/.
+# Gitignored — a pack is verbatim transcript text.
+EVIDENCE_DIR = "evidence"
+# Per-question retrieval budget. Wide enough to show whether a claim is one
+# coach's opinion or a consensus, narrow enough that the file stays readable.
+EVIDENCE_MAX_CHUNKS = 12

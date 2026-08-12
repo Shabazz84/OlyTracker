@@ -29,10 +29,17 @@ PROFILE_MARKERS = ["102.5 kg", "OHS 50 kg", "primary snatch limiter"]
 #:   RETRIEVED (per-video/per-channel summaries), never the terminal output.
 #:   Only this exact file is allowed; anything else under summaries/ (e.g. a
 #:   reintroduced per-video summary) still fails.
+#: - docs/programs/2026-08-11-block1-rebuild.md: the evidence rebuild's terminal
+#:   output. Its Fixed Inputs section necessarily restates training maxes and
+#:   limiters, exactly as master_synthesis.md's "Application to This Athlete"
+#:   does. Allow-listed by EXACT PATH, not as a docs/programs/ directory
+#:   exclusion — a directory rule would let any future file there carry the
+#:   profile undetected, which is the failure this guard exists to catch.
 ALLOWED = {
     "synthesis/prompts.py",
     "CLAUDE.md",
     "summaries/master_synthesis.md",
+    "docs/programs/2026-08-11-block1-rebuild.md",
 }
 
 #: Directories excluded entirely, relative to ROOT (matched as a path-part
@@ -131,6 +138,27 @@ def test_profile_in_any_other_summaries_file_still_fails():
     try:
         target.write_text("Athlete bodyweight 102.5 kg.\n", encoding="utf-8")
         assert "summaries/_leak_probe_summary.md" in _offenders()
+    finally:
+        target.unlink()
+
+
+def test_rebuild_path_is_allowed_but_the_directory_is_not():
+    """The rebuild is terminal output, like master_synthesis.md — athlete
+    context legitimately applies there. But allow-listing the whole
+    docs/programs/ directory would let a future file carry the profile
+    undetected, so only the exact path is permitted."""
+    assert "docs/programs/2026-08-11-block1-rebuild.md" in ALLOWED
+    assert not any(a.rstrip("/").endswith("docs/programs") for a in ALLOWED)
+
+
+def test_profile_in_any_other_programs_file_still_fails():
+    """Same rule as summaries/: allowing the one terminal output must not
+    blanket-exempt the directory around it."""
+    target = ROOT / "docs" / "programs" / "_leak_probe_program.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        target.write_text("Athlete bodyweight 102.5 kg.\n", encoding="utf-8")
+        assert "docs/programs/_leak_probe_program.md" in _offenders()
     finally:
         target.unlink()
 
