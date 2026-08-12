@@ -119,4 +119,44 @@ QUESTIONS = [
     Question(30, "mobility_dosing",
              "What do these coaches say about how often mobility work should "
              "be done?"),
+    # ── Block 2: the floor transition ─────────────────────────────────────
+    Question(31, "full_vs_power",
+             "What do these coaches say about when a lifter should move from "
+             "power snatch and power clean to the full squat versions?"),
+    Question(32, "start_position_floor",
+             "What do these coaches say about the start position and the first "
+             "pull from the floor?"),
+    Question(33, "lead_up_exercises",
+             "What do these coaches say about which lead-up or assistance "
+             "exercises should come before the competition lift in a session?"),
+    # ── Block 2: loading architecture ─────────────────────────────────────
+    Question(34, "load_distribution",
+             "What do these coaches say about how training volume should be "
+             "distributed across light, medium and heavy intensity zones?"),
+    Question(35, "average_training_weight",
+             "What do these coaches say about average training weight or "
+             "average intensity as a measure of training quality?"),
+    Question(36, "accumulation_vs_intensification",
+             "What do these coaches say about shifting from accumulating "
+             "volume to raising intensity within a training cycle?"),
+    Question(37, "technique_under_load",
+             "What do these coaches say about technique breaking down as the "
+             "weight on the bar gets heavier?"),
+    # ── Block 2: session conduct ──────────────────────────────────────────
+    Question(38, "missed_attempts",
+             "What do these coaches say about what to do after a missed lift "
+             "in training?"),
+    Question(39, "warmup_to_max",
+             "What do these coaches say about warming up and working up to a "
+             "heavy single?"),
+    Question(40, "accessory_volume_intensification",
+             "What do these coaches say about reducing accessory work when "
+             "intensity on the competition lifts increases?"),
+    # ── Block 2: transitions ──────────────────────────────────────────────
+    Question(41, "block_transition",
+             "What do these coaches say about what changes when moving from "
+             "one training block to the next?"),
+    Question(42, "second_pull_timing",
+             "What do these coaches say about the timing of the second pull "
+             "and the extension in the snatch and clean?"),
 ]

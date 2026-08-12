@@ -12,12 +12,12 @@ from synthesis.questions import QUESTIONS, Question
 from tests.test_no_athlete_context_leak import PROFILE_MARKERS
 
 
-def test_catalog_has_thirty_questions():
-    assert len(QUESTIONS) == 30
+def test_catalog_has_forty_two_questions():
+    assert len(QUESTIONS) == 42
 
 
 def test_ids_are_contiguous_from_one():
-    assert [q.id for q in QUESTIONS] == list(range(1, 31))
+    assert [q.id for q in QUESTIONS] == list(range(1, 43))
 
 
 def test_keys_are_unique():
