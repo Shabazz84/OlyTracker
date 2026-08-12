@@ -11,6 +11,7 @@ trustworthy. Nothing sits between the coach's words and the document.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from dataclasses import dataclass
@@ -129,6 +130,38 @@ def build_manifest(results: list[QuestionResult], *, limit: int,
     }
 
 
+def build_citations(results: list[QuestionResult], *, limit: int,
+                    threshold: float, collection: str) -> dict:
+    """One record per retrieved passage, committed to git alongside the
+    document that cites it.
+
+    Retrieval reorders near-tied results between runs, so `E31.4` on Tuesday
+    need not be `E31.4` on Wednesday. This pins each handle to a content hash,
+    which proves identity on a later run WITHOUT storing the passage text —
+    the pack itself is gitignored transcript material and must stay that way.
+    Human-readable auditing comes from the document, which quotes inline.
+    """
+    entries = []
+    for r in results:
+        for i, p in enumerate(r.passages, start=1):
+            entries.append({
+                "handle": handle(r.question.id, i),
+                "question_key": r.question.key,
+                "note_path": p.note_path,
+                "source": p.source,
+                "score": p.score,
+                "sha256": hashlib.sha256(p.text.encode("utf-8")).hexdigest(),
+            })
+    return {
+        "retrieval": {
+            "limit": limit,
+            "threshold": threshold,
+            "collection": collection,
+        },
+        "citations": entries,
+    }
+
+
 def render_readme(results: list[QuestionResult]) -> str:
     covered = sum(1 for r in results if r.covered)
     lines = [
@@ -169,7 +202,8 @@ def render_readme(results: list[QuestionResult]) -> str:
 
 
 def write_pack(results: list[QuestionResult], out_dir, *, limit: int,
-               threshold: float, collection: str) -> Path:
+               threshold: float, collection: str,
+               citations_path=None) -> Path:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -183,4 +217,15 @@ def write_pack(results: list[QuestionResult], out_dir, *, limit: int,
     (out / "manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     (out / "README.md").write_text(render_readme(results), encoding="utf-8")
+
+    if citations_path is not None:
+        cit = Path(citations_path)
+        cit.parent.mkdir(parents=True, exist_ok=True)
+        cit.write_text(
+            json.dumps(build_citations(results, limit=limit,
+                                       threshold=threshold,
+                                       collection=collection),
+                       indent=2, ensure_ascii=False),
+            encoding="utf-8")
+
     return out

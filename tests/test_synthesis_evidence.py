@@ -190,3 +190,90 @@ def test_readme_lists_uncovered_questions(tmp_path):
 
     assert "deload_frequency" in readme
     assert "1/2 covered" in readme or "1 of 2" in readme
+
+
+# -------------------------------------------------------------- citations
+
+
+def test_citations_record_one_entry_per_passage():
+    results = [
+        sev.QuestionResult(_q(1, "deload_frequency"), [_p("a"), _p("b")], True),
+    ]
+    c = sev.build_citations(results, limit=12, threshold=0.58, collection="oly")
+
+    assert [e["handle"] for e in c["citations"]] == ["E1.1", "E1.2"]
+
+
+def test_citations_carry_source_note_and_score():
+    results = [sev.QuestionResult(
+        _q(7, "session_opener"),
+        [_p("a", source="https://y/abc", note_path="n/one.md", score=0.712)],
+        True)]
+    c = sev.build_citations(results, limit=12, threshold=0.58, collection="oly")
+    e = c["citations"][0]
+
+    assert e["source"] == "https://y/abc"
+    assert e["note_path"] == "n/one.md"
+    assert e["score"] == 0.712
+    assert e["question_key"] == "session_opener"
+
+
+def test_citations_hash_is_stable_for_identical_text():
+    a = sev.build_citations([sev.QuestionResult(_q(), [_p("same body")], True)],
+                            limit=12, threshold=0.58, collection="oly")
+    b = sev.build_citations([sev.QuestionResult(_q(), [_p("same body")], True)],
+                            limit=12, threshold=0.58, collection="oly")
+
+    assert a["citations"][0]["sha256"] == b["citations"][0]["sha256"]
+
+
+def test_citations_hash_differs_for_different_text():
+    a = sev.build_citations([sev.QuestionResult(_q(), [_p("body one")], True)],
+                            limit=12, threshold=0.58, collection="oly")
+    b = sev.build_citations([sev.QuestionResult(_q(), [_p("body two")], True)],
+                            limit=12, threshold=0.58, collection="oly")
+
+    assert a["citations"][0]["sha256"] != b["citations"][0]["sha256"]
+
+
+def test_citations_contain_no_transcript_text():
+    """The manifest is committed to git; the pack is not. A quote here would
+    put transcript text in the repo, which CLAUDE.md forbids outright."""
+    body = "zzdistinctivetranscriptphrasezz"
+    c = sev.build_citations([sev.QuestionResult(_q(), [_p(body)], True)],
+                            limit=12, threshold=0.58, collection="oly")
+
+    assert body not in json.dumps(c)
+
+
+def test_uncovered_questions_contribute_no_citations():
+    results = [
+        sev.QuestionResult(_q(1, "deload_frequency"), [], False),
+        sev.QuestionResult(Question(2, "squat_dosing",
+                                    "What do these coaches say about squats?"),
+                           [_p("a")], True),
+    ]
+    c = sev.build_citations(results, limit=12, threshold=0.58, collection="oly")
+
+    assert [e["handle"] for e in c["citations"]] == ["E2.1"]
+
+
+def test_write_pack_writes_citations_to_the_given_path(tmp_path):
+    """Written OUTSIDE the pack on purpose: `evidence/` is gitignored, and git
+    cannot re-include a file under an excluded directory."""
+    results = [sev.QuestionResult(_q(), [_p("a")], True)]
+    cit = tmp_path / "committed" / "2026-08-12-citations.json"
+
+    sev.write_pack(results, tmp_path / "pack", limit=12, threshold=0.58,
+                   collection="oly", citations_path=cit)
+
+    assert cit.exists()
+    assert json.loads(cit.read_text(encoding="utf-8"))["citations"][0]["handle"] == "E1.1"
+
+
+def test_write_pack_without_citations_path_writes_no_manifest(tmp_path):
+    results = [sev.QuestionResult(_q(), [_p("a")], True)]
+    out = sev.write_pack(results, tmp_path, limit=12, threshold=0.58,
+                         collection="oly")
+
+    assert not (out / "citations.json").exists()
