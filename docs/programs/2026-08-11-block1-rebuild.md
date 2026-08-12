@@ -285,7 +285,16 @@ relatively relaxed legs instead of holding yourself up partially"* [E11.12].
   prescribes it as an isometric quality drill, not a loading progression.
 - **1–2× per week, 5–7 total sets of 2–3 reps, inside a complex** [E10.8].
 - **Behind-the-neck pressing and snatch balance carry the strength stimulus**
-  [E10.3].
+  [E10.3] — **subject to the screen below.**
+
+> **SAFETY CAVEAT, added second pass.** Everett: *"certain mobility limitations
+> will **preclude** the use of certain exercises. For example, **limited shoulder
+> and thoracic mobility can mean some or all behind-the-neck lifts are
+> inaccessible or unsafe**, even if they would otherwise be valuable for that
+> athlete"* [E30.12]. For an athlete whose overhead position is the limiter, that
+> is not a footnote — screen shoulder and thoracic range **before** loading any
+> behind-the-neck work, and use the q29 diagnostic below to locate the
+> restriction first.
 - **Target for the diagnostic:** snatch balance should reach at least the best
   snatch, *"preferably... something like 15 kilos more or maybe like 10 percent
   more than your best snatch pretty comfortably"* [E10.3, E10.1].
@@ -397,9 +406,42 @@ contrast, squat *"usually 4-6 days/week, sometimes twice daily"* [E20.11] — a
 real disagreement in frequency; the back-pain constraint decides it here toward
 the lower figure [E22.2].
 
-**Prescription:** front squat is the primary squat, at **65–70% × 3–5 reps**
-[E20.10], run at the high end of the rep range per Everett's rule [E25.5].
-Quad-priority accessory work runs throughout [E20.6, E20.7].
+**CORRECTED PRESCRIPTION (second pass, all 30 files read).** The original
+prescription here made the **front squat** the primary squat. That was wrong,
+and q18 — unread when this was written — says so from four sources:
+
+- *"in general **two back squats, one front squat** for most of your career is
+  going to be one of the best ratios you can do… the most productive
+  long-term"*; back squats are "more useful", the front squat is "something that
+  you **practice**", and "one good quality front squat a week is big" [E18.3,
+  E18.5]
+- *"most of a weightlifter's lower body strength will be developed through **back
+  squats, especially in the beginning/intermediate years**"* — this athlete's
+  stage. The front squat "is used more for strengthening the posture and
+  positions of the clean" [E18.4]
+- *"**Eliminating back squats will be a bad idea for 99% of you**"*; the
+  famous front-squat-only lifters did it only in their most advanced years
+  [E18.2]
+- back squats permit higher loads, put "less stress on your knee joints", no
+  shoulder/wrist stress, and are "much more efficient with higher reps… a
+  perfect fit for base (strength) period" [E18.10]
+
+**And the athlete's own ratio points the same way.** The norm is a front squat at
+**85–90% of back squat** [E18.7]; this athlete is at roughly **98%** (front squat
+est. 1RM ~116 against a tested back squat of 118). Whichever way that is read,
+the back squat is the lift with room in it.
+
+**So: back squat primary, roughly 2:1 back to front, front squat kept as one
+good quality session a week** [E18.3, E18.5, E18.11]. Both squats stay at
+**65–70% × 3–5 reps** for the long-limb reason [E20.10], run at the high end of
+the rep range [E25.5]. Quad-priority accessory work runs throughout [E20.6,
+E20.7].
+
+**The tension this creates, stated rather than resolved:** [E22.2] prefers the
+**front** squat for a painful lower back, "because you keep a more upright
+posture in the front squat." The corpus points one way on strength development
+and the other way on back protection. Both are cited; the trade-off is the
+athlete's to make, not this document's.
 
 **Squat frequency: athlete's call, and the athlete's is higher.** The corpus
 holds both "one front one back" per week [E22.2] and "usually 4-6 days/week,
@@ -488,6 +530,169 @@ is used in preference to inventing a light-day scheme.
 
 ---
 
+## Second-Pass Additions (2026-08-11, all 30 files read)
+
+The original document was written from 16 of the 30 question files. The
+remaining 14 were read afterwards. Two findings **corrected** the document
+above (front vs back squat; the behind-the-neck safety screen). The rest are
+additions, collected here rather than woven in, so the provenance of each stays
+visible.
+
+### The clean:front-squat gap has a named cause
+
+Everett: pause squats *"lack a really important function — training the ability
+to bounce out of the bottom that we need in heavy cleans… That magnified force
+is one of the reasons athletes **collapse under cleans with weights well under
+what they can front squat**"* [E19.6]. This athlete's clean (80 kg) is ~69% of
+the front squat 1RM — the ratio being described.
+
+**But pause squats are also indicated here**, for a different fault: use them
+"if you're having a real issue with technical proficiency at the bottom of the
+squat — so if you squat down and you immediately shoot those knees back and you
+end up kind of good-morning the squat", with a slow eccentric [E19.7]. That is
+the long-limb pattern.
+
+**Resolution: run both. Do not let pause front squats replace bounce front
+squats.** Pause duration is **CONTESTED** — 3 seconds [E19.12] versus pausing
+only long enough to kill momentum, on the grounds that long pauses "just create
+hip issues and knee issues" [E19.1, E19.3].
+
+### Trunk work — aim it, place it, and one piece may be recuperative
+
+- The trunk's job in the lifts is to *"act as a **rigid support structure**"*, so
+  prioritize **static strength** [E24.1].
+- Aim it **anterior and lateral**: the classic lifts, squats and pulls already
+  load the lower and middle back heavily, so that area *"will require somewhat
+  less specific training than the anterior and lateral aspects of the torso"*
+  [E24.3].
+- **Placement matters:** stiff-legged deadlifts, RDLs and good mornings *"are
+  best performed at the **end** of heavy training sessions"*; lighter back
+  extensions and reverse hyperextensions can run between heavy sessions and
+  *"often prove **recuperative**"* [E24.1].
+- Weak backs: intense back work 2–3 days/week, lighter work on other days
+  [E24.1].
+- **Rib flare and lumbar extension overhead can be a shoulder-mobility problem
+  misread as a weak core** [E24.7] — the same inversion as [E11.10]. The drill
+  that serves both readings: barbell roll-outs with a shoulder focus, ~4 kg,
+  rolled only to the range controlled, then isometric holds.
+
+### Hang work has a ceiling and an exit
+
+- Hang variations should sit at **~90% of the lifts from the floor** [E9.5], and
+  once they reach it they stop paying: *"that's definitely enough, it's not going
+  to benefit us anymore, we need to focus on that snatch and clean and jerk
+  again"* [E9.7].
+- **The exit protocol**, for Block 2: *"forget about the hang snatch — keep it in
+  there for the next few weeks, just keep it somewhere between three to four sets
+  of two at **super lightweights**, and let this [the full lift] take over"*
+  [E8.8].
+- **Hang can become a crutch**: high-hang work is "easier to hit big numbers
+  with" and builds "a psychological barrier to hitting PBs" from the floor
+  [E9.5]. Lifters arrive at meets having done "loads of hangs or variations or
+  complexes or blocks or pauses" without the floor repetitions they needed
+  [E8.5]. Block 1 is built on hang primaries; this is the transition risk.
+- For **technical correction** the order is **pause > hang > blocks**; blocks are
+  "a third and distant option… not really for technical adjustments" [E9.2].
+
+### Pull loading — the live block's heavy pulls are defensible after all
+
+The conventional band is 80–105% of the best snatch or clean [E17.2]. But
+Everett adds the exception that fits this athlete exactly: for *"newer lifters
+who nearly always have a surplus of strength relative to their technical ability
+to use that strength… this range of percentages is **far too light**"* [E17.9],
+and he names the profile — *"a lifter who has a **poor overhead position in the
+snatch** and consequently can't snatch as much as he or she would be expected to
+based on how much he or she can pull with ease"* [E17.4].
+
+Protocol when pulls go heavy: finish the series *"with a significantly lighter
+set to finish with **speed** rather than with the more grinding pulls… around
+85–90%"* [E17.5]. For technique stability under load, hang or block pulls at
+100–150% suit the base period [E17.8].
+
+**This also suggests `CLAUDE.md`'s principle "pull weights should not grossly
+exceed competition lift weights", attributed to Everett, is an oversimplification
+of what he actually says.** Worth re-checking against source.
+
+### Session ordering and spacing
+
+- Touch **both** lifts every session, not one per day: *"the only real practice
+  for the snatch and clean and jerk is the snatch and clean and jerk… better to
+  do both, some form of those exercises every single session"* — power snatch,
+  snatch balance, power clean all count [E8.1].
+- **Never more than two training days in a row** [E8.9]. The recommended 4-day
+  layout is Mon/Tue/Thu/Sat [E8.12].
+- Accessories: *"one or two bodybuilding [exercises] plus one core or one lower
+  back"*, at the end of the session [E28.3]. Don't copy elite accessory lists —
+  those lifters have unlimited time and already-mastered technique [E28.1].
+
+### Autoregulation — a caution that lands hard on a self-coached athlete
+
+Everett: *"RPE and RIR are arguably just as variable as percentages. The real
+difference is that we're shifting the choice of weight from the coach to the
+athlete… **lifters who tend to always push as hard as possible are going to
+underestimate their effort**"* [E27.7]. Two further sources note that warm-up
+feel does not predict the session [E27.2, E27.9].
+
+With no coach checking the estimate, the available mitigation is Everett's own:
+log the predicted RPE and compare it against what actually happened [E27.7].
+And do not over-precision the loads — a 5–10% error by feel "is normal, nothing
+terrible"; exact numbers matter only at genuine limit weights [E27.10].
+
+### Mobility dosing — CONTESTED
+
+- **Daily**, especially for a problem area: *"if something's a problem you should
+  be doing it pretty much every day until it's less of a problem"* [E30.8];
+  *"the best general approach to overhead mobility is to include overhead
+  movement **every day**… every day includes days outside the gym"* [E30.10].
+- **Not daily**: *"it is not advised to exercise mobility every day… 2–3 mobility
+  training sessions per week are suggested, with at least one day of rest in
+  between"* [E30.1].
+
+The daily reading has the better provenance for this application (both sources
+are weightlifting-specific, and the ankle protocol in [E29.8] specifies "every
+day" for six months). Recorded as contested rather than settled.
+
+**And a test for whether mobility work is working at all:** *"if you don't see an
+improvement after one or two sessions, probably you're either doing it wrong or
+it's not going to work for what you want. If you see any improvement, stick with
+it"* [E30.9].
+
+### The ankle diagnostic — one session, empty bar, two change plates
+
+Everett's sequence [E29.9]: overhead squat with an empty bar at normal stance,
+5-second hold in the bottom; repeat feet wider; repeat wider with toes out; then
+**repeat the whole sequence with the heels elevated on change plates**.
+
+- noticeably easier and more stable with heels elevated → **ankle mobility is
+  limited**
+- not noticeably better → **the issue is hips, or both**
+- a position that lets you hit depth upright but still feels unstable → **an
+  actual stability issue**
+
+Companion test [E29.3]: *"if you find you can do [overhead squats and heaving
+snatch balances] with significantly more weight than you can snatch, **the ankle
+isn't what's holding back your snatch**."*
+
+Ankle dosing, if limited: 15 kg minimum and realistically 25 kg loaded onto the
+knee [E29.1], 3–5 sets of 90 seconds per side [E29.8], daily, expecting months
+[E29.8]. A **time-limited** workaround while it catches up: raise the heels and
+squat just above parallel to keep quad tension — explicitly *"not a long-term
+training strategy"* [E29.12].
+
+### Two questions that returned passages but no answers
+
+- **q6 exercises per session** — nothing addresses exercise count.
+- **q12 muscle snatch** — nothing addresses what it develops. The live block's
+  daily muscle-snatch opener is supported as generic pattern work [E8.1, E7.12],
+  but not as the muscle snatch specifically.
+
+A retrieval-quality note: q28 returned only site navigation from Everett's *"My
+5 Favorite Accessory Exercises"* and *"Bodybuilding Accessory Work for
+Weightlifters"* — titles that promise exactly what was asked, chunks that
+contain none of it. That is a chunking limitation, not a corpus gap.
+
+---
+
 ## Judgment Ledger
 
 Every decision this corpus could not make. **Eleven items**, each a real gap
@@ -504,7 +709,7 @@ rather than an oversight.
 | 7 | Choosing Everett's deload depth over Torokhtiy's or Catalyst's | A choice among three cited positions — defensible, not consensus |
 | 8 | Within-block weekly load increments | q26 gives no rule; only cross-cycle 2.5 kg steps [E26.5] |
 | 9 | Specific accessory exercises not named in the pack | Named ones are cited; anything else is selection |
-| 10 | Mobility dosing and daily protocols | Not read in this pass — deliberately left unclaimed |
+| 10 | ~~Mobility dosing~~ — **resolved second pass** | No longer judgment: q29/q30 were read. Dosing is cited [E29.1, E29.8]; *frequency* is CONTESTED [E30.10 vs E30.1], which is a corpus disagreement, not a gap |
 | 11 | **Squat frequency** — choosing "one front one back" over 4–6 days/week | The corpus holds both [E22.2 vs E20.11]. Chosen low **because of back pain**, not because the evidence pointed there. **Overridden by the athlete 2026-08-11**, who squats heavy ≥3×/week and tolerates it — revealed tolerance data the corpus cannot contain, and inside Everett's stated range. Override stands; see the amendment in the diff |
 
 ### On item 4, specifically
