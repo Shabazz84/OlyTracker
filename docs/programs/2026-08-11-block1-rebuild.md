@@ -398,10 +398,21 @@ real disagreement in frequency; the back-pain constraint decides it here toward
 the lower figure [E22.2].
 
 **Prescription:** front squat is the primary squat, at **65–70% × 3–5 reps**
-[E20.10], run at the high end of the rep range per Everett's rule [E25.5], one
-front and one back squat session per week [E22.2]. Quad-priority accessory work
-runs throughout [E20.6, E20.7]. Back squat singles no more often than roughly
-every two months [E16.9].
+[E20.10], run at the high end of the rep range per Everett's rule [E25.5].
+Quad-priority accessory work runs throughout [E20.6, E20.7].
+
+**Squat frequency: athlete's call, and the athlete's is higher.** The corpus
+holds both "one front one back" per week [E22.2] and "usually 4-6 days/week,
+sometimes twice daily, and not necessarily with low volume" [E20.11]. The
+athlete squats heavy ≥3×/week and tolerates it, which sits inside Everett's
+range; that stands (Judgment Ledger item 11).
+
+**What the evidence does object to is near-max singles, not frequency.** Going
+for a back-squat 1RM belongs at roughly *"one times per two months"*, from a
+coach whose base work is *"like 4x3, like 5 by two"* [E16.9] — heavy often, max
+rarely. And for long limbs specifically, load migrates to the back at **both**
+extremes, singles included [E20.6]. So added squat volume belongs in the 3–5
+rep band, which [E20.11]'s "not necessarily with low volume" directly supports.
 
 ---
 
@@ -479,8 +490,8 @@ is used in preference to inventing a light-day scheme.
 
 ## Judgment Ledger
 
-Every decision this corpus could not make. **Ten items**, each a real gap rather
-than an oversight.
+Every decision this corpus could not make. **Eleven items**, each a real gap
+rather than an oversight.
 
 | # | Decision | Why it is judgment |
 |---|---|---|
@@ -494,6 +505,7 @@ than an oversight.
 | 8 | Within-block weekly load increments | q26 gives no rule; only cross-cycle 2.5 kg steps [E26.5] |
 | 9 | Specific accessory exercises not named in the pack | Named ones are cited; anything else is selection |
 | 10 | Mobility dosing and daily protocols | Not read in this pass — deliberately left unclaimed |
+| 11 | **Squat frequency** — choosing "one front one back" over 4–6 days/week | The corpus holds both [E22.2 vs E20.11]. Chosen low **because of back pain**, not because the evidence pointed there. **Overridden by the athlete 2026-08-11**, who squats heavy ≥3×/week and tolerates it — revealed tolerance data the corpus cannot contain, and inside Everett's stated range. Override stands; see the amendment in the diff |
 
 ### On item 4, specifically
 
