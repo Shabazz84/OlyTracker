@@ -7,6 +7,15 @@ a failure; it is the honest label for a decision this corpus cannot make, and
 the count of them is a primary output of this exercise (see the Judgment Ledger
 at the end).
 
+> **Citation caveat (added 2026-08-12).** This document cites
+> `evidence/2026-08-11/`, generated before the citation manifest existed. That
+> pack is gitignored and retrieval reorders near-tied results between runs, so
+> these handles cannot be independently re-resolved after the fact. Documents
+> from 2026-08-12 onward carry a committed manifest
+> (`docs/programs/<date>-citations.json`) that pins each handle to a content
+> hash. This is a real limitation of the earlier run, recorded rather than
+> quietly inherited.
+
 Written **blind**: `PROGRAM_B1` in `docs/src/app.jsx` was deliberately not
 consulted while drafting, so the diff measures divergence rather than
 agreement-by-anchoring.
