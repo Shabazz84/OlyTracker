@@ -3573,7 +3573,7 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
         <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.6}}>{weekData.note}</div>
       </div>
 
-      {blockNum === 1 && days && days.map(d => (
+      {days && days.map(d => (
         <div key={d.id} style={{background:"var(--bg2)",borderRadius:8,
           padding:"10px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
           {(() => {
@@ -3620,7 +3620,7 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
         </div>
       ))}
 
-      {blockNum !== 1 && (
+      {!days && (
         <div style={{background:"var(--bg2)",borderRadius:8,padding:"14px 16px",
           border:"1px solid var(--border)"}}>
           <div style={{fontSize:10,color:"var(--text2)",lineHeight:1.7,marginBottom:10}}>
@@ -4029,7 +4029,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · {BLOCK_BOUNDS[0].end-BLOCK_BOUNDS[0].start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.11 · 2026-08-13
+                PROGRAM v3.6.0 · 2026-08-13
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
