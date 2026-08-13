@@ -3,8 +3,8 @@
 import * as esbuild from "esbuild";
 
 const opts = {
-  entryPoints: ["docs/src/app.jsx"],
-  outfile: "docs/app.js",
+  entryPoints: ["docs/src/app.jsx", "docs/src/program.js"],
+  outdir: "docs",
   bundle: false,        // no imports in the source; everything is a page global
   minify: true,
   sourcemap: true,

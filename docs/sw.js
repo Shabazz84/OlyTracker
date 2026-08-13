@@ -1,9 +1,10 @@
-const CACHE = "olytracker-v5";
+const CACHE = "olytracker-v6";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./app.js",
+  "./program.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
