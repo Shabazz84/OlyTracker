@@ -95,14 +95,14 @@ Days off: Mon, Tue. Finish last shift Sun 7:30am → sleep all day Sunday.
 | Sun | Rest — recover from shift | ❌ | No training |
 
 ### School Term Training Block (August+)
-4 days/week. Thu/Fri sleep drops back to ~3.5hrs — too little for productive training.
+4 days/week. Thu/Sat sleep drops back to ~3.5hrs — too little for productive training.
 
 | Day | Session | Quality |
 |-----|---------|---------|
 | Mon | Day 1 — Snatch Complex + Posterior Chain | ⭐⭐⭐ |
 | Tue | Day 2 — Clean + Upper Hypertrophy | ⭐⭐⭐ |
-| Wed | Day 3 — Legs + Snatch Stability | ⭐⭐ |
-| Fri | Day 4 — Jerk Priority + C&J | ⭐⭐ |
+| Thu | Day 3 — Legs + Snatch Stability | ⚠️ |
+| Sat | Day 4 — Jerk Priority + C&J | ⚠️ |
 
 ---
 

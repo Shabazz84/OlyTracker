@@ -4026,10 +4026,10 @@ function OlyTracker() {
                 OLY<span style={{color:"var(--gold)"}}>TRACKER</span>
               </div>
               <div style={{fontSize:9,color:"var(--text3)",letterSpacing:2.5,fontFamily:"'DM Mono',monospace",marginTop:3}}>
-                BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
+                BLOCK 1 · HYPERTROPHY FOUNDATION · {BLOCK_BOUNDS[0].end-BLOCK_BOUNDS[0].start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.10 · 2026-08-13
+                PROGRAM v3.5.11 · 2026-08-13
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
