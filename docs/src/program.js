@@ -76,10 +76,13 @@ const DAYS_SUMMER = [
   },
 ];
 
-// School term version — 4 days, same content as summer D1–D3 + D4
+// School term — 4 days: Monday, Tuesday, Thursday, Saturday. Avoids three
+// straight weekdays (the old, buggy layout): the corpus is explicit that a
+// lifter should train no more than two days in a row [E8.9], and names this
+// exact layout as fitting these night shifts [E8.12].
 const DAYS_SCHOOL = DAYS_SUMMER.slice(0,4).map((d,i) => ({
   ...d,
-  schedule: ["Monday","Tuesday","Wednesday","Saturday"][i],
+  schedule: ["Monday","Tuesday","Thursday","Saturday"][i],
 }));
 
 const PROGRAM_B1 = [
@@ -220,6 +223,34 @@ const PROGRAM_OUTLINE = [
   {week:27,block:4,phase:"Mock Competition",load:"85–92%",focus:"Mock competition — full warm-up protocol",notes:"3 mock sessions. Attempt selection practice. Opener = 90% of target."},
   {week:28,block:4,phase:"Taper",load:"85%",focus:"Taper — volume −50%, sharpen only",notes:"2 sessions only. Target: Snatch 70 kg · C&J 90 kg."},
 ];
+
+// Block boundaries — the ONE definition. Block progress, week routing and the
+// block header all derive from this. They used to be three separate inline
+// literals, and they drifted: the dashboard computed progress from a 6-week
+// Block 1 while PROGRAM_B1 held eight weeks, so weeks 7-8 displayed as Block 2.
+const BLOCK_BOUNDS = [
+  {block:1, start:1,  end:8,  name:"HYPERTROPHY"},
+  {block:2, start:9,  end:16, name:"TECHNIQUE"},
+  {block:3, start:17, end:24, name:"STRENGTH"},
+  {block:4, start:25, end:28, name:"COMP PREP"},
+];
+
+function blockFor(week) {
+  return BLOCK_BOUNDS.find(b => week >= b.start && week <= b.end) || null;
+}
+
+// Week 1-8 -> PROGRAM_B1, 9-16 -> PROGRAM_B2, 17-28 -> the one-line outline.
+// Returns null (never undefined) outside that range so callers can test it.
+function weekPlan(week) {
+  const b = blockFor(week);
+  if (!b) return null;
+  if (b.block === 1) return PROGRAM_B1[week - b.start] || null;
+  if (b.block === 2) {
+    return (typeof PROGRAM_B2 !== "undefined" && PROGRAM_B2[week - b.start]) ||
+           PROGRAM_OUTLINE.find(w => w.week === week) || null;
+  }
+  return PROGRAM_OUTLINE.find(w => w.week === week) || null;
+}
 
 const BLOCK_COLORS = {1:"#4a90d9",2:"#c94f3a",3:"#d4a843",4:"#5a9e45"};
 const PHASE_COLORS = {

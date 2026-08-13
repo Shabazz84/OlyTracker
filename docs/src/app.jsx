@@ -801,7 +801,7 @@ function ScheduleView() {
           Thu/Sat training happens on 5.5h sleep (summer: 8:30am→2pm). No PR attempts these days.
           Daily max singles on jerk = climb to a solid single, stop before a miss.
           Fri is rest — sleep post-shift before last night. Wed: work starts 7pm — hard stop at 3pm, max 80%.
-          When school resumes in August, Sat drops back to ~3.5h sleep — revert to 4-day Mon/Tue/Wed/Thu.
+          When school resumes in August, Sat drops back to ~3.5h sleep — revert to 4-day Mon/Tue/Thu/Sat.
         </p>
       </div>
     </div>
@@ -1829,9 +1829,10 @@ function OverviewCards({logs,week,setsData,dateMap}){
 
   // Block info — derive from program start, not stored week
   const programWeek=Math.max(1,Math.min(28,Math.floor((Date.now()-new Date("2026-05-19").getTime())/(7*24*3600*1000))+1));
-  const blockWeek=programWeek<=6?programWeek:programWeek<=10?programWeek-6:programWeek-10;
-  const blockTotal=programWeek<=6?6:programWeek<=10?4:6;
-  const blockName=programWeek<=6?'HYPERTROPHY':programWeek<=10?'TECHNIQUE':'STRENGTH';
+  const _blk=blockFor(programWeek)||BLOCK_BOUNDS[BLOCK_BOUNDS.length-1];
+  const blockWeek=programWeek-_blk.start+1;
+  const blockTotal=_blk.end-_blk.start+1;
+  const blockName=_blk.name;
 
   const card=(color,label,value,sub)=>(
     <div style={{background:'var(--bg1)',border:`1px solid ${color}33`,borderRadius:8,padding:'12px 14px'}}>
@@ -3463,10 +3464,7 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
 
 // ── Program Week View ─────────────────────────────────────────────────────────
 function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
-  const isB1 = viewWeek <= 8;
-  const weekData = isB1
-    ? PROGRAM_B1[viewWeek - 1]
-    : PROGRAM_OUTLINE.find(w => w.week === viewWeek);
+  const weekData = weekPlan(viewWeek);
 
   const [reviewVersion, setReviewVersion] = React.useState(0);
   const prevReview = React.useMemo(
@@ -3478,14 +3476,18 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
 
   if (!weekData) return null;
 
-  const blockNum = isB1 ? 1 : weekData.block;
+  const blockNum = (blockFor(viewWeek) || {}).block ?? weekData.block;
   const blockColor = BLOCK_COLORS[blockNum];
   const phaseColor = PHASE_COLORS[weekData.phase] || "#888";
   const isCurrentWeek = viewWeek === currentWeek;
   const TOTAL_WEEKS = 28;
 
+  // Block 1 is authored as five days and drops D5 in school term. Block 2 is
+  // authored natively as four; filtering it would silently delete Saturday.
   const days = weekData.days
-    ? (isSummer ? weekData.days : weekData.days.filter(d => d.id !== "d5"))
+    ? (isSummer || blockNum !== 1
+        ? weekData.days
+        : weekData.days.filter(d => d.id !== "d5"))
     : null;
 
   return (
@@ -3571,7 +3573,7 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
         <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.6}}>{weekData.note}</div>
       </div>
 
-      {isB1 && days && days.map(d => (
+      {blockNum === 1 && days && days.map(d => (
         <div key={d.id} style={{background:"var(--bg2)",borderRadius:8,
           padding:"10px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
           {(() => {
@@ -3618,7 +3620,7 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
         </div>
       ))}
 
-      {!isB1 && (
+      {blockNum !== 1 && (
         <div style={{background:"var(--bg2)",borderRadius:8,padding:"14px 16px",
           border:"1px solid var(--border)"}}>
           <div style={{fontSize:10,color:"var(--text2)",lineHeight:1.7,marginBottom:10}}>
@@ -3632,7 +3634,7 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
           </div>
         </div>
       )}
-      {isB1 && viewWeek <= currentWeek && (
+      {blockNum === 1 && viewWeek <= currentWeek && (
         <WeekReviewForm
           week={viewWeek}
           weekData={weekData}
@@ -4027,7 +4029,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · 6 WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.5.9 · 2026-08-13
+                PROGRAM v3.5.10 · 2026-08-13
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4102,7 +4104,7 @@ function OlyTracker() {
                     {isSummer?"SUMMER MODE — 5 DAYS/WEEK":"SCHOOL TERM — 4 DAYS/WEEK"}
                   </div>
                   <div style={{fontSize:10,color:"var(--text3)",marginTop:2}}>
-                    {isSummer?"Mon/Tue/Wed/Thu/Sat · Extended sleep on shift days (8:30am→2pm)":"Mon/Tue/Wed/Thu · Sat drops to ~3.5h sleep when school resumes"}
+                    {isSummer?"Mon–Thu + Sat · Extended sleep on shift days (8:30am→2pm)":"Mon/Tue/Thu/Sat · Sat drops to ~3.5h sleep when school resumes"}
                   </div>
                 </div>
               </div>
