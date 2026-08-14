@@ -3,7 +3,7 @@
 ## Development Rules
 
 - **App source of truth is `docs/src/app.jsx`** (NOT the HTML). The app is React + JSX. `index.html` is now a thin shell that loads pre-transpiled `docs/app.js`. **Never edit `docs/app.js` by hand** — it is generated. Edit `docs/src/app.jsx`, then run `npm run build` (esbuild → `docs/app.js`). Use `npm run watch` during development. The in-browser Babel transpiler was removed (was ~2.8 MB + per-load transpile cost).
-- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.6.0 · 2026-08-13`.
+- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.6.1 · 2026-08-14`.
 - **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
 - **Cloud sync is Supabase only.** The GitHub Gist sync path was removed — `sbSync` (defined inline in `index.html`) auto-syncs sessions/sets/reviews on every mutation and pulls on startup. Don't reintroduce a second sync backend.
 - **`docs/key.js` holds secrets** (gitignored, not deployed to Pages). The `__CLAUDE_KEY` there only works locally; a browser cannot hold a Claude key securely — for production AI review, proxy through a serverless function. The Supabase publishable key is safe to expose.
@@ -73,11 +73,11 @@ Days off: Mon, Tue. Finish last shift Sun 7:30am → sleep all day Sunday.
 | Mon | Full night | 7–8hrs | ⭐⭐⭐ Best | Full recovery after Sun rest |
 | Tue | Full night | 7–8hrs | ⭐⭐⭐ Best | Second full recovery day |
 | Wed | Full night | 7–8hrs | ⭐⭐ Good | Work starts 7pm — don't drain tank |
-| Thu (school) | Post-shift nap | ~3.5hrs | ⚠️ Compromised | Light/technique only during school term |
+| Thu (school) | Post-shift nap | ~3.5hrs | ⭐⭐ Workable at reduced load | Block 2 puts the jerk priority here and cuts the loading to pay for the short sleep |
 | Thu (summer) | Post-shift sleep | ~5.5hrs | ⭐⭐ Workable | 8:30am→2pm sleep, jerk priority |
 | Fri (school) | Post-shift nap | ~3.5hrs | ⚠️ Compromised | Skip during school term |
 | Fri (summer) | Post-shift sleep | ~5.5hrs | ⭐⭐ Workable | Active hypertrophy + technique |
-| Sat | Cumulative fatigue | 5.5hrs | — | Rest |
+| Sat | Cumulative fatigue | 5.5hrs | ⭐⭐ Workable | Training day in both blocks — squat + technique volume in Block 2 |
 | Sun | Finish shift 7:30am | Recovery | ❌ Rest only | Full recovery day |
 
 ### Summer Training Block (now → August)
@@ -95,14 +95,22 @@ Days off: Mon, Tue. Finish last shift Sun 7:30am → sleep all day Sunday.
 | Sun | Rest — recover from shift | ❌ | No training |
 
 ### School Term Training Block (August+)
-4 days/week. Thu/Sat sleep drops back to ~3.5hrs — too little for productive training.
+4 days/week — **Mon/Tue/Thu/Sat**. This is the mapping Block 2 actually ships
+(`docs/programs/2026-08-12-block2.md`, Day-by-Day Template): Mon/Tue follow full
+nights, Thu and Sat follow post-shift sleep. The Mon/Tue/Thu/Sat *frame* is
+cited [E8.12] and never trains three days in a row [E8.9]; **which session lands
+on which calendar day is a judgment call driven by the night shifts, not a
+corpus prescription** (Judgment Ledger item 1).
 
-| Day | Session | Quality |
-|-----|---------|---------|
-| Mon | Day 1 — Snatch Complex + Posterior Chain | ⭐⭐⭐ |
-| Tue | Day 2 — Clean + Upper Hypertrophy | ⭐⭐⭐ |
-| Thu | Day 3 — Legs + Snatch Stability | ⚠️ |
-| Sat | Day 4 — Jerk Priority + C&J | ⚠️ |
+| Day | Session | Quality | Hard rules |
+|-----|---------|---------|------------|
+| Mon | Day 1 — Snatch from the floor + snatch pull + back squat | ⭐⭐⭐ | Snatch first in the session [E7.12] |
+| Tue | Day 2 — Clean & jerk from the floor + clean pull + front squat | ⭐⭐⭐ | Clean + front squat; squat any accidental power receive |
+| Thu | Day 3 — Jerk priority (split jerk from rack) + positional snatch | ⭐⭐ | Reduced loading after post-shift sleep; the week's only percentaged jerk |
+| Sat | Day 4 — Squat + technique volume | ⭐⭐ | Back squat #2 of the week; posterior chain last |
+
+Thursday's load reduction is a night-shift accommodation with **zero corpus
+coverage** (Judgment Ledger item 2) — it is not a cited prescription.
 
 ---
 

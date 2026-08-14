@@ -70,15 +70,41 @@ for (const lift of ["snatch","cleanAndJerk","frontSquat","backSquat","pushPress"
 // --- Block 2 carries none of Block 1's uncited or Wednesday strings ---
 // The pain gate cites nothing in the corpus and is dropped as a coaching
 // prescription; Wednesday is not a training day in Block 2.
+//
+// These match the PRESCRIPTION, not its label. An earlier version tested only
+// for the literal "pain-gate", which the rule itself never contains - "back
+// pain >3/10 pre-session -> drop load ~40%" would have sailed through with its
+// label prefix stripped. The serialized week covers week-level note/focus/load
+// as well as every day field; the day-only scan left half the object open.
 for (const w of PROGRAM_B2) {
-  for (const d of w.days) {
-    const blob = `${d.label} ${d.primary} ${d.load} ${d.secondary} ${d.notes}`;
-    assert.ok(!/pain[- ]gate/i.test(blob), `week ${w.week} ${d.id} carries the pain gate`);
-    assert.ok(!/Hard stop 3pm/i.test(blob), `week ${w.week} ${d.id} carries the 3pm stop`);
-    assert.ok(!/\bWed\b/.test(blob), `week ${w.week} ${d.id} labels a Wednesday`);
-  }
+  const blob = JSON.stringify(w);
+  assert.ok(!/\d\s*\/\s*10/.test(blob),
+    `week ${w.week} carries a numeric pain-score threshold`);
+  assert.ok(!/drop\s+(the\s+)?load/i.test(blob),
+    `week ${w.week} carries the uncited load-reduction rule`);
+  assert.ok(!/pain[- ]gate/i.test(blob), `week ${w.week} carries the pain gate by name`);
+  assert.ok(!/Hard stop 3pm/i.test(blob), `week ${w.week} carries the 3pm stop`);
+  assert.ok(!/\bWed\b/.test(blob), `week ${w.week} labels a Wednesday`);
   assert.deepEqual(w.days.map(d => d.label.split(" ")[1]), ["Mon","Tue","Thu","Sat"],
     `week ${w.week} runs Mon/Tue/Thu/Sat [E8.12]`);
+}
+
+// The guard must actually catch the string it exists to catch.
+{
+  const poisoned = JSON.parse(JSON.stringify(PROGRAM_B2[0]));
+  poisoned.days[0].notes += " back pain >3/10 pre-session, drop load ~40%.";
+  const blob = JSON.stringify(poisoned);
+  assert.ok(/\d\s*\/\s*10/.test(blob) && /drop\s+(the\s+)?load/i.test(blob),
+    "the pain-gate guard does not detect the unlabelled prescription");
+}
+
+// --- Block 2 loads the split jerk on Thursday only -------------------------
+// The source document's Prescription calls it "the week's jerk primary" -
+// singular - and its table/prose conflict was resolved at 70-80%, Thu only.
+for (const w of PROGRAM_B2) {
+  const [, d2] = w.days;
+  assert.ok(!/Split jerk[^·]*\d+(\.\d+)?–\d+(\.\d+)? kg/.test(d2.secondary),
+    `week ${w.week} d2 carries a percentaged split jerk - Thursday owns that slot`);
 }
 
 console.log("program.js checks passed");
