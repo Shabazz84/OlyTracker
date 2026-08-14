@@ -98,6 +98,25 @@ for (const w of PROGRAM_B2) {
     "the pain-gate guard does not detect the unlabelled prescription");
 }
 
+// --- E25.4's band -> rep-scheme pairing, on the jerk slot ------------------
+// "70 to 80% ... The optimum range is 3 repetitions for 4-5 sets; The hardest
+// work with modest volumes is between 80 and 90%, for example, 1-3 reps for
+// 2-4 sets; Competitive and extreme loads of 90% and higher. Recommended from
+// 2 and up to 6 singles." When the 2026-08-14 ruling moved the jerk down to
+// 70-80%, the reps did not follow, leaving singles printed beside a citation
+// that assigns them to 90%+. check_citations cannot see that: the handle
+// resolves, it just no longer supports the pairing next to it. This does.
+for (const w of PROGRAM_B2) {
+  if (w.phase === "Deload" || w.phase === "Test") continue;  // E5.11 / E3.12 govern
+  const d3 = w.days[2];
+  if (/\b7\d–80%|\b70–7\d%/.test(d3.load)) {
+    assert.match(d3.primary, /4–5×3/,
+      `week ${w.week} d3 sits in E25.4's 70-80% bracket, which it assigns 3 reps x 4-5 sets`);
+    assert.doesNotMatch(d3.primary, /single|double/i,
+      `week ${w.week} d3 pairs singles/doubles with the 70-80% band`);
+  }
+}
+
 // --- Block 2 loads the split jerk on Thursday only -------------------------
 // The source document's Prescription calls it "the week's jerk primary" -
 // singular - and its table/prose conflict was resolved at 70-80%, Thu only.

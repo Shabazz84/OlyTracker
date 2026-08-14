@@ -4029,7 +4029,7 @@ function OlyTracker() {
                 BLOCK 1 · HYPERTROPHY FOUNDATION · {BLOCK_BOUNDS[0].end-BLOCK_BOUNDS[0].start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.1 · 2026-08-14
+                PROGRAM v3.6.2 · 2026-08-14
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
