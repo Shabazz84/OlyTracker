@@ -126,6 +126,240 @@ def test_render_question_file_states_no_coverage_plainly():
     assert "NO COVERAGE" in out
 
 
+# ------------------------------------------------- comment-section flagging
+
+# EVERY FIXTURE BELOW IS INVENTED. Names, dates, article prose, bylines and
+# site name are written for these tests. None is copied from — or paraphrased
+# from — a pack passage: `evidence/` and `transcripts/` are gitignored raw
+# transcript text and CLAUDE.md forbids committing any of it, the more so
+# because the corpus includes material from a source with a known site-wide
+# compromise.
+#
+# What a fixture reproduces is the SHAPE the detector keys on. Where a trigger
+# is an exact site-boilerplate string it is quoted from the pattern in
+# `synthesis/evidence.py` (which is where that string lives in this repo), and
+# everything around it is invented.
+
+# A comment thread, as it arrives from a whole-page scrape: the article's
+# title, source URL and note path are identical to a body chunk's, and the
+# text is the only thing that gives it away.
+COMMENT_BODY = (
+    "the bar drifts forward on me every single rep and I cannot work out why. "
+    "Hallvard Ostrowski March 4, 2011 Marguerite, that is nearly always a "
+    "balance problem rather than a strength one. Film yourself from the side "
+    "before you put another kilo on the bar."
+)
+
+ARTICLE_BODY = (
+    "A lifter who cannot hold a flat back under a moderate load will not "
+    "suddenly discover one under a heavy load. Build the position first with "
+    "submaximal work and let the weight follow it. The order matters a great "
+    "deal more than the numbers do."
+)
+
+# The head of a scraped article: site nav, then the BYLINE — author plus date,
+# the exact shape of a commenter signature — then article prose. Flagging this
+# would be a false positive, and it is the most common near-miss in the pack:
+# without the byline suppressor, 20 of 68 raw stamp hits are article heads.
+ARTICLE_HEAD_WITH_BYLINE = (
+    "Holding the Flat Back Under Load by Hallvard Ostrowski - Barbell Notes "
+    "Coaching & Programming Articles Login / Register Subscribe "
+    "Articles > Program Design Holding the Flat Back Under Load "
+    "Hallvard Ostrowski May 6, 2009 See Related Articles A lifter who cannot "
+    "hold a flat back under a moderate load will not suddenly discover one "
+    "under a heavy load."
+)
+
+
+def test_comment_signature_is_detected():
+    assert sev.looks_like_comment_section(COMMENT_BODY) is True
+
+
+def test_plain_article_prose_is_not_flagged():
+    assert sev.looks_like_comment_section(ARTICLE_BODY) is False
+
+
+def test_article_byline_is_not_mistaken_for_a_commenter_signature():
+    """A byline (`<author> <Month DD, YYYY>`) sits at the top of every scraped
+    article and has the exact shape of a commenter stamp. The site's
+    `See Related Articles` nav immediately after it is what separates the
+    two, and per-occurrence suppression means a chunk carrying a byline AND a
+    comment still flags."""
+    assert sev.looks_like_comment_section(ARTICLE_HEAD_WITH_BYLINE) is False
+
+
+def test_a_byline_does_not_suppress_a_real_comment_later_in_the_chunk():
+    """Suppression is per occurrence, not per passage."""
+    body = (ARTICLE_HEAD_WITH_BYLINE
+            + " Marguerite Okonkwo August 19, 2013 this finally made it click "
+              "for me, thank you.")
+    assert sev.looks_like_comment_section(body) is True
+
+
+def test_comment_thread_boundary_marker_is_detected():
+    body = ("...and that is the whole of the fix. Related Articles "
+            "Bracing Before The Pull Hallvard Ostrowski | Program Design "
+            "2 Comments Please log in to post a comment finally something "
+            "here that made sense to me, thank you")
+    assert sev.looks_like_comment_section(body) is True
+
+
+def test_zero_comments_boundary_is_not_flagged():
+    """`0 Comments` means the chunk ran into the author bio, not a thread."""
+    body = ("...and that is the whole of the fix. 0 Comments Please log in to "
+            "post a comment Ingrid Vasseur coaches at a small club in Lyon.")
+    assert sev.looks_like_comment_section(body) is False
+
+
+def test_a_quoted_reader_question_in_an_article_body_is_deliberately_not_flagged():
+    """A DIFFERENT hazard, deliberately out of scope. `Ask the coach` article
+    formats quote the reader's question inside the authored body — the
+    reader's words, but not a comment thread. Nine passages in the 2026-08-12
+    pack are this shape (E9.6, E11.10, E13.2, E13.5, E14.2, E17.3, E17.5,
+    E17.10, E18.6). Marking them `[COMMENT SECTION]` would be false, and would
+    teach a reader to distrust the coach's own answers. It wants its own
+    marker; recorded in task-9-report.md instead."""
+    body = ("Marguerite Asks : how heavy should my pulls be next to my best "
+            "clean? Coach Says: heavier is not automatically better — past a "
+            "point you are simply training a different movement.")
+    assert sev.looks_like_comment_section(body) is False
+
+
+def test_site_footer_tail_is_detected():
+    body = ("so keep the first pull patient and let the bar stay close to you. "
+            "Read more by Ingrid Vasseur Subscribe All content (c) Barbell "
+            "Notes, Inc.")
+    assert sev.looks_like_comment_section(body) is True
+
+
+def test_every_footer_boilerplate_branch_is_detected():
+    """Branch coverage for `_FOOTER_TAIL`. Each string below is quoted from the
+    pattern in `synthesis/evidence.py` — it is site boilerplate the detector is
+    *defined* by, not anyone's words and not a pack passage — and the prose
+    around it is invented for this test."""
+    for boilerplate in ("Read more by Ingrid Vasseur",
+                        "All content (c) Catalyst Athletics, Inc.",
+                        "Website by Greg Everett",
+                        "A. Coach is the owner of Catalyst Athletics",
+                        "R. Lifter is a weightlifter for Team Catalyst Athletics"):
+        body = f"keep the bar close and stay patient off the floor. {boilerplate}"
+        assert sev.looks_like_comment_section(body) is True, boilerplate
+
+
+def test_author_bio_tail_is_detected():
+    """Two passages in the real pack open mid-reader-question and run straight
+    into the site's author-bio block, with no date stamp surviving into the
+    chunk (E11.9, E38.11) — the bio tail is the only thing that catches them.
+
+    The question here is invented. The bio phrase is the site boilerplate that
+    `_FOOTER_TAIL` matches, quoted from the pattern in `synthesis/evidence.py`
+    rather than from any passage, and everything around it is written for this
+    test."""
+    bio_boilerplate = "is the owner of Catalyst Athletics"   # from _FOOTER_TAIL
+    body = ("I keep missing the jerk behind me once I get tired. Is that a "
+            "strength problem or a timing problem? Thanks! A. Coach "
+            + bio_boilerplate + " and has coached for eleven years.")
+    assert sev.looks_like_comment_section(body) is True
+
+
+def test_comment_signatures_names_why_a_passage_flagged():
+    """Named signatures, not a bare bool, so a bad pattern can be retired on
+    evidence rather than on impression."""
+    assert sev.comment_signatures(COMMENT_BODY) == ["commenter_stamp"]
+    assert sev.comment_signatures(ARTICLE_BODY) == []
+
+
+def test_render_marks_a_comment_passage_and_still_writes_it_in_full():
+    """Advisory, never exclusionary: the flag is a warning to a reader, not a
+    filter. A dropped or truncated passage would be a worse failure than the
+    misattribution the flag exists to prevent."""
+    r = sev.QuestionResult(_q(3, "deload_frequency"), [_p(COMMENT_BODY)], True)
+    out = sev.render_question_file(r, limit=12, threshold=0.58)
+
+    assert "## E3.1 — score 0.66 [COMMENT SECTION]" in out
+    assert "Film yourself from the side before you put another kilo on the " \
+           "bar." in out
+
+
+def test_render_leaves_an_ordinary_passage_heading_untouched():
+    r = sev.QuestionResult(_q(3, "deload_frequency"), [_p(ARTICLE_BODY)], True)
+    out = sev.render_question_file(r, limit=12, threshold=0.58)
+
+    assert "## E3.1 — score 0.66\n" in out
+    assert "COMMENT SECTION" not in out
+
+
+def test_comment_flag_does_not_break_the_citation_checker_handle_regex():
+    from tools.check_citations import PACK_HANDLE_RE
+
+    r = sev.QuestionResult(_q(3, "deload_frequency"), [_p(COMMENT_BODY)], True)
+    out = sev.render_question_file(r, limit=12, threshold=0.58)
+
+    assert [f"E{m.group(1)}.{m.group(2)}" for m in PACK_HANDLE_RE.finditer(out)] \
+        == ["E3.1"]
+
+
+# --------------------------------------------------- same-source disclosure
+
+
+def test_render_discloses_two_passages_sharing_a_note_path():
+    """Overlapping chunks of one video read as two sources agreeing. They are
+    one source quoted twice — `note_path` equality is a fact, not a guess."""
+    r = sev.QuestionResult(
+        _q(20, "squat_reps_long_limbs"),
+        [_p("a", note_path="tall.md"), _p("b", note_path="other.md"),
+         _p("c", note_path="tall.md")],
+        True)
+    out = sev.render_question_file(r, limit=12, threshold=0.58)
+
+    assert "## E20.1 — score 0.66 [SAME SOURCE AS E20.3]" in out
+    assert "## E20.3 — score 0.66 [SAME SOURCE AS E20.1]" in out
+    assert "## E20.2 — score 0.66\n" in out
+
+
+def test_render_lists_every_sibling_when_a_source_appears_three_times():
+    r = sev.QuestionResult(
+        _q(20, "squat_reps_long_limbs"),
+        [_p("a", note_path="t.md"), _p("b", note_path="t.md"),
+         _p("c", note_path="t.md")],
+        True)
+    out = sev.render_question_file(r, limit=12, threshold=0.58)
+
+    assert "## E20.1 — score 0.66 [SAME SOURCE AS E20.2, E20.3]" in out
+
+
+def test_a_lone_passage_discloses_nothing():
+    r = sev.QuestionResult(_q(20, "squat_reps_long_limbs"),
+                           [_p("a", note_path="t.md")], True)
+    out = sev.render_question_file(r, limit=12, threshold=0.58)
+
+    assert "SAME SOURCE" not in out
+
+
+def test_both_signals_can_appear_on_one_heading():
+    r = sev.QuestionResult(
+        _q(37, "technique_under_load"),
+        [_p(COMMENT_BODY, note_path="a.md"), _p(COMMENT_BODY, note_path="a.md")],
+        True)
+    out = sev.render_question_file(r, limit=12, threshold=0.58)
+
+    assert "## E37.1 — score 0.66 [COMMENT SECTION] [SAME SOURCE AS E37.2]" in out
+
+
+def test_same_source_disclosure_is_scoped_to_one_question():
+    """Cross-question overlap is out of scope — E20.1 and E42.1 sharing a note
+    is expected and says nothing about corroboration inside one answer."""
+    results = [
+        sev.QuestionResult(_q(20, "squat_reps_long_limbs"),
+                           [_p("a", note_path="shared.md")], True),
+        sev.QuestionResult(Question(42, "second_pull_timing", "What about the second pull?"),
+                           [_p("b", note_path="shared.md")], True),
+    ]
+    for r in results:
+        assert "SAME SOURCE" not in sev.render_question_file(
+            r, limit=12, threshold=0.58)
+
+
 # ---------------------------------------------------------------- manifest
 
 
@@ -244,6 +478,40 @@ def test_citations_contain_no_transcript_text():
                             limit=12, threshold=0.58, collection="oly")
 
     assert body not in json.dumps(c)
+
+
+def test_citations_carry_the_comment_section_flag():
+    results = [sev.QuestionResult(_q(3, "deload_frequency"),
+                                  [_p(COMMENT_BODY), _p(ARTICLE_BODY)], True)]
+    c = sev.build_citations(results, limit=12, threshold=0.58, collection="oly")
+
+    assert c["citations"][0]["comment_section"] is True
+    assert c["citations"][1]["comment_section"] is False
+
+
+def test_citations_carry_same_source_sibling_handles():
+    results = [sev.QuestionResult(
+        _q(20, "squat_reps_long_limbs"),
+        [_p("a", note_path="t.md"), _p("b", note_path="u.md"),
+         _p("c", note_path="t.md")],
+        True)]
+    c = sev.build_citations(results, limit=12, threshold=0.58, collection="oly")
+
+    assert c["citations"][0]["same_source_as"] == ["E20.3"]
+    assert c["citations"][1]["same_source_as"] == []
+    assert c["citations"][2]["same_source_as"] == ["E20.1"]
+
+
+def test_citations_signals_add_no_transcript_text():
+    """The new signals are structural. The manifest is committed; the pack is
+    not. One quoted word here would put transcript text in the repo."""
+    body = COMMENT_BODY + " zzdistinctivetranscriptphrasezz"
+    c = sev.build_citations([sev.QuestionResult(_q(), [_p(body)], True)],
+                            limit=12, threshold=0.58, collection="oly")
+
+    assert "zzdistinctivetranscriptphrasezz" not in json.dumps(c)
+    assert "Ostrowski" not in json.dumps(c)
+    assert c["citations"][0]["comment_section"] is True
 
 
 def test_uncovered_questions_contribute_no_citations():

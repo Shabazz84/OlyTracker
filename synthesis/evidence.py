@@ -14,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -21,6 +22,112 @@ from synthesis.questions import QUESTIONS, Question
 from synthesis.retrieve import Passage, retrieve_topic
 
 logger = logging.getLogger(__name__)
+
+
+# --------------------------------------------------------------------------
+# Comment-section detection
+#
+# Article pages scrape whole, so a chunk of the reader comment thread carries
+# the article's real title, source URL and note path. In the pack file, in
+# citations.json and to tools/check_citations.py it is indistinguishable from
+# the coach's own words — two positions in the Block 2 document were attributed
+# to coaches when the passage was a reader asking a question.
+#
+# This is a HEURISTIC and it is ADVISORY. A flagged passage is still written in
+# full, still numbered, still citable; the flag only tells a reader to check who
+# is speaking. A false positive costs ten seconds. A false negative is what
+# shipped a reader's comment as a coach's prescription — so the patterns below
+# are tuned to catch the real cases, and each one is justified against the real
+# pack in .superpowers/sdd/2026-08-12-block2/task-9-report.md.
+# --------------------------------------------------------------------------
+
+_MONTH = (r"(?:January|February|March|April|May|June|July|August|September"
+          r"|October|November|December)")
+
+#: One capitalised word of a display name. Accented letters included on
+#: purpose: `Jord Gabriël July 8, 2019` is a real commenter in the pack.
+_NAME_TOKEN = r"[A-ZÀ-Þ][A-Za-zÀ-ɏ'’.\-]*"
+
+#: A display name (1–3 tokens) immediately followed by a full date: the
+#: signature every commenter's post carries. Bare dates are deliberately NOT
+#: matched — coaches narrate dates in prose ("back in March 2019 I...").
+_COMMENTER_STAMP = re.compile(
+    rf"(?<![A-Za-z]){_NAME_TOKEN}(?:\s+{_NAME_TOKEN}){{0,2}}\s+{_MONTH}"
+    rf"\s+\d{{1,2}},\s+\d{{4}}"
+)
+
+#: The article BYLINE has the identical shape to a commenter stamp
+#: (`Greg Everett July 9, 2012`) and is followed by the site's related-articles
+#: nav. Without this suppressor every article-head chunk in the pack flags —
+#: 20 false positives out of 68 raw stamp hits, and they are exactly the
+#: passages the Block 2 document leans on hardest.
+_BYLINE_TAIL = re.compile(r"\s*See Related Articles")
+
+#: The boundary the page prints between the article and its thread. A count of
+#: zero means the chunk ran into the author bio, not into comments.
+_COMMENT_THREAD_HEADER = re.compile(
+    r"\b[1-9]\d*\s+Comments?\b[\s\S]{0,60}?log in to post a comment",
+    re.IGNORECASE)
+
+#: Page furniture printed *after* the article: the author-bio block, the
+#: read-more link and the site footer. Exact site strings, so effectively zero
+#: false-positive risk — and the bio tail is what catches a chunk whose comment
+#: text was cut off before any date stamp survived into it (E11.9, E38.11 in
+#: the 2026-08-12 pack both open mid-question and run straight into the bio).
+_FOOTER_TAIL = re.compile(
+    r"(\bRead more by\b"
+    r"|All content\s*\S{0,3}\s*Catalyst Athletics"
+    r"|Website by Greg Everett"
+    r"|\bis the owner of Catalyst Athletics\b"
+    r"|\bis a weightlifter for Team Catalyst Athletics\b)",
+    re.IGNORECASE)
+
+
+def comment_signatures(text: str) -> list[str]:
+    """Names of the comment-thread signatures present in `text`.
+
+    Returned as names rather than a bare bool so a reader (and the report) can
+    see *why* a passage flagged, and so a bad pattern can be retired on
+    evidence instead of on impression.
+    """
+    found = []
+    if any(not _BYLINE_TAIL.match(text[m.end():m.end() + 25])
+           for m in _COMMENTER_STAMP.finditer(text)):
+        found.append("commenter_stamp")
+    if _COMMENT_THREAD_HEADER.search(text):
+        found.append("thread_header")
+    if _FOOTER_TAIL.search(text):
+        found.append("footer_tail")
+    return found
+
+
+def looks_like_comment_section(text: str) -> bool:
+    """True if the passage carries reader-comment or page-furniture text.
+
+    Advisory only. Nothing in this module drops, truncates or reorders a
+    flagged passage.
+    """
+    return bool(comment_signatures(text))
+
+
+def same_source_siblings(passages: list[Passage], qid: int) -> list[list[str]]:
+    """For each passage, the handles of the OTHER passages in the same
+    question that came from the same note.
+
+    Overlapping chunks of one source read as independent corroboration: `E20.7`
+    and `E20.10` are consecutive chunks of one video, and E20.10 opens with
+    E20.7's closing words. Citing both looks like two sources agreeing; it is
+    one source quoted twice. `note_path` equality is a fact, not a heuristic,
+    so this is exact.
+
+    Scoped to a single question on purpose — the same note turning up under two
+    different questions says nothing about corroboration inside one answer.
+    """
+    by_note: dict[str, list[str]] = {}
+    for i, p in enumerate(passages, start=1):
+        by_note.setdefault(p.note_path, []).append(handle(qid, i))
+    return [[h for h in by_note[p.note_path] if h != handle(qid, i)]
+            for i, p in enumerate(passages, start=1)]
 
 
 class CitationsConflictError(Exception):
@@ -100,12 +207,21 @@ def render_question_file(result: QuestionResult, *, limit: int,
         "",
     ]
 
+    siblings = same_source_siblings(result.passages, q.id)
+
     blocks = []
     for i, p in enumerate(result.passages, start=1):
         # Transcript bodies are one unwrapped blob; collapse so the file reads.
         body = " ".join(p.text.split())
+        # Advisory markers only: the passage below is written in full either
+        # way. They sit on the heading so a reader sees them before the text.
+        flags = ""
+        if looks_like_comment_section(p.text):
+            flags += " [COMMENT SECTION]"
+        if siblings[i - 1]:
+            flags += f" [SAME SOURCE AS {', '.join(siblings[i - 1])}]"
         blocks.append("\n".join([
-            f"## {handle(q.id, i)} — score {p.score:.2f}",
+            f"## {handle(q.id, i)} — score {p.score:.2f}{flags}",
             "",
             f"**Title:** {p.title or '(untitled)'}",
             f"**Source:** {p.source or '(no source)'}",
@@ -154,6 +270,7 @@ def build_citations(results: list[QuestionResult], *, limit: int,
     """
     entries = []
     for r in results:
+        siblings = same_source_siblings(r.passages, r.question.id)
         for i, p in enumerate(r.passages, start=1):
             entries.append({
                 "handle": handle(r.question.id, i),
@@ -162,6 +279,11 @@ def build_citations(results: list[QuestionResult], *, limit: int,
                 "source": p.source,
                 "score": p.score,
                 "sha256": hashlib.sha256(p.text.encode("utf-8")).hexdigest(),
+                # Structural signals only — a quote here would put transcript
+                # text in git. See looks_like_comment_section (advisory) and
+                # same_source_siblings (exact).
+                "comment_section": looks_like_comment_section(p.text),
+                "same_source_as": siblings[i - 1],
             })
     return {
         "retrieval": {
@@ -184,6 +306,22 @@ def render_readme(results: list[QuestionResult]) -> str:
         "",
         "This directory is gitignored: it is raw transcript text. Regenerate "
         "with `python main.py evidence`.",
+        "",
+        "## Passage markers",
+        "",
+        "Both markers are advisory. No passage is ever dropped, truncated or "
+        "reordered because of them.",
+        "",
+        "- `[COMMENT SECTION]` — the passage carries reader-comment or "
+        "page-footer text. Article pages scrape whole, so a comment thread "
+        "arrives with the article's real title, source URL and note path. "
+        "**Check who is speaking before citing it.** This is a heuristic: it "
+        "can miss a comment, and it can flag a chunk whose article body is "
+        "mostly intact but whose tail runs into the thread.",
+        "- `[SAME SOURCE AS ...]` — the listed passages came from the same "
+        "note as this one. Citing them together is **not** two sources "
+        "agreeing; it is one source quoted twice. Exact, not heuristic, and "
+        "scoped to this question only.",
         "",
         f"**Coverage: {covered}/{len(results)} covered**",
         "",
