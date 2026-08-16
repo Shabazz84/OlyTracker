@@ -429,12 +429,19 @@ const PHASE_COLORS = {
 
 const BLOCKS = [
   {
-    id:1, label:"BLOCK 1", name:"Hypertrophy Foundation", weeks:"6–8 wks",
+    id:1, label:"BLOCK 1", name:"Hypertrophy Foundation", weeks:"8 wks (1–8)",
     color:"#4a90d9", goal:"Build muscular base, tissue resilience, fix OHS ceiling",
-    phases:["Wks 1–3: 65–72% TM · 4×6–8 accessory · position learning","Wks 4–6: 72–80% TM · daily max singles on jerk begin · top-end singles"],
+    phases:["Wks 1–3: 65–75% TM · 4×6–8 accessory · position learning","Wks 4–6: 72–82% TM · daily max singles on jerk begin · top-end singles","Wk 7 deload: same loads, volume −40%","Wk 8 test: 1RM attempts"],
+    // b2_hang_ratio/b2_crutch/b2_overhead moved here from BLOCK 2 (2026-08-16,
+    // final-branch review finding I4) - they are the source document's Entry
+    // Gate ("checks to run before week 9"), not Block 2 exit criteria. The
+    // gate the app rendered here before (OHS >= 60kg, snatch @ 75-80% TM)
+    // cited nothing and was exactly the kind of invented number this project
+    // exists to catch.
     advancement:[
-      {id:"b1_ohs",  text:"OHS ≥ 60 kg with solid position"},
-      {id:"b1_snatch",text:"Consistent snatch technique at 75–80% TM"},
+      {id:"b2_hang_ratio",text:"Hang variations sit at ~90% of the same lift from the floor — the hang has stopped paying [E9.5, E9.7]"},
+      {id:"b2_crutch",   text:"No hang crutch: floor numbers track the hang instead of lagging it [E9.5, E8.5]"},
+      {id:"b2_overhead", text:"Snatch balance at least matches the best snatch — ideally ~10% or ~15 kg more, comfortably [E10.3, E10.1]"},
       {id:"b1_back", text:"Back pain stable at 🟡 or better for 2+ weeks"},
       {id:"b1_weeks",text:"8 weeks completed"},
     ],
@@ -446,16 +453,10 @@ const BLOCKS = [
       "Wks 9–14 loading: rep bracket ladder, ~2 weeks per bracket — 1–3 reps → 4–5×3 → 2–4×1–3 → doubles/singles [E36.3, E36.11]. Squat holds 65–70% × 3–5 throughout [E20.10]",
       "Wk 15 back-off: weights −10–15%, volume −15–25% (Everett's depth, not Torokhtiy's) [E5.11]. Wk 16 test [E39.2]",
     ],
-    // The old criteria (OHS >= 65 kg, jerk gap to clean <= 10 kg) cited nothing
-    // and were exactly the kind of invented number this project exists to
-    // catch. These come from the source document's Entry Gate and Test Week
-    // sections. The corpus supplies no numeric pass/fail for the transition
-    // itself - [E31.4] puts it anywhere from one session to a month - so these
-    // are read together by eye, not scored.
+    // b2_hang_ratio/b2_crutch/b2_overhead moved to BLOCK 1 (see note there) -
+    // they gate entry into this block, not exit from it. What's left below is
+    // this block's actual exit criteria: the wk16 test and the 8 weeks.
     advancement:[
-      {id:"b2_hang_ratio",text:"Hang variations sit at ~90% of the same lift from the floor — the hang has stopped paying [E9.5, E9.7]"},
-      {id:"b2_crutch",   text:"No hang crutch: floor numbers track the hang instead of lagging it [E9.5, E8.5]"},
-      {id:"b2_overhead", text:"Snatch balance at least matches the best snatch — ideally ~10% or ~15 kg more, comfortably [E10.3, E10.1]"},
       {id:"b2_test",     text:"Wk 16 tested: snatch, C&J, front squat, snatch-balance diagnostic; stopped at form breakdown, not at the first miss [E39.2, E5.6, E10.3]"},
       {id:"b2_weeks",    text:"8 weeks completed (9–16)"},
     ],
