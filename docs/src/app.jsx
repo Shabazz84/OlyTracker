@@ -3777,6 +3777,8 @@ function OlyTracker() {
   const DAYS = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
   const phase = week<=3?0:1;
   const day = DAYS[Math.min(dayIdx, DAYS.length-1)];
+  const _headerBlk = blockFor(week) || BLOCK_BOUNDS[0];
+  const _headerWeekPlan = weekPlan(week);
 
   // Reset progress tracking when day changes
   useEffect(() => { setSessionProgress({}); }, [dayIdx, week]);
@@ -4026,17 +4028,17 @@ function OlyTracker() {
                 OLY<span style={{color:"var(--gold)"}}>TRACKER</span>
               </div>
               <div style={{fontSize:9,color:"var(--text3)",letterSpacing:2.5,fontFamily:"'DM Mono',monospace",marginTop:3}}>
-                BLOCK 1 · HYPERTROPHY FOUNDATION · {BLOCK_BOUNDS[0].end-BLOCK_BOUNDS[0].start+1} WEEKS
+                BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.2 · 2026-08-14
+                PROGRAM v3.6.3 · 2026-08-16
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
               <div style={{textAlign:"right"}}>
                 <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:26,color:"var(--gold)",lineHeight:1}}>WK {week}</div>
                 <div style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",marginTop:2}}>
-                  PHASE {phase+1} · {phase===0?"BASE BUILD":"LOAD UP"}
+                  {_headerWeekPlan ? _headerWeekPlan.phase.toUpperCase() : `PHASE ${phase+1}`}
                 </div>
               </div>
               {/* Summer toggle */}
