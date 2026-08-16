@@ -5,7 +5,10 @@ or any other generated artifact.
 Scans the whole repo (not just synthesis/ and summarizer/) so config.py,
 main.py, any future root-level module, and documentation all stay covered —
 narrower scoping here is exactly what let the stale CLAUDE.md prompts (Finding
-I1) go undetected."""
+I1) go undetected. "Whole repo" means every directory not explicitly excluded
+below, not every file: see SCAN_EXTENSIONS for exactly which file types are
+read. It missed .js/.jsx entirely until Finding I6 (2026-08-16) put
+docs/src/app.jsx's own live system prompt in this guard's blind spot."""
 
 from pathlib import Path
 
@@ -35,12 +38,28 @@ PROFILE_MARKERS = ["102.5 kg", "OHS 50 kg", "primary snatch limiter"]
 #:   does. Allow-listed by EXACT PATH, not as a docs/programs/ directory
 #:   exclusion — a directory rule would let any future file there carry the
 #:   profile undetected, which is the failure this guard exists to catch.
+#: - docs/src/app.jsx (+ its built docs/app.js): carries the profile inside a
+#:   live Claude system prompt (the weekly-review AI feature) — this athlete's
+#:   own tracker, not a stored-and-retrieved corpus artifact, so the same
+#:   reasoning as master_synthesis.md applies. Found blind before this list
+#:   existed (Finding I6, 2026-08-16 final-branch review): SCAN_EXTENSIONS
+#:   didn't cover .js/.jsx at all, so this wasn't merely allowed, it was
+#:   invisible. Allow-listed on purpose now, not exempt by extension.
+#: - docs/src/program.js (+ its built docs/program.js): NOT a profile
+#:   restatement — one session note's "OHS 50 kg" (a real training-target
+#:   load, unrelated to the profile prompt) collides with the PROFILE_MARKERS
+#:   entry of the same text. Allow-listed for that specific, checked reason;
+#:   the file carries none of the other two markers.
 ALLOWED = {
     "synthesis/prompts.py",
     "CLAUDE.md",
     "summaries/master_synthesis.md",
     "docs/programs/2026-08-11-block1-rebuild.md",
     "docs/programs/2026-08-12-block2.md",
+    "docs/src/app.jsx",
+    "docs/app.js",
+    "docs/src/program.js",
+    "docs/program.js",
 }
 
 #: Directories excluded entirely, relative to ROOT (matched as a path-part
@@ -54,9 +73,12 @@ EXCLUDED_DIRS = {
     "__pycache__",
 }
 
-#: Extensions scanned. Code (.py) and docs (.md) are the two places bias can
-#: re-enter: a prompt, or instructions telling a future session how to build one.
-SCAN_EXTENSIONS = {".py", ".md"}
+#: Extensions scanned. Code (.py, .js, .jsx) and docs (.md) are the places
+#: bias can re-enter: a prompt, or instructions telling a future session how
+#: to build one. .js/.jsx were missing until Finding I6 (2026-08-16) — the
+#: docstring above claimed whole-repo coverage while docs/src/app.jsx's own
+#: live system prompt sat in this guard's blind spot.
+SCAN_EXTENSIONS = {".py", ".md", ".js", ".jsx"}
 
 
 def _is_in_excluded_dir(rel_parts: tuple[str, ...]) -> bool:
@@ -160,6 +182,19 @@ def test_profile_in_any_other_programs_file_still_fails():
     try:
         target.write_text("Athlete bodyweight 102.5 kg.\n", encoding="utf-8")
         assert "docs/programs/_leak_probe_program.md" in _offenders()
+    finally:
+        target.unlink()
+
+
+def test_profile_in_any_other_js_file_still_fails():
+    """Finding I6: SCAN_EXTENSIONS didn't cover .js/.jsx at all, so the profile
+    could leak into any JS file undetected — not merely allowed, invisible.
+    A stray .js file outside the allow-list must still be caught."""
+    target = ROOT / "docs" / "src" / "_leak_probe.js"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        target.write_text("const prompt = 'Athlete bodyweight 102.5 kg.';\n", encoding="utf-8")
+        assert "docs/src/_leak_probe.js" in _offenders()
     finally:
         target.unlink()
 
