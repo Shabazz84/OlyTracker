@@ -3856,10 +3856,19 @@ function weekAdjustedExercises(day, week) {
 // Percentages are of the target stated in that day's own PROGRAM_B1 note
 // (e.g. "Target: HPS 62+ kg"), not of TRAINING_MAX — Block 1's numbers are
 // hardcoded kilos, unlike Block 2's TM-relative loads.
+//
+// Back Squat is the one exception: PROGRAM_B1's week-8 focus line only lists
+// "HPS, HPC, FS, Jerk, OHS" — Back Squat has no test day at all despite being
+// D1's weekly "daily max single" every other week, which reads as a gap in
+// the original (pre-evidence, uncited) Block 1 authoring rather than a
+// deliberate call — Jerk gets the same weekly-max treatment and still has a
+// test day. Its target (130 kg) is athlete-supplied, not from PROGRAM_B1's
+// own text like the other four.
 const WEEK8_TEST = {
   d1: { ladder:[0.40,0.50,0.60,0.70,0.80,0.90], lifts:[
     {id:"hang_power_snatch", label:"Hang Power Snatch", target:62},
     {id:"overhead_squat",    label:"Overhead Squat",    target:55},
+    {id:"back_squat",        label:"Back Squat",        target:130},
   ]},
   d2: { ladder:[0.50,0.60,0.70,0.80,0.87], lifts:[
     {id:"hang_power_clean", label:"Hang Power Clean", target:70},
@@ -4277,7 +4286,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.9 · 2026-08-17
+                PROGRAM v3.6.10 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
