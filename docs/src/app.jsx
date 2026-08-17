@@ -223,24 +223,39 @@ const SLEEP = {
 };
 
 // ── Exercise Catalog ──────────────────────────────────────────────────────────
+// `desc`, where present, is a real cited coaching cue from
+// summaries_archive/dozer_cue_index.md (Dozer/Webster) — not a generic
+// instruction. That index only covers 7 movement-phase categories (snatch/
+// clean pull & receive, jerk drive/lockout, posterior chain), so most
+// exercises have no `desc` at all — left blank rather than inventing one,
+// consistent with this project's no-uncited-content rule.
 const EXERCISE_CATALOG = {
   // ── In program ────────────────────────────────────────────────────────────
-  muscle_snatch:          { id:'muscle_snatch',          name:'Muscle Snatch',               type:'snatch'    },
-  hang_power_snatch:      { id:'hang_power_snatch',      name:'Hang Power Snatch',           type:'snatch'    },
+  muscle_snatch:          { id:'muscle_snatch',          name:'Muscle Snatch',               type:'snatch',
+    desc:"Keep arms passive in the pull — transfer tension to the back and lats rather than arm-driven pulling. (Dozer)" },
+  hang_power_snatch:      { id:'hang_power_snatch',      name:'Hang Power Snatch',           type:'snatch',
+    desc:"Internal rotation, not external, in the catch — front side pulls in short, back gets long. External rotation causes disconnection and an early drop in turnover; directly addresses your OHS limiter. (Dozer, high-confidence)" },
   snatch_balance:         { id:'snatch_balance',         name:'Snatch Balance',              type:'snatch'    },
   overhead_squat:         { id:'overhead_squat',         name:'Overhead Squat',              type:'snatch'    },
   sots_press:             { id:'sots_press',             name:'Sots Press',                  type:'snatch'    },
-  hang_power_clean:       { id:'hang_power_clean',       name:'Hang Power Clean',            type:'cj'        },
-  clean_pull:             { id:'clean_pull',             name:'Clean Pull',                  type:'cj'        },
-  jerk_from_rack:         { id:'jerk_from_rack',         name:'Jerk from Rack',              type:'cj'        },
-  push_press:             { id:'push_press',             name:'Push Press',                  type:'cj'        },
-  clean_and_jerk:         { id:'clean_and_jerk',         name:'Clean & Jerk',                type:'cj'        },
+  hang_power_clean:       { id:'hang_power_clean',       name:'Hang Power Clean',            type:'cj',
+    desc:"Elbows out and down, not high/narrow, to create a posterior trap shelf. A wider grip helps posterior connection — avoid a forward shoulder lean. (Dozer)" },
+  clean_pull:             { id:'clean_pull',             name:'Clean Pull',                  type:'cj',
+    desc:"Elbows stay above the bar until it passes the chest, then rotate. Shoulders directly over the bar at the power position — punch legs, then pull under. (Dozer)" },
+  jerk_from_rack:         { id:'jerk_from_rack',         name:'Jerk from Rack',              type:'cj',
+    desc:"Load weight into the forefoot before dipping, not the toes — bar stays directly over that spot for a straight vertical drive. (Dozer)" },
+  push_press:             { id:'push_press',             name:'Push Press',                  type:'cj',
+    desc:"Dip like a basketball jump — load quads and glutes, keep the bar directly over your foot pressure throughout. (Webster)" },
+  clean_and_jerk:         { id:'clean_and_jerk',         name:'Clean & Jerk',                type:'cj',
+    desc:"Maintain the diaphragm brace from clean into jerk dip — don't exhale or reset. Treat clean and jerk as one lift, not two. (Dozer/Webster, high-confidence)" },
   back_squat:             { id:'back_squat',             name:'Back Squat',                  type:'strength'  },
   front_squat:            { id:'front_squat',            name:'Front Squat',                 type:'strength'  },
   klokov_squat:           { id:'klokov_squat',           name:'Klokov Squat',                type:'strength'  },
   berestov_squat:         { id:'berestov_squat',         name:'Berestov Squat',              type:'strength'  },
-  rdl:                    { id:'rdl',                    name:'Romanian Deadlift',            type:'strength'  },
-  good_morning:           { id:'good_morning',           name:'Good Morning',                type:'strength'  },
+  rdl:                    { id:'rdl',                    name:'Romanian Deadlift',            type:'strength',
+    desc:"Neutral or slightly rounded back beats a hyperarched one — brace hard into neutral/slight flexion for better tension distribution. Directly relevant given chronic back pain. (Dozer, high-confidence)" },
+  good_morning:           { id:'good_morning',           name:'Good Morning',                type:'strength',
+    desc:"Neutral or slightly rounded back beats a hyperarched one — brace hard into neutral/slight flexion for better tension distribution. Directly relevant given chronic back pain. (Dozer, high-confidence)" },
   lunge:                  { id:'lunge',                  name:'Lunge (Barbell)',              type:'strength'  },
   weighted_pull_up:       { id:'weighted_pull_up',       name:'Weighted Pull Up',            type:'strength'  },
   incline_barbell_press:  { id:'incline_barbell_press',  name:'Incline Barbell Press',       type:'strength'  },
@@ -259,7 +274,8 @@ const EXERCISE_CATALOG = {
   power_snatch:                { id:'power_snatch',                name:'Power Snatch',                 type:'snatch' },
   hang_snatch:                 { id:'hang_snatch',                 name:'Hang Snatch',                  type:'snatch' },
   snatch_from_blocks:          { id:'snatch_from_blocks',          name:'Snatch from Blocks',           type:'snatch' },
-  snatch_pull:                 { id:'snatch_pull',                 name:'Snatch Pull',                  type:'snatch' },
+  snatch_pull:                 { id:'snatch_pull',                 name:'Snatch Pull',                  type:'snatch',
+    desc:"Full foot engagement — spread toes, create arch pressure, not heels. Prevents balance loss through the pull. (Dozer/Webster, high-confidence)" },
   snatch_high_pull:            { id:'snatch_high_pull',            name:'Snatch High Pull',             type:'snatch' },
   snatch_deadlift:             { id:'snatch_deadlift',             name:'Snatch Deadlift',              type:'snatch' },
   drop_snatch:                 { id:'drop_snatch',                 name:'Drop Snatch',                  type:'snatch' },
@@ -284,8 +300,10 @@ const EXERCISE_CATALOG = {
   clean_pull_from_blocks: { id:'clean_pull_from_blocks', name:'Clean Pull from Blocks',      type:'cj' },
   clean_high_pull:        { id:'clean_high_pull',        name:'Clean High Pull',             type:'cj' },
   // ── Jerk variations ───────────────────────────────────────────────────────
-  power_jerk:             { id:'power_jerk',             name:'Power Jerk',                  type:'cj' },
-  split_jerk:             { id:'split_jerk',             name:'Split Jerk',                  type:'cj' },
+  power_jerk:             { id:'power_jerk',             name:'Power Jerk',                  type:'cj',
+    desc:"Dip and drive shorter than a split jerk — avoid going too deep and losing control. (Torokhtiy, via Dozer)" },
+  split_jerk:             { id:'split_jerk',             name:'Split Jerk',                  type:'cj',
+    desc:"Maintain the diaphragm brace from clean into jerk dip — don't exhale or reset. Treat clean and jerk as one lift, not two. (Dozer/Webster, high-confidence)" },
   tall_jerk:              { id:'tall_jerk',              name:'Tall Jerk',                   type:'cj' },
   pause_jerk:             { id:'pause_jerk',             name:'Pause Jerk',                  type:'cj' },
   jerk_balance:           { id:'jerk_balance',           name:'Jerk Balance',                type:'cj' },
@@ -366,14 +384,18 @@ const EXERCISE_CATALOG = {
   scapular_pull_up:       { id:'scapular_pull_up',       name:'Scapular Pull Up',            type:'accessory' },
   handstand_hold:         { id:'handstand_hold',         name:'Handstand Hold',              type:'accessory' },
   // ── Block 2 (PROGRAM_B2) — not in Block 1's catalog ──────────────────────────
-  snatch_from_floor:       { id:'snatch_from_floor',       name:'Snatch from Floor',              type:'snatch' },
-  clean_front_squat_floor: { id:'clean_front_squat_floor', name:'Clean + Front Squat from Floor', type:'cj' },
-  split_jerk_from_rack:    { id:'split_jerk_from_rack',    name:'Split Jerk from Rack',           type:'cj' },
+  snatch_from_floor:       { id:'snatch_from_floor',       name:'Snatch from Floor',              type:'snatch',
+    desc:"Internal rotation, not external, in the catch — front side pulls in short, back gets long. External rotation causes disconnection and an early drop in turnover; directly addresses your OHS limiter. (Dozer, high-confidence)" },
+  clean_front_squat_floor: { id:'clean_front_squat_floor', name:'Clean + Front Squat from Floor', type:'cj',
+    desc:"Bar should rest on the shoulder platform — upper traps/delts, not the wrists. Wrist pain means the rack position isn't set, not wrist weakness. (Webster)" },
+  split_jerk_from_rack:    { id:'split_jerk_from_rack',    name:'Split Jerk from Rack',           type:'cj',
+    desc:"Front knee stays on or slightly behind the ankle, not forward over the toes. Hips drop straight down with equal foot distance moved — aim for 50/50 weight distribution. (Dozer)" },
   snpp_ohs_complex:        { id:'snpp_ohs_complex',        name:'SnPP + OHS Complex',             type:'snatch' },
   snatch_opener:           { id:'snatch_opener',           name:'Light Snatch Opener',            type:'snatch' },
   floating_snatch:         { id:'floating_snatch',         name:'Floating Snatch',                type:'snatch' },
   three_position_snatch:   { id:'three_position_snatch',   name:'3-Position Snatch',              type:'snatch' },
-  jerk_dip_drive:          { id:'jerk_dip_drive',          name:'Jerk Dip/Drive Drill',           type:'cj' },
+  jerk_dip_drive:          { id:'jerk_dip_drive',          name:'Jerk Dip/Drive Drill',           type:'cj',
+    desc:"Achieve full extension before initiating the split. Control the dip deliberately — maintain bar contact throughout. (Webster)" },
   pull_drill:              { id:'pull_drill',              name:'Pull Drill (Power Position)',    type:'accessory' },
   trunk_static_strength:   { id:'trunk_static_strength',   name:'Trunk — Static Strength',        type:'accessory' },
   trunk_stiffness_dip:     { id:'trunk_stiffness_dip',     name:'Trunk Stiffness (Dip)',          type:'accessory' },
@@ -655,6 +677,17 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
       {/* Expanded body */}
       {open && (
         <div style={{borderTop:"1px solid var(--border)", padding:"14px", background:"var(--bg)"}}>
+
+          {/* Coaching cue — real cited cue from dozer_cue_index.md where one
+              exists for this exercise; most exercises have none (that index
+              only covers 7 movement-phase categories) and this block just
+              doesn't render, rather than showing an invented description. */}
+          {catalog.desc && (
+            <div style={{background:"var(--bg2)", border:"1px solid var(--border)", borderRadius:6,
+              padding:"9px 12px", marginBottom:14, fontSize:11, color:"var(--text2)", lineHeight:1.6, fontStyle:"italic"}}>
+              {catalog.desc}
+            </div>
+          )}
 
           {/* Phase load reference */}
           <div style={{display:"flex", gap:10, marginBottom:14}}>
@@ -4443,7 +4476,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.7.2 · 2026-08-17
+                PROGRAM v3.7.3 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
