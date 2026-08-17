@@ -3642,6 +3642,18 @@ function ProgramWeekView({viewWeek, onWeekChange, currentWeek, isSummer}) {
           onSaved={()=>setReviewVersion(v=>v+1)}
         />
       )}
+      {/* Finding I5 (2026-08-16 final-branch review): this used to just not
+          render, with nothing telling the athlete the review→AI-adjust loop
+          had gone silent. WeekReviewForm is templated on PROGRAM_B1's
+          exercise shape — wiring it for Block 2+ is a follow-on branch. */}
+      {blockNum !== 1 && viewWeek <= currentWeek && (
+        <div style={{marginTop:16,background:"var(--bg2)",borderRadius:8,padding:"12px 16px",
+          border:"1px solid var(--border)",fontSize:11,color:"var(--text3)"}}>
+          Weekly AI review isn't wired up for Block {blockNum} yet — it still
+          runs on Block 1's exercise templates. Log this week under TRAINING
+          DAYS as usual; the review→AI-adjust loop resumes once that's built.
+        </div>
+      )}
     </div>
   );
 }
@@ -4031,7 +4043,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.4 · 2026-08-16
+                PROGRAM v3.6.5 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4114,7 +4126,7 @@ function OlyTracker() {
               {/* Week selector */}
               <Label>SELECT WEEK</Label>
               <div style={{display:"flex",gap:7,marginBottom:20,flexWrap:"wrap",alignItems:"center"}}>
-                {[1,2,3,4,5,6].map(w=>{
+                {Array.from({length:16},(_,i)=>i+1).map(w=>{
                   const active=w===week,logged=isLogged(w);
                   return(
                     <button key={w} onClick={()=>saveWeek(w)} style={{
@@ -4127,10 +4139,33 @@ function OlyTracker() {
                     }}>{w}</button>
                   );
                 })}
-                <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:4}}>
-                  PH1: 1–3 · PH2: 4–6
-                </span>
+                {_headerBlk.block===1&&(
+                  <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:4}}>
+                    PH1: 1–3 · PH2: 4–6
+                  </span>
+                )}
               </div>
+
+              {/* Block 2+ disclosure — this tab (day-card logging + weekly AI
+                  review) still runs Block 1 templates regardless of week.
+                  Correct Block 2 prescriptions are in WEEK PLAN above.
+                  Finding I5, 2026-08-16 final-branch review: full wiring is a
+                  follow-on branch, this is the minimal before-merge fix —
+                  disclose the gap instead of shipping it silently. */}
+              {_headerBlk.block!==1&&(
+                <div style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:20,
+                  background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
+                  border:"1px solid #d4433744"}}>
+                  <span style={{fontSize:16}}>⚠️</span>
+                  <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.5}}>
+                    <b style={{color:"#d47a33"}}>Block {_headerBlk.block} isn't wired into this tab yet.</b>{" "}
+                    Day-card logging and sets below still show Block 1's Day 1–5
+                    templates and loads, not this week's real prescription — see
+                    <b> WEEK PLAN</b> above for the correct Block {_headerBlk.block} session.
+                    Weekly AI review also doesn't run yet for this block.
+                  </div>
+                </div>
+              )}
 
               {/* Phase banner */}
               <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 16px",marginBottom:20,
