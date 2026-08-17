@@ -3849,6 +3849,136 @@ function weekAdjustedExercises(day, week) {
     });
 }
 
+// Week 8 (Test), hand-transcribed from PROGRAM_B1's week-8 day entries: each
+// day works one or two lifts up an ascending-percentage ladder to a true max,
+// not fixed sets across the standard 5-exercise catalog — a genuinely
+// different day shape, rendered by TestLiftCard below instead of ExCard.
+// Percentages are of the target stated in that day's own PROGRAM_B1 note
+// (e.g. "Target: HPS 62+ kg"), not of TRAINING_MAX — Block 1's numbers are
+// hardcoded kilos, unlike Block 2's TM-relative loads.
+const WEEK8_TEST = {
+  d1: { ladder:[0.40,0.50,0.60,0.70,0.80,0.90], lifts:[
+    {id:"hang_power_snatch", label:"Hang Power Snatch", target:62},
+    {id:"overhead_squat",    label:"Overhead Squat",    target:55},
+  ]},
+  d2: { ladder:[0.50,0.60,0.70,0.80,0.87], lifts:[
+    {id:"hang_power_clean", label:"Hang Power Clean", target:70},
+  ]},
+  d3: { ladder:[0.60,0.70,0.80,0.88,0.93], lifts:[
+    {id:"front_squat", label:"Front Squat", target:116},
+  ]},
+  d4: { ladder:[0.50,0.60,0.70,0.80,0.87], lifts:[
+    {id:"jerk_from_rack", label:"Jerk", target:67},
+  ]},
+  d5: { ladder:[], lifts:[],
+    restNote:"Light technique only, ~50% work — no max attempts. Active recovery after four days of testing." },
+};
+
+const testLadderKg = (target, pct) => Math.round(target * pct / 2.5) * 2.5;
+
+// One lift's warm-up ladder + a final free-entry max attempt. Mirrors
+// ExCard's persistence pattern (storage + sbSync.upsertSets under the same
+// `sets_w<week>_<day>_<exId>` key shape) so sync, the session-progress bar,
+// and COMPLETE SESSION all keep working the same way on test days.
+function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, forceReload, onNewPR}) {
+  const stepCount = ladder.length + 1;
+  const [steps, setSteps] = useState(() => [
+    ...ladder.map(pct => ({done:false, pct})),
+    {done:false, isMax:true, weight:""},
+  ]);
+  const doneCount = steps.filter(s => s.done).length;
+
+  useEffect(() => { if (onProgress) onProgress(lift.id, doneCount, stepCount); }, [doneCount]);
+
+  useEffect(() => {
+    if (!sessionKey) return;
+    const key = `sets_${sessionKey}_${lift.id}`;
+    storage.get(key).then(result => {
+      if (result) {
+        try {
+          const saved = JSON.parse(result.value);
+          if (Array.isArray(saved) && saved.length === stepCount) setSteps(saved);
+        } catch {}
+      }
+    }).catch(() => {});
+  }, [sessionKey, forceReload]);
+
+  async function persist(updated) {
+    setSteps(updated);
+    if (!sessionKey) return;
+    try {
+      const key = `sets_${sessionKey}_${lift.id}`;
+      const forSync = updated.map(s => ({
+        done: s.done,
+        weight: s.isMax ? (parseFloat(s.weight) || null) : testLadderKg(lift.target, s.pct),
+      }));
+      await storage.set(key, JSON.stringify(updated));
+      sbSync.upsertSets(key, forSync);
+      if (onSetsChange) onSetsChange();
+    } catch {}
+  }
+
+  function toggleStep(idx) {
+    const updated = steps.map((s,i) => i===idx ? {...s, done:!s.done} : s);
+    persist(updated);
+    if (updated[idx].isMax && updated[idx].done) {
+      const w = parseFloat(updated[idx].weight);
+      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(lift.id, w);
+    }
+  }
+
+  function setMaxWeight(val) {
+    const updated = steps.map(s => s.isMax ? {...s, weight:val} : s);
+    persist(updated);
+    if (updated[updated.length-1].done) {
+      const w = parseFloat(val);
+      if (!isNaN(w) && w > 0 && onNewPR) onNewPR(lift.id, w);
+    }
+  }
+
+  const catalog = getEx(lift.id);
+  const m = TYPE_META[catalog.type];
+
+  return (
+    <div style={{background:"var(--bg1)",borderRadius:8,marginBottom:8,border:"1px solid var(--border)",padding:"12px 14px"}}>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+        <Tag color={m.color} bg={m.bg}>TEST</Tag>
+        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17}}>{lift.label}</span>
+        <span style={{marginLeft:"auto",fontSize:11,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
+          target {lift.target}+ kg
+        </span>
+      </div>
+      {steps.map((s,idx) => (
+        <div key={idx} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 10px",marginBottom:6,borderRadius:6,
+          background:s.done?"rgba(90,158,69,0.08)":"var(--bg2)",
+          border:`1px solid ${s.done?"#5a9e4433":s.isMax?"#d4a84355":"var(--border)"}`}}>
+          <div onClick={()=>toggleStep(idx)} style={{width:22,height:22,borderRadius:5,cursor:"pointer",flexShrink:0,
+            background:s.done?"var(--green)":"var(--bg3)",border:`1.5px solid ${s.done?"var(--green)":"var(--border2)"}`,
+            display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.15s"}}>
+            {s.done && <span style={{color:"#000",fontSize:12,fontWeight:800}}>✓</span>}
+          </div>
+          {s.isMax ? (
+            <>
+              <span style={{fontSize:11,color:"var(--gold)",fontFamily:"'DM Mono',monospace",flexShrink:0}}>MAX</span>
+              <input type="number" inputMode="decimal" placeholder="kg achieved" value={s.weight}
+                onChange={e=>setMaxWeight(e.target.value)}
+                style={{flex:1,background:"var(--bg3)",border:"1px solid var(--border2)",borderRadius:5,
+                  color:"var(--gold)",padding:"5px 8px",fontSize:12,fontFamily:"'DM Mono',monospace"}} />
+            </>
+          ) : (
+            <>
+              <span style={{fontSize:11,color:"var(--text3)",fontFamily:"'DM Mono',monospace",width:34,flexShrink:0}}>
+                {Math.round(s.pct*100)}%
+              </span>
+              <span style={{flex:1,fontSize:12,color:"var(--text2)"}}>{testLadderKg(lift.target,s.pct)} kg</span>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
@@ -3881,6 +4011,7 @@ function OlyTracker() {
   const dayExercises = weekAdjustedExercises(day, week);
   const _headerBlk = blockFor(week) || BLOCK_BOUNDS[0];
   const _headerWeekPlan = weekPlan(week);
+  const _testDay = _headerWeekPlan?.phase === "Test" ? WEEK8_TEST[day.id] : null;
   // The banner/note below used to key off `phase` (week<=3?0:1) alone, so weeks
   // 7 (Deload) and 8 (Test) both rendered as "PHASE 2 — LOAD THE BASE" — telling
   // the athlete to add load and never grind reps during the exact weeks meant to
@@ -4054,11 +4185,18 @@ function OlyTracker() {
   async function handleLog(){
     if(!logForm.notes&&!logForm.weights&&!logForm.rating) return;
     const d=DAYS.find(d=>d.id===logForm.dayId);
-    // Snapshot pct at log time so review doesn't re-read stale localStorage later
-    const expectedTotal = d ? d.exercises.reduce((acc,ex)=>{
-      const c=typeof ex.sets==="number"?ex.sets:parseInt(ex.sets)||3;
-      return acc+c;
-    },0) : 0;
+    // Snapshot pct at log time so review doesn't re-read stale localStorage later.
+    // Mirrors the live session-progress calc: Deload's real reduced sets via
+    // weekAdjustedExercises(), Test's ladder-step count via WEEK8_TEST — not
+    // the static catalog's full Phase 2 volume for those two weeks.
+    const _logWeekPlan = weekPlan(week);
+    const _logTestDay = _logWeekPlan?.phase === "Test" ? WEEK8_TEST[logForm.dayId] : null;
+    const expectedTotal = _logTestDay
+      ? _logTestDay.lifts.reduce((acc)=>acc+_logTestDay.ladder.length+1,0)
+      : d ? weekAdjustedExercises(d, week).reduce((acc,ex)=>{
+          const c=typeof ex.sets==="number"?ex.sets:parseInt(ex.sets)||3;
+          return acc+c;
+        },0) : 0;
     const prefix=`sets_w${week}_${logForm.dayId}_`;
     let doneSets=0;
     try{Object.keys(localStorage).forEach(k=>{if(k.startsWith(prefix)){const s=JSON.parse(localStorage.getItem(k)||"[]");doneSets+=s.filter(s=>s.done).length;}});}catch{}
@@ -4139,7 +4277,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.8 · 2026-08-17
+                PROGRAM v3.6.9 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4263,26 +4401,6 @@ function OlyTracker() {
                 </div>
               )}
 
-              {/* Same gap as the Block 2+ disclosure above, but for Block 1's
-                  own Test week (wk8): weekAdjustedExercises() wires real
-                  numbers for Deload (wk7), but Test is ascending-percentage
-                  singles on 1-2 lifts a day, not fixed sets across the same 5
-                  exercises — it doesn't fit this catalog's shape at all, so
-                  the day cards below still show ordinary Phase 2 volume. */}
-              {_headerBlk.block===1 && _headerWeekPlan?.phase==="Test" && (
-                <div style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:20,
-                  background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
-                  border:"1px solid #d4433744"}}>
-                  <span style={{fontSize:16}}>⚠️</span>
-                  <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.5}}>
-                    <b style={{color:"#d47a33"}}>Test week isn't wired into this tab yet.</b>{" "}
-                    Day-card sets below still show full Phase 2 volume, not this
-                    week's 1RM test protocol — see
-                    <b> WEEK PLAN</b> above for warm-up steps and targets.
-                  </div>
-                </div>
-              )}
-
               {/* Phase banner */}
               <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 16px",marginBottom:20,
                 border:`1px solid ${_phaseBanner.border}`,
@@ -4357,11 +4475,13 @@ function OlyTracker() {
               {(()=>{
                 const totalDone = Object.values(sessionProgress).reduce((a,b)=>a+(b.done||0),0);
                 // Calculate total sets from ALL exercises in the day, not just reported ones
-                const totalSets = dayExercises.reduce((acc, ex) => {
-                  const count = typeof ex.sets === "number" ? ex.sets :
-                    ex.sets === "6–8" ? 7 : parseInt(ex.sets) || 3;
-                  return acc + count;
-                }, 0);
+                const totalSets = _testDay
+                  ? _testDay.lifts.reduce((acc, lift) => acc + _testDay.ladder.length + 1, 0)
+                  : dayExercises.reduce((acc, ex) => {
+                      const count = typeof ex.sets === "number" ? ex.sets :
+                        ex.sets === "6–8" ? 7 : parseInt(ex.sets) || 3;
+                      return acc + count;
+                    }, 0);
                 const pct = totalSets>0 ? Math.round((totalDone/totalSets)*100) : 0;
                 const allComplete = pct===100;
                 return (
@@ -4415,12 +4535,29 @@ function OlyTracker() {
               })()}
 
               {/* Exercises */}
-              {dayExercises.map((ex,i)=>(
-                <ExCard key={`${week}_${day.id}_${ex.id}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
-                  onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
-                  onNewPR={handleAutoPR}
-                />
-              ))}
+              {_testDay ? (
+                _testDay.lifts.length > 0 ? (
+                  _testDay.lifts.map(lift => (
+                    <TestLiftCard key={`${week}_${day.id}_${lift.id}`} lift={lift} ladder={_testDay.ladder}
+                      sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
+                      onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                      onNewPR={handleAutoPR}
+                    />
+                  ))
+                ) : (
+                  <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:8,
+                    padding:"12px 14px",fontSize:12,color:"var(--text2)"}}>
+                    {_testDay.restNote}
+                  </div>
+                )
+              ) : (
+                dayExercises.map((ex,i)=>(
+                  <ExCard key={`${week}_${day.id}_${ex.id}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
+                    onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                    onNewPR={handleAutoPR}
+                  />
+                ))
+              )}
 
               {/* Complete session button */}
               <button onClick={()=>{
