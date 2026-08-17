@@ -3938,6 +3938,7 @@ const BLOCK2_EXERCISES = {
       {id:'jerk_dip_drive',      sets:3,     reps:'3',    l1:'Jerk dip squat / drive / partial front squat', l2:'Jerk dip squat / drive / partial front squat'}, // [JUDGMENT] sets
       {id:'push_press',          sets:3,     reps:'3',    l1:'Speed-limited — add weight weekly only while fast', l2:'Speed-limited — add weight weekly only while fast'}, // [JUDGMENT] sets
       {id:'trunk_stiffness_dip', sets:3,     reps:'varies', l1:'Bodyweight',                             l2:'Bodyweight'},                              // [JUDGMENT] sets
+      {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note; wrongly omitted here at first (reasoned it'd be redundant with the heavy rack work above) but [E14.4] cites it for every day including this one — position-grooving is a different purpose than a heavy single
     ],
     d4: [
       {id:'back_squat',          sets:'4–5', reps:'5',    l1:'76.5–82.5 kg',                             l2:'76.5–82.5 kg'},                            // fully stated ("4–5×5"), no judgment
@@ -4442,7 +4443,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.7.1 · 2026-08-17
+                PROGRAM v3.7.2 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
