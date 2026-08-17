@@ -3988,6 +3988,60 @@ function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, force
   );
 }
 
+// A single done/not-done toggle for Block 2+ sessions, in place of per-set
+// tracking — PROGRAM_B2's `secondary` field bundles several pieces of
+// accessory work into one string per day, not a clean per-exercise list, so
+// there's no set count to check off individually. Persists the same way as
+// ExCard/TestLiftCard (storage + sbSync.upsertSets, `sets_w<week>_<day>_session`
+// key) so sync and the log flow keep working the same way across all blocks.
+function Block2DayToggle({sessionKey, onProgress, onSetsChange, forceReload}) {
+  const [done, setDone] = useState(false);
+
+  useEffect(() => { if (onProgress) onProgress("session", done ? 1 : 0, 1); }, [done]);
+
+  useEffect(() => {
+    if (!sessionKey) return;
+    const key = `sets_${sessionKey}_session`;
+    storage.get(key).then(result => {
+      if (result) {
+        try {
+          const saved = JSON.parse(result.value);
+          if (Array.isArray(saved) && saved[0]) setDone(!!saved[0].done);
+        } catch {}
+      }
+    }).catch(() => {});
+  }, [sessionKey, forceReload]);
+
+  async function toggle() {
+    const next = !done;
+    setDone(next);
+    if (!sessionKey) return;
+    try {
+      const key = `sets_${sessionKey}_session`;
+      await storage.set(key, JSON.stringify([{done: next}]));
+      sbSync.upsertSets(key, [{done: next, weight: null}]);
+      if (onSetsChange) onSetsChange();
+    } catch {}
+  }
+
+  return (
+    <div onClick={toggle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",
+      borderRadius:8,cursor:"pointer",marginBottom:8,
+      background:done?"rgba(90,158,69,0.08)":"var(--bg2)",
+      border:`1px solid ${done?"var(--green)":"var(--border)"}`}}>
+      <div style={{width:24,height:24,borderRadius:6,flexShrink:0,
+        background:done?"var(--green)":"var(--bg3)",
+        border:`1.5px solid ${done?"var(--green)":"var(--border2)"}`,
+        display:"flex",alignItems:"center",justifyContent:"center"}}>
+        {done && <span style={{color:"#000",fontSize:13,fontWeight:800}}>✓</span>}
+      </div>
+      <span style={{fontSize:12,color:done?"var(--green)":"var(--text2)",fontFamily:"'DM Mono',monospace"}}>
+        {done ? "Session marked complete" : "Mark this session complete"}
+      </span>
+    </div>
+  );
+}
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
@@ -4021,12 +4075,33 @@ function OlyTracker() {
   const _headerBlk = blockFor(week) || BLOCK_BOUNDS[0];
   const _headerWeekPlan = weekPlan(week);
   const _testDay = _headerWeekPlan?.phase === "Test" ? WEEK8_TEST[day.id] : null;
+  // Block 2+ (weeks 9+): the day-card catalog (DAYS_SUMMER/DAYS_SCHOOL,
+  // ExCard) is Block 1's alone — Block 2's own days (PROGRAM_B2) bundle 4-7
+  // pieces of accessory work into one freeform `secondary` string per day,
+  // not a clean per-exercise list, so it's shown read-only (the same text
+  // WEEK PLAN already renders correctly) with one session-complete toggle
+  // instead of per-set tracking. Weeks 17+ (blocks 3-4) have no `.days` at
+  // all yet — PROGRAM_OUTLINE is one line per week — so they get the same
+  // "not detailed yet" fallback ProgramWeekView already shows.
+  const _b2Days = _headerBlk.block !== 1 ? (_headerWeekPlan?.days || null) : null;
+  const _b2Day = _b2Days ? _b2Days[Math.min(dayIdx, _b2Days.length-1)] : null;
+  const _outlineOnly = _headerBlk.block !== 1 && !_b2Days;
   // The banner/note below used to key off `phase` (week<=3?0:1) alone, so weeks
   // 7 (Deload) and 8 (Test) both rendered as "PHASE 2 — LOAD THE BASE" — telling
   // the athlete to add load and never grind reps during the exact weeks meant to
   // back off. Key off the real per-week phase text instead so those weeks read
-  // as distinct from Phase 2 and from each other.
-  const _phaseBanner = PHASE_BANNER[_headerWeekPlan?.phase] || PHASE_BANNER["Phase 1"];
+  // as distinct from Phase 2 and from each other. Block 2's own phases
+  // ("Accumulation", "Intensification") aren't in PHASE_BANNER — falling back
+  // to "Phase 1" would print Block 1's "technique + hypertrophy" copy on a
+  // Block 2 week, so build a generic banner from the week's own text instead
+  // of defaulting to a specific, wrong one. Block 2's own "Deload"/"Test"
+  // weeks (15/16) DO match PHASE_BANNER and get that copy, same as Block 1's.
+  const _phaseBanner = PHASE_BANNER[_headerWeekPlan?.phase] || (_headerWeekPlan ? {
+    label: (_headerWeekPlan.phase || "").toUpperCase(),
+    color: "var(--gold)", border: "#d4a84344",
+    sub: _headerWeekPlan.focus || "",
+    note: _headerWeekPlan.load ? `Load: ${_headerWeekPlan.load}` : "",
+  } : PHASE_BANNER["Phase 1"]);
 
   // Reset progress tracking when day changes
   useEffect(() => { setSessionProgress({}); }, [dayIdx, week]);
@@ -4193,15 +4268,19 @@ function OlyTracker() {
 
   async function handleLog(){
     if(!logForm.notes&&!logForm.weights&&!logForm.rating) return;
-    const d=DAYS.find(d=>d.id===logForm.dayId);
     // Snapshot pct at log time so review doesn't re-read stale localStorage later.
     // Mirrors the live session-progress calc: Deload's real reduced sets via
-    // weekAdjustedExercises(), Test's ladder-step count via WEEK8_TEST — not
-    // the static catalog's full Phase 2 volume for those two weeks.
+    // weekAdjustedExercises(), Test's ladder-step count via WEEK8_TEST, Block
+    // 2+'s single session toggle via Block2DayToggle — not the Block 1
+    // catalog's full Phase 2 volume, and not Block 1's dayName/label for a
+    // Block 2+ session (the ids overlap — "d1".."d4" — but the content doesn't).
     const _logWeekPlan = weekPlan(week);
+    const _logBlk = blockFor(week);
+    const _logB2Day = _logBlk?.block!==1 ? (_logWeekPlan?.days||[]).find(dd=>dd.id===logForm.dayId) : null;
     const _logTestDay = _logWeekPlan?.phase === "Test" ? WEEK8_TEST[logForm.dayId] : null;
-    const expectedTotal = _logTestDay
-      ? _logTestDay.lifts.reduce((acc)=>acc+_logTestDay.ladder.length+1,0)
+    const d = _logB2Day || DAYS.find(d=>d.id===logForm.dayId);
+    const expectedTotal = _logB2Day ? 1
+      : _logTestDay ? _logTestDay.lifts.reduce((acc)=>acc+_logTestDay.ladder.length+1,0)
       : d ? weekAdjustedExercises(d, week).reduce((acc,ex)=>{
           const c=typeof ex.sets==="number"?ex.sets:parseInt(ex.sets)||3;
           return acc+c;
@@ -4213,7 +4292,7 @@ function OlyTracker() {
     const key = logEditKey || `${Date.now()}`;
     const updated={...logs,[key]:{
       date:logForm.date||new Date().toISOString().slice(0,10),
-      dayName:d?.name||logForm.dayId,
+      dayName:_logB2Day?.primary||d?.name||logForm.dayId,
       dayLabel:d?.label||"",
       week,notes:logForm.notes,weights:logForm.weights,
       backPain:logForm.backPain,nightShift:logForm.nightShift,
@@ -4253,7 +4332,7 @@ function OlyTracker() {
     const m = l.dayLabel && l.dayLabel.match(/(\d+)/);
     return l.week === week && m && `d${m[1]}` === dayId;
   });
-  const thisDayLogged = day ? isDayLogged(day.id) : false;
+  const thisDayLogged = _b2Day ? isDayLogged(_b2Day.id) : (day ? isDayLogged(day.id) : false);
 
   if(loading) return(
     <div style={{background:"var(--bg)",height:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -4286,7 +4365,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.10 · 2026-08-17
+                PROGRAM v3.7.0 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4389,27 +4468,6 @@ function OlyTracker() {
                 )}
               </div>
 
-              {/* Block 2+ disclosure — this tab (day-card logging + weekly AI
-                  review) still runs Block 1 templates regardless of week.
-                  Correct Block 2 prescriptions are in WEEK PLAN above.
-                  Finding I5, 2026-08-16 final-branch review: full wiring is a
-                  follow-on branch, this is the minimal before-merge fix —
-                  disclose the gap instead of shipping it silently. */}
-              {_headerBlk.block!==1&&(
-                <div style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:20,
-                  background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
-                  border:"1px solid #d4433744"}}>
-                  <span style={{fontSize:16}}>⚠️</span>
-                  <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.5}}>
-                    <b style={{color:"#d47a33"}}>Block {_headerBlk.block} isn't wired into this tab yet.</b>{" "}
-                    Day-card logging and sets below still show Block 1's Day 1–5
-                    templates and loads, not this week's real prescription — see
-                    <b> WEEK PLAN</b> above for the correct Block {_headerBlk.block} session.
-                    Weekly AI review also doesn't run yet for this block.
-                  </div>
-                </div>
-              )}
-
               {/* Phase banner */}
               <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 16px",marginBottom:20,
                 border:`1px solid ${_phaseBanner.border}`,
@@ -4427,51 +4485,90 @@ function OlyTracker() {
               </div>
 
               {/* Day tabs */}
-              <div style={{display:"grid",gridTemplateColumns:`repeat(${DAYS.length},1fr)`,gap:6,marginBottom:18}}>
-                {DAYS.map((d,i)=>{
-                  const active=dayIdx===i;
-                  const logged=isDayLogged(d.id);
-                  const sl=SLEEP[d.sleep];
-                  return(
-                    <div key={d.id} onClick={()=>setDayIdx(i)} style={{
-                      padding:"8px 4px",borderRadius:8,cursor:"pointer",textAlign:"center",
-                      border:`1px solid ${active?d.color:logged?"#5a9e6988":"var(--border)"}`,
-                      background:active?d.color+"14":logged?"#5a9e4511":"var(--bg1)",transition:"all 0.15s",
-                      position:"relative",
-                    }}>
-                      {logged&&!active&&(
-                        <div style={{position:"absolute",top:3,right:4,fontSize:8,color:"var(--green)",lineHeight:1}}>✓</div>
-                      )}
-                      <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,letterSpacing:1,
-                        color:active?d.color:logged?"var(--green)":"var(--text2)"}}>{d.label}</div>
-                      <div style={{fontSize:8,color:active?d.color+"99":logged?"#5a9e6977":"var(--text3)",marginTop:1}}>{d.schedule}</div>
-                      <div style={{fontSize:7,color:sl.color,marginTop:2,letterSpacing:0.5}}>{sl.label}</div>
-                    </div>
-                  );
-                })}
-              </div>
+              {_b2Days ? (
+                <div style={{display:"grid",gridTemplateColumns:`repeat(${_b2Days.length},1fr)`,gap:6,marginBottom:18}}>
+                  {_b2Days.map((d,i)=>{
+                    const active=dayIdx===i;
+                    const logged=isDayLogged(d.id);
+                    // "D1 Mon ⭐⭐⭐" -> short name "D1" + schedule "Mon ⭐⭐⭐"
+                    const [short, ...rest] = d.label.split(" ");
+                    return(
+                      <div key={d.id} onClick={()=>setDayIdx(i)} style={{
+                        padding:"8px 4px",borderRadius:8,cursor:"pointer",textAlign:"center",
+                        border:`1px solid ${active?"var(--gold)":logged?"#5a9e6988":"var(--border)"}`,
+                        background:active?"rgba(212,168,67,0.08)":logged?"#5a9e4511":"var(--bg1)",transition:"all 0.15s",
+                        position:"relative",
+                      }}>
+                        {logged&&!active&&(
+                          <div style={{position:"absolute",top:3,right:4,fontSize:8,color:"var(--green)",lineHeight:1}}>✓</div>
+                        )}
+                        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,letterSpacing:1,
+                          color:active?"var(--gold)":logged?"var(--green)":"var(--text2)"}}>{short}</div>
+                        <div style={{fontSize:8,color:active?"#d4a84399":logged?"#5a9e6977":"var(--text3)",marginTop:1}}>{rest.join(" ")}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div style={{display:"grid",gridTemplateColumns:`repeat(${DAYS.length},1fr)`,gap:6,marginBottom:18}}>
+                  {DAYS.map((d,i)=>{
+                    const active=dayIdx===i;
+                    const logged=isDayLogged(d.id);
+                    const sl=SLEEP[d.sleep];
+                    return(
+                      <div key={d.id} onClick={()=>setDayIdx(i)} style={{
+                        padding:"8px 4px",borderRadius:8,cursor:"pointer",textAlign:"center",
+                        border:`1px solid ${active?d.color:logged?"#5a9e6988":"var(--border)"}`,
+                        background:active?d.color+"14":logged?"#5a9e4511":"var(--bg1)",transition:"all 0.15s",
+                        position:"relative",
+                      }}>
+                        {logged&&!active&&(
+                          <div style={{position:"absolute",top:3,right:4,fontSize:8,color:"var(--green)",lineHeight:1}}>✓</div>
+                        )}
+                        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,letterSpacing:1,
+                          color:active?d.color:logged?"var(--green)":"var(--text2)"}}>{d.label}</div>
+                        <div style={{fontSize:8,color:active?d.color+"99":logged?"#5a9e6977":"var(--text3)",marginTop:1}}>{d.schedule}</div>
+                        <div style={{fontSize:7,color:sl.color,marginTop:2,letterSpacing:0.5}}>{sl.label}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Day header */}
               <div style={{marginBottom:14,padding:thisDayLogged?"10px 12px":"0",borderRadius:thisDayLogged?8:0,
                 border:thisDayLogged?"1px solid #5a9e6944":"none",
                 background:thisDayLogged?"#5a9e450a":"transparent",transition:"all 0.2s"}}>
-                <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:8}}>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:24,letterSpacing:0.3,color:day.color,lineHeight:1.2}}>
-                    {day.name}
+                {_b2Day ? (
+                  <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
+                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:0.3,color:"var(--gold)",lineHeight:1.2}}>
+                      {_b2Day.primary}
+                    </div>
+                    {thisDayLogged&&(
+                      <Tag color="var(--green)" bg="rgba(90,158,69,0.15)">LOGGED</Tag>
+                    )}
                   </div>
-                  {thisDayLogged&&(
-                    <Tag color="var(--green)" bg="rgba(90,158,69,0.15)">LOGGED</Tag>
-                  )}
-                  {sleepMeta&&(
-                    <Tag color={sleepMeta.color} bg={sleepMeta.bg}>{sleepMeta.label}</Tag>
-                  )}
-                  {day.maxLoad&&(
-                    <Tag color="var(--gold)" bg="rgba(212,168,67,0.1)">GO HEAVY TODAY</Tag>
-                  )}
-                </div>
-                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                  {day.focus.map((f,i)=><Tag key={i} color={day.color} bg={day.color+"15"}>{f}</Tag>)}
-                </div>
+                ) : _outlineOnly ? null : (
+                  <>
+                    <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:8}}>
+                      <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:24,letterSpacing:0.3,color:day.color,lineHeight:1.2}}>
+                        {day.name}
+                      </div>
+                      {thisDayLogged&&(
+                        <Tag color="var(--green)" bg="rgba(90,158,69,0.15)">LOGGED</Tag>
+                      )}
+                      {sleepMeta&&(
+                        <Tag color={sleepMeta.color} bg={sleepMeta.bg}>{sleepMeta.label}</Tag>
+                      )}
+                      {day.maxLoad&&(
+                        <Tag color="var(--gold)" bg="rgba(212,168,67,0.1)">GO HEAVY TODAY</Tag>
+                      )}
+                    </div>
+                    <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                      {day.focus.map((f,i)=><Tag key={i} color={day.color} bg={day.color+"15"}>{f}</Tag>)}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Phase note */}
@@ -4480,71 +4577,47 @@ function OlyTracker() {
                 {_phaseBanner.note}
               </div>
 
-              {/* Session progress bar */}
-              {(()=>{
-                const totalDone = Object.values(sessionProgress).reduce((a,b)=>a+(b.done||0),0);
-                // Calculate total sets from ALL exercises in the day, not just reported ones
-                const totalSets = _testDay
-                  ? _testDay.lifts.reduce((acc, lift) => acc + _testDay.ladder.length + 1, 0)
-                  : dayExercises.reduce((acc, ex) => {
-                      const count = typeof ex.sets === "number" ? ex.sets :
-                        ex.sets === "6–8" ? 7 : parseInt(ex.sets) || 3;
-                      return acc + count;
-                    }, 0);
-                const pct = totalSets>0 ? Math.round((totalDone/totalSets)*100) : 0;
-                const allComplete = pct===100;
-                return (
-                  <div style={{marginBottom:14,background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
-                    border:`1px solid ${allComplete?"#5a9e4444":"var(--border)"}`}}>
-                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                      <span style={{fontSize:9,color:"var(--text2)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>
-                        SESSION PROGRESS
-                      </span>
-                      <div style={{display:"flex",alignItems:"baseline",gap:6}}>
-                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,
-                          color:allComplete?"var(--green)":pct>0?"var(--gold)":"var(--text3)"}}>
-                          {pct}%
-                        </span>
-                        <span style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
-                          {totalDone}/{totalSets} sets
-                        </span>
+              {_outlineOnly ? (
+                <div style={{background:"var(--bg2)",borderRadius:8,padding:"14px 16px",border:"1px solid var(--border)"}}>
+                  <div style={{fontSize:10,color:"var(--text2)",lineHeight:1.7,marginBottom:10}}>
+                    Block {_headerBlk.block} sessions are defined at week-level resolution.
+                    Full per-day tables are added at the start of each block.
+                  </div>
+                  <div style={{fontSize:10,color:"var(--text3)"}}>
+                    Reference: <span style={{color:"var(--text2)",fontFamily:"'DM Mono',monospace"}}>
+                      summaries/complete_program.md → Part 3
+                    </span>
+                  </div>
+                </div>
+              ) : _b2Day ? (
+                <>
+                  {/* Read-only day card — same text WEEK PLAN already renders
+                      correctly. Block 2's `secondary` bundles several pieces
+                      of accessory work into one string per day, not a clean
+                      per-exercise list, so there's no per-set breakdown to
+                      check off here — Block2DayToggle below is one
+                      session-level complete/not-done state instead. */}
+                  <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:8}}>
+                      <div>
+                        <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:3}}>PRIMARY</div>
+                        <div style={{fontSize:13,fontWeight:600,lineHeight:1.4}}>{_b2Day.primary}</div>
+                        <div style={{fontSize:12,color:"var(--blue)",fontFamily:"'DM Mono',monospace",marginTop:4}}>{_b2Day.load}</div>
+                      </div>
+                      <div>
+                        <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:3}}>SECONDARY</div>
+                        <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.7}}>{_b2Day.secondary}</div>
                       </div>
                     </div>
-                    <div style={{background:"var(--bg3)",borderRadius:20,height:6,overflow:"hidden"}}>
-                      <div style={{
-                        width:`${pct}%`,height:"100%",borderRadius:20,transition:"width 0.3s",
-                        background:allComplete?"var(--green)":pct>50?"var(--gold)":"var(--blue)",
-                      }}/>
+                    <div style={{fontSize:11,color:"var(--text3)",borderTop:"1px solid var(--border)",paddingTop:8,fontStyle:"italic",lineHeight:1.6}}>
+                      {_b2Day.notes}
                     </div>
-                    {allComplete&&(
-                      <button onClick={()=>{
-                        const existingKey=Object.keys(logs).find(k=>{
-                          const l=logs[k];
-                          const m=l.dayLabel&&l.dayLabel.match(/(\d+)/);
-                          return l.week===week&&m&&`d${m[1]}`===day.id;
-                        });
-                        if(existingKey){
-                          const l=logs[existingKey];
-                          setLogForm({dayId:day.id,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
-                          setLogEditKey(existingKey);
-                        }else{
-                          setLogForm(f=>({...f,dayId:day.id,date:new Date().toISOString().slice(0,10)}));
-                          setLogEditKey(null);
-                        }
-                        setLogModal(true);
-                      }}
-                        style={{width:"100%",marginTop:8,padding:"8px",borderRadius:6,border:"1px solid var(--green)",
-                          background:"#5a9e4511",color:"var(--green)",fontSize:10,fontFamily:"'DM Mono',monospace",
-                          letterSpacing:1,cursor:"pointer"}}>
-                        ✓ COMPLETE SESSION
-                      </button>
-                    )}
                   </div>
-                );
-              })()}
-
-              {/* Exercises */}
-              {_testDay ? (
+                  <Block2DayToggle sessionKey={`w${week}_${_b2Day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
+                    onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                  />
+                </>
+              ) : _testDay ? (
                 _testDay.lifts.length > 0 ? (
                   _testDay.lifts.map(lift => (
                     <TestLiftCard key={`${week}_${day.id}_${lift.id}`} lift={lift} ladder={_testDay.ladder}
@@ -4560,27 +4633,92 @@ function OlyTracker() {
                   </div>
                 )
               ) : (
-                dayExercises.map((ex,i)=>(
-                  <ExCard key={`${week}_${day.id}_${ex.id}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
-                    onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
-                    onNewPR={handleAutoPR}
-                  />
-                ))
+                <>
+                  {/* Session progress bar */}
+                  {(()=>{
+                    const totalDone = Object.values(sessionProgress).reduce((a,b)=>a+(b.done||0),0);
+                    // Calculate total sets from ALL exercises in the day, not just reported ones
+                    const totalSets = dayExercises.reduce((acc, ex) => {
+                      const count = typeof ex.sets === "number" ? ex.sets :
+                        ex.sets === "6–8" ? 7 : parseInt(ex.sets) || 3;
+                      return acc + count;
+                    }, 0);
+                    const pct = totalSets>0 ? Math.round((totalDone/totalSets)*100) : 0;
+                    const allComplete = pct===100;
+                    return (
+                      <div style={{marginBottom:14,background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
+                        border:`1px solid ${allComplete?"#5a9e4444":"var(--border)"}`}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                          <span style={{fontSize:9,color:"var(--text2)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>
+                            SESSION PROGRESS
+                          </span>
+                          <div style={{display:"flex",alignItems:"baseline",gap:6}}>
+                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,
+                              color:allComplete?"var(--green)":pct>0?"var(--gold)":"var(--text3)"}}>
+                              {pct}%
+                            </span>
+                            <span style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
+                              {totalDone}/{totalSets} sets
+                            </span>
+                          </div>
+                        </div>
+                        <div style={{background:"var(--bg3)",borderRadius:20,height:6,overflow:"hidden"}}>
+                          <div style={{
+                            width:`${pct}%`,height:"100%",borderRadius:20,transition:"width 0.3s",
+                            background:allComplete?"var(--green)":pct>50?"var(--gold)":"var(--blue)",
+                          }}/>
+                        </div>
+                        {allComplete&&(
+                          <button onClick={()=>{
+                            const existingKey=Object.keys(logs).find(k=>{
+                              const l=logs[k];
+                              const m=l.dayLabel&&l.dayLabel.match(/(\d+)/);
+                              return l.week===week&&m&&`d${m[1]}`===day.id;
+                            });
+                            if(existingKey){
+                              const l=logs[existingKey];
+                              setLogForm({dayId:day.id,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
+                              setLogEditKey(existingKey);
+                            }else{
+                              setLogForm(f=>({...f,dayId:day.id,date:new Date().toISOString().slice(0,10)}));
+                              setLogEditKey(null);
+                            }
+                            setLogModal(true);
+                          }}
+                            style={{width:"100%",marginTop:8,padding:"8px",borderRadius:6,border:"1px solid var(--green)",
+                              background:"#5a9e4511",color:"var(--green)",fontSize:10,fontFamily:"'DM Mono',monospace",
+                              letterSpacing:1,cursor:"pointer"}}>
+                            ✓ COMPLETE SESSION
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  {/* Exercises */}
+                  {dayExercises.map((ex,i)=>(
+                    <ExCard key={`${week}_${day.id}_${ex.id}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
+                      onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                      onNewPR={handleAutoPR}
+                    />
+                  ))}
+                </>
               )}
 
               {/* Complete session button */}
               <button onClick={()=>{
+                const logDayId = _b2Day?.id || day.id;
                 const existingKey=Object.keys(logs).find(k=>{
                   const l=logs[k];
                   const m=l.dayLabel&&l.dayLabel.match(/(\d+)/);
-                  return l.week===week&&m&&`d${m[1]}`===day.id;
+                  return l.week===week&&m&&`d${m[1]}`===logDayId;
                 });
                 if(existingKey){
                   const l=logs[existingKey];
-                  setLogForm({dayId:day.id,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
+                  setLogForm({dayId:logDayId,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
                   setLogEditKey(existingKey);
                 }else{
-                  setLogForm(f=>({...f,dayId:day.id,date:new Date().toISOString().slice(0,10)}));
+                  setLogForm(f=>({...f,dayId:logDayId,date:new Date().toISOString().slice(0,10)}));
                   setLogEditKey(null);
                 }
                 setLogModal(true);
@@ -4928,7 +5066,9 @@ function OlyTracker() {
           <div style={{marginBottom:12}}>
             <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>SESSION</label>
             <Sel value={logForm.dayId} onChange={e=>setLogForm(f=>({...f,dayId:e.target.value}))}>
-              {DAYS.map(d=><option key={d.id} value={d.id}>{d.label} — {d.schedule} — {d.name}</option>)}
+              {_b2Days
+                ? _b2Days.map(d=><option key={d.id} value={d.id}>{d.label} — {d.primary}</option>)
+                : DAYS.map(d=><option key={d.id} value={d.id}>{d.label} — {d.schedule} — {d.name}</option>)}
             </Sel>
           </div>
 
