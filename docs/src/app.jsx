@@ -3760,6 +3760,35 @@ function rebuildPRsFromLogs(currentPrs, currentLogs){
   return updated;
 }
 
+// Text/color for the TRAINING DAYS phase banner + phase note, keyed by the
+// weekPlan().phase string (PROGRAM_B1/B2's own "Phase 1"/"Phase 2"/"Deload"/
+// "Test"), not the binary week<=3?0:1 split that used to drive both — that
+// split treated every week past 3 as "Phase 2", so week 7 (Deload) and week 8
+// (Test) both showed "PHASE 2 — LOAD THE BASE" and "never grind bad reps",
+// contradicting the reduced-set day cards directly below them.
+const PHASE_BANNER = {
+  "Phase 1": {
+    label: "PHASE 1 — BUILD THE BASE", color: "var(--blue)", border: "#4a90d944",
+    sub: "Technique + hypertrophy. Position over load. Own every rep.",
+    note: "📐 Phase 1: Tap each exercise for coaching notes and load guidelines. Position before weight.",
+  },
+  "Phase 2": {
+    label: "PHASE 2 — LOAD THE BASE", color: "var(--gold)", border: "#d4a84344",
+    sub: "Add load systematically. Technique breaks → drop 5 kg.",
+    note: "⚡ Phase 2: Load increases. Technique breaks → drop 5 kg. Never grind bad reps.",
+  },
+  "Deload": {
+    label: "DELOAD — VOLUME −40%", color: "#aaa", border: "#88888855",
+    sub: "Same loads, sets cut ~40%. No PRs — technique priority.",
+    note: "🪶 Deload: fewer sets at the same loads, not lighter weight. Fatigue is low — the best week to catch and film form errors, not to push new numbers.",
+  },
+  "Test": {
+    label: "TEST WEEK — 1RM ATTEMPTS", color: "var(--green)", border: "#5a9e4555",
+    sub: "No volume — warm up, then work to a true max on each lift.",
+    note: "🎯 Test: warm up in steps to a true max single. Rest 3–5 min between attempts. Stop at the first miss.",
+  },
+};
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
@@ -3791,6 +3820,12 @@ function OlyTracker() {
   const day = DAYS[Math.min(dayIdx, DAYS.length-1)];
   const _headerBlk = blockFor(week) || BLOCK_BOUNDS[0];
   const _headerWeekPlan = weekPlan(week);
+  // The banner/note below used to key off `phase` (week<=3?0:1) alone, so weeks
+  // 7 (Deload) and 8 (Test) both rendered as "PHASE 2 — LOAD THE BASE" — telling
+  // the athlete to add load and never grind reps during the exact weeks meant to
+  // back off. Key off the real per-week phase text instead so those weeks read
+  // as distinct from Phase 2 and from each other.
+  const _phaseBanner = PHASE_BANNER[_headerWeekPlan?.phase] || PHASE_BANNER["Phase 1"];
 
   // Reset progress tracking when day changes
   useEffect(() => { setSessionProgress({}); }, [dayIdx, week]);
@@ -4043,7 +4078,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.5 · 2026-08-17
+                PROGRAM v3.6.7 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4167,19 +4202,38 @@ function OlyTracker() {
                 </div>
               )}
 
+              {/* Same gap as the Block 2+ disclosure above, but for Block 1's
+                  own Deload (wk7) and Test (wk8) weeks: the fixed per-exercise
+                  catalog behind the cards below (ex.sets, ExCard) only ever
+                  reads phase 0/1 (Phase 1 vs Phase 2 load), so it can't express
+                  a set-count cut or a test protocol — those real numbers exist
+                  only in weekPlan()'s per-week days array, shown in WEEK PLAN. */}
+              {_headerBlk.block===1 && (_headerWeekPlan?.phase==="Deload" || _headerWeekPlan?.phase==="Test") && (
+                <div style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:20,
+                  background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
+                  border:"1px solid #d4433744"}}>
+                  <span style={{fontSize:16}}>⚠️</span>
+                  <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.5}}>
+                    <b style={{color:"#d47a33"}}>{_headerWeekPlan.phase} week isn't wired into this tab yet.</b>{" "}
+                    {_headerWeekPlan.phase==="Deload"
+                      ? <>Day-card sets below still show full Phase 2 volume, not this week's real ~40% cut — see</>
+                      : <>Day-card sets below still show full Phase 2 volume, not this week's 1RM test protocol — see</>}
+                    <b> WEEK PLAN</b> above for {_headerWeekPlan.phase==="Deload" ? "the actual deload numbers" : "warm-up steps and targets"}.
+                  </div>
+                </div>
+              )}
+
               {/* Phase banner */}
               <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 16px",marginBottom:20,
-                border:`1px solid ${phase===0?"#4a90d944":"#d4a84344"}`,
+                border:`1px solid ${_phaseBanner.border}`,
                 display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                 <div>
                   <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:21,letterSpacing:0.5,
-                    color:phase===0?"var(--blue)":"var(--gold)"}}>
-                    {phase===0?"PHASE 1 — BUILD THE BASE":"PHASE 2 — LOAD THE BASE"}
+                    color:_phaseBanner.color}}>
+                    {_phaseBanner.label}
                   </div>
                   <div style={{fontSize:11,color:"var(--text2)",marginTop:4,lineHeight:1.6}}>
-                    {phase===0
-                      ?"Technique + hypertrophy. Position over load. Own every rep."
-                      :"Add load systematically. Technique breaks → drop 5 kg."}
+                    {_phaseBanner.sub}
                   </div>
                 </div>
                 <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:54,color:"var(--bg3)",userSelect:"none"}}>{week}</div>
@@ -4236,9 +4290,7 @@ function OlyTracker() {
               {/* Phase note */}
               <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
                 padding:"9px 12px",marginBottom:14,fontSize:11,color:"var(--text2)"}}>
-                {phase===0
-                  ?"📐 Phase 1: Tap each exercise for coaching notes and load guidelines. Position before weight."
-                  :"⚡ Phase 2: Load increases. Technique breaks → drop 5 kg. Never grind bad reps."}
+                {_phaseBanner.note}
               </div>
 
               {/* Session progress bar */}
