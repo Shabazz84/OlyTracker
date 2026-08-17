@@ -22,18 +22,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Inject API keys
+      # Only PUBLISHABLE values may be written here. Everything under docs/ is
+      # uploaded as the Pages artifact and served publicly, so anything printed
+      # into docs/key.js is world-readable at <pages-url>/key.js.
+      #
+      # ANTHROPIC_API_KEY was injected here until 2026-08-16 and was therefore
+      # published on every deploy. It has been removed and the exposed key
+      # rotated. Do not reintroduce it: a browser cannot hold a Claude key
+      # secretly, so production AI review needs a serverless proxy that keeps
+      # the key server-side. The Supabase publishable key is safe to expose.
+      - name: Inject publishable keys
         run: |
-          CLEAN_CLAUDE=$(echo "$ANTHROPIC_API_KEY" | tr -d '\r\n')
           CLEAN_SB_URL=$(echo "$SUPABASE_URL" | tr -d '\r\n')
           CLEAN_SB_KEY=$(echo "$SUPABASE_ANON_KEY" | tr -d '\r\n')
-          printf 'window.__CLAUDE_KEY="%s";\n' "$CLEAN_CLAUDE" > docs/key.js
+          : > docs/key.js
           if [ -n "$CLEAN_SB_URL" ]; then printf 'window.__SUPABASE_URL="%s";\n' "$CLEAN_SB_URL" >> docs/key.js; fi
           if [ -n "$CLEAN_SB_KEY" ]; then printf 'window.__SUPABASE_KEY="%s";\n' "$CLEAN_SB_KEY" >> docs/key.js; fi
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+      # Fail the deploy rather than publish a secret, if one is ever
+      # reintroduced above. Cheap, and the leak it guards against was live for
+      # the lifetime of this workflow before anyone noticed.
+      - name: Refuse to publish a private key
+        run: |
+          if grep -rEl 'sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{32,}' docs/ ; then
+            echo "::error::A private API key was found in docs/ — refusing to publish."
+            exit 1
+          fi
+          echo "no private key patterns found in docs/"
 
       - uses: actions/configure-pages@v4
 
