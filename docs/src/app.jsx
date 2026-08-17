@@ -3789,6 +3789,66 @@ const PHASE_BANNER = {
   },
 };
 
+// Week 7 (Deload) real per-exercise sets/reps/load, hand-transcribed from
+// PROGRAM_B1's week-7 day entries (program.js) onto the day-card catalog's
+// exercise IDs. The catalog below only ever had two load bands (Phase 1/
+// Phase 2 via ex.l1/ex.l2) and no way to express a set-count cut at all, so
+// TRAINING DAYS showed full Phase 2 volume through the deload. `null` drops
+// an exercise entirely — ab_wheel isn't in week 7's D5 prescription at all.
+// Week 8 (Test) isn't covered here: it's ascending-percentage singles on 1-2
+// lifts a day, not fixed sets across the same 5 exercises, so it doesn't fit
+// this override shape — see the Deload/Test disclosure banner above for it.
+const WEEK7_DELOAD = {
+  d1: {
+    muscle_snatch:     {sets:2, reps:"3", load:"44 kg"},
+    hang_power_snatch: {sets:3, reps:"3", load:"56 kg"},
+    back_squat:        {sets:3, reps:"1", load:"95 kg"},
+    overhead_squat:    {sets:2, reps:"3", load:"44 kg"},
+    weighted_pull_up:  {sets:2, reps:"6", load:"BW+5 kg"},
+  },
+  d2: {
+    muscle_snatch:     {sets:2, reps:"3", load:"44 kg"},
+    hang_power_clean:  {sets:3, reps:"3", load:"64 kg"},
+    clean_pull:        {sets:2, reps:"4", load:"90 kg"},
+    weighted_dips:     {sets:2, reps:"8", load:"BW+20 kg"},
+    overhead_squat:    {sets:2, reps:"3", load:"44 kg"},
+  },
+  d3: {
+    muscle_snatch:     {sets:2, reps:"3", load:"44 kg"},
+    front_squat:       {sets:3, reps:"6", load:"80 kg"},
+    rdl:               {sets:2, reps:"6", load:"80 kg"},
+    overhead_squat:    {sets:2, reps:"4", load:"44 kg"},
+    // pallof_press unlisted: week 7's D3 secondary ("Pallof 3×10") matches
+    // the catalog's base sets/reps/load exactly, so there's nothing to override.
+  },
+  d4: {
+    muscle_snatch:     {sets:2, reps:"3", load:"42 kg"},
+    jerk_from_rack:    {sets:3, reps:"3", load:"57 kg"},
+    clean_and_jerk:    {sets:2, reps:"1+2", load:"60 kg"},
+    overhead_squat:    {sets:2, reps:"3", load:"44 kg"},
+    // split_jerk unlisted: "Split Jerk 4×3 (empty bar)" matches the catalog
+    // base exactly (empty-bar practice, unchanged by the deload).
+  },
+  d5: {
+    muscle_snatch:     {sets:2, reps:"3", load:"44 kg"},
+    belt_squat:        {sets:2, reps:"12", load:"68 kg"},
+    split_squat:       {sets:2, reps:"8/leg", load:"44 kg"},
+    face_pull:         {sets:2, reps:"15", load:"Light"},
+    ab_wheel:          null,
+  },
+};
+
+function weekAdjustedExercises(day, week) {
+  const overrides = week === 7 ? WEEK7_DELOAD[day.id] : null;
+  if (!overrides) return day.exercises;
+  return day.exercises
+    .filter(ex => overrides[ex.id] !== null)
+    .map(ex => {
+      const o = overrides[ex.id];
+      return o ? {...ex, sets:o.sets, reps:o.reps, l1:o.load, l2:o.load} : ex;
+    });
+}
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
@@ -3818,6 +3878,7 @@ function OlyTracker() {
   const DAYS = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
   const phase = week<=3?0:1;
   const day = DAYS[Math.min(dayIdx, DAYS.length-1)];
+  const dayExercises = weekAdjustedExercises(day, week);
   const _headerBlk = blockFor(week) || BLOCK_BOUNDS[0];
   const _headerWeekPlan = weekPlan(week);
   // The banner/note below used to key off `phase` (week<=3?0:1) alone, so weeks
@@ -4078,7 +4139,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.6.7 · 2026-08-17
+                PROGRAM v3.6.8 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4203,22 +4264,21 @@ function OlyTracker() {
               )}
 
               {/* Same gap as the Block 2+ disclosure above, but for Block 1's
-                  own Deload (wk7) and Test (wk8) weeks: the fixed per-exercise
-                  catalog behind the cards below (ex.sets, ExCard) only ever
-                  reads phase 0/1 (Phase 1 vs Phase 2 load), so it can't express
-                  a set-count cut or a test protocol — those real numbers exist
-                  only in weekPlan()'s per-week days array, shown in WEEK PLAN. */}
-              {_headerBlk.block===1 && (_headerWeekPlan?.phase==="Deload" || _headerWeekPlan?.phase==="Test") && (
+                  own Test week (wk8): weekAdjustedExercises() wires real
+                  numbers for Deload (wk7), but Test is ascending-percentage
+                  singles on 1-2 lifts a day, not fixed sets across the same 5
+                  exercises — it doesn't fit this catalog's shape at all, so
+                  the day cards below still show ordinary Phase 2 volume. */}
+              {_headerBlk.block===1 && _headerWeekPlan?.phase==="Test" && (
                 <div style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:20,
                   background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
                   border:"1px solid #d4433744"}}>
                   <span style={{fontSize:16}}>⚠️</span>
                   <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.5}}>
-                    <b style={{color:"#d47a33"}}>{_headerWeekPlan.phase} week isn't wired into this tab yet.</b>{" "}
-                    {_headerWeekPlan.phase==="Deload"
-                      ? <>Day-card sets below still show full Phase 2 volume, not this week's real ~40% cut — see</>
-                      : <>Day-card sets below still show full Phase 2 volume, not this week's 1RM test protocol — see</>}
-                    <b> WEEK PLAN</b> above for {_headerWeekPlan.phase==="Deload" ? "the actual deload numbers" : "warm-up steps and targets"}.
+                    <b style={{color:"#d47a33"}}>Test week isn't wired into this tab yet.</b>{" "}
+                    Day-card sets below still show full Phase 2 volume, not this
+                    week's 1RM test protocol — see
+                    <b> WEEK PLAN</b> above for warm-up steps and targets.
                   </div>
                 </div>
               )}
@@ -4297,7 +4357,7 @@ function OlyTracker() {
               {(()=>{
                 const totalDone = Object.values(sessionProgress).reduce((a,b)=>a+(b.done||0),0);
                 // Calculate total sets from ALL exercises in the day, not just reported ones
-                const totalSets = day.exercises.reduce((acc, ex) => {
+                const totalSets = dayExercises.reduce((acc, ex) => {
                   const count = typeof ex.sets === "number" ? ex.sets :
                     ex.sets === "6–8" ? 7 : parseInt(ex.sets) || 3;
                   return acc + count;
@@ -4355,7 +4415,7 @@ function OlyTracker() {
               })()}
 
               {/* Exercises */}
-              {day.exercises.map((ex,i)=>(
+              {dayExercises.map((ex,i)=>(
                 <ExCard key={`${week}_${day.id}_${ex.id}`} ex={ex} phase={phase} sessionKey={`w${week}_${day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
                   onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
                   onNewPR={handleAutoPR}
