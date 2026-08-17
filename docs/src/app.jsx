@@ -365,6 +365,19 @@ const EXERCISE_CATALOG = {
   y_t_w:                  { id:'y_t_w',                  name:'Y-T-W',                       type:'accessory' },
   scapular_pull_up:       { id:'scapular_pull_up',       name:'Scapular Pull Up',            type:'accessory' },
   handstand_hold:         { id:'handstand_hold',         name:'Handstand Hold',              type:'accessory' },
+  // ── Block 2 (PROGRAM_B2) — not in Block 1's catalog ──────────────────────────
+  snatch_from_floor:       { id:'snatch_from_floor',       name:'Snatch from Floor',              type:'snatch' },
+  clean_front_squat_floor: { id:'clean_front_squat_floor', name:'Clean + Front Squat from Floor', type:'cj' },
+  split_jerk_from_rack:    { id:'split_jerk_from_rack',    name:'Split Jerk from Rack',           type:'cj' },
+  snpp_ohs_complex:        { id:'snpp_ohs_complex',        name:'SnPP + OHS Complex',             type:'snatch' },
+  snatch_opener:           { id:'snatch_opener',           name:'Light Snatch Opener',            type:'snatch' },
+  floating_snatch:         { id:'floating_snatch',         name:'Floating Snatch',                type:'snatch' },
+  three_position_snatch:   { id:'three_position_snatch',   name:'3-Position Snatch',              type:'snatch' },
+  jerk_dip_drive:          { id:'jerk_dip_drive',          name:'Jerk Dip/Drive Drill',           type:'cj' },
+  pull_drill:              { id:'pull_drill',              name:'Pull Drill (Power Position)',    type:'accessory' },
+  trunk_static_strength:   { id:'trunk_static_strength',   name:'Trunk — Static Strength',        type:'accessory' },
+  trunk_stiffness_dip:     { id:'trunk_stiffness_dip',     name:'Trunk Stiffness (Dip)',          type:'accessory' },
+  bodybuilding_core_block: { id:'bodybuilding_core_block', name:'Bodybuilding + Core Block',      type:'accessory' },
 };
 
 function getEx(id) { return EXERCISE_CATALOG[id] ?? { id, name: id, type: 'strength' }; }
@@ -463,6 +476,7 @@ const PR_ALL = [
   'overhead_press','wide_overhead_press','push_press','overhead_squat','sots_press','behind_neck_press',
   'good_morning','lat_pulldown','pull_up','incline_barbell_press','bench_press',
   'cable_row','lunge',
+  'snatch_from_floor','clean_front_squat_floor','split_jerk_from_rack',
 ];
 
 // ── UI primitives ─────────────────────────────────────────────────────────────
@@ -3883,6 +3897,60 @@ const WEEK8_TEST = {
     restNote:"Light technique only, ~50% work — no max attempts. Active recovery after four days of testing." },
 };
 
+// Block 2, granular per-exercise breakdown — full ExCard parity (checkboxes,
+// weight dropdowns) instead of the read-only PRIMARY/SECONDARY card. Unlike
+// Block 1's catalog, PROGRAM_B2 bundles several pieces of work into one
+// freeform `secondary` string per day, and most of them don't state a set
+// count at all (only the rep scheme, or neither). Every load number here is
+// copied verbatim from PROGRAM_B2's own printed text (itself computed from
+// TRAINING_MAX, not hand-typed) — zero risk of a transcription drifting from
+// what WEEK PLAN shows. Every SET COUNT not explicitly stated in the source
+// is marked [JUDGMENT]: a reasonable default, not a cited number. l1 and l2
+// are identical throughout — Block 2 has no Phase 1/Phase 2 split, ExCard
+// just needs both fields populated.
+//
+// Pilot: week 9 only. Weeks 10-16 fall back to the read-only card until
+// built the same way.
+const BLOCK2_EXERCISES = {
+  9: {
+    d1: [
+      {id:'snatch_from_floor',   sets:5,     reps:'1–3',  l1:'38–44 kg',                                l2:'38–44 kg'},                                // [JUDGMENT] sets — source gives reps only
+      {id:'snpp_ohs_complex',    sets:5,     reps:'5+3',  l1:'Feel — add weight weekly (Phase 1)',       l2:'Feel — add weight weekly (Phase 1)'},      // [JUDGMENT] sets — source says "4–6 sets"
+      {id:'snatch_pull',         sets:5,     reps:'1',    l1:'56.5–63 kg',                               l2:'56.5–63 kg'},                              // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
+      {id:'back_squat',          sets:'3–5', reps:'3–5',  l1:'76.5–82.5 kg',                             l2:'76.5–82.5 kg'},                            // fully stated, no judgment
+      {id:'trunk_static_strength', sets:3,   reps:'varies', l1:'Bodyweight',                             l2:'Bodyweight'},                              // [JUDGMENT] sets — athlete's choice, no count given
+      {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
+    ],
+    d2: [
+      {id:'clean_front_squat_floor', sets:5, reps:'1–3', l1:'43–50.5 kg',                                l2:'43–50.5 kg'},                              // [JUDGMENT] sets
+      {id:'split_jerk_from_rack', sets:5,    reps:'varies', l1:'Split-position reps — no % today',       l2:'Split-position reps — no % today'},        // [JUDGMENT] sets; percentaged jerk day is Thursday
+      {id:'clean_pull',          sets:5,     reps:'1',    l1:'65–72 kg',                                 l2:'65–72 kg'},                                // [JUDGMENT] sets
+      {id:'front_squat',         sets:'3–5', reps:'3–5',  l1:'75.5–81 kg',                               l2:'75.5–81 kg'},                              // fully stated, no judgment
+      {id:'bodybuilding_core_block', sets:1, reps:"athlete's choice", l1:'15-min cap',                   l2:'15-min cap'},                              // [JUDGMENT] athlete selects exercises
+      {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
+    ],
+    d3: [
+      {id:'split_jerk_from_rack', sets:5,    reps:'1–3',  l1:'36–47 kg',                                 l2:'36–47 kg'},                                // [JUDGMENT] sets — this week's percentaged jerk day
+      {id:'snatch_opener',       sets:2,     reps:'3',    l1:'Light',                                    l2:'Light'},                                   // [JUDGMENT] sets/reps
+      {id:'floating_snatch',     sets:3,     reps:'2',    l1:'Just off the floor — light',               l2:'Just off the floor — light'},              // [JUDGMENT] sets
+      {id:'hang_snatch',         sets:'3–4', reps:'2',    l1:'Super-light, speed kept',                  l2:'Super-light, speed kept'},                 // sets stated (3–4×2), no judgment
+      {id:'power_jerk',          sets:3,     reps:'2',    l1:'Retained 2×/wk — feel',                    l2:'Retained 2×/wk — feel'},                   // [JUDGMENT] sets
+      {id:'jerk_dip_drive',      sets:3,     reps:'3',    l1:'Jerk dip squat / drive / partial front squat', l2:'Jerk dip squat / drive / partial front squat'}, // [JUDGMENT] sets
+      {id:'push_press',          sets:3,     reps:'3',    l1:'Speed-limited — add weight weekly only while fast', l2:'Speed-limited — add weight weekly only while fast'}, // [JUDGMENT] sets
+      {id:'trunk_stiffness_dip', sets:3,     reps:'varies', l1:'Bodyweight',                             l2:'Bodyweight'},                              // [JUDGMENT] sets
+    ],
+    d4: [
+      {id:'back_squat',          sets:'4–5', reps:'5',    l1:'76.5–82.5 kg',                             l2:'76.5–82.5 kg'},                            // fully stated ("4–5×5"), no judgment
+      {id:'three_position_snatch', sets:3,   reps:'3 positions', l1:'Technical — light',                 l2:'Technical — light'},                       // [JUDGMENT] sets
+      {id:'pause_snatch',        sets:3,     reps:'1',    l1:"Athlete's choice: pause snatch or pause clean", l2:"Athlete's choice: pause snatch or pause clean"}, // [JUDGMENT] sets
+      {id:'belt_squat',          sets:3,     reps:'8–10', l1:"Slow tempo — athlete's choice: belt squat or single-leg squat", l2:"Slow tempo — athlete's choice: belt squat or single-leg squat"}, // [JUDGMENT] sets/reps
+      {id:'pull_drill',          sets:1,     reps:'3–5',  l1:'Power position → lowest good hang',        l2:'Power position → lowest good hang'},       // [JUDGMENT] sets
+      {id:'rdl',                 sets:3,     reps:'6–8',  l1:"End of session — athlete's choice: RDL, stiff-legged DL, or good morning", l2:"End of session — athlete's choice: RDL, stiff-legged DL, or good morning"}, // [JUDGMENT] sets/reps
+      {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
+    ],
+  },
+};
+
 const testLadderKg = (target, pct) => Math.round(target * pct / 2.5) * 2.5;
 
 // One lift's warm-up ladder + a final free-entry max attempt. Mirrors
@@ -4086,6 +4154,10 @@ function OlyTracker() {
   const _b2Days = _headerBlk.block !== 1 ? (_headerWeekPlan?.days || null) : null;
   const _b2Day = _b2Days ? _b2Days[Math.min(dayIdx, _b2Days.length-1)] : null;
   const _outlineOnly = _headerBlk.block !== 1 && !_b2Days;
+  // Granular per-exercise breakdown, where built (week 9 pilot so far) —
+  // real checkboxes/dropdowns via ExCard, same as Block 1. Falls back to the
+  // read-only PRIMARY/SECONDARY card + toggle for weeks not yet built this way.
+  const _b2Exercises = _b2Day ? BLOCK2_EXERCISES[week]?.[_b2Day.id] : null;
   // The banner/note below used to key off `phase` (week<=3?0:1) alone, so weeks
   // 7 (Deload) and 8 (Test) both rendered as "PHASE 2 — LOAD THE BASE" — telling
   // the athlete to add load and never grind reps during the exact weeks meant to
@@ -4277,9 +4349,14 @@ function OlyTracker() {
     const _logWeekPlan = weekPlan(week);
     const _logBlk = blockFor(week);
     const _logB2Day = _logBlk?.block!==1 ? (_logWeekPlan?.days||[]).find(dd=>dd.id===logForm.dayId) : null;
+    const _logB2Exercises = _logB2Day ? BLOCK2_EXERCISES[week]?.[_logB2Day.id] : null;
     const _logTestDay = _logWeekPlan?.phase === "Test" ? WEEK8_TEST[logForm.dayId] : null;
     const d = _logB2Day || DAYS.find(d=>d.id===logForm.dayId);
-    const expectedTotal = _logB2Day ? 1
+    const expectedTotal = _logB2Exercises ? _logB2Exercises.reduce((acc,ex)=>{
+          const c=typeof ex.sets==="number"?ex.sets:parseInt(ex.sets)||3;
+          return acc+c;
+        },0)
+      : _logB2Day ? 1
       : _logTestDay ? _logTestDay.lifts.reduce((acc)=>acc+_logTestDay.ladder.length+1,0)
       : d ? weekAdjustedExercises(d, week).reduce((acc,ex)=>{
           const c=typeof ex.sets==="number"?ex.sets:parseInt(ex.sets)||3;
@@ -4365,7 +4442,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.7.0 · 2026-08-17
+                PROGRAM v3.7.1 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4589,6 +4666,81 @@ function OlyTracker() {
                     </span>
                   </div>
                 </div>
+              ) : _b2Exercises ? (
+                <>
+                  {/* Granular Block 2 (pilot: week 9) — real checkboxes and
+                      weight dropdowns via ExCard, same as Block 1. See
+                      BLOCK2_EXERCISES for provenance: loads are copied
+                      verbatim from PROGRAM_B2, set counts not stated in the
+                      source are marked [JUDGMENT] there. */}
+                  <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
+                    padding:"9px 12px",marginBottom:14,fontSize:11,color:"var(--text2)",lineHeight:1.6}}>
+                    {_b2Day.notes}
+                  </div>
+                  {(()=>{
+                    const totalDone = Object.values(sessionProgress).reduce((a,b)=>a+(b.done||0),0);
+                    const totalSets = _b2Exercises.reduce((acc, ex) => {
+                      const count = typeof ex.sets === "number" ? ex.sets : parseInt(ex.sets) || 3;
+                      return acc + count;
+                    }, 0);
+                    const pct = totalSets>0 ? Math.round((totalDone/totalSets)*100) : 0;
+                    const allComplete = pct===100;
+                    return (
+                      <div style={{marginBottom:14,background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
+                        border:`1px solid ${allComplete?"#5a9e4444":"var(--border)"}`}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                          <span style={{fontSize:9,color:"var(--text2)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5}}>
+                            SESSION PROGRESS
+                          </span>
+                          <div style={{display:"flex",alignItems:"baseline",gap:6}}>
+                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,
+                              color:allComplete?"var(--green)":pct>0?"var(--gold)":"var(--text3)"}}>
+                              {pct}%
+                            </span>
+                            <span style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
+                              {totalDone}/{totalSets} sets
+                            </span>
+                          </div>
+                        </div>
+                        <div style={{background:"var(--bg3)",borderRadius:20,height:6,overflow:"hidden"}}>
+                          <div style={{
+                            width:`${pct}%`,height:"100%",borderRadius:20,transition:"width 0.3s",
+                            background:allComplete?"var(--green)":pct>50?"var(--gold)":"var(--blue)",
+                          }}/>
+                        </div>
+                        {allComplete&&(
+                          <button onClick={()=>{
+                            const existingKey=Object.keys(logs).find(k=>{
+                              const l=logs[k];
+                              const m=l.dayLabel&&l.dayLabel.match(/(\d+)/);
+                              return l.week===week&&m&&`d${m[1]}`===_b2Day.id;
+                            });
+                            if(existingKey){
+                              const l=logs[existingKey];
+                              setLogForm({dayId:_b2Day.id,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
+                              setLogEditKey(existingKey);
+                            }else{
+                              setLogForm(f=>({...f,dayId:_b2Day.id,date:new Date().toISOString().slice(0,10)}));
+                              setLogEditKey(null);
+                            }
+                            setLogModal(true);
+                          }}
+                            style={{width:"100%",marginTop:8,padding:"8px",borderRadius:6,border:"1px solid var(--green)",
+                              background:"#5a9e4511",color:"var(--green)",fontSize:10,fontFamily:"'DM Mono',monospace",
+                              letterSpacing:1,cursor:"pointer"}}>
+                            ✓ COMPLETE SESSION
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })()}
+                  {_b2Exercises.map((ex,i)=>(
+                    <ExCard key={`${week}_${_b2Day.id}_${ex.id}`} ex={ex} phase={1} sessionKey={`w${week}_${_b2Day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
+                      onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                      onNewPR={handleAutoPR}
+                    />
+                  ))}
+                </>
               ) : _b2Day ? (
                 <>
                   {/* Read-only day card — same text WEEK PLAN already renders
@@ -4596,7 +4748,9 @@ function OlyTracker() {
                       of accessory work into one string per day, not a clean
                       per-exercise list, so there's no per-set breakdown to
                       check off here — Block2DayToggle below is one
-                      session-level complete/not-done state instead. */}
+                      session-level complete/not-done state instead. Used
+                      until this week gets the granular BLOCK2_EXERCISES
+                      treatment (pilot: week 9 only so far). */}
                   <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:8}}>
                       <div>
