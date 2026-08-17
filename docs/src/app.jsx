@@ -3948,7 +3948,7 @@ const BLOCK2_EXERCISES = {
   9: {
     d1: [
       {id:'snatch_from_floor',   sets:5,     reps:'1–3',  l1:'38–44 kg',                                l2:'38–44 kg'},                                // [JUDGMENT] sets — source gives reps only
-      {id:'snpp_ohs_complex',    sets:5,     reps:'5+3',  l1:'Feel — add weight weekly (Phase 1)',       l2:'Feel — add weight weekly (Phase 1)'},      // [JUDGMENT] sets — source says "4–6 sets"
+      {id:'snpp_ohs_complex',    sets:5,     reps:'5+3',  l1:'50 kg — add weekly, feel',       l2:'50 kg — add weekly, feel'},      // [JUDGMENT] sets — source says "4–6 sets"; 50 kg base is athlete-supplied, source gives no starting weight for this complex at all. Any parenthesized digit in this string (e.g. "(Phase 1)") gets parsed by generateWeights() as a second number and skews the dropdown center — keep load strings to exactly one real number.
       {id:'snatch_pull',         sets:5,     reps:'1',    l1:'56.5–63 kg',                               l2:'56.5–63 kg'},                              // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
       {id:'back_squat',          sets:'3–5', reps:'3–5',  l1:'76.5–82.5 kg',                             l2:'76.5–82.5 kg'},                            // fully stated, no judgment
       {id:'trunk_static_strength', sets:3,   reps:'varies', l1:'Bodyweight',                             l2:'Bodyweight'},                              // [JUDGMENT] sets — athlete's choice, no count given
@@ -3959,7 +3959,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk_from_rack', sets:5,    reps:'varies', l1:'Split-position reps — no % today',       l2:'Split-position reps — no % today'},        // [JUDGMENT] sets; percentaged jerk day is Thursday
       {id:'clean_pull',          sets:5,     reps:'1',    l1:'65–72 kg',                                 l2:'65–72 kg'},                                // [JUDGMENT] sets
       {id:'front_squat',         sets:'3–5', reps:'3–5',  l1:'75.5–81 kg',                               l2:'75.5–81 kg'},                              // fully stated, no judgment
-      {id:'bodybuilding_core_block', sets:1, reps:"athlete's choice", l1:'15-min cap',                   l2:'15-min cap'},                              // [JUDGMENT] athlete selects exercises
+      {id:'bodybuilding_core_block', sets:1, reps:"athlete's choice", l1:'Short time-capped block',      l2:'Short time-capped block'},                 // [JUDGMENT] athlete selects exercises. No digit in this load string on purpose — see snpp_ohs_complex's comment above on why a stray number breaks the dropdown
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
     ],
     d3: [
@@ -3967,7 +3967,7 @@ const BLOCK2_EXERCISES = {
       {id:'snatch_opener',       sets:2,     reps:'3',    l1:'Light',                                    l2:'Light'},                                   // [JUDGMENT] sets/reps
       {id:'floating_snatch',     sets:3,     reps:'2',    l1:'Just off the floor — light',               l2:'Just off the floor — light'},              // [JUDGMENT] sets
       {id:'hang_snatch',         sets:'3–4', reps:'2',    l1:'Super-light, speed kept',                  l2:'Super-light, speed kept'},                 // sets stated (3–4×2), no judgment
-      {id:'power_jerk',          sets:3,     reps:'2',    l1:'Retained 2×/wk — feel',                    l2:'Retained 2×/wk — feel'},                   // [JUDGMENT] sets
+      {id:'power_jerk',          sets:3,     reps:'2',    l1:'Retained twice weekly — feel',             l2:'Retained twice weekly — feel'},            // [JUDGMENT] sets. No digit in this load string on purpose — see snpp_ohs_complex's comment above on why a stray number breaks the dropdown
       {id:'jerk_dip_drive',      sets:3,     reps:'3',    l1:'Jerk dip squat / drive / partial front squat', l2:'Jerk dip squat / drive / partial front squat'}, // [JUDGMENT] sets
       {id:'push_press',          sets:3,     reps:'3',    l1:'Speed-limited — add weight weekly only while fast', l2:'Speed-limited — add weight weekly only while fast'}, // [JUDGMENT] sets
       {id:'trunk_stiffness_dip', sets:3,     reps:'varies', l1:'Bodyweight',                             l2:'Bodyweight'},                              // [JUDGMENT] sets
@@ -4476,7 +4476,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.7.3 · 2026-08-17
+                PROGRAM v3.7.4 · 2026-08-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
