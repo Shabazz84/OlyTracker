@@ -204,12 +204,29 @@ const PROGRAM_B1 = [
 // Training maxes. Block 2's loads are percentages of these, so the week-8 test
 // is a one-line edit here rather than a rewrite of 32 day strings.
 // Block 1's hardcoded kilos are deliberately left alone - out of scope.
-// Source: docs/programs/2026-08-12-block2.md, "Fixed Inputs (provisional)".
+//
+// Updated 2026-09-03 against the week-8 test (logged sets, weeks 8-9). Only the
+// two squats moved; the rest are STILL the pre-test provisional numbers from
+// docs/programs/2026-08-12-block2.md, "Fixed Inputs (provisional)", because
+// week 8's menu was Block-1 shaped (hang + power variants) and Block 2's
+// snatch/C&J percentages are percentages of the lift FROM THE FLOOR:
+//   snatch 63       - NOT tested. Week 8 tested the hang power snatch (66 kg).
+//                     A floor snatch single is still needed to anchor this.
+//   cleanAndJerk 72 - NOT tested as such. Hang power clean 87 kg says the clean
+//                     side is well ahead; the jerk tested 70 kg but on a logged
+//                     night_shift Thursday, BELOW the 72.5 kg already hit in
+//                     week 5, so that number measures the sleep, not the jerk.
+//   frontSquat 115  - tested (was 116). Prior training top was 107.5.
+//   backSquat 130   - athlete-reported single, Sat 2026-08-29, not in the set
+//                     log. The week-8 test only matched 125, a weight already
+//                     hit in weeks 5 and 6, so the test itself set no new max.
+//   pushPress 65    - NOT tested.
+//   cleanPull 120   - NOT tested.
 const TRAINING_MAX = {
   snatch: 63,
   cleanAndJerk: 72,
-  frontSquat: 116,
-  backSquat: 118,
+  frontSquat: 115,
+  backSquat: 130,
   pushPress: 65,
   cleanPull: 120,
 };

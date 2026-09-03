@@ -166,11 +166,12 @@ function buildReviewPrompt(week, weekData, formData, isSummer) {
 
 ATHLETE PROFILE:
 - 102.5 kg bodyweight, intermediate strength background transitioning to Olympic weightlifting
-- Bests: Back Squat 118 kg, Front Squat 102 kg, Clean 80 kg, Jerk ~65 kg, OHS 50 kg
-- Jerk is far behind clean — priority weak point. OHS stability is the primary snatch ceiling.
+- Bests: Back Squat 130 kg, Front Squat 115 kg, Hang Power Clean 87 kg, Clean 80 kg, Jerk 72.5 kg, OHS 72 kg, Hang Power Snatch 66 kg
+- Jerk is far behind the clean — priority weak point. OHS is 58% of the back squat (was 42%); the normal ratio is 65–70%, so overhead stability is still a snatch limiter but no longer the dominant one.
+- The hang lifts are AHEAD of the lifts from the floor (HPS 66 vs a floor snatch last tested at 55). Treat the hang as a crutch to be paid off, not as evidence of floor capacity.
 - Chronic back pain (manageable). Push/power jerk only so far — split jerk not yet trained, but no longer off-limits.
 - Night shifts Wed–Sun 7pm–7:30am (5.5h sleep Thu/Sat training days).
-- Current block: Block 1 Hypertrophy Foundation — no full competition lifts from floor.
+- Current block: Block 2 Technique Consolidation, weeks 9–16 — competition lifts moved to the floor. Weeks 9–10 are technique loading: 1–3 reps at 60–70% of training max, correctness gates any load increase.
 
 INJURY PROTOCOL (apply strictly):
 - Sharp pain reported → skip exercises loading that EXACT structure; do NOT over-apply to unrelated movements
@@ -3937,7 +3938,12 @@ const WEEK8_TEST = {
 // count at all (only the rep scheme, or neither). Every load number here is
 // copied verbatim from PROGRAM_B2's own printed text (itself computed from
 // TRAINING_MAX, not hand-typed) — zero risk of a transcription drifting from
-// what WEEK PLAN shows. Every SET COUNT not explicitly stated in the source
+// what WEEK PLAN shows *at the moment it is copied*. These are snapshots, not
+// live reads: **any edit to TRAINING_MAX in program.js must be re-copied into
+// the squat/pull/classic-lift load strings below**, or the day cards silently
+// keep showing the old kilos while WEEK PLAN shows the new ones. The 2026-09-03
+// post-test update (backSquat 118→130, frontSquat 116→115) moved exactly three
+// strings: d1 back_squat, d2 front_squat, d4 back_squat. Every SET COUNT not explicitly stated in the source
 // is marked [JUDGMENT]: a reasonable default, not a cited number. l1 and l2
 // are identical throughout — Block 2 has no Phase 1/Phase 2 split, ExCard
 // just needs both fields populated.
@@ -3950,7 +3956,7 @@ const BLOCK2_EXERCISES = {
       {id:'snatch_from_floor',   sets:5,     reps:'1–3',  l1:'38–44 kg',                                l2:'38–44 kg'},                                // [JUDGMENT] sets — source gives reps only
       {id:'snpp_ohs_complex',    sets:5,     reps:'5+3',  l1:'50 kg — add weekly, feel',       l2:'50 kg — add weekly, feel'},      // [JUDGMENT] sets — source says "4–6 sets"; 50 kg base is athlete-supplied, source gives no starting weight for this complex at all. Any parenthesized digit in this string (e.g. "(Phase 1)") gets parsed by generateWeights() as a second number and skews the dropdown center — keep load strings to exactly one real number.
       {id:'snatch_pull',         sets:5,     reps:'1',    l1:'56.5–63 kg',                               l2:'56.5–63 kg'},                              // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
-      {id:'back_squat',          sets:'3–5', reps:'3–5',  l1:'76.5–82.5 kg',                             l2:'76.5–82.5 kg'},                            // fully stated, no judgment
+      {id:'back_squat',          sets:'3–5', reps:'3–5',  l1:'84.5–91 kg',                                l2:'84.5–91 kg'},                            // fully stated, no judgment
       {id:'trunk_static_strength', sets:3,   reps:'varies', l1:'Bodyweight',                             l2:'Bodyweight'},                              // [JUDGMENT] sets — athlete's choice, no count given
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
     ],
@@ -3958,7 +3964,7 @@ const BLOCK2_EXERCISES = {
       {id:'clean_front_squat_floor', sets:5, reps:'1–3', l1:'43–50.5 kg',                                l2:'43–50.5 kg'},                              // [JUDGMENT] sets
       {id:'split_jerk_from_rack', sets:5,    reps:'varies', l1:'Split-position reps — no % today',       l2:'Split-position reps — no % today'},        // [JUDGMENT] sets; percentaged jerk day is Thursday
       {id:'clean_pull',          sets:5,     reps:'1',    l1:'65–72 kg',                                 l2:'65–72 kg'},                                // [JUDGMENT] sets
-      {id:'front_squat',         sets:'3–5', reps:'3–5',  l1:'75.5–81 kg',                               l2:'75.5–81 kg'},                              // fully stated, no judgment
+      {id:'front_squat',         sets:'3–5', reps:'3–5',  l1:'75–80.5 kg',                                l2:'75–80.5 kg'},                              // fully stated, no judgment
       {id:'bodybuilding_core_block', sets:1, reps:"athlete's choice", l1:'Short time-capped block',      l2:'Short time-capped block'},                 // [JUDGMENT] athlete selects exercises. No digit in this load string on purpose — see snpp_ohs_complex's comment above on why a stray number breaks the dropdown
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
     ],
@@ -3974,7 +3980,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note; wrongly omitted here at first (reasoned it'd be redundant with the heavy rack work above) but [E14.4] cites it for every day including this one — position-grooving is a different purpose than a heavy single
     ],
     d4: [
-      {id:'back_squat',          sets:'4–5', reps:'5',    l1:'76.5–82.5 kg',                             l2:'76.5–82.5 kg'},                            // fully stated ("4–5×5"), no judgment
+      {id:'back_squat',          sets:'4–5', reps:'5',    l1:'84.5–91 kg',                                l2:'84.5–91 kg'},                            // fully stated ("4–5×5"), no judgment
       {id:'three_position_snatch', sets:3,   reps:'3 positions', l1:'Technical — light',                 l2:'Technical — light'},                       // [JUDGMENT] sets
       {id:'pause_snatch',        sets:3,     reps:'1',    l1:"Athlete's choice: pause snatch or pause clean", l2:"Athlete's choice: pause snatch or pause clean"}, // [JUDGMENT] sets
       {id:'belt_squat',          sets:3,     reps:'8–10', l1:"Slow tempo — athlete's choice: belt squat or single-leg squat", l2:"Slow tempo — athlete's choice: belt squat or single-leg squat"}, // [JUDGMENT] sets/reps
@@ -4476,7 +4482,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.7.4 · 2026-08-17
+                PROGRAM v3.8.0 · 2026-09-03
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>

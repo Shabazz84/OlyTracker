@@ -3,7 +3,7 @@
 ## Development Rules
 
 - **App source of truth is `docs/src/app.jsx`** (NOT the HTML). The app is React + JSX. `index.html` is now a thin shell that loads pre-transpiled `docs/app.js`. **Never edit `docs/app.js` by hand** — it is generated. Edit `docs/src/app.jsx`, then run `npm run build` (esbuild → `docs/app.js`). Use `npm run watch` during development. The in-browser Babel transpiler was removed (was ~2.8 MB + per-load transpile cost).
-- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.7.0 · 2026-08-17`.
+- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.8.0 · 2026-09-03`.
 - **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
 - **Cloud sync is Supabase only.** The GitHub Gist sync path was removed — `sbSync` (defined inline in `index.html`) auto-syncs sessions/sets/reviews on every mutation and pulls on startup. Don't reintroduce a second sync backend.
 - **`docs/key.js` is PUBLIC on Pages.** It is gitignored locally, but `.github/workflows/deploy.yml` regenerates it during deploy and everything under `docs/` is uploaded as the Pages artifact — so `<pages-url>/key.js` is world-readable. Only publishable values may be written into it; the Supabase publishable key qualifies. **This file previously carried `ANTHROPIC_API_KEY`, which was therefore published on every deploy from the workflow's creation until 2026-08-16** (found by the Block 2 final review; vector removed, exposed key rotated, and the workflow now fails the build if a private-key pattern appears under `docs/`). A browser cannot hold a Claude key securely — production AI review needs a serverless proxy that keeps the key server-side. Your *local* `docs/key.js` is a different, unpublished key and is gitignored.
@@ -27,15 +27,15 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 | Bodyweight      | ~102.5 kg (226 lbs)                                   |
 | Weight class    | 102 kg or 109 kg                                      |
 | Power Snatch    | 60 kg (tested)                                        |
-| Hang Power Snatch | 62 kg (best logged)                                 |
-| Full Snatch     | 55 kg floor (Nov 2025)                                |
+| Hang Power Snatch | 66 kg (wk8 test, 2026-08-25)                        |
+| Full Snatch     | 55 kg floor (Nov 2025) — **not retested since**; the hang is now ahead of the floor |
 | Best Clean      | 80 kg                                                 |
-| Best Jerk       | ~65 kg (push/power jerk; split jerk not yet trained)  |
+| Best Jerk       | 72.5 kg (wk5 training top); wk8 test only made 70 kg on a night-shift day |
 | Clean Pull      | 120 kg × 3                                            |
 | Snatch High Pull | 92 kg × 4                                            |
-| Back Squat      | 118 kg × 1 (May 2026)                                 |
-| Front Squat     | 102 kg × 3 × 4 sets (Jun 2026) — est. 1RM ~116 kg     |
-| Overhead Squat  | 50 kg × 4 — primary snatch limiter                    |
+| Back Squat      | 130 kg × 1 (2026-08-29, athlete-reported, not in the set log) |
+| Front Squat     | 115 kg × 1 (wk8 test, 2026-08-27)                     |
+| Overhead Squat  | 72 kg × 1 (wk8 test) — 58% of back squat, corpus norm 65–70% [E10.6] |
 | Overhead Press  | 62 kg × 2                                             |
 | Experience      | Intermediate strength athlete mid-transition to OLY   |
 | Training history | 17 months logged (Dec 2024 – May 2026, FitNotes)     |
@@ -43,7 +43,7 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 | Training days   | 5 days/week (summer) → 4 days/week (school term Aug+) |
 | Work schedule   | Night shifts Wed–Sun, 7pm→7:30am                      |
 | Limitations     | Chronic back pain (manageable, not acute)             |
-| Weak points     | Jerk (far behind clean), OHS stability, split jerk (untrained) |
+| Weak points     | Jerk (far behind clean), floor lifts far behind the hang variants, split jerk (untrained). OHS stability much improved but not yet at the 65–70% ratio |
 | Strong points   | Clean pull strength, posterior chain, squat           |
 | Influences      | Klokov, Berestov already visible in training log      |
 
@@ -53,10 +53,16 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 |---------------|-------------|
 | Snatch        | 63 kg       |
 | Clean & Jerk  | 72 kg       |
-| Front Squat   | 116 kg      |
-| Back Squat    | 118 kg      |
+| Front Squat   | 115 kg      |
+| Back Squat    | 130 kg      |
 | Push Press    | 65 kg       |
 | Clean Pull    | 120 kg      |
+
+Updated 2026-09-03 against the week-8 test. **Only the two squats moved.** Week 8's
+menu was Block-1 shaped — hang and power variants — while Block 2's snatch and
+C&J loads are percentages of the lift *from the floor*, so the test could not set
+those two maxes. A floor snatch single and a floor clean single are still owed.
+Push press and clean pull were not tested at all. Live values: `docs/src/program.js::TRAINING_MAX`.
 
 ---
 
@@ -115,7 +121,7 @@ coverage** (Judgment Ledger item 2) — it is not a cited prescription.
 ---
 
 
-### Current: Block 1 — Hypertrophy Foundation (6 Weeks)
+### Complete: Block 1 — Hypertrophy Foundation (Weeks 1–8)
 Athlete decision: build the muscular and structural base before loading the competition lifts.
 Per Pavlukhin: hypertrophy first, then extract performance from that base.
 
@@ -124,10 +130,10 @@ Per Pavlukhin: hypertrophy first, then extract performance from that base.
 - **Summer (now→Aug): 5 days/week** — Mon/Tue/Wed/Thu/Sat
 - **School term (Aug+): 4 days/week** — Mon/Tue/Thu/Sat
 
-### Planned: Block 2 — Technique Consolidation (Weeks 7–10)
+### Current: Block 2 — Technique Consolidation (Weeks 9–16) — started 2026-09-01
 Lead-up exercises per Berestov. Moderate loads. Movement patterns ingrained.
 
-### Planned: Block 3 — Strength/Load Development (Weeks 11–16)
+### Planned: Block 3 — Strength/Load Development (Weeks 17+)
 Load the base. Per Torokhtiy: raise average training weight by 4% to add 10 kg to total.
 
 ---
