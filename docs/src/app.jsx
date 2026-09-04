@@ -3756,12 +3756,25 @@ function migratePRKeysV1() {
 // Derive PR history from logged set data — fills gaps left by manual entry
 function rebuildPRsFromLogs(currentPrs, currentLogs){
   // Build date map: `w{week}_{dayId}` -> ISO date string
-  // dayName can be either the day's display name OR its id — match both
+  // dayName can be either the day's display name OR its id — match both.
+  //
+  // Two catalogs, because the two blocks name their days differently. Block 1
+  // sessions store DAYS_SUMMER's `name` ("Snatch + Posterior Chain"). Block 2
+  // sessions store the PROGRAM_B2 day's `primary` text ("Snatch from floor
+  // 1–3 reps"), which appears in no day catalog at all — so matching
+  // DAYS_SUMMER alone left every Block 2 session out of dateMap, and the
+  // `if(!date) return;` below then silently dropped every Block 2 set. No lift
+  // logged from week 9 onward could set a PR. Fall back to the week's own plan
+  // (PROGRAM_B2, or PROGRAM_B1 for a Block 1 day logged by its label).
   const dateMap={};
   Object.values(currentLogs).forEach(entry=>{
     if(!entry.week||!entry.date) return;
     const day=DAYS_SUMMER.find(d=>d.name===entry.dayName||d.id===entry.dayName);
-    if(day) dateMap[`w${entry.week}_${day.id}`]=entry.date;
+    if(day){ dateMap[`w${entry.week}_${day.id}`]=entry.date; return; }
+    const planDay=(weekPlan(entry.week)?.days||[]).find(d=>
+      d.id===entry.dayName||d.primary===entry.dayName||
+      (entry.dayLabel&&d.label===entry.dayLabel));
+    if(planDay) dateMap[`w${entry.week}_${planDay.id}`]=entry.date;
   });
 
   // Scan all sets keys: sets_w{week}_{dayId}_{exercise_id}
@@ -4482,7 +4495,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.8.0 · 2026-09-03
+                PROGRAM v3.8.1 · 2026-09-04
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
