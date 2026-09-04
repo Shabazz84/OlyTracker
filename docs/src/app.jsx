@@ -3961,6 +3961,28 @@ const WEEK8_TEST = {
 // are identical throughout — Block 2 has no Phase 1/Phase 2 split, ExCard
 // just needs both fields populated.
 //
+// STARTING LOADS, 2026-09-04. Twelve exercises across d2/d3/d4 previously
+// carried no number at all, because PROGRAM_B2 prescribes them as "light",
+// "by feel", or the athlete's choice. That is faithful to the source but
+// unusable in the app: generateWeights() returns null without a digit, so
+// ExCard renders static text with NO input, and the athlete could neither be
+// told a weight nor record one — six of nine exercises on d3, five of seven
+// on d4. Each now carries a derived starting range, tagged [JUDGMENT] load on
+// its own line with the basis. These are NOT corpus prescriptions and must not
+// be cited as such; they are percentages of TRAINING_MAX (or, for the belt
+// squat and RDL, a carry-over from Block 1's own numbers) chosen to be
+// deliberately conservative — the source's intent for all twelve is that
+// speed and position, not the number, set the load.
+//
+// Two mechanical rules when editing any load string here:
+//   1. The kg range must LEAD. generateWeights() takes the first two numbers
+//      it finds as the dropdown range, so a trailing "60–70% C&J TM" is safely
+//      ignored, but a leading one silently re-centres the dropdown.
+//   2. Never use the words "light", "BW", "band" or "cable" — generateWeights()
+//      treats them as a non-numeric load and returns null, killing the input
+//      even when the string also contains kilos. This is why the strings below
+//      say "pattern only" and "speed kept" rather than "light".
+//
 // Pilot: week 9 only. Weeks 10-16 fall back to the read-only card until
 // built the same way.
 const BLOCK2_EXERCISES = {
@@ -3975,7 +3997,7 @@ const BLOCK2_EXERCISES = {
     ],
     d2: [
       {id:'clean_front_squat_floor', sets:5, reps:'1–3', l1:'43–50.5 kg',                                l2:'43–50.5 kg'},                              // [JUDGMENT] sets
-      {id:'split_jerk_from_rack', sets:5,    reps:'varies', l1:'Split-position reps — no % today',       l2:'Split-position reps — no % today'},        // [JUDGMENT] sets; percentaged jerk day is Thursday
+      {id:'split_jerk_from_rack', sets:5,    reps:'varies', l1:'30–35 kg — split-position reps, not the % day',       l2:'30–35 kg — split-position reps, not the % day'},        // [JUDGMENT] sets + load — the source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
       {id:'clean_pull',          sets:5,     reps:'1',    l1:'65–72 kg',                                 l2:'65–72 kg'},                                // [JUDGMENT] sets
       {id:'front_squat',         sets:'3–5', reps:'3–5',  l1:'75–80.5 kg',                                l2:'75–80.5 kg'},                              // fully stated, no judgment
       {id:'bodybuilding_core_block', sets:1, reps:"athlete's choice", l1:'Short time-capped block',      l2:'Short time-capped block'},                 // [JUDGMENT] athlete selects exercises. No digit in this load string on purpose — see snpp_ohs_complex's comment above on why a stray number breaks the dropdown
@@ -3983,22 +4005,22 @@ const BLOCK2_EXERCISES = {
     ],
     d3: [
       {id:'split_jerk_from_rack', sets:5,    reps:'1–3',  l1:'36–47 kg',                                 l2:'36–47 kg'},                                // [JUDGMENT] sets — this week's percentaged jerk day
-      {id:'snatch_opener',       sets:2,     reps:'3',    l1:'Light',                                    l2:'Light'},                                   // [JUDGMENT] sets/reps
-      {id:'floating_snatch',     sets:3,     reps:'2',    l1:'Just off the floor — light',               l2:'Just off the floor — light'},              // [JUDGMENT] sets
-      {id:'hang_snatch',         sets:'3–4', reps:'2',    l1:'Super-light, speed kept',                  l2:'Super-light, speed kept'},                 // sets stated (3–4×2), no judgment
-      {id:'power_jerk',          sets:3,     reps:'2',    l1:'Retained twice weekly — feel',             l2:'Retained twice weekly — feel'},            // [JUDGMENT] sets. No digit in this load string on purpose — see snpp_ohs_complex's comment above on why a stray number breaks the dropdown
-      {id:'jerk_dip_drive',      sets:3,     reps:'3',    l1:'Jerk dip squat / drive / partial front squat', l2:'Jerk dip squat / drive / partial front squat'}, // [JUDGMENT] sets
-      {id:'push_press',          sets:3,     reps:'3',    l1:'Speed-limited — add weight weekly only while fast', l2:'Speed-limited — add weight weekly only while fast'}, // [JUDGMENT] sets
+      {id:'snatch_opener',       sets:2,     reps:'3',    l1:'25–30 kg — pattern only',                                    l2:'25–30 kg — pattern only'},                                   // [JUDGMENT] sets/reps + load — 40–50% snatch TM
+      {id:'floating_snatch',     sets:3,     reps:'2',    l1:'32.5–37.5 kg — pause just off the floor',               l2:'32.5–37.5 kg — pause just off the floor'},              // [JUDGMENT] sets + load — 50–60% snatch TM; a floor variant, and the floor is the weak link
+      {id:'hang_snatch',         sets:'3–4', reps:'2',    l1:'25–30 kg — speed kept',                  l2:'25–30 kg — speed kept'},                 // sets stated (3–4×2); [JUDGMENT] load — 40–50% snatch TM. Deliberately far under the 66 kg HPS: [E8.8] demotes the hang to support, so loading it here would re-arm the crutch
+      {id:'power_jerk',          sets:3,     reps:'2',    l1:'43–50 kg — 60–70% C&J TM',             l2:'43–50 kg — 60–70% C&J TM'},            // [JUDGMENT] sets + load. The kg range must lead the string: generateWeights() reads the FIRST TWO numbers it finds, so the trailing "60–70%" is ignored — a leading stray digit would not be
+      {id:'jerk_dip_drive',      sets:3,     reps:'3',    l1:'65–72 kg — 90–100% C&J TM, partial ROM', l2:'65–72 kg — 90–100% C&J TM, partial ROM'}, // [JUDGMENT] sets + load — partial ROM, so it can carry C&J-TM weight; kept at TM rather than over it given the back history
+      {id:'push_press',          sets:3,     reps:'3',    l1:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast', l2:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast'}, // [JUDGMENT] sets + load — 60–70% of the 65 kg push-press TM; speed, not the number, is the cap
       {id:'trunk_stiffness_dip', sets:3,     reps:'varies', l1:'Bodyweight',                             l2:'Bodyweight'},                              // [JUDGMENT] sets
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note; wrongly omitted here at first (reasoned it'd be redundant with the heavy rack work above) but [E14.4] cites it for every day including this one — position-grooving is a different purpose than a heavy single
     ],
     d4: [
       {id:'back_squat',          sets:'4–5', reps:'5',    l1:'84.5–91 kg',                                l2:'84.5–91 kg'},                            // fully stated ("4–5×5"), no judgment
-      {id:'three_position_snatch', sets:3,   reps:'3 positions', l1:'Technical — light',                 l2:'Technical — light'},                       // [JUDGMENT] sets
-      {id:'pause_snatch',        sets:3,     reps:'1',    l1:"Athlete's choice: pause snatch or pause clean", l2:"Athlete's choice: pause snatch or pause clean"}, // [JUDGMENT] sets
-      {id:'belt_squat',          sets:3,     reps:'8–10', l1:"Slow tempo — athlete's choice: belt squat or single-leg squat", l2:"Slow tempo — athlete's choice: belt squat or single-leg squat"}, // [JUDGMENT] sets/reps
-      {id:'pull_drill',          sets:1,     reps:'3–5',  l1:'Power position → lowest good hang',        l2:'Power position → lowest good hang'},       // [JUDGMENT] sets
-      {id:'rdl',                 sets:3,     reps:'6–8',  l1:"End of session — athlete's choice: RDL, stiff-legged DL, or good morning", l2:"End of session — athlete's choice: RDL, stiff-legged DL, or good morning"}, // [JUDGMENT] sets/reps
+      {id:'three_position_snatch', sets:3,   reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position',                 l2:'32.5–37.5 kg — limited by the floor position'},                       // [JUDGMENT] sets + load — 50–60% snatch TM, set by the hardest of the three positions
+      {id:'pause_snatch',        sets:3,     reps:'1',    l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'}, // [JUDGMENT] sets + load — 60–70% of the respective TM; athlete picks the lift, the dropdown centres on the snatch range
+      {id:'belt_squat',          sets:3,     reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'}, // [JUDGMENT] sets/reps + load — carried from Block 1's belt squat (65–78 kg × 12) at the lower rep count; matches the 155–175 lb logged in wk9 D1
+      {id:'pull_drill',          sets:1,     reps:'3–5',  l1:'25–30 kg — power position → lowest good hang',        l2:'25–30 kg — power position → lowest good hang'},       // [JUDGMENT] sets + load — a drill, not a lift; 40–50% snatch TM
+      {id:'rdl',                 sets:3,     reps:'6–8',  l1:'75–85 kg — end of session, or stiff-legged DL / good morning', l2:'75–85 kg — end of session, or stiff-legged DL / good morning'}, // [JUDGMENT] sets/reps + load — Block 1 ran RDL 75–90 kg × 6; held there, not raised, because it is last in the session
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
     ],
   },
@@ -4495,7 +4517,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.8.1 · 2026-09-04
+                PROGRAM v3.9.0 · 2026-09-04
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
