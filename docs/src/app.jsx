@@ -586,6 +586,28 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
   const m = TYPE_META[catalog.type];
   const load = phase === 0 ? ex.l1 : ex.l2;
   const weightData = generateWeights(load);
+
+  // A set that carries a weight may not be ticked until that weight is chosen.
+  // Previously any set could be marked done with weight null — and CHECK ALL
+  // did exactly that for a whole exercise in one tap — so a session could look
+  // fully logged while recording nothing liftable. Week 9 D2's split jerk from
+  // rack is the case that prompted this: five sets ticked, five weights null,
+  // nothing to rebuild a PR from and no way to know afterwards what was lifted.
+  // Exercises with no weight control (bodyweight, empty bar, athlete's-choice
+  // blocks) are unaffected — there is no number to withhold, so they tick
+  // freely. Unchecking is never blocked.
+  const needsWeight = !!weightData;
+  const hasWeight = st => parseFloat(st.weight) > 0;
+  const canCheck  = st => !needsWeight || hasWeight(st);
+  // Sets ticked before this rule existed: left done rather than silently
+  // flipped back, but flagged so they read as unfinished instead of complete.
+  const isOrphan  = st => st.done && needsWeight && !hasWeight(st);
+
+  // CHECK ALL was the fastest route to a weightless session — one tap ticked
+  // every set. Blocked while any set still lacks a weight; SET ALL -> REC is
+  // the one-tap way out, and unchecking stays available.
+  const checkAllBlocked = !sets.every(s => s.done) && sets.some(s => !canCheck(s));
+
   const doneCount = sets.filter(s => s.done).length;
   const totalSets = sets.length;
   const allDone = doneCount === totalSets;
@@ -720,15 +742,20 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
                   color:"var(--text2)", width:16, flexShrink:0,
                 }}>S{idx+1}</span>
 
-                {/* Checkbox */}
-                <div onClick={() => updateSet(idx, "done", !s.done)} style={{
-                  width:22, height:22, borderRadius:5, cursor:"pointer", flexShrink:0,
-                  background: s.done ? "var(--green)" : "var(--bg3)",
-                  border:`1.5px solid ${s.done ? "var(--green)" : "var(--border2)"}`,
+                {/* Checkbox — locked until this set has a weight */}
+                <div
+                  title={!s.done && !canCheck(s) ? "Choose a weight first" : undefined}
+                  onClick={() => { if (s.done || canCheck(s)) updateSet(idx, "done", !s.done); }}
+                  style={{
+                  width:22, height:22, borderRadius:5, flexShrink:0,
+                  cursor: (s.done || canCheck(s)) ? "pointer" : "not-allowed",
+                  opacity: (s.done || canCheck(s)) ? 1 : 0.35,
+                  background: isOrphan(s) ? "var(--gold)" : s.done ? "var(--green)" : "var(--bg3)",
+                  border:`1.5px solid ${isOrphan(s) ? "var(--gold)" : s.done ? "var(--green)" : "var(--border2)"}`,
                   display:"flex", alignItems:"center", justifyContent:"center",
                   transition:"all 0.15s",
                 }}>
-                  {s.done && <span style={{color:"#000", fontSize:12, fontWeight:800}}>✓</span>}
+                  {s.done && <span style={{color:"#000", fontSize:12, fontWeight:800}}>{isOrphan(s) ? "!" : "✓"}</span>}
                 </div>
 
                 {/* Weight picker */}
@@ -766,8 +793,12 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
 
             {/* Quick actions */}
             <div style={{display:"flex", gap:8, marginTop:8}}>
-              <button onClick={async () => {
+              <button
+                disabled={checkAllBlocked}
+                title={checkAllBlocked ? "Choose weights first — or tap SET ALL → REC" : undefined}
+                onClick={async () => {
                 const allChecked = sets.every(s=>s.done);
+                if (!allChecked && checkAllBlocked) return;
                 const updated = sets.map(s => ({...s, done: !allChecked}));
                 setSets(updated);
                 if(sessionKey) {
@@ -779,7 +810,9 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
                   } catch {}
                 }
               }} style={{
-                fontSize:11, padding:"6px 14px", borderRadius:4, cursor:"pointer",
+                fontSize:11, padding:"6px 14px", borderRadius:4,
+                cursor: checkAllBlocked ? "not-allowed" : "pointer",
+                opacity: checkAllBlocked ? 0.4 : 1,
                 background:"var(--bg2)", border:"1px solid var(--border2)",
                 color:"var(--text)", fontFamily:"'DM Mono',monospace",
               }}>{sets.every(s=>s.done) ? "UNCHECK ALL" : "CHECK ALL"}</button>
@@ -804,6 +837,18 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
                 }}>SET ALL → REC</button>
               )}
             </div>
+
+            {/* No tooltips on a phone — say why the button is dead */}
+            {checkAllBlocked && (
+              <p style={{fontSize:11, color:"var(--gold)", marginTop:8, fontFamily:"'DM Mono',monospace"}}>
+                Pick a weight on each set before ticking it — or tap SET ALL → REC.
+              </p>
+            )}
+            {sets.some(isOrphan) && (
+              <p style={{fontSize:11, color:"var(--gold)", marginTop:8, fontFamily:"'DM Mono',monospace"}}>
+                ! Ticked before a weight was recorded — set the weight to complete it.
+              </p>
+            )}
           </div>
 
           {/* Coaching note */}
@@ -4071,6 +4116,10 @@ function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, force
   }
 
   function toggleStep(idx) {
+    // Same rule as ExCard: the free-entry MAX attempt can't be ticked until a
+    // weight is typed. Ladder rungs carry a computed weight, so they tick freely.
+    const st = steps[idx];
+    if (st.isMax && !st.done && !(parseFloat(st.weight) > 0)) return;
     const updated = steps.map((s,i) => i===idx ? {...s, done:!s.done} : s);
     persist(updated);
     if (updated[idx].isMax && updated[idx].done) {
@@ -4104,7 +4153,11 @@ function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, force
         <div key={idx} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 10px",marginBottom:6,borderRadius:6,
           background:s.done?"rgba(90,158,69,0.08)":"var(--bg2)",
           border:`1px solid ${s.done?"#5a9e4433":s.isMax?"#d4a84355":"var(--border)"}`}}>
-          <div onClick={()=>toggleStep(idx)} style={{width:22,height:22,borderRadius:5,cursor:"pointer",flexShrink:0,
+          <div onClick={()=>toggleStep(idx)}
+            title={s.isMax && !s.done && !(parseFloat(s.weight)>0) ? "Enter the weight achieved first" : undefined}
+            style={{width:22,height:22,borderRadius:5,flexShrink:0,
+            cursor: s.isMax && !s.done && !(parseFloat(s.weight)>0) ? "not-allowed" : "pointer",
+            opacity: s.isMax && !s.done && !(parseFloat(s.weight)>0) ? 0.35 : 1,
             background:s.done?"var(--green)":"var(--bg3)",border:`1.5px solid ${s.done?"var(--green)":"var(--border2)"}`,
             display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.15s"}}>
             {s.done && <span style={{color:"#000",fontSize:12,fontWeight:800}}>✓</span>}
@@ -4517,7 +4570,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.9.0 · 2026-09-04
+                PROGRAM v3.10.0 · 2026-09-04
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
