@@ -7,7 +7,10 @@ master_synthesis.md is the cautionary case — it asserted "deload every 4th wee
 and "stop if pain >3/10" with no way to check either.
 """
 
+import io
 import sys
+
+import pytest
 
 import config
 
@@ -165,3 +168,57 @@ def test_ask_is_wired_into_the_argument_parser(monkeypatch):
 
     assert rc == 0
     assert called["q"] == "how do I program the jerk?"
+
+
+# ------------------------------------------------- stdout encoding (Windows)
+
+
+def test_a_cp1252_stream_really_does_die_on_cyrillic():
+    """Control: the failure the fix prevents is real, not hypothetical.
+
+    Half the corpus is Russian (Klokov, Berestov, the Telegram exports), so a
+    retrieved passage carrying Cyrillic is routine, not an edge case.
+    """
+    stream = io.TextIOWrapper(io.BytesIO(), encoding="cp1252", newline="")
+
+    with pytest.raises(UnicodeEncodeError):
+        stream.write("рывок")
+        stream.flush()
+
+
+def test_force_utf8_stdio_lets_cyrillic_through_a_cp1252_stdout(monkeypatch):
+    """The bug: retrieval succeeds, then printing it dies on a Windows console.
+
+    Worst possible shape of failure — the slow, expensive part (embedding call
+    + vector search) completes, and the result is thrown away at the last step
+    with a traceback that looks like a corpus problem rather than a console one.
+    """
+    buf = io.BytesIO()
+    monkeypatch.setattr(
+        sys, "stdout", io.TextIOWrapper(buf, encoding="cp1252", newline=""))
+
+    cli._force_utf8_stdio()
+    print("рывок и толчок")
+    sys.stdout.flush()
+
+    assert "рывок и толчок" in buf.getvalue().decode("utf-8")
+
+
+def test_force_utf8_stdio_is_a_noop_on_a_stream_that_cannot_reconfigure(monkeypatch):
+    """Captured/redirected stdout is often a plain StringIO with no
+    reconfigure(); the fix must not crash the CLI in that case."""
+    monkeypatch.setattr(sys, "stdout", io.StringIO())
+    monkeypatch.setattr(sys, "stderr", io.StringIO())
+
+    cli._force_utf8_stdio()  # must not raise
+
+
+def test_main_forces_utf8_before_running_the_command(monkeypatch):
+    """Ordering is the whole point: reconfiguring after the command has already
+    printed is too late."""
+    order = []
+    monkeypatch.setattr(cli, "_force_utf8_stdio", lambda: order.append("utf8"))
+    monkeypatch.setattr(cli, "cmd_ask", lambda args: order.append("cmd") or 0)
+
+    assert cli.main(["ask", "anything"]) == 0
+    assert order == ["utf8", "cmd"]

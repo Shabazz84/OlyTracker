@@ -23,6 +23,29 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _force_utf8_stdio():
+    """Print UTF-8 regardless of the console's default encoding.
+
+    A Windows console is cp1252, which cannot encode Cyrillic — and a large part
+    of the corpus is Russian (Klokov, Berestov, the Telegram exports). Without
+    this, `ask` completes the slow part (embedding call + vector search) and then
+    dies with UnicodeEncodeError while printing the passages, which reads like a
+    corpus or retrieval failure rather than a console one. Retrieval output is
+    evidence; it must survive the terminal it lands in.
+
+    A redirected/captured stdout may be a plain StringIO with no reconfigure(),
+    so absence of the method is not an error.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="backslashreplace")
+        except (ValueError, OSError):  # detached or already-closed stream
+            pass
+
+
 def _braindump_on_path():
     if config.BRAINDUMP_PATH not in sys.path:
         sys.path.insert(0, config.BRAINDUMP_PATH)
@@ -175,6 +198,7 @@ def cmd_evidence(args) -> int:
 
 
 def main(argv=None) -> int:
+    _force_utf8_stdio()
     p = argparse.ArgumentParser(prog="olytracker")
     sub = p.add_subparsers(dest="command", required=True)
 
