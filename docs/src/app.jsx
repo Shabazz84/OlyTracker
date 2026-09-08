@@ -401,6 +401,7 @@ const EXERCISE_CATALOG = {
   trunk_static_strength:   { id:'trunk_static_strength',   name:'Trunk — Static Strength',        type:'accessory' },
   trunk_stiffness_dip:     { id:'trunk_stiffness_dip',     name:'Trunk Stiffness (Dip)',          type:'accessory' },
   bodybuilding_core_block: { id:'bodybuilding_core_block', name:'Bodybuilding + Core Block',      type:'accessory' },
+  snatch_push_press:       { id:'snatch_push_press',       name:'Snatch Push Press',              type:'snatch' },
 };
 
 function getEx(id) { return EXERCISE_CATALOG[id] ?? { id, name: id, type: 'strength' }; }
@@ -4044,8 +4045,13 @@ const WEEK8_TEST = {
 //      even when the string also contains kilos. This is why the strings below
 //      say "pattern only" and "speed kept" rather than "light".
 //
-// Pilot: week 9 only. Weeks 10-16 fall back to the read-only card until
-// built the same way.
+// Weeks 9-16: the whole of Block 2 is wired. Week 15 is the one week whose
+// loads are COMPUTED rather than transcribed - the source prescribes only
+// "Wk 14 -10-15%", so each band is week 14's times 0.85-0.90, tagged
+// [JUDGMENT] load on its own line. Week 16 d4 is the block test; it renders
+// as ordinary cards, NOT the week-8 TestLiftCard ladder, because _b2Day
+// shadows _testDay in the render chain and WEEK8_TEST holds week 8's hang
+// lifts. Giving week 16 a real ladder needs its own test table.
 const BLOCK2_EXERCISES = {
   9: {
     d1: [
@@ -4083,6 +4089,253 @@ const BLOCK2_EXERCISES = {
       {id:'pull_drill',          sets:1,     reps:'3–5',  l1:'25–30 kg — power position → lowest good hang',        l2:'25–30 kg — power position → lowest good hang'},       // [JUDGMENT] sets + load — a drill, not a lift; 40–50% snatch TM
       {id:'rdl',                 sets:3,     reps:'6–8',  l1:'75–85 kg — end of session, or stiff-legged DL / good morning', l2:'75–85 kg — end of session, or stiff-legged DL / good morning'}, // [JUDGMENT] sets/reps + load — Block 1 ran RDL 75–90 kg × 6; held there, not raised, because it is last in the session
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
+    ],
+  },
+  10: {
+    d1: [
+      {id:'snatch_from_floor',           sets:5, reps:'1–3', l1:'41–44 kg', l2:'41–44 kg'},  // [JUDGMENT] sets
+      {id:'snpp_ohs_complex',            sets:5, reps:'5+3', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — source says "4–6 sets"; Ph1 per [E31.8]
+      {id:'snatch_pull',                 sets:5, reps:'1', l1:'56.5–63 kg', l2:'56.5–63 kg'},  // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
+      {id:'back_squat',                  sets:'3–5', reps:'3–5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated, no judgment
+      {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets — athlete's choice
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d2: [
+      {id:'clean_front_squat_floor',     sets:5, reps:'1–3', l1:'47–50.5 kg', l2:'47–50.5 kg'},  // [JUDGMENT] sets
+      {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
+      {id:'clean_pull',                  sets:5, reps:'1', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets
+      {id:'front_squat',                 sets:'3–5', reps:'3–5', l1:'75–80.5 kg', l2:'75–80.5 kg'},  // fully stated, no judgment
+      {id:'bodybuilding_core_block',     sets:1, reps:"athlete's choice", l1:'Short time-capped block', l2:'Short time-capped block'},  // [JUDGMENT] sets — athlete selects exercises. No digit in this load string on purpose
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d3: [
+      {id:'split_jerk_from_rack',        sets:5, reps:'1–3', l1:'43–50.5 kg', l2:'43–50.5 kg'},  // [JUDGMENT] sets — this week's percentaged jerk day
+      {id:'snatch_opener',               sets:2, reps:'3', l1:'25–30 kg — pattern only', l2:'25–30 kg — pattern only'},  // [JUDGMENT] sets/reps + load — 40–50% snatch TM
+      {id:'floating_snatch',             sets:3, reps:'2', l1:'32.5–37.5 kg — pause just off the floor', l2:'32.5–37.5 kg — pause just off the floor'},  // [JUDGMENT] sets + load — 50–60% snatch TM; a floor variant, and the floor is the weak link
+      {id:'hang_snatch',                 sets:'3–4', reps:'2', l1:'25–30 kg — speed kept', l2:'25–30 kg — speed kept'},  // sets stated (3–4×2); [JUDGMENT] load — [E8.8] demotes the hang to support
+      {id:'power_jerk',                  sets:3, reps:'2', l1:'43–50 kg — 60–70% C&J TM', l2:'43–50 kg — 60–70% C&J TM'},  // [JUDGMENT] sets + load — retained 2×/wk
+      {id:'jerk_dip_drive',              sets:3, reps:'3', l1:'65–72 kg — 90–100% C&J TM, partial ROM', l2:'65–72 kg — 90–100% C&J TM, partial ROM'},  // [JUDGMENT] sets + load — partial ROM, so it can carry C&J-TM weight
+      {id:'push_press',                  sets:3, reps:'3', l1:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast', l2:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast'},  // [JUDGMENT] sets + load — 60–70% of the 65 kg push-press TM; speed, not the number, is the cap
+      {id:'trunk_stiffness_dip',         sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d4: [
+      {id:'back_squat',                  sets:'4–5', reps:'5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated ("4–5×5"), no judgment
+      {id:'three_position_snatch',       sets:3, reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position', l2:'32.5–37.5 kg — limited by the floor position'},  // [JUDGMENT] sets + load — 50–60% snatch TM, set by the hardest of the three
+      {id:'pause_snatch',                sets:3, reps:'1', l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'},  // [JUDGMENT] sets + load — 60–70% of the respective TM; athlete picks the lift
+      {id:'belt_squat',                  sets:3, reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'},  // [JUDGMENT] sets/reps + load — carried from Block 1's belt squat
+      {id:'pull_drill',                  sets:1, reps:'3–5', l1:'25–30 kg — power position → lowest good hang', l2:'25–30 kg — power position → lowest good hang'},  // [JUDGMENT] sets + load — a drill, not a lift; 40–50% snatch TM
+      {id:'rdl',                         sets:3, reps:'6–8', l1:'75–85 kg — end of session, or stiff-legged DL / good morning', l2:'75–85 kg — end of session, or stiff-legged DL / good morning'},  // [JUDGMENT] sets/reps + load — last in the session, so held at Block 1's number [E24.1]
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+  },
+  11: {
+    d1: [
+      {id:'snatch_from_floor',           sets:'4–5', reps:'3', l1:'44–50.5 kg', l2:'44–50.5 kg'},  // fully stated in the source
+      {id:'snpp_ohs_complex',            sets:5, reps:'3+2', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — source says "4–6 sets"; Ph2 per [E31.8]
+      {id:'snatch_pull',                 sets:5, reps:'1', l1:'56.5–63 kg', l2:'56.5–63 kg'},  // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
+      {id:'back_squat',                  sets:'3–5', reps:'3–5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated, no judgment
+      {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets — athlete's choice
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d2: [
+      {id:'clean_front_squat_floor',     sets:'4–5', reps:'3', l1:'50.5–57.5 kg', l2:'50.5–57.5 kg'},  // fully stated in the source
+      {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
+      {id:'clean_pull',                  sets:5, reps:'1', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets
+      {id:'front_squat',                 sets:'3–5', reps:'3–5', l1:'75–80.5 kg', l2:'75–80.5 kg'},  // fully stated, no judgment
+      {id:'bodybuilding_core_block',     sets:1, reps:"athlete's choice", l1:'Short time-capped block', l2:'Short time-capped block'},  // [JUDGMENT] sets — athlete selects exercises. No digit in this load string on purpose
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d3: [
+      {id:'split_jerk_from_rack',        sets:'4–5', reps:'3', l1:'50.5–54 kg', l2:'50.5–54 kg'},  // fully stated — this week's percentaged jerk day
+      {id:'snatch_opener',               sets:2, reps:'3', l1:'25–30 kg — pattern only', l2:'25–30 kg — pattern only'},  // [JUDGMENT] sets/reps + load — 40–50% snatch TM
+      {id:'floating_snatch',             sets:3, reps:'2', l1:'32.5–37.5 kg — pause just off the floor', l2:'32.5–37.5 kg — pause just off the floor'},  // [JUDGMENT] sets + load — 50–60% snatch TM; a floor variant, and the floor is the weak link
+      {id:'hang_snatch',                 sets:'3–4', reps:'2', l1:'25–30 kg — speed kept', l2:'25–30 kg — speed kept'},  // sets stated (3–4×2); [JUDGMENT] load — [E8.8] demotes the hang to support
+      {id:'power_jerk',                  sets:3, reps:'2', l1:'43–50 kg — 60–70% C&J TM', l2:'43–50 kg — 60–70% C&J TM'},  // [JUDGMENT] sets + load — retained 2×/wk
+      {id:'jerk_dip_drive',              sets:3, reps:'3', l1:'65–72 kg — 90–100% C&J TM, partial ROM', l2:'65–72 kg — 90–100% C&J TM, partial ROM'},  // [JUDGMENT] sets + load — partial ROM, so it can carry C&J-TM weight
+      {id:'push_press',                  sets:3, reps:'3', l1:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast', l2:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast'},  // [JUDGMENT] sets + load — 60–70% of the 65 kg push-press TM; speed, not the number, is the cap
+      {id:'trunk_stiffness_dip',         sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d4: [
+      {id:'back_squat',                  sets:'4–5', reps:'4', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated ("4–5×4"), no judgment
+      {id:'three_position_snatch',       sets:3, reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position', l2:'32.5–37.5 kg — limited by the floor position'},  // [JUDGMENT] sets + load — 50–60% snatch TM, set by the hardest of the three
+      {id:'pause_snatch',                sets:3, reps:'1', l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'},  // [JUDGMENT] sets + load — 60–70% of the respective TM; athlete picks the lift
+      {id:'belt_squat',                  sets:3, reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'},  // [JUDGMENT] sets/reps + load — carried from Block 1's belt squat
+      {id:'pull_drill',                  sets:1, reps:'3–5', l1:'25–30 kg — power position → lowest good hang', l2:'25–30 kg — power position → lowest good hang'},  // [JUDGMENT] sets + load — a drill, not a lift; 40–50% snatch TM
+      {id:'rdl',                         sets:3, reps:'6–8', l1:'75–85 kg — end of session, or stiff-legged DL / good morning', l2:'75–85 kg — end of session, or stiff-legged DL / good morning'},  // [JUDGMENT] sets/reps + load — last in the session, so held at Block 1's number [E24.1]
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+  },
+  12: {
+    d1: [
+      {id:'snatch_from_floor',           sets:'4–5', reps:'3', l1:'44–50.5 kg', l2:'44–50.5 kg'},  // fully stated in the source
+      {id:'snpp_ohs_complex',            sets:5, reps:'3+2', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — source says "4–6 sets"; Ph2 per [E31.8]
+      {id:'snatch_pull',                 sets:5, reps:'1', l1:'56.5–63 kg', l2:'56.5–63 kg'},  // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
+      {id:'back_squat',                  sets:'3–5', reps:'3–5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated, no judgment
+      {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets — athlete's choice
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d2: [
+      {id:'clean_front_squat_floor',     sets:'4–5', reps:'3', l1:'50.5–57.5 kg', l2:'50.5–57.5 kg'},  // fully stated in the source
+      {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
+      {id:'clean_pull',                  sets:5, reps:'1', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets
+      {id:'front_squat',                 sets:'3–5', reps:'3–5', l1:'75–80.5 kg', l2:'75–80.5 kg'},  // fully stated, no judgment
+      {id:'bodybuilding_core_block',     sets:1, reps:"athlete's choice", l1:'Short time-capped block', l2:'Short time-capped block'},  // [JUDGMENT] sets — athlete selects exercises. No digit in this load string on purpose
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d3: [
+      {id:'split_jerk_from_rack',        sets:'4–5', reps:'3', l1:'50.5–57.5 kg', l2:'50.5–57.5 kg'},  // fully stated — this week's percentaged jerk day
+      {id:'snatch_opener',               sets:2, reps:'3', l1:'25–30 kg — pattern only', l2:'25–30 kg — pattern only'},  // [JUDGMENT] sets/reps + load — 40–50% snatch TM
+      {id:'floating_snatch',             sets:3, reps:'2', l1:'32.5–37.5 kg — pause just off the floor', l2:'32.5–37.5 kg — pause just off the floor'},  // [JUDGMENT] sets + load — 50–60% snatch TM; a floor variant, and the floor is the weak link
+      {id:'hang_snatch',                 sets:'3–4', reps:'2', l1:'25–30 kg — speed kept', l2:'25–30 kg — speed kept'},  // sets stated (3–4×2); [JUDGMENT] load — [E8.8] demotes the hang to support
+      {id:'power_jerk',                  sets:3, reps:'2', l1:'43–50 kg — 60–70% C&J TM', l2:'43–50 kg — 60–70% C&J TM'},  // [JUDGMENT] sets + load — retained 2×/wk
+      {id:'jerk_dip_drive',              sets:3, reps:'3', l1:'65–72 kg — 90–100% C&J TM, partial ROM', l2:'65–72 kg — 90–100% C&J TM, partial ROM'},  // [JUDGMENT] sets + load — partial ROM, so it can carry C&J-TM weight
+      {id:'push_press',                  sets:3, reps:'3', l1:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast', l2:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast'},  // [JUDGMENT] sets + load — 60–70% of the 65 kg push-press TM; speed, not the number, is the cap
+      {id:'trunk_stiffness_dip',         sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d4: [
+      {id:'back_squat',                  sets:'4–5', reps:'4', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated ("4–5×4"), no judgment
+      {id:'three_position_snatch',       sets:3, reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position', l2:'32.5–37.5 kg — limited by the floor position'},  // [JUDGMENT] sets + load — 50–60% snatch TM, set by the hardest of the three
+      {id:'pause_snatch',                sets:3, reps:'1', l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'},  // [JUDGMENT] sets + load — 60–70% of the respective TM; athlete picks the lift
+      {id:'belt_squat',                  sets:3, reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'},  // [JUDGMENT] sets/reps + load — carried from Block 1's belt squat
+      {id:'pull_drill',                  sets:1, reps:'3–5', l1:'25–30 kg — power position → lowest good hang', l2:'25–30 kg — power position → lowest good hang'},  // [JUDGMENT] sets + load — a drill, not a lift; 40–50% snatch TM
+      {id:'rdl',                         sets:3, reps:'6–8', l1:'75–85 kg — end of session, or stiff-legged DL / good morning', l2:'75–85 kg — end of session, or stiff-legged DL / good morning'},  // [JUDGMENT] sets/reps + load — last in the session, so held at Block 1's number [E24.1]
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+  },
+  13: {
+    d1: [
+      {id:'snatch_from_floor',           sets:'2–4', reps:'1–3', l1:'50.5–53.5 kg', l2:'50.5–53.5 kg'},  // fully stated in the source
+      {id:'overhead_squat',              sets:4, reps:'3', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — source prints "OHS 3" separately at Ph3
+      {id:'snatch_push_press',           sets:4, reps:'5', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — source prints "SnPP 5 (Ph3)", 4–6 sets
+      {id:'snatch_pull',                 sets:5, reps:'1', l1:'56.5–63 kg', l2:'56.5–63 kg'},  // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
+      {id:'back_squat',                  sets:'3–5', reps:'3–5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated, no judgment
+      {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets — athlete's choice
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d2: [
+      {id:'clean_front_squat_floor',     sets:'2–4', reps:'1–3', l1:'57.5–61 kg', l2:'57.5–61 kg'},  // fully stated in the source
+      {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
+      {id:'clean_pull',                  sets:5, reps:'1', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets
+      {id:'front_squat',                 sets:'3–5', reps:'3–5', l1:'75–80.5 kg', l2:'75–80.5 kg'},  // fully stated, no judgment
+      {id:'bodybuilding_core_block',     sets:1, reps:"athlete's choice", l1:'Short time-capped block', l2:'Short time-capped block'},  // [JUDGMENT] sets — athlete selects exercises. No digit in this load string on purpose
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d3: [
+      {id:'split_jerk_from_rack',        sets:'4–5', reps:'3', l1:'50.5–57.5 kg', l2:'50.5–57.5 kg'},  // fully stated — this week's percentaged jerk day
+      {id:'snatch_opener',               sets:2, reps:'3', l1:'25–30 kg — pattern only', l2:'25–30 kg — pattern only'},  // [JUDGMENT] sets/reps + load — 40–50% snatch TM
+      {id:'floating_snatch',             sets:3, reps:'2', l1:'32.5–37.5 kg — pause just off the floor', l2:'32.5–37.5 kg — pause just off the floor'},  // [JUDGMENT] sets + load — 50–60% snatch TM; a floor variant, and the floor is the weak link
+      {id:'hang_snatch',                 sets:'3–4', reps:'2', l1:'25–30 kg — speed kept', l2:'25–30 kg — speed kept'},  // sets stated (3–4×2); [JUDGMENT] load — [E8.8] demotes the hang to support
+      {id:'power_jerk',                  sets:3, reps:'2', l1:'43–50 kg — 60–70% C&J TM', l2:'43–50 kg — 60–70% C&J TM'},  // [JUDGMENT] sets + load — retained 2×/wk
+      {id:'jerk_dip_drive',              sets:3, reps:'3', l1:'65–72 kg — 90–100% C&J TM, partial ROM', l2:'65–72 kg — 90–100% C&J TM, partial ROM'},  // [JUDGMENT] sets + load — partial ROM, so it can carry C&J-TM weight
+      {id:'push_press',                  sets:3, reps:'3', l1:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast', l2:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast'},  // [JUDGMENT] sets + load — 60–70% of the 65 kg push-press TM; speed, not the number, is the cap
+      {id:'trunk_stiffness_dip',         sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d4: [
+      {id:'back_squat',                  sets:'5', reps:'3', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated ("5×3"), no judgment
+      {id:'three_position_snatch',       sets:3, reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position', l2:'32.5–37.5 kg — limited by the floor position'},  // [JUDGMENT] sets + load — 50–60% snatch TM, set by the hardest of the three
+      {id:'pause_snatch',                sets:3, reps:'1', l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'},  // [JUDGMENT] sets + load — 60–70% of the respective TM; athlete picks the lift
+      {id:'belt_squat',                  sets:3, reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'},  // [JUDGMENT] sets/reps + load — carried from Block 1's belt squat
+      {id:'pull_drill',                  sets:1, reps:'3–5', l1:'25–30 kg — power position → lowest good hang', l2:'25–30 kg — power position → lowest good hang'},  // [JUDGMENT] sets + load — a drill, not a lift; 40–50% snatch TM
+      {id:'rdl',                         sets:3, reps:'6–8', l1:'75–85 kg — end of session, or stiff-legged DL / good morning', l2:'75–85 kg — end of session, or stiff-legged DL / good morning'},  // [JUDGMENT] sets/reps + load — last in the session, so held at Block 1's number [E24.1]
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+  },
+  14: {
+    d1: [
+      {id:'snatch_from_floor',           sets:4, reps:'2 → 1', l1:'50.5–53.5 kg', l2:'50.5–53.5 kg'},  // [JUDGMENT] sets
+      {id:'overhead_squat',              sets:4, reps:'3', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — source prints "OHS 3" separately at Ph3
+      {id:'snatch_push_press',           sets:4, reps:'5', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — source prints "SnPP 5 (Ph3)", 4–6 sets
+      {id:'snatch_pull',                 sets:5, reps:'1', l1:'56.5–63 kg', l2:'56.5–63 kg'},  // [JUDGMENT] sets; "finish fast" 53.5–56.5 kg tier omitted — see WEEK PLAN
+      {id:'back_squat',                  sets:'3–5', reps:'3–5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated, no judgment
+      {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets — athlete's choice, at maintenance this week
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d2: [
+      {id:'clean_front_squat_floor',     sets:4, reps:'2 → 1', l1:'57.5–61 kg', l2:'57.5–61 kg'},  // [JUDGMENT] sets
+      {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
+      {id:'clean_pull',                  sets:5, reps:'1', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets
+      {id:'front_squat',                 sets:'3–5', reps:'3–5', l1:'75–80.5 kg', l2:'75–80.5 kg'},  // fully stated, no judgment
+      {id:'bodybuilding_core_block',     sets:1, reps:"athlete's choice", l1:'Short time-capped block', l2:'Short time-capped block'},  // [JUDGMENT] sets — athlete selects exercises, at maintenance this week. No digit in this load string on purpose
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d3: [
+      {id:'split_jerk_from_rack',        sets:'4–5', reps:'3', l1:'50.5–57.5 kg', l2:'50.5–57.5 kg'},  // [JUDGMENT] sets — this week's percentaged jerk day
+      {id:'snatch_opener',               sets:2, reps:'3', l1:'25–30 kg — pattern only', l2:'25–30 kg — pattern only'},  // [JUDGMENT] sets/reps + load — 40–50% snatch TM
+      {id:'floating_snatch',             sets:3, reps:'2', l1:'32.5–37.5 kg — pause just off the floor', l2:'32.5–37.5 kg — pause just off the floor'},  // [JUDGMENT] sets + load — 50–60% snatch TM; a floor variant, and the floor is the weak link
+      {id:'hang_snatch',                 sets:'3–4', reps:'2', l1:'25–30 kg — speed kept', l2:'25–30 kg — speed kept'},  // sets stated (3–4×2); [JUDGMENT] load — [E8.8] demotes the hang to support
+      {id:'power_jerk',                  sets:3, reps:'2', l1:'43–50 kg — 60–70% C&J TM', l2:'43–50 kg — 60–70% C&J TM'},  // [JUDGMENT] sets + load — retained 2×/wk
+      {id:'jerk_dip_drive',              sets:3, reps:'3', l1:'65–72 kg — 90–100% C&J TM, partial ROM', l2:'65–72 kg — 90–100% C&J TM, partial ROM'},  // [JUDGMENT] sets + load — partial ROM, so it can carry C&J-TM weight
+      {id:'push_press',                  sets:3, reps:'3', l1:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast', l2:'40–45 kg — 60–70% push-press TM, add weight weekly only while it stays fast'},  // [JUDGMENT] sets + load — 60–70% of the 65 kg push-press TM; speed, not the number, is the cap
+      {id:'trunk_stiffness_dip',         sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets, at maintenance this week
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d4: [
+      {id:'back_squat',                  sets:'5', reps:'3', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated ("5×3"), no judgment
+      {id:'three_position_snatch',       sets:3, reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position', l2:'32.5–37.5 kg — limited by the floor position'},  // [JUDGMENT] sets + load — 50–60% snatch TM, set by the hardest of the three
+      {id:'pause_snatch',                sets:3, reps:'1', l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'},  // [JUDGMENT] sets + load — 60–70% of the respective TM; athlete picks the lift
+      {id:'belt_squat',                  sets:3, reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'},  // [JUDGMENT] sets/reps + load — carried from Block 1's belt squat
+      {id:'pull_drill',                  sets:1, reps:'3–5', l1:'25–30 kg — power position → lowest good hang', l2:'25–30 kg — power position → lowest good hang'},  // [JUDGMENT] sets + load — a drill, not a lift; 40–50% snatch TM
+      {id:'rdl',                         sets:3, reps:'6–8', l1:'75–85 kg — end of session, or stiff-legged DL / good morning', l2:'75–85 kg — end of session, or stiff-legged DL / good morning'},  // [JUDGMENT] sets/reps + load — last in the session, so held at Block 1's number [E24.1]
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+  },
+  15: {
+    d1: [
+      {id:'snatch_from_floor',           sets:3, reps:'2', l1:'43–48 kg', l2:'43–48 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited, volume cut too
+      {id:'snpp_ohs_complex',            sets:3, reps:'3+2', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets — reduced sets, load unchanged
+      {id:'snatch_pull',                 sets:3, reps:'1', l1:'48–56.5 kg', l2:'48–56.5 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'back_squat',                  sets:3, reps:'3', l1:'72–82 kg', l2:'72–82 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets — maintenance
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d2: [
+      {id:'clean_front_squat_floor',     sets:3, reps:'2', l1:'49–55 kg', l2:'49–55 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'split_jerk_from_rack',        sets:3, reps:'varies', l1:'30–35 kg — split-position reps', l2:'30–35 kg — split-position reps'},  // [JUDGMENT] sets — reduced sets
+      {id:'clean_pull',                  sets:3, reps:'1', l1:'55–65 kg', l2:'55–65 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'front_squat',                 sets:3, reps:'3', l1:'64–72.5 kg', l2:'64–72.5 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'bodybuilding_core_block',     sets:1, reps:"athlete's choice", l1:'Short time-capped block', l2:'Short time-capped block'},  // [JUDGMENT] sets — maintenance
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d3: [
+      {id:'split_jerk_from_rack',        sets:3, reps:'2', l1:'43–52 kg', l2:'43–52 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'snatch_opener',               sets:2, reps:'3', l1:'25–30 kg — pattern only', l2:'25–30 kg — pattern only'},  // [JUDGMENT] sets/reps + load — unchanged, already an opener
+      {id:'power_jerk',                  sets:2, reps:'2', l1:'36.5–45 kg', l2:'36.5–45 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'jerk_dip_drive',              sets:2, reps:'3', l1:'55–65 kg', l2:'55–65 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'push_press',                  sets:2, reps:'3', l1:'34–40.5 kg', l2:'34–40.5 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d4: [
+      {id:'back_squat',                  sets:3, reps:'3', l1:'72–82 kg', l2:'72–82 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'three_position_snatch',       sets:2, reps:'3 positions', l1:'27.5–34 kg', l2:'27.5–34 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'pause_snatch',                sets:2, reps:'1', l1:'32.5–39.5 kg', l2:'32.5–39.5 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited — athlete may substitute the pause clean
+      {id:'belt_squat',                  sets:2, reps:'8–10', l1:'59.5–72 kg', l2:'59.5–72 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'rdl',                         sets:2, reps:'6–8', l1:'64–76.5 kg', l2:'64–76.5 kg'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14 –10–15%, computed not cited — posterior chain last [E24.1]
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+  },
+  16: {
+    d1: [
+      {id:'snatch_from_floor',           sets:3, reps:'1', l1:'53.5 kg — openers only, no accessory volume', l2:'53.5 kg — openers only, no accessory volume'},  // [JUDGMENT] sets — source prints a single 85% figure and "openers only"
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d2: [
+      {id:'clean_front_squat_floor',     sets:3, reps:'1', l1:'57.5 kg — openers only, no accessory volume', l2:'57.5 kg — openers only, no accessory volume'},  // [JUDGMENT] sets — source prints a single 80% figure
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — recurring daily skill note [E14.4]
+    ],
+    d3: [
+      {id:'split_jerk_from_rack',        sets:2, reps:'2', l1:'50.5–54 kg — taper, or drop to empty-bar practice', l2:'50.5–54 kg — taper, or drop to empty-bar practice'},  // [JUDGMENT] sets — source allows "very light or off"
+      {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets — empty-bar split practice only [E14.4]
+    ],
+    d4: [
+      {id:'snatch',                      sets:5, reps:'1', l1:'57–63 kg — singles to a max', l2:'57–63 kg — singles to a max'},  // [JUDGMENT] sets + load — 90–100% snatch TM. THE test that finally sets a floor-snatch max
+      {id:'clean_and_jerk',              sets:5, reps:'1', l1:'65–72 kg — singles to a max', l2:'65–72 kg — singles to a max'},  // [JUDGMENT] sets + load — 90–100% C&J TM; sets the owed floor-clean max
+      {id:'front_squat',                 sets:4, reps:'1', l1:'103.5–115 kg — singles to a max', l2:'103.5–115 kg — singles to a max'},  // [JUDGMENT] sets + load — 90–100% front-squat TM
+      {id:'snatch_balance',              sets:3, reps:'1', l1:'45–55 kg — singles to a max', l2:'45–55 kg — singles to a max'},  // [JUDGMENT] sets + load — no TM on file for this lift; anchored above the 72 kg OHS test at a receiving-speed load
+      {id:'back_squat',                  sets:3, reps:'1', l1:'117–130 kg — only if not maxed within ~2 months', l2:'117–130 kg — only if not maxed within ~2 months'},  // [JUDGMENT] sets + load — conditional in the source; 90–100% back-squat TM. AMRAP at ~90–95% is the stated alternative to a true 1RM
     ],
   },
 };
@@ -4312,7 +4565,18 @@ function OlyTracker() {
   // Block 2 week, so build a generic banner from the week's own text instead
   // of defaulting to a specific, wrong one. Block 2's own "Deload"/"Test"
   // weeks (15/16) DO match PHASE_BANNER and get that copy, same as Block 1's.
-  const _phaseBanner = PHASE_BANNER[_headerWeekPlan?.phase] || (_headerWeekPlan ? {
+  // PHASE_BANNER is keyed by phase name and therefore shared across blocks,
+  // but the two deloads are not the same prescription. Block 1's week 7 holds
+  // the weight and cuts sets; Block 2's week 15 cuts BOTH — "Wk 14 weight
+  // −10–15% · volume −15–25%" in PROGRAM_B2, cited to [E5.11]. Without this
+  // override the week-15 banner told the athlete "same loads, not lighter
+  // weight" directly above cards showing week 14 minus 15%.
+  const _b2Deload = _headerWeekPlan?.phase === "Deload" && week >= 9;
+  const _phaseBanner = (_b2Deload ? {
+    label: "DELOAD — WEIGHT AND VOLUME", color: "#aaa", border: "#88888855",
+    sub: "Weights −10–15%, volume −15–25%. No PRs — technique priority.",
+    note: "🪶 Deload: lighter AND shorter [E5.11]. Fatigue is low — the best week to catch and film position faults, not to push new numbers.",
+  } : null) || PHASE_BANNER[_headerWeekPlan?.phase] || (_headerWeekPlan ? {
     label: (_headerWeekPlan.phase || "").toUpperCase(),
     color: "var(--gold)", border: "#d4a84344",
     sub: _headerWeekPlan.focus || "",
@@ -4586,7 +4850,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.11.0 · 2026-09-08
+                PROGRAM v3.12.0 · 2026-09-08
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4893,8 +5157,9 @@ function OlyTracker() {
                       per-exercise list, so there's no per-set breakdown to
                       check off here — Block2DayToggle below is one
                       session-level complete/not-done state instead. Used
-                      until this week gets the granular BLOCK2_EXERCISES
-                      treatment (pilot: week 9 only so far). */}
+                      for any week without a BLOCK2_EXERCISES entry. All of
+                      Block 2 (weeks 9-16) is wired, so this is now only a
+                      fallback for future blocks. */}
                   <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 14px",marginBottom:8,border:"1px solid var(--border)"}}>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:8}}>
                       <div>
