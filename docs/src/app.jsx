@@ -1022,7 +1022,7 @@ const MOBILITY = {
   core: {
     label:"DAILY — CORE BRACING (McGill Big Three)",
     color:"#8b5cf6", time:"6–8 min",
-    note:"Spinal-endurance bracing, not spinal flexion — safe for chronic back pain and worth doing before every single session, regardless of what's on the day's menu. These three drills train the core isometrically instead of through crunching/flexion, which is exactly what a back-pain athlete needs.",
+    note:"Spinal-endurance bracing UNDER LOAD — these three train the core isometrically to hold a neutral spine while it resists force, which is exactly what a back-pain athlete needs before a session. This is not the same job as the unloaded segmental work in DAILY SPINE: you brace here and you mobilise there, and the two never swap places. Worth doing before every single session, regardless of what's on the day's menu.",
     drills:[
       {name:"McGill Curl-Up", duration:"3×8 (8s hold each)", tool:"Floor",
        area:"core", desc:"Lie on your back, one knee bent with foot flat, other leg straight. Hands under the small of your back to preserve its natural arch. Lift only your head and shoulders slightly off the floor — no spinal flexion, no crunching. Hold 8s, lower slowly. This trains ab bracing isometrically without loading the lumbar spine in flexion."},
@@ -1030,6 +1030,21 @@ const MOBILITY = {
        area:"core", desc:"Forearm on the floor, body in a straight line from ankles to shoulders, hips lifted off the floor. Hold. Trains anti-lateral-flexion — the obliques and QL working isometrically to keep the spine level, directly relevant to staying square under an asymmetric bar path."},
       {name:"Bird Dog Hold", duration:"3×8/side (5–8s hold each rep)", tool:"Floor",
        area:"core", desc:"On hands and knees, extend opposite arm and leg until level with the torso, keeping the spine neutral (no rotation or sagging). Hold 5–8s, return with control, alternate sides. Trains anti-rotation and anti-extension together — the exact stability pattern that keeps the low back safe when bar position pulls the torso off-center."},
+    ]
+  },
+  spine: {
+    label:"DAILY — SPINAL SEGMENTATION",
+    color:"#c9793a", time:"5–8 min",
+    note:"For a lower back that moves as one rigid block instead of segment by segment. Do it AFTER training or on a rest day — NEVER before a session: flexing the spine and then loading it is the injury mechanism, not the flexion itself. Skip it entirely on a day the back is already sore. Stretch is fine, pain is not — pain means stop and drop back a stage. Run stages 1–2 daily for 2–3 weeks before touching stage 3, and stage 3 for 2–3 weeks before stage 4. If the stiffness resolves at stage 2, you never need the loaded version. PROVENANCE: stages 1–2 are cited to Torokhtiy's lower-back mobility guide [E]; stages 3–4 are [JUDGMENT] — your request, with no corpus support. Querying the 21k-chunk corpus for \"jefferson curl\" returns nothing but snatch highlight reels; not one coach in your sources mentions the movement.",
+    drills:[
+      {name:"Stage 1 — Supine Pelvic Tilt [E]", duration:"2×10 slow", tool:"Floor",
+       area:"lumbar", desc:"Lie on your back, knees bent, feet flat. Breathe in; exhale and slowly tilt the pelvis backward, pressing the low back into the floor. Then tilt forward into a small arch. Slow and deliberate — you are teaching the lumbar segments to move independently of the hips, which is the exact thing a rigid block can't do. Torokhtiy's lower-back guide names this as the primary lower-back mobility drill and adds the accommodation: if the low back is sensitive, put a cushion under the pelvis. Zero load, zero risk. Start here and do not skip it."},
+      {name:"Stage 2 — Cat-Cow (segmental) [E]", duration:"2 min", tool:"Floor",
+       area:"spine", desc:"Hands and knees. Round the spine one vertebra at a time starting from the tailbone, then reverse into extension the same way, leading from the tailbone again. The point is SEQUENCING, not range — if the low back still moves as one block, slow down until you can feel it articulate segment by segment. Same unloaded segmental family as the sphinx pose and pelvic tilt in the Torokhtiy guide. Frequency is the mechanism here: hitting the position often is what makes it available, not straining into it once."},
+      {name:"Stage 3 — Standing Roll-Down [JUDGMENT]", duration:"3×5", tool:"None",
+       area:"spine", desc:"Stand, feet hip width, knees soft. Drop the chin to the chest and roll down one vertebra at a time, arms hanging, until you reach your honest end range — do NOT chase the floor. Roll back up the same way, stacking from the bottom. Bodyweight only. This is the unloaded rehearsal of the Jefferson curl pattern; own it completely, with clean segmental sequencing and no pain, before adding a single kilo."},
+      {name:"Stage 4 — Jefferson Curl [JUDGMENT]", duration:"3×5 @ 5 kg", tool:"Dumbbell",
+       area:"spine", desc:"Stand on a box, hold a dumbbell or kettlebell in both hands, roll down segment by segment as in stage 3 letting the weight draw you into flexion, then roll back up the same way. Use a dumbbell, NOT a barbell — an empty bar is 20 kg, which is this drill's hard ceiling, not its starting load. START AT 5 kg. Add 2.5 kg only after two consecutive pain-free weeks. HARD CEILING 20 kg — past that this stops being a mobility drill and becomes a rounded-back stiff-leg deadlift, a different exercise with a different risk profile. Note what your corpus actually endorses for the back: loaded EXTENSION (back extensions, weighted back extensions, rows, pull-ups), the opposite vector to this. No source endorses this movement. It is here because you asked for it, dosed as conservatively as it can be while still being the thing you asked for."},
     ]
   },
   bed: {
@@ -1056,7 +1071,7 @@ function DrillCard({drill}) {
     "Wall":"var(--text2)", "Barbell":"var(--text2)", "Floor":"var(--text2)",
     "Rack upright":"var(--text2)", "None":"var(--text2)", "Wall/rack":"var(--text2)",
     "Floor/wall":"var(--text2)", "Floor or rolled towel":"var(--text2)",
-    "Doorframe":"var(--text2)",
+    "Doorframe":"var(--text2)", "Dumbbell":"#8b5cf6",
   };
   const areaColors = {
     "thoracic":"#4a90d9", "shoulder":"#d4a843", "hips":"#c94f3a",
@@ -1064,7 +1079,7 @@ function DrillCard({drill}) {
     "hip flexors":"#c94f3a", "lat/shoulder":"#5a9e45", "back/hips":"#8b5cf6",
     "full chain":"var(--gold)", "shoulder/lat":"#d4a843", "shoulder/elbow":"#d4a843",
     "shoulder/thoracic":"#4a90d9", "full back":"var(--text2)", "lat/thoracic":"#5a9e45",
-    "core":"#8b5cf6",
+    "core":"#8b5cf6", "spine":"#c9793a", "lumbar":"#c9793a",
   };
   const tc = toolColors[drill.tool] || "var(--text2)";
   const ac = areaColors[drill.area] || "var(--text2)";
@@ -1100,6 +1115,7 @@ function MobilityTab() {
     {id:"active",  label:"D5 PRE",     data:MOBILITY.pre.active},
     {id:"ankle",   label:"DAILY ANKLE", data:MOBILITY.ankle},
     {id:"core",    label:"DAILY CORE",  data:MOBILITY.core},
+    {id:"spine",   label:"DAILY SPINE", data:MOBILITY.spine},
     {id:"post",    label:"POST",        data:MOBILITY.post},
     {id:"bed",     label:"BEDTIME",     data:MOBILITY.bed},
   ];
@@ -4570,7 +4586,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.10.0 · 2026-09-04
+                PROGRAM v3.11.0 · 2026-09-08
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>

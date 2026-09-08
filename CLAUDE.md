@@ -3,7 +3,7 @@
 ## Development Rules
 
 - **App source of truth is `docs/src/app.jsx`** (NOT the HTML). The app is React + JSX. `index.html` is now a thin shell that loads pre-transpiled `docs/app.js`. **Never edit `docs/app.js` by hand** — it is generated. Edit `docs/src/app.jsx`, then run `npm run build` (esbuild → `docs/app.js`). Use `npm run watch` during development. The in-browser Babel transpiler was removed (was ~2.8 MB + per-load transpile cost).
-- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.8.0 · 2026-09-03`.
+- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.11.0 · 2026-09-08`.
 - **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
 - **Cloud sync is Supabase only.** The GitHub Gist sync path was removed — `sbSync` (defined inline in `index.html`) auto-syncs sessions/sets/reviews on every mutation and pulls on startup. Don't reintroduce a second sync backend.
 - **`docs/key.js` is PUBLIC on Pages.** It is gitignored locally, but `.github/workflows/deploy.yml` regenerates it during deploy and everything under `docs/` is uploaded as the Pages artifact — so `<pages-url>/key.js` is world-readable. Only publishable values may be written into it; the Supabase publishable key qualifies. **This file previously carried `ANTHROPIC_API_KEY`, which was therefore published on every deploy from the workflow's creation until 2026-08-16** (found by the Block 2 final review; vector removed, exposed key rotated, and the workflow now fails the build if a private-key pattern appears under `docs/`). A browser cannot hold a Claude key securely — production AI review needs a serverless proxy that keeps the key server-side. Your *local* `docs/key.js` is a different, unpublished key and is gitignored.
@@ -343,7 +343,7 @@ The rest of the principles above come from `berestovteam.ru` (web scrape, `summa
 | 9 | Recovery is training — sauna, massage, sleep scheduled | Klokov, Pavlukhin |
 | 10 | 8-week cycle ending in testing | Berestov |
 | 11 | 4–6 exercises/session, each with named purpose | Everett, Golovinsky |
-| 12 | Back pain: no spinal load under flexion; upright posture always | All (implicitly) |
+| 12 | Back pain: no spinal load under flexion **in the lifts** — brace neutral, upright posture always. Segmental spinal *mobility* is a separate, deliberately-dosed thing: unloaded first, after training or on a rest day, never before a session (DAILY SPINE mobility block, v3.11.0) | All (implicitly); Torokhtiy lower-back mobility guide for the unloaded drills |
 | 13 | Split jerk untrained but no longer off-limits — build lunge strength to support the transition | Pavlukhin |
 | 14 | Night shift = reduced session — technique only at 60–65% | Pavlukhin (total stress) |
 | 15 | OHS stability is the snatch ceiling — prioritize it | Program data (50 kg OHS) |
