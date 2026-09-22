@@ -4627,6 +4627,9 @@ function OlyTracker() {
       // Pull from Supabase on startup
       if (sbSync.ready) {
         try {
+          // Push unconfirmed set writes from a previous run before pulling,
+          // so the pull sees them instead of an older cloud copy.
+          await sbSync.flushPending();
           const remote = await sbSync.pullAll();
           if (remote.sessions.length > 0 || remote.sets.length > 0 || remote.reviews.length > 0) {
             await applySupabaseData(remote);
@@ -4666,18 +4669,8 @@ function OlyTracker() {
       await storage.set('oly_logs', JSON.stringify(logsObj));
     }
     if (remote.sets.length > 0) {
-      Object.keys(localStorage).forEach(k => {
-        if (k.startsWith('sets_w')) localStorage.removeItem(k);
-      });
-      const setsMap = {};
-      remote.sets.forEach(s => {
-        const k = `sets_w${s.week}_${s.day_id}_${s.exercise_id}`;
-        if (!setsMap[k]) setsMap[k] = [];
-        setsMap[k][s.set_index] = { done: s.done, weight: s.weight };
-      });
-      Object.entries(setsMap).forEach(([k, arr]) => {
-        localStorage.setItem(k, JSON.stringify(arr.filter(Boolean)));
-      });
+      // Keeps any set write the cloud hasn't confirmed yet — see sync.js.
+      sbSync.applyRemoteSets(remote.sets);
       setSyncRevision(r => r + 1);
     }
     if (remote.reviews.length > 0) {
@@ -4854,7 +4847,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.13.0 · 2026-09-08
+                PROGRAM v3.13.1 · 2026-09-22
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
