@@ -236,7 +236,8 @@ const EXERCISE_CATALOG = {
     desc:"Keep arms passive in the pull — transfer tension to the back and lats rather than arm-driven pulling. (Dozer)" },
   hang_power_snatch:      { id:'hang_power_snatch',      name:'Hang Power Snatch',           type:'snatch',
     desc:"Internal rotation, not external, in the catch — front side pulls in short, back gets long. External rotation causes disconnection and an early drop in turnover; directly addresses your OHS limiter. (Dozer, high-confidence)" },
-  snatch_balance:         { id:'snatch_balance',         name:'Snatch Balance',              type:'snatch'    },
+  snatch_balance:         { id:'snatch_balance',         name:'Snatch Balance',              type:'snatch',
+    desc:"Bar on the back, snatch grip. Short dip-drive, then push yourself down under the bar into a full overhead squat. Hold the bottom 5 sec before standing [E11.3]. Overhead check: snatch balance should reach your best snatch, ideally 10–15 kg over [E10.3]." },
   overhead_squat:         { id:'overhead_squat',         name:'Overhead Squat',              type:'snatch'    },
   sots_press:             { id:'sots_press',             name:'Sots Press',                  type:'snatch'    },
   hang_power_clean:       { id:'hang_power_clean',       name:'Hang Power Clean',            type:'cj',
@@ -388,7 +389,7 @@ const EXERCISE_CATALOG = {
   snatch_from_floor:       { id:'snatch_from_floor',       name:'Snatch from Floor',              type:'snatch',
     desc:"Internal rotation, not external, in the catch — front side pulls in short, back gets long. External rotation causes disconnection and an early drop in turnover; directly addresses your OHS limiter. (Dozer, high-confidence)" },
   clean_front_squat_floor: { id:'clean_front_squat_floor', name:'Clean + Front Squat from Floor', type:'cj',
-    desc:"Bar should rest on the shoulder platform — upper traps/delts, not the wrists. Wrist pain means the rack position isn't set, not wrist weakness. (Webster)" },
+    desc:"Squat clean from the floor, stand, then one front squat without lowering the bar — one rep = that pair. Catch in the squat, never power it; any accidental power receive gets sat into the squat [E31.7, E31.5]. Bar should rest on the shoulder platform — upper traps/delts, not the wrists. Wrist pain means the rack position isn't set, not wrist weakness. (Webster)" },
   split_jerk_from_rack:    { id:'split_jerk_from_rack',    name:'Split Jerk from Rack',           type:'cj',
     desc:"Front knee stays on or slightly behind the ankle, not forward over the toes. Hips drop straight down with equal foot distance moved — aim for 50/50 weight distribution. (Dozer)" },
   snpp_ohs_complex:        { id:'snpp_ohs_complex',        name:'SnPP + OHS Complex',             type:'snatch' },
@@ -397,7 +398,8 @@ const EXERCISE_CATALOG = {
   three_position_snatch:   { id:'three_position_snatch',   name:'3-Position Snatch',              type:'snatch' },
   jerk_dip_drive:          { id:'jerk_dip_drive',          name:'Jerk Dip/Drive Drill',           type:'cj',
     desc:"Achieve full extension before initiating the split. Control the dip deliberately — maintain bar contact throughout. (Webster)" },
-  pull_drill:              { id:'pull_drill',              name:'Pull Drill (Power Position)',    type:'accessory' },
+  pull_drill:              { id:'pull_drill',              name:'Pull Drill (Power Position)',    type:'accessory',
+    desc:"Snatch-grip pull, no catch. First reps from the power position (bar at the hip crease, standing tall), then from the lowest hang you can hold well. Push the floor away into extension, bar close with the lats — it should not copy the snatch extension exactly [E42.1]. Warm-up weight." },
   trunk_static_strength:   { id:'trunk_static_strength',   name:'Trunk — Static Strength',        type:'accessory' },
   trunk_stiffness_dip:     { id:'trunk_stiffness_dip',     name:'Trunk Stiffness (Dip)',          type:'accessory' },
   bodybuilding_core_block: { id:'bodybuilding_core_block', name:'Bodybuilding + Core Block',      type:'accessory' },
@@ -4064,6 +4066,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',          sets:2,     reps:'3',    l1:'Empty bar',                                l2:'Empty bar'},                               // [JUDGMENT] sets — recurring daily skill note
     ],
     d2: [
+      {id:'snatch_balance',              sets:3, reps:'2', l1:'40–50 kg — 5-sec hold in the bottom', l2:'40–50 kg — 5-sec hold in the bottom'},  // Opener slot "power snatch or snatch balance" [E8.1]; 5-sec bottom hold [E11.3]. [JUDGMENT] sets, reps + load — no dose in the source; under the 55 kg×3 PR because of the hold
       {id:'clean_front_squat_floor', sets:5, reps:'1–3', l1:'43–50.5 kg',                                l2:'43–50.5 kg'},                              // [JUDGMENT] sets
       {id:'split_jerk_from_rack', sets:5,    reps:'varies', l1:'30–35 kg — split-position reps, not the % day',       l2:'30–35 kg — split-position reps, not the % day'},        // [JUDGMENT] sets + load — the source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
       {id:'clean_pull',          sets:5,     reps:'1',    l1:'65–72 kg',                                 l2:'65–72 kg'},                                // [JUDGMENT] sets
@@ -4103,6 +4106,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d2: [
+      {id:'snatch_balance',              sets:3, reps:'2', l1:'40–50 kg — 5-sec hold in the bottom', l2:'40–50 kg — 5-sec hold in the bottom'},  // Opener slot "power snatch or snatch balance" [E8.1]; 5-sec bottom hold [E11.3]. [JUDGMENT] sets, reps + load — no dose in the source; under the 55 kg×3 PR because of the hold
       {id:'clean_front_squat_floor',     sets:5, reps:'1–3', l1:'47–50.5 kg', l2:'47–50.5 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice
       {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
       {id:'clean_pull',                  sets:5, reps:'3', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice
@@ -4142,6 +4146,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d2: [
+      {id:'snatch_balance',              sets:3, reps:'2', l1:'40–50 kg — 5-sec hold in the bottom', l2:'40–50 kg — 5-sec hold in the bottom'},  // Opener slot "power snatch or snatch balance" [E8.1]; 5-sec bottom hold [E11.3]. [JUDGMENT] sets, reps + load — no dose in the source; under the 55 kg×3 PR because of the hold
       {id:'clean_front_squat_floor',     sets:'4–5', reps:'3', l1:'50.5–57.5 kg', l2:'50.5–57.5 kg'},  // fully stated in the source
       {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
       {id:'clean_pull',                  sets:5, reps:'3', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice
@@ -4181,6 +4186,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d2: [
+      {id:'snatch_balance',              sets:3, reps:'2', l1:'40–50 kg — 5-sec hold in the bottom', l2:'40–50 kg — 5-sec hold in the bottom'},  // Opener slot "power snatch or snatch balance" [E8.1]; 5-sec bottom hold [E11.3]. [JUDGMENT] sets, reps + load — no dose in the source; under the 55 kg×3 PR because of the hold
       {id:'clean_front_squat_floor',     sets:'4–5', reps:'3', l1:'50.5–57.5 kg', l2:'50.5–57.5 kg'},  // fully stated in the source
       {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
       {id:'clean_pull',                  sets:5, reps:'3', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice
@@ -4220,6 +4226,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d2: [
+      {id:'snatch_balance',              sets:3, reps:'2', l1:'40–50 kg — 5-sec hold in the bottom', l2:'40–50 kg — 5-sec hold in the bottom'},  // Opener slot "power snatch or snatch balance" [E8.1]; 5-sec bottom hold [E11.3]. [JUDGMENT] sets, reps + load — no dose in the source; under the 55 kg×3 PR because of the hold
       {id:'clean_front_squat_floor',     sets:'2–4', reps:'1–3', l1:'57.5–61 kg', l2:'57.5–61 kg'},  // fully stated in the source
       {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
       {id:'clean_pull',                  sets:5, reps:'3', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice
@@ -4259,6 +4266,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d2: [
+      {id:'snatch_balance',              sets:3, reps:'2', l1:'40–50 kg — 5-sec hold in the bottom', l2:'40–50 kg — 5-sec hold in the bottom'},  // Opener slot "power snatch or snatch balance" [E8.1]; 5-sec bottom hold [E11.3]. [JUDGMENT] sets, reps + load — no dose in the source; under the 55 kg×3 PR because of the hold
       {id:'clean_front_squat_floor',     sets:4, reps:'2 → 1', l1:'57.5–61 kg', l2:'57.5–61 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice
       {id:'split_jerk_from_rack',        sets:5, reps:'varies', l1:'30–35 kg — split-position reps, not the % day', l2:'30–35 kg — split-position reps, not the % day'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — source prescribes NO % here on purpose (Thu is the % day); 40–50% C&J TM as position-rep work
       {id:'clean_pull',                  sets:5, reps:'3', l1:'65–72 kg', l2:'65–72 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice
@@ -4297,6 +4305,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d2: [
+      {id:'snatch_balance',              sets:2, reps:'2', l1:'40–45 kg — 5-sec hold in the bottom', l2:'40–45 kg — 5-sec hold in the bottom'},  // [E8.1, E11.3] as weeks 9-14; [JUDGMENT] one set fewer and the top of the band trimmed, in line with week 15's reduction
       {id:'clean_front_squat_floor',     sets:3, reps:'2', l1:'49–55 kg', l2:'49–55 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited
       {id:'split_jerk_from_rack',        sets:3, reps:'varies', l1:'30–35 kg — split-position reps', l2:'30–35 kg — split-position reps'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — reduced sets
       {id:'clean_pull',                  sets:3, reps:'3', l1:'55–65 kg', l2:'55–65 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited
@@ -4847,7 +4856,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.13.1 · 2026-09-22
+                PROGRAM v3.14.0 · 2026-09-22
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -5081,6 +5090,14 @@ function OlyTracker() {
                   <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
                     padding:"9px 12px",marginBottom:14,fontSize:11,color:"var(--text2)",lineHeight:1.6}}>
                     {_b2Day.notes}
+                    {/* Empty-bar OHS warm-up, "at least 3 days/week" [E31.8] —
+                        Mon already has OHS in the complex, so the other three
+                        days carry it. Week 16 is the test week and skips it. */}
+                    {_b2Day.id!=="d1" && week<=15 && (
+                      <div style={{marginTop:6,color:"var(--gold)"}}>
+                        Warm-up: overhead squat, a few triples with the empty bar, up to about 36 kg (half your 72 kg OHS) [E31.8].
+                      </div>
+                    )}
                   </div>
                   {(()=>{
                     const totalDone = Object.values(sessionProgress).reduce((a,b)=>a+(b.done||0),0);
