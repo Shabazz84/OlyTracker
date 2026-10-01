@@ -217,16 +217,17 @@ const PROGRAM_B1 = [
 //                     night_shift Thursday, BELOW the 72.5 kg already hit in
 //                     week 5, so that number measures the sleep, not the jerk.
 //   frontSquat 115  - tested (was 116). Prior training top was 107.5.
-//   backSquat 130   - athlete-reported single, Sat 2026-08-29, not in the set
-//                     log. The week-8 test only matched 125, a weight already
-//                     hit in weeks 5 and 6, so the test itself set no new max.
+//   backSquat 137   - logged single, Sat 2026-09-26 (wk12 d4). Was 130 (athlete-
+//                     reported 2026-08-29); 133 followed on 2026-09-08 (wk10 d1).
+//                     Both singles were backfilled into the set log 2026-10-01.
+//                     The week-8 test itself only matched 125.
 //   pushPress 65    - NOT tested.
 //   cleanPull 120   - NOT tested.
 const TRAINING_MAX = {
   snatch: 63,
   cleanAndJerk: 72,
   frontSquat: 115,
-  backSquat: 130,
+  backSquat: 137,
   pushPress: 65,
   cleanPull: 120,
 };
@@ -323,10 +324,10 @@ const PROGRAM_B2 = [
   ]},
   {week:13, phase:"Intensification", load:`${band("snatch",0.80,0.85)} · 1–3 reps × 2–4 sets`,
    focus:"Majority of block work sits 70–85%",
-   note:"The 80–90% zone takes 1–3 reps × 2–4 sets [E25.4]. Above 90% stays the minimal share of total reps — nothing in weeks 9–15 is programmed above it [E25.4]. The jerk stays at 3 × 4–5 in its capped 70–80% band — [E25.4] assigns that bracket one scheme. OHS complex moves to Phase 3 — overhead squat 3 · snatch push press 5 [E31.8]. Squat drops to 5×3 with the percentage unchanged. Keep mid-block singles conservative and crisp [E16.10, E39.6].",
+   note:"The 80–90% zone takes 1–3 reps × 2–4 sets [E25.4]. Above 90% stays the minimal share of total reps — nothing in weeks 9–15 is programmed above it [E25.4]. The jerk stays at 3 × 4–5 in its capped 70–80% band — [E25.4] assigns that bracket one scheme. OHS complex moves to Phase 3 — overhead squat 3 · snatch push press 5 [E31.8]. Back squat (athlete decision 2026-10-01, replacing the 3–5-rep cap): Monday climbs in singles to the heaviest clean single FOR TODAY — Pavlukhin's 'one rep, maximal weight, three sets… it just has to be the heaviest weight for today, not 200 kg every day'; Saturday stays medium, ~70–80%, no singles — Berestov's 'you don't need to squat heavy every time'. A new max is not the goal of the session. [JUDGMENT] the 85–92% Monday and 70–80% Saturday bands — neither source states a percentage. Keep mid-block singles conservative and crisp [E16.10, E39.6].",
    days:[
     {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:"Snatch from floor 2–4×1–3",load:band("snatch",0.80,0.85),
-     secondary:`OHS 3 · SnPP 5 (Ph3) 4–6 sets, 3s hold last rep · Snatch pull floor ${tm("snatch",0.90)}–${tm("snatch",1.00)} (90–100%), finish fast ${tm("snatch",0.85)}–${tm("snatch",0.90)} · Back squat 3–5×3–5 @ ${tm("backSquat",0.65)}–${tm("backSquat",0.70)} (65–70%) · Trunk: anterior + lateral, static strength`,
+     secondary:`OHS 3 · SnPP 5 (Ph3) 4–6 sets, 3s hold last rep · Snatch pull floor ${tm("snatch",0.90)}–${tm("snatch",1.00)} (90–100%), finish fast ${tm("snatch",0.85)}–${tm("snatch",0.90)} · Back squat — climb in singles to the heaviest clean single for today, ${tm("backSquat",0.85)}–${tm("backSquat",0.92)} (85–92%), 2–3 singles up there; stop at the first grind or form change, not a max attempt · Trunk: anterior + lateral, static strength`,
      notes:"Technique does not improve on its own as the bar gets heavier — faults migrate, they don't self-correct [E37.4]. If position holds but breaks down heavy, use the tempo snatch [E12.2]. Empty-bar split jerk practice [E14.4]."},
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"Clean + front squat from floor 2–4×1–3",load:band("cleanAndJerk",0.80,0.85),
      secondary:`Split jerk from rack — split-position repetitions, no prescribed % (the week's percentaged jerk is Thu) · Clean pull floor ${tm("cleanAndJerk",0.90)}–${tm("cleanAndJerk",1.00)} (90–100%) · Front squat 3–5×3–5 @ ${tm("frontSquat",0.65)}–${tm("frontSquat",0.70)} (65–70%), bounce not paused · 1–2 bodybuilding + 1 core/low back, 15-min cap`,
@@ -334,7 +335,7 @@ const PROGRAM_B2 = [
     {id:"d3",label:"D3 Thu ⭐⭐",primary:"Split jerk from rack 4–5×3",load:band("cleanAndJerk",0.70,0.80,"C&J TM"),
      secondary:"Light snatch opener · Floating snatch (just off the floor) · Hang snatch 3–4×2 super-light, speed kept · Power jerk (retained 2×/wk) · Jerk dip squat / jerk drive / partial front squat · Push press — speed-limited, add weight weekly while it holds · Trunk stiffness for the dip",
      notes:"Reduced loading after post-shift sleep is [JUDGMENT — NO COVERAGE]. A good press does not guarantee a good jerk, but it more than likely makes it better [E14.11, E13.12]. Empty-bar split jerk practice [E14.4]."},
-    {id:"d4",label:"D4 Sat ⭐⭐",primary:"Back squat 5×3",load:band("backSquat",0.65,0.70),
+    {id:"d4",label:"D4 Sat ⭐⭐",primary:"Back squat 3–5×3 — medium, no singles",load:band("backSquat",0.70,0.80),
      secondary:"3-position snatch top-down: mid-thigh, knee, floor · Pause snatch or pause clean · Belt squat or single-leg squat, slow tempo · Pull drill: power position → lowest good hang, a few sets of 3–5 total pulls · RDL / stiff-legged DL / good morning at the END of the session",
      notes:"Snatch first [E7.12]. Squats run at the HIGH end of their rep range, classic lifts at the low end [E25.5]. Empty-bar split jerk practice [E14.4]."},
   ]},
@@ -343,7 +344,7 @@ const PROGRAM_B2 = [
    note:"Doubles then singles as the block closes [E25.4, E36.11] — CLASSIC LIFTS ONLY. The jerk holds 3 × 4–5 at its capped 70–80% band, which is what [E25.4] assigns to that bracket and what [E36.11] assigns to the same range. Variation and complexity get removed as the peak approaches [E31.4]. Accessories go to maintenance — same weights, same reps [E40.2]. OHS complex finishes Phase 3 [E31.8]. Correctness still gates the jump [E37.9].",
    days:[
     {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:"Snatch from floor — doubles → singles",load:band("snatch",0.80,0.85),
-     secondary:`OHS 3 · SnPP 5 (Ph3) 4–6 sets, 3s hold last rep · Snatch pull floor ${tm("snatch",0.90)}–${tm("snatch",1.00)} (90–100%), finish fast ${tm("snatch",0.85)}–${tm("snatch",0.90)} · Back squat 3–5×3–5 @ ${tm("backSquat",0.65)}–${tm("backSquat",0.70)} (65–70%) · Trunk: maintenance — same weights and reps`,
+     secondary:`OHS 3 · SnPP 5 (Ph3) 4–6 sets, 3s hold last rep · Snatch pull floor ${tm("snatch",0.90)}–${tm("snatch",1.00)} (90–100%), finish fast ${tm("snatch",0.85)}–${tm("snatch",0.90)} · Back squat — climb in singles to the heaviest clean single for today, ${tm("backSquat",0.85)}–${tm("backSquat",0.92)} (85–92%), 2–3 singles up there; stop at the first grind or form change, not a max attempt · Trunk: maintenance — same weights and reps`,
      notes:"Complexity strips from here toward the test [E31.4]. Accessories hold at maintenance weights and reps [E40.2]. Empty-bar split jerk practice [E14.4]."},
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"Clean & jerk from floor — doubles → singles",load:band("cleanAndJerk",0.80,0.85),
      secondary:`Split jerk from rack — split-position repetitions, no prescribed % (the week's percentaged jerk is Thu) · Clean pull floor ${tm("cleanAndJerk",0.90)}–${tm("cleanAndJerk",1.00)} (90–100%) · Front squat 3–5×3–5 @ ${tm("frontSquat",0.65)}–${tm("frontSquat",0.70)} (65–70%), bounce not paused · Accessories at maintenance, 15-min cap`,
@@ -351,7 +352,7 @@ const PROGRAM_B2 = [
     {id:"d3",label:"D3 Thu ⭐⭐",primary:"Split jerk from rack 4–5×3",load:band("cleanAndJerk",0.70,0.80,"C&J TM"),
      secondary:"Light snatch opener · Floating snatch (just off the floor) · Hang snatch 3–4×2 super-light, speed kept · Power jerk (retained 2×/wk) · Jerk dip squat / jerk drive / partial front squat · Push press — speed-limited · Trunk at maintenance",
      notes:"Reduced loading after post-shift sleep is [JUDGMENT — NO COVERAGE]. Warm-up feel does not predict the session — a bad warm-up still makes lifts [E27.2, E39.1]. Empty-bar split jerk practice [E14.4]."},
-    {id:"d4",label:"D4 Sat ⭐⭐",primary:"Back squat 5×3",load:band("backSquat",0.65,0.70),
+    {id:"d4",label:"D4 Sat ⭐⭐",primary:"Back squat 3–5×3 — medium, no singles",load:band("backSquat",0.70,0.80),
      secondary:"3-position snatch top-down: mid-thigh, knee, floor · Pause snatch or pause clean · Belt squat or single-leg squat, slow tempo · Pull drill: power position → lowest good hang, a few sets of 3–5 total pulls · RDL / stiff-legged DL / good morning at the END of the session",
      notes:"Snatch first [E7.12]. Last loading week — accessories to maintenance, not to zero [E40.2]. Empty-bar split jerk practice [E14.4]."},
   ]},
@@ -387,7 +388,7 @@ const PROGRAM_B2 = [
      secondary:"Very light or off. Empty-bar split practice only",
      notes:"Everett's Friday is 'off or very light (bar – 50% or so)' [E3.12]; mapped here onto Thursday, which is judgment. Post-shift sleep."},
     {id:"d4",label:"D4 Sat ⭐⭐",primary:"TEST — snatch · C&J · front squat · snatch balance",load:"Singles 80 → 85 → 90 → 95 → max",
-     secondary:"Back squat tested ONLY if it has not been maxed within ~2 months · Alternative to a true 1RM: AMRAP at ~90–95%",
+     secondary:"Back squat NOT tested this block — maxed 137 on 2026-09-26, inside the ~2-month window [E16.9]",
      notes:"A heavy single is the heaviest single manageable in that session, reached by gradually increasing weight with no failed attempts; a clearly technical miss may be repeated once [E39.2]. Stop at form breakdown, not at the first miss [E5.6]. Bigger jumps early, smaller jumps near the 1RM [E39.3]; ladder 80/85/90/95/max [E16.3]. No hang snatches, snatch balances, presses or squats in the warm-up before maxing — practise the lift itself [E39.7]. Back squat 1RM belongs at about once per two months [E16.9]. AMRAP at 90–95% is the alternative [E5.7]."},
   ]},
 ];

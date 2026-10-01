@@ -4021,7 +4021,11 @@ const WEEK8_TEST = {
 // the squat/pull/classic-lift load strings below**, or the day cards silently
 // keep showing the old kilos while WEEK PLAN shows the new ones. The 2026-09-03
 // post-test update (backSquat 118→130, frontSquat 116→115) moved exactly three
-// strings: d1 back_squat, d2 front_squat, d4 back_squat. Every SET COUNT not explicitly stated in the source
+// strings: d1 back_squat, d2 front_squat, d4 back_squat. The 2026-10-01 update
+// (backSquat 130→137, after logged singles of 133 and 137) re-copied ONLY weeks
+// 13–15's back_squat strings — weeks 9–12 are already trained and keep the loads
+// they were prescribed at — and dropped week 16's back-squat test, since the
+// lift was maxed inside [E16.9]'s ~2-month window. Every SET COUNT not explicitly stated in the source
 // is marked [JUDGMENT]: a reasonable default, not a cited number. l1 and l2
 // are identical throughout — Block 2 has no Phase 1/Phase 2 split, ExCard
 // just needs both fields populated.
@@ -4221,7 +4225,7 @@ const BLOCK2_EXERCISES = {
       {id:'overhead_squat',              sets:4, reps:'3', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — source prints "OHS 3" separately at Ph3
       {id:'snatch_push_press',           sets:4, reps:'5', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — source prints "SnPP 5 (Ph3)", 4–6 sets
       {id:'snatch_pull',                 sets:5, reps:'3', l1:'56.5–63 kg', l2:'56.5–63 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice AND reps — the source states NO rep count for this pull, only the load band; the corpus gives none either (checked 4 ways + the citation manifest). 3 is the athlete's own practice (profile: clean pull 120×3, snatch high pull 92×4). "finish fast" 53.5–56.5 kg tier omitted
-      {id:'back_squat',                  sets:'3–5', reps:'3–5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated, no judgment
+      {id:'back_squat',                  sets:'4–6', reps:'1', l1:'116.5–126 kg — heaviest clean single for today, stop at the first grind', l2:'116.5–126 kg — heaviest clean single for today, stop at the first grind'},  // athlete decision 2026-10-01: singles to the heaviest-for-today, Pavlukhin (VXxjdOLPIVE, 72T14fCWVrs); [JUDGMENT] 85–92% TM — no percentage in the source; sets = climbing singles, as Block 1's D1
       {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — athlete's choice
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
@@ -4246,7 +4250,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d4: [
-      {id:'back_squat',                  sets:'5', reps:'3', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated ("5×3"), no judgment
+      {id:'back_squat',                  sets:'3–5', reps:'3', l1:'96–109.5 kg — medium, no singles', l2:'96–109.5 kg — medium, no singles'},  // athlete decision 2026-10-01: Saturday stays medium, Berestov ('you don't need to squat heavy every time', Syrm-wWrN8w); [JUDGMENT] 70–80% TM
       {id:'three_position_snatch',       sets:3, reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position', l2:'32.5–37.5 kg — limited by the floor position'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 50–60% snatch TM, set by the hardest of the three
       {id:'pause_snatch',                sets:3, reps:'1', l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 60–70% of the respective TM; athlete picks the lift
       {id:'belt_squat',                  sets:3, reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice/reps + load — carried from Block 1's belt squat
@@ -4261,7 +4265,7 @@ const BLOCK2_EXERCISES = {
       {id:'overhead_squat',              sets:4, reps:'3', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — source prints "OHS 3" separately at Ph3
       {id:'snatch_push_press',           sets:4, reps:'5', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — source prints "SnPP 5 (Ph3)", 4–6 sets
       {id:'snatch_pull',                 sets:5, reps:'3', l1:'56.5–63 kg', l2:'56.5–63 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice AND reps — the source states NO rep count for this pull, only the load band; the corpus gives none either (checked 4 ways + the citation manifest). 3 is the athlete's own practice (profile: clean pull 120×3, snatch high pull 92×4). "finish fast" 53.5–56.5 kg tier omitted
-      {id:'back_squat',                  sets:'3–5', reps:'3–5', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated, no judgment
+      {id:'back_squat',                  sets:'4–6', reps:'1', l1:'116.5–126 kg — heaviest clean single for today, stop at the first grind', l2:'116.5–126 kg — heaviest clean single for today, stop at the first grind'},  // athlete decision 2026-10-01: singles to the heaviest-for-today, Pavlukhin (VXxjdOLPIVE, 72T14fCWVrs); [JUDGMENT] 85–92% TM — no percentage in the source; sets = climbing singles, as Block 1's D1
       {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — athlete's choice, at maintenance this week
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
@@ -4286,7 +4290,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d4: [
-      {id:'back_squat',                  sets:'5', reps:'3', l1:'84.5–91 kg', l2:'84.5–91 kg'},  // fully stated ("5×3"), no judgment
+      {id:'back_squat',                  sets:'3–5', reps:'3', l1:'96–109.5 kg — medium, no singles', l2:'96–109.5 kg — medium, no singles'},  // athlete decision 2026-10-01: Saturday stays medium, Berestov ('you don't need to squat heavy every time', Syrm-wWrN8w); [JUDGMENT] 70–80% TM
       {id:'three_position_snatch',       sets:3, reps:'3 positions', l1:'32.5–37.5 kg — limited by the floor position', l2:'32.5–37.5 kg — limited by the floor position'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 50–60% snatch TM, set by the hardest of the three
       {id:'pause_snatch',                sets:3, reps:'1', l1:'38–44 kg snatch / 43–50 kg clean', l2:'38–44 kg snatch / 43–50 kg clean'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 60–70% of the respective TM; athlete picks the lift
       {id:'belt_squat',                  sets:3, reps:'8–10', l1:'70–80 kg — slow tempo, or single-leg squat', l2:'70–80 kg — slow tempo, or single-leg squat'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice/reps + load — carried from Block 1's belt squat
@@ -4300,7 +4304,7 @@ const BLOCK2_EXERCISES = {
       {id:'snatch_from_floor',           sets:3, reps:'2', l1:'43–48 kg', l2:'43–48 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited, volume cut too
       {id:'snpp_ohs_complex',            sets:3, reps:'3+2', l1:'50 kg — add weekly, feel', l2:'50 kg — add weekly, feel'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — reduced sets, load unchanged
       {id:'snatch_pull',                 sets:3, reps:'3', l1:'48–56.5 kg', l2:'48–56.5 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited
-      {id:'back_squat',                  sets:3, reps:'3', l1:'72–82 kg', l2:'72–82 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'back_squat',                  sets:3, reps:'1', l1:'99–113 kg — back-off singles, no climbing past it', l2:'99–113 kg — back-off singles, no climbing past it'},  // [JUDGMENT] sets; [JUDGMENT] load — week 14's 116.5–126 single –10–15%, computed not cited
       {id:'trunk_static_strength',       sets:3, reps:'varies', l1:'Bodyweight', l2:'Bodyweight'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — maintenance
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
@@ -4322,7 +4326,7 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — recurring daily skill note [E14.4]
     ],
     d4: [
-      {id:'back_squat',                  sets:3, reps:'3', l1:'72–82 kg', l2:'72–82 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited
+      {id:'back_squat',                  sets:3, reps:'3', l1:'81.5–98.5 kg', l2:'81.5–98.5 kg'},  // [JUDGMENT] sets AND reps; [JUDGMENT] load — week 14's 96–109.5 –10–15%, computed not cited
       {id:'three_position_snatch',       sets:2, reps:'3 positions', l1:'27.5–34 kg', l2:'27.5–34 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited
       {id:'pause_snatch',                sets:2, reps:'1', l1:'32.5–39.5 kg', l2:'32.5–39.5 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited — athlete may substitute the pause clean
       {id:'belt_squat',                  sets:2, reps:'8–10', l1:'59.5–72 kg', l2:'59.5–72 kg'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice; [JUDGMENT] load — week 14 –10–15%, computed not cited
@@ -4348,7 +4352,6 @@ const BLOCK2_EXERCISES = {
       {id:'clean_and_jerk',              sets:5, reps:'1', l1:'65–72 kg — singles to a max', l2:'65–72 kg — singles to a max'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 90–100% C&J TM; sets the owed floor-clean max
       {id:'front_squat',                 sets:4, reps:'1', l1:'103.5–115 kg — singles to a max', l2:'103.5–115 kg — singles to a max'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 90–100% front-squat TM
       {id:'snatch_balance',              sets:3, reps:'1', l1:'45–55 kg — singles to a max', l2:'45–55 kg — singles to a max'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — no TM on file for this lift; anchored above the 72 kg OHS test at a receiving-speed load
-      {id:'back_squat',                  sets:3, reps:'1', l1:'117–130 kg — only if not maxed within ~2 months', l2:'117–130 kg — only if not maxed within ~2 months'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — conditional in the source; 90–100% back-squat TM. AMRAP at ~90–95% is the stated alternative to a true 1RM
     ],
   },
 };
@@ -4856,7 +4859,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.14.0 · 2026-09-22
+                PROGRAM v3.15.0 · 2026-10-01
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
