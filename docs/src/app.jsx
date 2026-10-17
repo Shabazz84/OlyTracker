@@ -405,6 +405,15 @@ const EXERCISE_CATALOG = {
   bodybuilding_core_block: { id:'bodybuilding_core_block', name:'Bodybuilding + Core Block',      type:'accessory' },
   snatch_push_press:       { id:'snatch_push_press',       name:'Snatch Push Press',              type:'snatch' },
   hang_snatch_pull:        { id:'hang_snatch_pull',        name:'Hang / Block Snatch Pull',       type:'snatch' },
+  // ── Block 3 (BLOCK3_EXERCISES in program.js) — not in Blocks 1–2 ────────────
+  stiff_legged_deadlift:   { id:'stiff_legged_deadlift',   name:'Stiff-Legged Deadlift',          type:'strength' },
+  three_position_clean:    { id:'three_position_clean',    name:'3-Position Clean',               type:'cj' },
+  power_split_jerk_combo:  { id:'power_split_jerk_combo',  name:'2 Power Jerks + 1 Split Jerk',   type:'cj' },
+  snatch_ohs_complex:      { id:'snatch_ohs_complex',      name:'Snatch + 2 Overhead Squats',     type:'snatch' },
+  clean_fs_jerk_complex:   { id:'clean_fs_jerk_complex',   name:'Clean + 2 Front Squats + Jerk',  type:'cj' },
+  power_clean_power_jerk:  { id:'power_clean_power_jerk',  name:'Power Clean + Power Jerk',       type:'cj' },
+  two_position_snatch:     { id:'two_position_snatch',     name:'2-Position Snatch',              type:'snatch' },
+  two_position_clean:      { id:'two_position_clean',      name:'2-Position Clean',               type:'cj' },
 };
 
 function getEx(id) { return EXERCISE_CATALOG[id] ?? { id, name: id, type: 'strength' }; }
@@ -4063,6 +4072,11 @@ const WEEK8_TEST = {
 // marked `test:true` render as a TestLiftCard (B2_TEST_LADDER rungs + a
 // free-entry max) instead of an ExCard, and their `sets` equals the ladder's
 // step count so the session-progress and log percentages stay right.
+// Per-exercise cards for any week past Block 1: Block 2's live here, Block 3's
+// in program.js (BLOCK3_EXERCISES). Null when the week has no granular cards.
+const exercisesFor = (week, dayId) =>
+  (BLOCK2_EXERCISES[week] || BLOCK3_EXERCISES[week])?.[dayId] || null;
+
 const BLOCK2_EXERCISES = {
   9: {
     d1: [
@@ -4575,7 +4589,7 @@ function OlyTracker() {
   // Granular per-exercise breakdown, where built (week 9 pilot so far) —
   // real checkboxes/dropdowns via ExCard, same as Block 1. Falls back to the
   // read-only PRIMARY/SECONDARY card + toggle for weeks not yet built this way.
-  const _b2Exercises = _b2Day ? BLOCK2_EXERCISES[week]?.[_b2Day.id] : null;
+  const _b2Exercises = _b2Day ? exercisesFor(week, _b2Day.id) : null;
   // The banner/note below used to key off `phase` (week<=3?0:1) alone, so weeks
   // 7 (Deload) and 8 (Test) both rendered as "PHASE 2 — LOAD THE BASE" — telling
   // the athlete to add load and never grind reps during the exact weeks meant to
@@ -4771,7 +4785,7 @@ function OlyTracker() {
     const _logWeekPlan = weekPlan(week);
     const _logBlk = blockFor(week);
     const _logB2Day = _logBlk?.block!==1 ? (_logWeekPlan?.days||[]).find(dd=>dd.id===logForm.dayId) : null;
-    const _logB2Exercises = _logB2Day ? BLOCK2_EXERCISES[week]?.[_logB2Day.id] : null;
+    const _logB2Exercises = _logB2Day ? exercisesFor(week, _logB2Day.id) : null;
     const _logTestDay = _logWeekPlan?.phase === "Test" ? WEEK8_TEST[logForm.dayId] : null;
     const d = _logB2Day || DAYS.find(d=>d.id===logForm.dayId);
     const expectedTotal = _logB2Exercises ? _logB2Exercises.reduce((acc,ex)=>{
@@ -5090,11 +5104,11 @@ function OlyTracker() {
                 </div>
               ) : _b2Exercises ? (
                 <>
-                  {/* Granular Block 2 (pilot: week 9) — real checkboxes and
-                      weight dropdowns via ExCard, same as Block 1. See
-                      BLOCK2_EXERCISES for provenance: loads are copied
-                      verbatim from PROGRAM_B2, set counts not stated in the
-                      source are marked [JUDGMENT] there. */}
+                  {/* Granular Blocks 2–3 — real checkboxes and weight
+                      dropdowns via ExCard, same as Block 1. Provenance lives
+                      with the data: BLOCK2_EXERCISES (app.jsx, copied from
+                      PROGRAM_B2) and BLOCK3_EXERCISES (program.js, adapted
+                      from the General Cycle per the Block 3 design). */}
                   <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
                     padding:"9px 12px",marginBottom:14,fontSize:11,color:"var(--text2)",lineHeight:1.6}}>
                     {_b2Day.notes}

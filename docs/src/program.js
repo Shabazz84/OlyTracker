@@ -517,7 +517,29 @@ const b3SbThen = (sets, reps, p) => b3e('snatch_balance', 1 + sets, `1 → ${rep
 const b3SbMax = () => b3e('snatch_balance', '3–5', '1', `${kgr('snatchBalance', 0.85, 1.0)} — max for the day`);
 const b3Fs = (sets, reps, p) => b3e('front_squat', sets, String(reps), kg('frontSquat', p) + B3_FS_CEIL);
 
+// Test cards — the week-16 d4 form: TestLiftCard renders the ladder + a free
+// max; sets = rungs + the max, so session progress and log percentages hold.
+const b3Test = (id, label, target) =>
+  ({id, test:true, label, target, sets:B2_TEST_LADDER.length + 1, reps:'1', l1:'singles to a max', l2:'singles to a max'});
+// [JUDGMENT] load — "heaviest single for today" has no %; 80–95% TM band, the Block 2 back-squat-singles rule.
+const b3Heavy = (id, lift, suffix = '') => b3e(id, '3–5', '1', `${kgr(lift, 0.80, 0.95)} — heaviest clean single for today${suffix}`);
+// [JUDGMENT] load — no good-morning number on file; kept far below the RDL.
+const b3GoodMorning = reps => b3e('good_morning', 3, reps, '40–50 kg — pattern only');
+
 const BLOCK3_EXERCISES = {
+  // Transition-in — src d2 (→ Wed), d4 (Thu), d6 (Sat); src d1 dropped, Mon/Tue are fasting days (Edit 9)
+  17: {
+    d1: [b3e('back_squat', 4, '5', `${kgr('backSquat', 0.55, 0.70)} — ramp, one set at each step`), // src d2, Edit 8: reps capped at 5
+         b3e('strict_press', 3, '8', '40–45 kg'),     // src d2 — [JUDGMENT] load; basis: overhead press best 62 × 2
+         b3e('barbell_row', 3, '8', '50–60 kg')],     // src d2 — [JUDGMENT] load; no row on file, start conservative
+    d3: [b3e('snatch_ohs_complex', 5, '1+2', kg('snatch', 0.60)),   // src d4
+         b3e('snatch_pull', 3, '3', kg('snatch', 0.80)),           // src d4
+         b3e('snatch_push_press', 3, '5', '40–45 kg'),             // src d4 — [JUDGMENT] load; basis: Block 2 wk 14 at 50 × 5
+         b3e('plank', 2, '1 min', 'Bodyweight')],                  // src d4
+    d4: [b3e('clean_fs_jerk_complex', 5, '1+2+1', kg('clean', 0.60) + B3_SJ),  // src d6
+         b3e('front_squat', 3, '5 → 3', `${kgr('frontSquat', 0.60, 0.70)} — ramp`), // src d6
+         b3GoodMorning('8')],                                                  // src d6; row conditioning dropped (Edit 6)
+  },
   // Cycle week 1 — src d8 (Mon), d9 (Tue), d10 (Wed), d11 (Thu), d13 (Sat)
   18: {
     d1: [b3Sn(5, 0.80), b3Cj(5, 0.80),                                  // src d9
@@ -553,8 +575,12 @@ const BLOCK3_EXERCISES = {
          b3SbMax(),                                                     // src d24
          b3Fs(2, 1, 0.95),                                              // src d25
          b3e('ab_wheel', 3, '15', 'Bodyweight')],                       // src d24
-    // PLACEHOLDER — replaced by test cards in Task 3. src d27.
-    d4: [b3Sn(1, 0.95), b3Cj(1, 0.95), b3e('back_squat', 1, '1', kg('backSquat', 0.95)), b3Sldl(3, '5')],
+    // src d27 — maxes in priority order (last tested = least trustworthy).
+    d4: [b3Test('snatch', 'Snatch', TRAINING_MAX.snatch),
+         b3Test('clean_and_jerk', 'Clean & Jerk', TRAINING_MAX.cleanAndJerk),
+         b3Test('back_squat', 'Back Squat', TRAINING_MAX.backSquat),
+         b3Sldl(3, '5'),
+         b3Trunk()],                                                    // Edit 7 — replaces src sit-ups
   },
   // Cycle week 4 — src d29, d30, d31, d32, d34
   21: {
@@ -595,8 +621,31 @@ const BLOCK3_EXERCISES = {
          b3SbMax(),                                                     // src d45
          b3Fs(2, 1, 0.95),                                              // src d46
          b3Trunk()],                                                    // Edit 7 — src d45 finisher is flexion/side work
-    // PLACEHOLDER — replaced by test cards in Task 3. src d48.
-    d4: [b3Sn(1, 0.95), b3Cj(1, 0.95), b3e('back_squat', 1, '1', kg('backSquat', 0.95)), b3Sldl(3, '5')],
+    // src d48 — block test; front squat added fourth (Edit 10).
+    d4: [b3Test('snatch', 'Snatch', TRAINING_MAX.snatch),
+         b3Test('clean_and_jerk', 'Clean & Jerk', TRAINING_MAX.cleanAndJerk),
+         b3Test('back_squat', 'Back Squat', TRAINING_MAX.backSquat),
+         b3Test('front_squat', 'Front Squat', TRAINING_MAX.frontSquat),
+         b3Sldl(3, '5')],
+  },
+  // Transition-out — src d50 (Mon), d51 (Tue), d53 (Thu), d55 (Sat); src d52 dropped (spec, Week 24)
+  24: {
+    d1: [b3Sn(3, 0.65), b3Cj(3, 0.60),                                  // src d50
+         b3e('snatch_pull', 3, '3', kg('snatch', 0.80)),
+         b3e('snatch_deadlift', 3, '3', kg('snatch', 0.90)),
+         b3e('front_squat', 3, '4', kg('frontSquat', 0.65))],
+    d2: [b3e('power_snatch', 3, '1', kg('snatch', 0.70)),               // src d51
+         b3e('power_clean_power_jerk', 3, '1+1', kg('clean', 0.70)),
+         // [JUDGMENT] load — no OHS TM; % of the 72 kg week-8 OHS test.
+         b3e('overhead_squat', 3, '1 → 3', `${Math.round(72 * 0.60 * 2) / 2}–${Math.round(72 * 0.70 * 2) / 2} kg — one single at the top, then two triples lower`)],
+    d3: [b3e('split_jerk_from_rack', 3, '1', kg('cleanAndJerk', 0.70)), // src d53, Edit 5
+         b3e('two_position_snatch', 3, '2 positions', kg('snatch', 0.60)),
+         b3e('two_position_clean', 3, '2 positions', kg('clean', 0.60))],
+    d4: [b3Heavy('snatch', 'snatch'),                                   // src d55
+         b3Heavy('clean_and_jerk', 'cleanAndJerk', B3_SJ),
+         b3Heavy('front_squat', 'frontSquat'),
+         b3GoodMorning('10'),
+         b3e('plank', 2, 'max hold', 'Bodyweight')],
   },
 };
 

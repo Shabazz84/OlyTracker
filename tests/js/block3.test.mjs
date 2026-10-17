@@ -132,3 +132,60 @@ test("a TM change propagates to Block 3 loads", () => {
   assert.ok(sn.l1.startsWith(String(P2.tm("snatch", 0.80))), sn.l1);
   assert.equal(P2.tm("snatch", 0.80), 56);
 });
+
+// ── Task 3: transition weeks, test days, catalog ──────────────────────────────
+const ALL = range(17, 24);
+const daysOf = w => Object.keys(E?.[w] || {});
+const TM_KEY = { snatch: "snatch", clean_and_jerk: "cleanAndJerk", back_squat: "backSquat", front_squat: "frontSquat" };
+
+test("card limit and l1 rules hold for every Block 3 week", () => {
+  for (const w of ALL) {
+    assert.ok(daysOf(w).length > 0, `w${w} missing`);
+    for (const d of daysOf(w)) {
+      assert.ok(day(w, d).length <= 6, `w${w} ${d} has ${day(w, d).length}`);
+      for (const e of day(w, d)) if (!e.test) checkL1(w, d, e);
+    }
+  }
+});
+
+test("week 20 Saturday tests snatch, C&J, back squat, then SLDL", () => {
+  const d4 = day(20, "d4");
+  assert.deepEqual([...d4.filter(e => e.test).map(e => e.id)], ["snatch", "clean_and_jerk", "back_squat"]);
+  const firstNonTest = d4.findIndex(e => !e.test);
+  assert.equal(d4[firstNonTest].id, "stiff_legged_deadlift");
+  assert.ok(d4.slice(firstNonTest).every(e => !e.test), "test cards come first");
+});
+
+test("week 23 Saturday tests four lifts, front squat last", () => {
+  assert.deepEqual([...day(23, "d4").filter(e => e.test).map(e => e.id)],
+    ["snatch", "clean_and_jerk", "back_squat", "front_squat"]);
+});
+
+test("test cards are sized from the ladder and target the live TM", () => {
+  for (const w of [20, 23]) for (const e of day(w, "d4").filter(e => e.test)) {
+    assert.equal(e.sets, P.B2_TEST_LADDER.length + 1, `w${w} ${e.id} sets`);
+    assert.equal(e.reps, "1");
+    assert.equal(e.target, P.TRAINING_MAX[TM_KEY[e.id]], `w${w} ${e.id} target`);
+  }
+});
+
+test("week 17: Wed/Thu/Sat only, back squat ramp capped at 5 reps", () => {
+  assert.deepEqual([...daysOf(17)], ["d1", "d3", "d4"]);
+  const bs = find(17, "d1", "back_squat");
+  assert.equal(bs.sets, 4);
+  assert.ok(!(bs.reps.match(/\d+/g) || []).some(n => +n > 5), `reps "${bs.reps}"`);
+});
+
+test("week 24: no back squat; front squat Mon and Sat", () => {
+  for (const d of daysOf(24)) assert.ok(!ids(24, d).includes("back_squat"), `w24 ${d}`);
+  assert.ok(ids(24, "d1").includes("front_squat"));
+  assert.ok(ids(24, "d4").includes("front_squat"));
+});
+
+test("every Block 3 exercise id is in EXERCISE_CATALOG", () => {
+  const start = APP.indexOf("const EXERCISE_CATALOG");
+  const end = APP.indexOf("\n};", start);
+  const catalog = new Set([...APP.slice(start, end).matchAll(/^\s{2}(\w+):\s*\{\s*id:/gm)].map(m => m[1]));
+  for (const w of ALL) for (const d of daysOf(w)) for (const e of day(w, d))
+    assert.ok(catalog.has(e.id), `w${w} ${d}: ${e.id} not in EXERCISE_CATALOG`);
+});
