@@ -3275,11 +3275,12 @@ function inferDaysFromLogs(week, dayList) {
   return result;
 }
 
-const COMPLETION_DAY_IDS = ["d1", "d2", "d3", "d4"];
-
+// Which days must be logged for a week to count as done comes from
+// program.js's completionDayIds(): the week's own day list where it has one
+// (Block 3's week 17 is three sessions — Wed/Thu/Sat), else d1–d4.
 function isWeekComplete(week) {
   const inferred = inferDaysFromLogs(week, DAYS_SCHOOL);
-  return COMPLETION_DAY_IDS.every(id => {
+  return completionDayIds(week).every(id => {
     const status = inferred[id]?.status;
     return status === "done" || status === "partial";
   });
@@ -4009,13 +4010,8 @@ const WEEK8_TEST = {
     restNote:"Light technique only, ~50% work — no max attempts. Active recovery after four days of testing." },
 };
 
-// Week 16 (Block 2 test) ladder, shared by all four Saturday lifts. The
-// 80/85/90/95 → max rungs are PROGRAM_B2's own week-16 d4 load line [E16.3];
-// bigger jumps early, smaller near the max [E39.3]. The 50/60/70 rungs in
-// front are [JUDGMENT] — the source starts its ladder at 80% and says nothing
-// about getting there; they mirror week 8's ladders. Percentages are of
-// TRAINING_MAX, read live, so a TM change moves the ladder with it.
-const B2_TEST_LADDER = [0.50,0.60,0.70,0.80,0.85,0.90,0.95];
+// B2_TEST_LADDER (the test-day ladder) is defined in program.js, beside the
+// Block 3 entries that also size their test cards from it.
 
 // Block 2, granular per-exercise breakdown — full ExCard parity (checkboxes,
 // weight dropdowns) instead of the read-only PRIMARY/SECONDARY card. Unlike

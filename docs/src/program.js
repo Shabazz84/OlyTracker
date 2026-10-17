@@ -230,7 +230,23 @@ const TRAINING_MAX = {
   backSquat: 137,
   pushPress: 65,
   cleanPull: 120,
+  // Block 3 additions (2026-10-17). Initial values, replaced after the week-16
+  // test. clean: Block 3 writes clean pulls and positional/power cleans as a %
+  // of the clean, which is ahead of the C&J (Edit 11). snatchBalance: the
+  // week-16 d4 test target, a [JUDGMENT] estimate until that test logs a max.
+  clean: 80,
+  snatchBalance: 60,
 };
+
+// Test-day ladder, shared by every test:true card (week 16, and Block 3's
+// weeks 20 and 23). The 80/85/90/95 → max rungs are PROGRAM_B2's own week-16
+// d4 load line [E16.3]; bigger jumps early, smaller near the max [E39.3]. The
+// 50/60/70 rungs in front are [JUDGMENT] — the source starts its ladder at 80%
+// and says nothing about getting there; they mirror week 8's ladders.
+// Percentages are of TRAINING_MAX, read live, so a TM change moves the ladder.
+// Lives here, not in app.jsx, so program.js's Block 3 entries can size their
+// test cards from it.
+const B2_TEST_LADDER = [0.50,0.60,0.70,0.80,0.85,0.90,0.95];
 
 // Round to the nearest 0.5 kg - the smallest change plate pair available.
 const tm = (lift, pct) => Math.round(TRAINING_MAX[lift] * pct * 2) / 2;
@@ -393,15 +409,84 @@ const PROGRAM_B2 = [
   ]},
 ];
 
+// ── Block 3 — one program, adapted ────────────────────────────────────────────
+// Spine: Catalyst Athletics' "General Cycle" (Greg Everett), chosen 2026-10-17
+// over a slot-by-slot corpus build. The source asks not to be redistributed, so
+// nothing here is its text: the prescriptions are re-expressed, and every change
+// from it is a numbered Edit in docs/superpowers/specs/2026-10-17-block3-design.md.
+// Per-exercise cards are BLOCK3_EXERCISES (below); these are the week plans.
+const B3_SRC = "Spine: Catalyst Athletics' General Cycle (Greg Everett) — catalystathletics.com/olympic-weightlifting-training-program/34/General-Cycle — adapted to Mon/Tue/Thu/Sat; every change is in the Block 3 design's Edit Ledger.";
+const B3_THU_NOTE = "Post-shift day. Front squat % is a ceiling, not a target: stop at the first grinding rep — that week's top set is whatever was made cleanly. Empty-bar split jerks any day, as warm-up.";
+
+// Per cycle week n (1–6): the classic-lift singles for Mon / Tue / Sat, the
+// three heavy squats, and Thursday's alternating positional lift.
+const B3_WAVE = [
+  null,
+  {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"75% 5×5", fs:"85% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position snatch + snatch pull"},
+  {mon:0.90, tue:0.90, sat:0.90, single:"× 3", bs:"85% 3×3", fs:"90% 2×3", sat_sq:"Pause back squat — 2-rep max", thu:"Clean from blocks + clean pull"},
+  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 1×5", fs:"95% 1×2", sat_sq:"Back squat — MAX",             thu:"Power snatch + snatch pull"},
+  {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"78% 5×5", fs:"88% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position clean + clean pull"},
+  {mon:0.90, tue:0.90, sat:0.90, single:"× 4", bs:"88% 3×3", fs:"93% 2×3", sat_sq:"Pause back squat — 2-rep max", thu:"Snatch from blocks + snatch pull"},
+  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 1×5", fs:"95% 1×2", sat_sq:"Back squat + front squat — MAX", thu:"Power clean + clean pull", range:true},
+];
+
+function b3WaveWeek(week, phase) {
+  const n = week - 17, w = B3_WAVE[n], test = w.sat === null;
+  const pct = p => `${Math.round(p * 100)}%`;
+  // Cycle week 6's Mon/Tue singles are ranges (90–95%, 85–90%): aim inside the
+  // range and keep it lighter if the day calls for it.
+  const mon = w.range ? "90–95%" : pct(w.mon), tue = w.range ? "85–90%" : pct(w.tue);
+  return {
+    week, phase,
+    load:`Mon ${mon} · Tue ${tue} · Sat ${test ? "MAX" : pct(w.sat)}`,
+    focus: test ? `Cycle week ${n} — Saturday maxes` : `Cycle week ${n}`,
+    note: (test ? "Saturday: snatch, C&J, back squat" + (n === 6 ? ", front squat" : "") +
+      " to a max, in that order — the last lift tested is the least trustworthy number of the day. Training maxes stay fixed through weeks 18–23; this is a checkpoint, not a re-base. " : "") + B3_SRC,
+    days:[
+      {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:`Snatch + C&J singles ${mon} ${w.single}`,load:at("snatch", w.mon),
+       secondary:`Back squat ${w.bs} · static trunk`,notes:"Every C&J ends in a split jerk."},
+      {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:`Snatch + C&J singles ${tue} ${w.single}`,load:at("snatch", w.tue),
+       secondary:"Push press 3×3 — no squat today",notes:"Legs rest between Monday's and Thursday's squats."},
+      {id:"d3",label:"D3 Thu ⭐⭐",primary:w.thu,load:"technique day",
+       secondary:`Jerk variant · snatch balance · front squat ${w.fs} · one ab card`,notes:B3_THU_NOTE},
+      {id:"d4",label:"D4 Sat ⭐⭐",primary: test ? "TEST — snatch, C&J, squat maxes" : `Snatch + C&J singles ${pct(w.sat)} ${w.single}`,
+       load: test ? "max" : at("snatch", w.sat),
+       secondary:`${w.sat_sq} · stiff-legged deadlift`,
+       notes: test ? "Ladder each lift to a max; stop at form breakdown, not at the first miss." : "Paused squats: 3-sec pause in the bottom."},
+    ],
+  };
+}
+
+const PROGRAM_B3 = [
+  {week:17, phase:"Transition", load:"60% · three sessions",
+   focus:"Easy re-entry after the 72-hour fast",
+   note:"Mon/Tue are fasting days — no session. Three easy sessions, Wed/Thu/Sat. " + B3_SRC,
+   days:[
+    {id:"d1",label:"D1 Wed ⭐⭐",primary:"Back squat ramp 55–70%",load:band("backSquat",0.55,0.70),
+     secondary:"Strict press 3×8 · barbell row 3×8",notes:"Wednesday: full night's sleep, shift at 7 pm — hard stop by 3 pm. Ramp sets capped at 5 reps."},
+    {id:"d3",label:"D3 Thu ⭐⭐",primary:"Snatch + 2 overhead squats",load:at("snatch",0.60),
+     secondary:"Snatch pull 3×3 · snatch push press 3×5 · plank",notes:"Post-shift day; nothing here should feel hard."},
+    {id:"d4",label:"D4 Sat ⭐⭐",primary:"Clean + 2 front squats + jerk",load:at("clean",0.60),
+     secondary:"Front squat ramp 60–70% · good morning 3×8",notes:"Last easy day; the cycle starts Monday."},
+   ]},
+  b3WaveWeek(18, "Wave 1"), b3WaveWeek(19, "Wave 1"), b3WaveWeek(20, "Wave 1"),
+  b3WaveWeek(21, "Wave 2"), b3WaveWeek(22, "Wave 2"), b3WaveWeek(23, "Wave 2"),
+  {week:24, phase:"Transition", load:"60–70% · heavy singles Sat",
+   focus:"Transition into Block 4",
+   note:"Lighter week between cycles; no back squat this week. " + B3_SRC,
+   days:[
+    {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:"Snatch 65% · C&J 60% singles",load:at("snatch",0.65),
+     secondary:"Snatch pull · snatch deadlift · front squat 65%",notes:"Every C&J ends in a split jerk."},
+    {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"Power snatch · power clean + power jerk 70%",load:at("snatch",0.70),
+     secondary:"Overhead squat",notes:""},
+    {id:"d3",label:"D3 Thu ⭐⭐",primary:"Split jerk from rack 70%",load:at("cleanAndJerk",0.70,"C&J TM"),
+     secondary:"2-position snatch · 2-position clean",notes:"Post-shift day."},
+    {id:"d4",label:"D4 Sat ⭐⭐",primary:"Heavy singles — snatch, C&J, front squat",load:"heaviest clean single",
+     secondary:"Good morning 3×10 · plank",notes:"Heaviest clean single for today, not a max attempt."},
+   ]},
+];
+
 const PROGRAM_OUTLINE = [
-  {week:17, block:3,phase:"Volume",load:"75–80%",focus:"Block 3 starts — establish ATW baseline",notes:"Record ATW this week. This is the baseline."},
-  {week:18,block:3,phase:"Volume",load:"76–82%",focus:"Volume — moderate load, high sets",notes:"ATW target: baseline +1%."},
-  {week:19,block:3,phase:"Volume",load:"77–83%",focus:"Volume peak — highest total tonnage",notes:"ATW target: baseline +2%. Heavy singles limited to 1×/lift."},
-  {week:20,block:3,phase:"Volume",load:"79–85%",focus:"Volume-intensity transition",notes:"ATW target: baseline +3%. Begin adding singles."},
-  {week:21,block:3,phase:"Intensification",load:"82–88%",focus:"Intensification — near-max, low volume",notes:"3–5 singles per lift. ATW may dip — intensity compensates."},
-  {week:22,block:3,phase:"Intensification",load:"85–90%",focus:"Intensification peak",notes:"Snatch + clean heavy singles 2× this week (Mon + Wed)."},
-  {week:23,block:3,phase:"Deload",load:"83%",focus:"Deload — vol −40%, intensity maintained",notes:"Same deload protocol."},
-  {week:24,block:3,phase:"Test",load:"max",focus:"Test — full 1RM competition lifts",notes:"ATW must be +4% above Week 17 baseline. Targets: Snatch 70+ · C&J 90+"},
   {week:25,block:4,phase:"Peak",load:"88–93%",focus:"Peak 1 — volume down, intensity up",notes:"3×1 on snatch + clean. Jerk daily max. Accessories cut in half."},
   {week:26,block:4,phase:"Peak",load:"90–95%",focus:"Peak 2 — sharpen the singles",notes:"2×1 on snatch + clean at 90%. Attempt PR if moving well."},
   {week:27,block:4,phase:"Mock Competition",load:"85–92%",focus:"Mock competition — full warm-up protocol",notes:"3 mock sessions. Attempt selection practice. Opener = 90% of target."},
@@ -425,7 +510,7 @@ function blockFor(week) {
   return BLOCK_BOUNDS.find(b => week >= b.start && week <= b.end) || null;
 }
 
-// Week 1-8 -> PROGRAM_B1, 9-16 -> PROGRAM_B2, 17-28 -> the one-line outline.
+// Week 1-8 -> PROGRAM_B1, 9-16 -> PROGRAM_B2, 17-24 -> PROGRAM_B3, 25-28 -> the one-line outline.
 // Returns null (never undefined) outside that range so callers can test it.
 function weekPlan(week) {
   const b = blockFor(week);
@@ -435,7 +520,17 @@ function weekPlan(week) {
     return (typeof PROGRAM_B2 !== "undefined" && PROGRAM_B2[week - b.start]) ||
            PROGRAM_OUTLINE.find(w => w.week === week) || null;
   }
+  if (b.block === 3) return PROGRAM_B3[week - b.start] || null;
   return PROGRAM_OUTLINE.find(w => w.week === week) || null;
+}
+
+// The days a week needs logged to count as complete. Block 3 uses the week's
+// own day list (week 17 has no d2 — the athlete is fasting). Every other week
+// keeps the four school-term days: Block 1's plans list five SUMMER days, and
+// counting d5 would change what "complete" has always meant for those weeks.
+function completionDayIds(week) {
+  const days = blockFor(week)?.block === 3 ? weekPlan(week)?.days : null;
+  return days ? days.map(d => d.id) : ["d1", "d2", "d3", "d4"];
 }
 
 const BLOCK_COLORS = {1:"#4a90d9",2:"#c94f3a",3:"#d4a843",4:"#5a9e45"};
@@ -443,6 +538,7 @@ const PHASE_COLORS = {
   "Phase 1":"#4a90d9","Phase 2":"#d4a843","Deload":"#888","Test":"#5a9e45",
   "Accumulation":"#c94f3a","Intensification":"#d4a843","Volume":"#4a90d9",
   "Mock Competition":"#8b5cf6","Peak":"#5a9e45","Taper":"#8b5cf6",
+  "Transition":"#888","Wave 1":"#d4a843","Wave 2":"#c94f3a",
 };
 
 const BLOCKS = [
@@ -480,13 +576,13 @@ const BLOCKS = [
     ],
   },
   {
-    id:3, label:"BLOCK 3", name:"Strength & Load Dev.", weeks:"6–8 wks",
-    color:"#c94f3a", goal:"Raise ATW 4% → +10 kg competition total (Torokhtiy research)",
-    phases:["Track ATW weekly; trend +1–2% per week","Heavy singles 1–2×/week snatch+clean; daily max jerk continues"],
+    id:3, label:"BLOCK 3", name:"Strength — One Program, Adapted", weeks:"8 wks (17–24)",
+    color:"#c94f3a", goal:"Snatch 60–65 from the floor · C&J 80 · back squat 140 · front squat 125 (week-23 test)",
+    phases:["Wk 17: easy re-entry after the fast (Wed/Thu/Sat)","Wks 18–20: wave 1 — singles 80 → 90 → 95%, Saturday maxes wk 20","Wks 21–23: wave 2 — same wave, block test Sat wk 23","Wk 24: transition into Block 4"],
     advancement:[
-      {id:"b3_atw",  text:"ATW risen 4%+ from Block 3 start"},
-      {id:"b3_prs",  text:"PRs set in ≥ 2 of 3 competition lifts"},
-      {id:"b3_comp", text:"Competition or test within 4–8 weeks"},
+      {id:"b3_test",  text:"Wk 23 tested: snatch, C&J, back squat, front squat"},
+      {id:"b3_goals", text:"Goals met: snatch 60–65 · C&J 80 · back squat 140 · front squat 125"},
+      {id:"b3_weeks", text:"8 weeks completed (17–24)"},
     ],
   },
   {
