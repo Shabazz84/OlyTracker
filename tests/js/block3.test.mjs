@@ -17,6 +17,7 @@ function loadProgram(src = SRC) {
   return vm.runInContext(src + `
 ;({TRAINING_MAX, B2_TEST_LADDER, PROGRAM_B3, weekPlan, completionDayIds, tm,
    planDayForLog: typeof planDayForLog !== "undefined" ? planDayForLog : null,
+   remapDayIdx: typeof remapDayIdx !== "undefined" ? remapDayIdx : null,
    BLOCK3_EXERCISES: typeof BLOCK3_EXERCISES !== "undefined" ? BLOCK3_EXERCISES : null})`, ctx);
 }
 
@@ -217,4 +218,42 @@ test("week-plan squat text agrees with the cards' sets×reps", () => {
     const fs = find(w, "d3", "front_squat");
     assert.ok(plan[2].secondary.includes(`${fs.sets}×${fs.reps}`), `w${w} d3 "${plan[2].secondary}" vs ${fs.sets}×${fs.reps}`);
   }
+});
+
+// ── Review minors (2026-10-17) ────────────────────────────────────────────────
+test("week 23 note does not call the block test a checkpoint; week 20's does", () => {
+  assert.match(P.weekPlan(20).note, /checkpoint/);
+  assert.doesNotMatch(P.weekPlan(23).note, /checkpoint/);
+});
+
+test("week 23 Mon/Tue plan load shows the range, not its top", () => {
+  const [d1, d2] = P.weekPlan(23).days;
+  assert.ok(d1.load.includes(`${P.tm("snatch", 0.90)}–${P.tm("snatch", 0.95)}`), d1.load);
+  assert.ok(d2.load.includes(`${P.tm("snatch", 0.85)}–${P.tm("snatch", 0.90)}`), d2.load);
+});
+
+test("every Thursday jerk card carries the empty-bar warm-up note", () => {
+  for (const w of range(18, 24)) {
+    const jerk = day(w, "d3").find(e => ["split_jerk_from_rack", "power_jerk", "power_split_jerk_combo"].includes(e.id));
+    assert.ok(jerk && /empty-bar split jerks/.test(jerk.l1), `w${w}: ${jerk?.l1}`);
+  }
+});
+
+test("at most one accessory card per session (Edit 6)", () => {
+  const ACC = ["trunk_static_strength", "ab_wheel", "plank", "good_morning", "stiff_legged_deadlift"];
+  for (const w of ALL) for (const d of daysOf(w)) {
+    const acc = ids(w, d).filter(i => ACC.includes(i));
+    assert.ok(acc.length <= 1, `w${w} ${d}: ${acc}`);
+  }
+});
+
+// Switching weeks keeps the same DAY, not the same tile position: week 17 has
+// no d2, so position 1 is Thu there but Tue in week 18.
+test("remapDayIdx keeps the selected day id across weeks", () => {
+  assert.ok(P.remapDayIdx, "remapDayIdx is not defined");
+  const four = ["d1", "d2", "d3", "d4"], three = ["d1", "d3", "d4"];
+  assert.equal(P.remapDayIdx(four, 3, three), 2);   // wk16 Sat -> wk17 Sat
+  assert.equal(P.remapDayIdx(three, 1, four), 2);   // wk17 Thu -> wk18 Thu
+  assert.equal(P.remapDayIdx(four, 1, three), 0);   // Tue has no wk17 twin -> first day
+  assert.equal(P.remapDayIdx(["d1","d2","d3","d4","d5"], 4, four), 0); // summer d5 -> first day
 });

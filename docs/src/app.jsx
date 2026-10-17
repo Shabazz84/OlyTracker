@@ -4749,7 +4749,11 @@ function OlyTracker() {
     showToast(`🏆 NEW PR — ${getEx(key)?.name || key}: ${weight} kg`);
   }
 
-  async function saveWeek(w){setWeek(w);try{await storage.set("oly_week",JSON.stringify(w));}catch{}}
+  // A week's day ids: its own plan days past Block 1, else the Block 1 catalog.
+  const dayIdsFor = w => ((blockFor(w)?.block !== 1 && weekPlan(w)?.days) || DAYS).map(d => d.id);
+  async function saveWeek(w){
+    setDayIdx(remapDayIdx(dayIdsFor(week), dayIdx, dayIdsFor(w)));
+    setWeek(w);try{await storage.set("oly_week",JSON.stringify(w));}catch{}}
   async function toggleSummer(v){
     setIsSummer(v);
     if(dayIdx>=4&&!v) setDayIdx(0);
@@ -4876,7 +4880,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.17.1 · 2026-10-17
+                PROGRAM v3.17.2 · 2026-10-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>

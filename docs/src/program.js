@@ -442,11 +442,13 @@ function b3WaveWeek(week, phase) {
     load:`Mon ${mon} · Tue ${tue} · Sat ${test ? "MAX" : pct(w.sat)}`,
     focus: test ? `Cycle week ${n} — Saturday maxes` : `Cycle week ${n}`,
     note: (test ? "Saturday: snatch, C&J, back squat" + (n === 6 ? ", front squat" : "") +
-      " to a max, in that order — the last lift tested is the least trustworthy number of the day. Training maxes stay fixed through weeks 18–23; this is a checkpoint, not a re-base. " : "") + B3_SRC,
+      " to a max, in that order — the last lift tested is the least trustworthy number of the day. " +
+      (n === 3 ? "Training maxes stay fixed through weeks 18–23; this is a checkpoint, not a re-base. "
+               : "This is the Block 3 test — these maxes set Block 4's training maxes. ") : "") + B3_SRC,
     days:[
-      {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:`Snatch + C&J singles ${mon} ${w.single}`,load:at("snatch", w.mon),
+      {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:`Snatch + C&J singles ${mon} ${w.single}`,load: w.range ? band("snatch", 0.90, 0.95) : at("snatch", w.mon),
        secondary:`Back squat ${w.bs} · static trunk`,notes:"Every C&J ends in a split jerk."},
-      {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:`Snatch + C&J singles ${tue} ${w.single}`,load:at("snatch", w.tue),
+      {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:`Snatch + C&J singles ${tue} ${w.single}`,load: w.range ? band("snatch", 0.85, 0.90) : at("snatch", w.tue),
        secondary:"Push press 3×3 — no squat today",notes:"Legs rest between Monday's and Thursday's squats."},
       {id:"d3",label:"D3 Thu ⭐⭐",primary:w.thu,load:"technique day",
        secondary:`Jerk variant · snatch balance · front squat ${w.fs} · one ab card`,notes:B3_THU_NOTE},
@@ -524,7 +526,7 @@ const b3Test = (id, label, target) =>
   ({id, test:true, label, target, sets:B2_TEST_LADDER.length + 1, reps:'1', l1:'singles to a max', l2:'singles to a max'});
 // [JUDGMENT] load — "heaviest single for today" has no %; 80–95% TM band, the Block 2 back-squat-singles rule.
 const b3Heavy = (id, lift, suffix = '') => b3e(id, '3–5', '1', `${kgr(lift, 0.80, 0.95)} — heaviest clean single for today${suffix}`);
-// [JUDGMENT] load — no good-morning number on file; kept far below the RDL.
+// [JUDGMENT] load — ~55–65% of the 75 × 5 good morning on file (SEED_PRS, 2025-11-05): pattern work, not a strength set.
 const b3GoodMorning = reps => b3e('good_morning', 3, reps, '40–50 kg — pattern only');
 
 const BLOCK3_EXERCISES = {
@@ -580,8 +582,7 @@ const BLOCK3_EXERCISES = {
     d4: [b3Test('snatch', 'Snatch', TRAINING_MAX.snatch),
          b3Test('clean_and_jerk', 'Clean & Jerk', TRAINING_MAX.cleanAndJerk),
          b3Test('back_squat', 'Back Squat', TRAINING_MAX.backSquat),
-         b3Sldl(3, '5'),
-         b3Trunk()],                                                    // Edit 7 — replaces src sit-ups
+         b3Sldl(3, '5')],                                               // src sit-ups dropped — SLDL is the one accessory (Edit 6)
   },
   // Cycle week 4 — src d29, d30, d31, d32, d34
   21: {
@@ -639,14 +640,13 @@ const BLOCK3_EXERCISES = {
          b3e('power_clean_power_jerk', 3, '1+1', kg('clean', 0.70)),
          // [JUDGMENT] load — no OHS TM; % of the 72 kg week-8 OHS test.
          b3e('overhead_squat', 3, '1 → 3', `${Math.round(72 * 0.60 * 2) / 2}–${Math.round(72 * 0.70 * 2) / 2} kg — one single at the top, then two triples lower`)],
-    d3: [b3e('split_jerk_from_rack', 3, '1', kg('cleanAndJerk', 0.70)), // src d53, Edit 5
+    d3: [b3e('split_jerk_from_rack', 3, '1', kg('cleanAndJerk', 0.70) + B3_JERK), // src d53, Edit 5
          b3e('two_position_snatch', 3, '2 positions', kg('snatch', 0.60)),
          b3e('two_position_clean', 3, '2 positions', kg('clean', 0.60))],
     d4: [b3Heavy('snatch', 'snatch'),                                   // src d55
          b3Heavy('clean_and_jerk', 'cleanAndJerk', B3_SJ),
          b3Heavy('front_squat', 'frontSquat'),
-         b3GoodMorning('10'),
-         b3e('plank', 2, 'max hold', 'Bodyweight')],
+         b3GoodMorning('10')],                                          // src plank dropped — one accessory (Edit 6)
   },
 };
 
@@ -702,6 +702,14 @@ function planDayForLog(week, entry) {
   return (n && days.find(d => d.id === `d${n[1]}`)) ||
     days.find(d => d.id === entry.dayName || d.primary === entry.dayName ||
       (entry.dayLabel && d.label === entry.dayLabel)) || null;
+}
+
+// Switching weeks keeps the selected DAY, not the tile position: week 17 has no
+// d2, so position 1 is Thursday there and Tuesday in week 18. Falls back to the
+// first day when the new week doesn't have it.
+function remapDayIdx(fromIds, idx, toIds) {
+  const i = toIds.indexOf(fromIds[Math.min(idx, fromIds.length - 1)]);
+  return i >= 0 ? i : 0;
 }
 
 function completionDayIds(week) {
