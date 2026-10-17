@@ -16,6 +16,7 @@ function loadProgram(src = SRC) {
   const ctx = vm.createContext({ console });
   return vm.runInContext(src + `
 ;({TRAINING_MAX, B2_TEST_LADDER, PROGRAM_B3, weekPlan, completionDayIds, tm,
+   planDayForLog: typeof planDayForLog !== "undefined" ? planDayForLog : null,
    BLOCK3_EXERCISES: typeof BLOCK3_EXERCISES !== "undefined" ? BLOCK3_EXERCISES : null})`, ctx);
 }
 
@@ -188,4 +189,32 @@ test("every Block 3 exercise id is in EXERCISE_CATALOG", () => {
   const catalog = new Set([...APP.slice(start, end).matchAll(/^\s{2}(\w+):\s*\{\s*id:/gm)].map(m => m[1]));
   for (const w of ALL) for (const d of daysOf(w)) for (const e of day(w, d))
     assert.ok(catalog.has(e.id), `w${w} ${d}: ${e.id} not in EXERCISE_CATALOG`);
+});
+
+// ── Final-review fixes ────────────────────────────────────────────────────────
+// Wave weeks give d1/d2/d4 the same `primary`, so matching a logged session by
+// primary text sent Tue and Sat sessions to Monday and dropped them from PR
+// history. The label's digit is unambiguous.
+test("planDayForLog resolves same-primary days by label digit", () => {
+  assert.ok(P.planDayForLog, "planDayForLog is not defined");
+  const days = P.weekPlan(18).days;
+  assert.equal(days[0].primary, days[1].primary, "precondition: d1/d2 share a primary");
+  for (const d of days)
+    assert.equal(P.planDayForLog(18, { dayName: d.primary, dayLabel: d.label })?.id, d.id, d.label);
+});
+
+test("planDayForLog still matches a Block 2 session by primary alone", () => {
+  const d3 = P.weekPlan(12).days.find(d => d.id === "d3");
+  assert.equal(P.planDayForLog(12, { dayName: d3.primary, dayLabel: "" })?.id, "d3");
+});
+
+// The week-plan text must read sets×reps, the same order as the cards.
+test("week-plan squat text agrees with the cards' sets×reps", () => {
+  for (const w of range(18, 23)) {
+    const plan = P.weekPlan(w).days;
+    const bs = find(w, "d1", "back_squat");
+    assert.ok(plan[0].secondary.includes(`${bs.sets}×${bs.reps}`), `w${w} d1 "${plan[0].secondary}" vs ${bs.sets}×${bs.reps}`);
+    const fs = find(w, "d3", "front_squat");
+    assert.ok(plan[2].secondary.includes(`${fs.sets}×${fs.reps}`), `w${w} d3 "${plan[2].secondary}" vs ${fs.sets}×${fs.reps}`);
+  }
 });

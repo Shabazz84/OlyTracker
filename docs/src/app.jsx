@@ -3846,9 +3846,7 @@ function rebuildPRsFromLogs(currentPrs, currentLogs){
     if(!entry.week||!entry.date) return;
     const day=DAYS_SUMMER.find(d=>d.name===entry.dayName||d.id===entry.dayName);
     if(day){ dateMap[`w${entry.week}_${day.id}`]=entry.date; return; }
-    const planDay=(weekPlan(entry.week)?.days||[]).find(d=>
-      d.id===entry.dayName||d.primary===entry.dayName||
-      (entry.dayLabel&&d.label===entry.dayLabel));
+    const planDay=planDayForLog(entry.week, entry); // label digit first — see program.js
     if(planDay) dateMap[`w${entry.week}_${planDay.id}`]=entry.date;
   });
 
@@ -4878,7 +4876,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.17.0 · 2026-10-17
+                PROGRAM v3.17.1 · 2026-10-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>

@@ -419,15 +419,16 @@ const B3_SRC = "Spine: Catalyst Athletics' General Cycle (Greg Everett) — cata
 const B3_THU_NOTE = "Post-shift day. Front squat % is a ceiling, not a target: stop at the first grinding rep — that week's top set is whatever was made cleanly. Empty-bar split jerks any day, as warm-up.";
 
 // Per cycle week n (1–6): the classic-lift singles for Mon / Tue / Sat, the
-// three heavy squats, and Thursday's alternating positional lift.
+// three heavy squats, and Thursday's alternating positional lift. Squat text is
+// sets×reps — the order every card uses (the source writes reps first).
 const B3_WAVE = [
   null,
   {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"75% 5×5", fs:"85% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position snatch + snatch pull"},
-  {mon:0.90, tue:0.90, sat:0.90, single:"× 3", bs:"85% 3×3", fs:"90% 2×3", sat_sq:"Pause back squat — 2-rep max", thu:"Clean from blocks + clean pull"},
-  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 1×5", fs:"95% 1×2", sat_sq:"Back squat — MAX",             thu:"Power snatch + snatch pull"},
+  {mon:0.90, tue:0.90, sat:0.90, single:"× 3", bs:"85% 3×3", fs:"90% 3×2", sat_sq:"Pause back squat — 2-rep max", thu:"Clean from blocks + clean pull"},
+  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 5×1", fs:"95% 2×1", sat_sq:"Back squat — MAX",             thu:"Power snatch + snatch pull"},
   {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"78% 5×5", fs:"88% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position clean + clean pull"},
-  {mon:0.90, tue:0.90, sat:0.90, single:"× 4", bs:"88% 3×3", fs:"93% 2×3", sat_sq:"Pause back squat — 2-rep max", thu:"Snatch from blocks + snatch pull"},
-  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 1×5", fs:"95% 1×2", sat_sq:"Back squat + front squat — MAX", thu:"Power clean + clean pull", range:true},
+  {mon:0.90, tue:0.90, sat:0.90, single:"× 4", bs:"88% 3×3", fs:"93% 3×2", sat_sq:"Pause back squat — 2-rep max", thu:"Snatch from blocks + snatch pull"},
+  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 5×1", fs:"95% 2×1", sat_sq:"Back squat + front squat — MAX", thu:"Power clean + clean pull", range:true},
 ];
 
 function b3WaveWeek(week, phase) {
@@ -691,6 +692,18 @@ function weekPlan(week) {
 // own day list (week 17 has no d2 — the athlete is fasting). Every other week
 // keeps the four school-term days: Block 1's plans list five SUMMER days, and
 // counting d5 would change what "complete" has always meant for those weeks.
+// The plan day a logged session belongs to. The label's digit first ("D2 Tue"
+// → d2) — the same rule inferDaysFromLogs uses — because Block 3's wave weeks
+// give d1/d2/d4 an identical `primary`, and matching on it sent Tue and Sat
+// sessions to Monday. Then the older keys, for sessions logged without a label.
+function planDayForLog(week, entry) {
+  const days = weekPlan(week)?.days || [];
+  const n = entry.dayLabel && entry.dayLabel.match(/(\d+)/);
+  return (n && days.find(d => d.id === `d${n[1]}`)) ||
+    days.find(d => d.id === entry.dayName || d.primary === entry.dayName ||
+      (entry.dayLabel && d.label === entry.dayLabel)) || null;
+}
+
 function completionDayIds(week) {
   const days = blockFor(week)?.block === 3 ? weekPlan(week)?.days : null;
   return days ? days.map(d => d.id) : ["d1", "d2", "d3", "d4"];
