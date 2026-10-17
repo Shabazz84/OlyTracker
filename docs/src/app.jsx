@@ -4009,6 +4009,14 @@ const WEEK8_TEST = {
     restNote:"Light technique only, ~50% work — no max attempts. Active recovery after four days of testing." },
 };
 
+// Week 16 (Block 2 test) ladder, shared by all four Saturday lifts. The
+// 80/85/90/95 → max rungs are PROGRAM_B2's own week-16 d4 load line [E16.3];
+// bigger jumps early, smaller near the max [E39.3]. The 50/60/70 rungs in
+// front are [JUDGMENT] — the source starts its ladder at 80% and says nothing
+// about getting there; they mirror week 8's ladders. Percentages are of
+// TRAINING_MAX, read live, so a TM change moves the ladder with it.
+const B2_TEST_LADDER = [0.50,0.60,0.70,0.80,0.85,0.90,0.95];
+
 // Block 2, granular per-exercise breakdown — full ExCard parity (checkboxes,
 // weight dropdowns) instead of the read-only PRIMARY/SECONDARY card. Unlike
 // Block 1's catalog, PROGRAM_B2 bundles several pieces of work into one
@@ -4055,10 +4063,10 @@ const WEEK8_TEST = {
 // Weeks 9-16: the whole of Block 2 is wired. Week 15 is the one week whose
 // loads are COMPUTED rather than transcribed - the source prescribes only
 // "Wk 14 -10-15%", so each band is week 14's times 0.85-0.90, tagged
-// [JUDGMENT] load on its own line. Week 16 d4 is the block test; it renders
-// as ordinary cards, NOT the week-8 TestLiftCard ladder, because _b2Day
-// shadows _testDay in the render chain and WEEK8_TEST holds week 8's hang
-// lifts. Giving week 16 a real ladder needs its own test table.
+// [JUDGMENT] load on its own line. Week 16 d4 is the block test: entries
+// marked `test:true` render as a TestLiftCard (B2_TEST_LADDER rungs + a
+// free-entry max) instead of an ExCard, and their `sets` equals the ladder's
+// step count so the session-progress and log percentages stay right.
 const BLOCK2_EXERCISES = {
   9: {
     d1: [
@@ -4348,10 +4356,11 @@ const BLOCK2_EXERCISES = {
       {id:'split_jerk',                  sets:2, reps:'3', l1:'Empty bar', l2:'Empty bar'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice — empty-bar split practice only [E14.4]
     ],
     d4: [
-      {id:'snatch',                      sets:5, reps:'1', l1:'57–63 kg — singles to a max', l2:'57–63 kg — singles to a max'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 90–100% snatch TM. THE test that finally sets a floor-snatch max
-      {id:'clean_and_jerk',              sets:5, reps:'1', l1:'65–72 kg — singles to a max', l2:'65–72 kg — singles to a max'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 90–100% C&J TM; sets the owed floor-clean max
-      {id:'front_squat',                 sets:4, reps:'1', l1:'103.5–115 kg — singles to a max', l2:'103.5–115 kg — singles to a max'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — 90–100% front-squat TM
-      {id:'snatch_balance',              sets:3, reps:'1', l1:'45–55 kg — singles to a max', l2:'45–55 kg — singles to a max'},  // [JUDGMENT] sets AND reps — no rep count in the source or the corpus; 3 is the athlete's own practice + load — no TM on file for this lift; anchored above the 72 kg OHS test at a receiving-speed load
+      // Test order is priority order — the last lift is the least trustworthy number of the day (PROGRAM_B2 week-16 note).
+      {id:'snatch',         test:true, label:'Snatch',         target:TRAINING_MAX.snatch,       sets:B2_TEST_LADDER.length+1, reps:'1', l1:'singles to a max', l2:'singles to a max'},  // THE test that finally sets a floor-snatch max
+      {id:'clean_and_jerk', test:true, label:'Clean & Jerk',   target:TRAINING_MAX.cleanAndJerk, sets:B2_TEST_LADDER.length+1, reps:'1', l1:'singles to a max', l2:'singles to a max'},  // sets the owed floor-clean max
+      {id:'front_squat',    test:true, label:'Front Squat',    target:TRAINING_MAX.frontSquat,   sets:B2_TEST_LADDER.length+1, reps:'1', l1:'singles to a max', l2:'singles to a max'},
+      {id:'snatch_balance', test:true, label:'Snatch Balance', target:60,                        sets:B2_TEST_LADDER.length+1, reps:'1', l1:'singles to a max', l2:'singles to a max'},  // [JUDGMENT] target — no TM on file; logged 52.5 × 2 with a 5-sec bottom hold in weeks 12–15, so ~60 kg is the estimated single without the hold
     ],
   },
 };
@@ -4431,7 +4440,7 @@ function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, force
         <Tag color={m.color} bg={m.bg}>TEST</Tag>
         <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17}}>{lift.label}</span>
         <span style={{marginLeft:"auto",fontSize:11,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>
-          target {lift.target}+ kg
+          {lift.test ? `ladder % of ${lift.target} kg` : `target ${lift.target}+ kg`}
         </span>
       </div>
       {steps.map((s,idx) => (
@@ -4859,7 +4868,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.15.0 · 2026-10-01
+                PROGRAM v3.16.0 · 2026-10-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -5159,7 +5168,13 @@ function OlyTracker() {
                       </div>
                     );
                   })()}
-                  {_b2Exercises.map((ex,i)=>(
+                  {_b2Exercises.map((ex,i)=>ex.test ? (
+                    <TestLiftCard key={`${week}_${_b2Day.id}_${ex.id}`} lift={ex} ladder={B2_TEST_LADDER}
+                      sessionKey={`w${week}_${_b2Day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
+                      onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
+                      onNewPR={handleAutoPR}
+                    />
+                  ) : (
                     <ExCard key={`${week}_${_b2Day.id}_${ex.id}`} ex={ex} phase={1} sessionKey={`w${week}_${_b2Day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
                       onProgress={(name,done,total)=>setSessionProgress(p=>({...p,[name]:{done,total}}))}
                       onNewPR={handleAutoPR}
