@@ -2,11 +2,11 @@
 name: OlyTracker
 category: fitness
 status: active
-phase: "Block 2 LIVE, athlete in week 13 (v3.15.0, 2026-10-01). Back squat re-prescribed for weeks 13-15 to match how the athlete actually trains: Monday climbing singles to the heaviest clean single for today (Pavlukhin), Saturday medium 70-80% (Berestov), replacing the tall-lifter 3-5-rep cap; TM 130 -> 137 after logged singles of 133 and 137; week-16 back-squat test dropped (maxed inside the 2-month window). Earlier: weeks 10-16 on per-exercise cards (v3.12.0), mid-workout sets survive app switches (v3.13.1)."
+phase: "Block 2 LIVE, entering week 16 (test week) on 2026-10-19; v3.16.0 (2026-10-17) gives the Saturday test (snatch, C&J, front squat, snatch balance) a per-lift warm-up ladder 50/60/70 [judgment] + 80/85/90/95 [E16.3] + free-entry max, % of live TRAINING_MAX. Week 15 deload: 2 of 4 sessions done (work). Earlier: back squat singles to heaviest-for-today, TM 137 (v3.15.0)."
 progress: 97
 blocked_on: none
-next_step: "Weeks 13-16 of Block 2, then the week-16 test (snatch, C&J, front squat, snatch balance -- floor snatch and floor clean maxes still owed). Then design Block 3 (weeks 17+ are still an outline). Logging gap: sets store weight only, no reps, and the athlete logs the ramp rather than the top single -- consider a reps field. Open items from 2026-08-12, status unknown: Telegram token in the Z840 journal (silence httpx URL logging before rotating), persist the numbered synthesis context, re-run main.py index, Brain_Dump 20-file drift."
-updated: 2026-10-01
+next_step: "Week-16 test (floor snatch and floor clean maxes finally get set), then design Block 3 (weeks 17+ still an outline) using the test results; athlete plans a 72-hour fast right after the test, so make Block 3 week 1 an easy re-entry week. Logging gap: sets store weight only, no reps -- consider a reps field. Old open items, status unknown: Telegram token in the Z840 journal, persist numbered synthesis context, re-run main.py index, Brain_Dump 20-file drift."
+updated: 2026-10-17
 tags: [react, esbuild, supabase, weightlifting, training, claude-api, whisper]
 stack:
   - component: Claude API client (sole surviving summarizer module)
