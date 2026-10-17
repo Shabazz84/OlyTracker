@@ -2,10 +2,10 @@
 name: OlyTracker
 category: fitness
 status: active
-phase: "Block 2 LIVE, entering week 16 (test week) on 2026-10-19; v3.16.0 (2026-10-17) gives the Saturday test (snatch, C&J, front squat, snatch balance) a per-lift warm-up ladder 50/60/70 [judgment] + 80/85/90/95 [E16.3] + free-entry max, % of live TRAINING_MAX. Week 15 deload: 2 of 4 sessions done (work). Earlier: back squat singles to heaviest-for-today, TM 137 (v3.15.0)."
-progress: 97
+phase: "Block 2 week 16 (test Sat 2026-10-24); Block 3 SHIPPED v3.17.0 (2026-10-17): weeks 17-24 built on ONE program instead of the whole corpus -- Catalyst General Cycle (Everett) adapted to Mon/Tue/Thu/Sat with an 11-item edit ledger (3 heavy squats Mon/Thu/Sat, lean Thursday, split jerk, fast week 17 Wed/Thu/Sat, maxes wk20 + test wk23 Dec 12). Source text kept local (gitignored program_sources/) since Catalyst asks not to republish."
+progress: 98
 blocked_on: none
-next_step: "Week-16 test (floor snatch and floor clean maxes finally get set), then design Block 3 (weeks 17+ still an outline) using the test results; athlete plans a 72-hour fast right after the test, so make Block 3 week 1 an easy re-entry week. Logging gap: sets store weight only, no reps -- consider a reps field. Old open items, status unknown: Telegram token in the Z840 journal, persist numbered synthesis context, re-run main.py index, Brain_Dump 20-file drift."
+next_step: "After the Oct 24 test: update TRAINING_MAX (snatch, cleanAndJerk, frontSquat, snatchBalance, clean) and redeploy before the first Block 3 session Wed Oct 28. Week 20 checkpoint: if Thursday front squats keep stopping short, move them for weeks 21-23. Logging gap: sets store weight only, no reps. Old open items, status unknown: Telegram token in the Z840 journal, persist numbered synthesis context, re-run main.py index, Brain_Dump 20-file drift."
 updated: 2026-10-17
 tags: [react, esbuild, supabase, weightlifting, training, claude-api, whisper]
 stack:

@@ -4878,7 +4878,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.16.0 · 2026-10-17
+                PROGRAM v3.17.0 · 2026-10-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -4961,7 +4961,9 @@ function OlyTracker() {
               {/* Week selector */}
               <Label>SELECT WEEK</Label>
               <div style={{display:"flex",gap:7,marginBottom:20,flexWrap:"wrap",alignItems:"center"}}>
-                {Array.from({length:16},(_,i)=>i+1).map(w=>{
+                {/* Through the last block with per-exercise cards (Block 3 ends
+                    week 24). Was a literal 16 — week 17 was unreachable. */}
+                {Array.from({length:BLOCK_BOUNDS.find(b=>b.block===3).end},(_,i)=>i+1).map(w=>{
                   const active=w===week,logged=isLogged(w);
                   return(
                     <button key={w} onClick={()=>saveWeek(w)} style={{
