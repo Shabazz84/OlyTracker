@@ -20,3 +20,5 @@ data/cookies.txt
 bakeoff_compare.txt
 bakeoff_results.json
 .superpowers/
+# Purchased/registered third-party program text: "do not distribute or publish". Never commit.
+program_sources/
