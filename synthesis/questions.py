@@ -160,3 +160,93 @@ QUESTIONS = [
              "What do these coaches say about the timing of the second pull "
              "and the extension in the snatch and clean?"),
 ]
+
+
+# ── Exercise cue catalog ──────────────────────────────────────────────────
+# One question per exercise; the key IS the app's EXERCISE_CATALOG id, so a
+# pack file (q117-front_squat.md) names the entry its cues are written for.
+# Ids start at 101: handles like E117.2 can never be mistaken for a program
+# pack's E1–E42, which the app's older cue text already cites.
+# Run: python main.py evidence --catalog cues
+
+CUE_QUESTIONS = [
+    # ── Snatch family ─────────────────────────────────────────────────────
+    Question(101, "snatch",
+             "What do these coaches say about technique cues for the full "
+             "snatch from the floor, from the setup to the receiving position?"),
+    Question(102, "power_snatch",
+             "What do these coaches say about how to perform the power snatch "
+             "and how it differs from the full snatch?"),
+    Question(103, "snatch_from_blocks",
+             "What do these coaches say about snatches from blocks: block "
+             "height, setup and what they train?"),
+    Question(104, "three_position_snatch",
+             "What do these coaches say about multi-position snatches done "
+             "from the floor, the knee and mid-thigh in one set?"),
+    Question(105, "two_position_snatch",
+             "What do these coaches say about combining a snatch from the "
+             "floor with a snatch from mid-thigh or the hang in one set?"),
+    Question(106, "snatch_ohs_complex",
+             "What do these coaches say about doing overhead squats straight "
+             "after a snatch in the same set?"),
+    Question(107, "overhead_squat",
+             "What do these coaches say about technique cues for the overhead "
+             "squat: grip, bar position, shoulders and depth?"),
+    Question(108, "snatch_deadlift",
+             "What do these coaches say about the snatch deadlift: back angle, "
+             "bar path and what it trains?"),
+    Question(109, "snatch_push_press",
+             "What do these coaches say about the snatch-grip push press, "
+             "including from behind the neck?"),
+    # ── Clean & jerk family ───────────────────────────────────────────────
+    Question(110, "power_clean",
+             "What do these coaches say about how to perform the power clean "
+             "and receive it in the rack position?"),
+    Question(111, "clean_from_blocks",
+             "What do these coaches say about cleans from blocks: setup and "
+             "what they train?"),
+    Question(112, "three_position_clean",
+             "What do these coaches say about multi-position cleans done from "
+             "the floor, the knee and mid-thigh in one set?"),
+    Question(113, "two_position_clean",
+             "What do these coaches say about combining a clean from the floor "
+             "with a clean from mid-thigh or the hang in one set?"),
+    Question(114, "clean_fs_jerk_complex",
+             "What do these coaches say about a complex of a clean, front "
+             "squats and a jerk, and resetting the rack position before the "
+             "jerk?"),
+    Question(115, "power_clean_power_jerk",
+             "What do these coaches say about power jerk technique: the dip, "
+             "the drive and the receiving position?"),
+    Question(116, "power_split_jerk_combo",
+             "What do these coaches say about split jerk technique and how it "
+             "relates to the power jerk?"),
+    # ── Squats and pulls ──────────────────────────────────────────────────
+    Question(117, "front_squat",
+             "What do these coaches say about technique cues for the front "
+             "squat: rack position, elbows and staying upright?"),
+    Question(118, "back_squat",
+             "What do these coaches say about back squat technique for "
+             "weightlifters: bar position, depth and staying upright?"),
+    Question(119, "pause_back_squat",
+             "What do these coaches say about pause squats that hold the "
+             "bottom position before standing up?"),
+    Question(120, "stiff_legged_deadlift",
+             "What do these coaches say about stiff-legged or Romanian "
+             "deadlifts: technique and purpose?"),
+    # ── Upper body and trunk ──────────────────────────────────────────────
+    Question(121, "strict_press",
+             "What do these coaches say about strict overhead press technique?"),
+    Question(122, "barbell_row",
+             "What do these coaches say about barbell rows for weightlifters: "
+             "torso angle and technique?"),
+    Question(123, "plank",
+             "What do these coaches say about planks and holding a braced "
+             "position for the core?"),
+    Question(124, "ab_wheel",
+             "What do these coaches say about ab wheel rollouts and "
+             "anti-extension core work?"),
+    Question(125, "trunk_static_strength",
+             "What do these coaches say about static trunk strength for "
+             "weightlifters: holds, bracing and stability?"),
+]

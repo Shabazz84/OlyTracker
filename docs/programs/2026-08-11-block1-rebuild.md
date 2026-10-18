@@ -576,8 +576,8 @@ hip issues and knee issues" [E19.1, E19.3].
   [E24.3].
 - **Placement matters:** stiff-legged deadlifts, RDLs and good mornings *"are
   best performed at the **end** of heavy training sessions"*; lighter back
-  extensions and reverse hyperextensions can run between heavy sessions and
-  *"often prove **recuperative**"* [E24.1].
+  extensions and reverse hyperextensions can run between heavy sessions, where
+  such light work *"often proves **recuperative**"* [E24.1].
 - Weak backs: intense back work 2–3 days/week, lighter work on other days
   [E24.1].
 - **Rib flare and lumbar extension overhead can be a shoulder-mobility problem
@@ -601,7 +601,7 @@ hip issues and knee issues" [E19.1, E19.3].
   complexes or blocks or pauses" without the floor repetitions they needed
   [E8.5]. Block 1 is built on hang primaries; this is the transition risk.
 - For **technical correction** the order is **pause > hang > blocks**; blocks are
-  "a third and distant option… not really for technical adjustments" [E9.2].
+  "a third and [distant] option… not really for technical adjustments" [E9.2].
 
 ### Pull loading — the live block's heavy pulls are defensible after all
 

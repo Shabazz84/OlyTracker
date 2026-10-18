@@ -153,23 +153,39 @@ def cmd_ask(args) -> int:
     return 0
 
 
+def _default_paths(catalog: str, today: str) -> tuple[str, str]:
+    """(pack dir, committed citations manifest) for one catalog's run.
+
+    Each catalog gets its own pair, so running both on one day never makes the
+    second run trip — or, with --overwrite-citations, replace — the first's
+    manifest.
+    """
+    suffix, stem = ("-cues", "cue-citations") if catalog == "cues" else ("", "citations")
+    return (str(Path(config.EVIDENCE_DIR) / f"{today}{suffix}"),
+            str(Path("docs") / "programs" / f"{today}-{stem}.json"))
+
+
 def cmd_evidence(args) -> int:
     """Build the evidence pack: retrieval only, no LLM call.
 
     This is the input to a cited program rebuild. Every passage it writes is
     verbatim, so a prescription citing E12.3 can be checked against what the
-    coach actually said.
+    coach actually said. `--catalog cues` runs the per-exercise cue questions
+    instead (synthesis/questions.py::CUE_QUESTIONS), for the app's exercise
+    descriptions.
     """
     from datetime import date
 
     cfg, embedder, store = _backends()
     from indexer.errors import BackendUnavailable
     from synthesis import evidence as sev
+    from synthesis import questions as sq
 
+    questions = sq.CUE_QUESTIONS if args.catalog == "cues" else None
     threshold = cfg["qdrant"]["similarity_threshold"]
     try:
         results = sev.gather_evidence(embedder, store, limit=args.limit,
-                                      threshold=threshold)
+                                      threshold=threshold, questions=questions)
     except BackendUnavailable as e:
         print(f"Z840 unreachable; run again when it's up ({e})", file=sys.stderr)
         return 3
@@ -180,10 +196,10 @@ def cmd_evidence(args) -> int:
               "or misconfigured — this is not a corpus gap.", file=sys.stderr)
         return 4
 
-    today = date.today().isoformat()
-    out_dir = args.out or str(Path(config.EVIDENCE_DIR) / today)
-    citations_path = args.citations_out or str(
-        Path("docs") / "programs" / f"{today}-citations.json")
+    default_out, default_citations = _default_paths(
+        args.catalog, date.today().isoformat())
+    out_dir = args.out or default_out
+    citations_path = args.citations_out or default_citations
     try:
         out = sev.write_pack(results, out_dir, limit=args.limit,
                              threshold=threshold,
@@ -220,13 +236,19 @@ def main(argv=None) -> int:
 
     pe = sub.add_parser("evidence",
                         help="Build the evidence pack from the question catalog (no LLM)")
+    pe.add_argument("--catalog", choices=["program", "cues"], default="program",
+                    help="program: the program-decision questions (default). "
+                         "cues: one question per exercise, for the app's "
+                         "exercise cues (pack: evidence/<today>-cues)")
     pe.add_argument("--out", default=None,
-                    help="Output directory (default: evidence/<today>)")
+                    help="Output directory (default: evidence/<today>, or "
+                         "evidence/<today>-cues for --catalog cues)")
     pe.add_argument("--limit", type=int, default=config.EVIDENCE_MAX_CHUNKS,
                     help="Passages retrieved per question")
     pe.add_argument("--citations-out", default=None,
                     help="Where to write the committed citation manifest "
-                         "(default: docs/programs/<today>-citations.json). "
+                         "(default: docs/programs/<today>-citations.json, or "
+                         "<today>-cue-citations.json for --catalog cues). "
                          "Deliberately outside evidence/, which is gitignored.")
     pe.add_argument("--overwrite-citations", action="store_true",
                     help="Allow replacing an existing citations manifest whose "

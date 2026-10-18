@@ -21,11 +21,12 @@ from synthesis.retrieve import Passage  # noqa: E402
 
 class _Args:
     def __init__(self, out=None, limit=12, citations_out=None,
-                 overwrite_citations=False):
+                 overwrite_citations=False, catalog="program"):
         self.out = out
         self.limit = limit
         self.citations_out = citations_out
         self.overwrite_citations = overwrite_citations
+        self.catalog = catalog
 
 
 def _p(text="body"):
@@ -101,3 +102,40 @@ def test_evidence_subcommand_is_registered():
     with pytest.raises(SystemExit) as exc:
         cli.main(["evidence", "--help"])
     assert exc.value.code == 0
+
+
+def test_cue_catalog_writes_its_own_pack(monkeypatch, tmp_path):
+    from synthesis import questions as sq
+
+    _stub_backends(monkeypatch)
+    monkeypatch.setattr(
+        sq, "CUE_QUESTIONS",
+        [Question(101, "back_squat",
+                  "What do these coaches say about back squat technique?")])
+    monkeypatch.setattr(
+        sev, "retrieve_topic",
+        lambda q, e, s, *, limit, threshold, vocab=None: [_p()])
+
+    rc = cli.cmd_evidence(_Args(out=str(tmp_path), catalog="cues",
+                                citations_out=str(tmp_path / "c.json")))
+
+    assert rc == 0
+    assert (tmp_path / "q101-back_squat.md").exists()
+    assert not list(tmp_path.glob("q01-*.md"))  # program catalog not run
+
+
+def test_cue_catalog_defaults_never_touch_the_program_pack():
+    """Same-day runs of both catalogs must not share a directory or a
+    committed citations manifest — the second would trip, or with
+    --overwrite-citations silently replace, the first."""
+    prog = cli._default_paths("program", "2026-10-18")
+    cues = cli._default_paths("cues", "2026-10-18")
+    assert prog[0] != cues[0] and prog[1] != cues[1]
+    assert cues[0].endswith("2026-10-18-cues")
+    assert cues[1].endswith("2026-10-18-cue-citations.json")
+
+
+def test_evidence_rejects_an_unknown_catalog():
+    with pytest.raises(SystemExit) as exc:
+        cli.main(["evidence", "--catalog", "nope"])
+    assert exc.value.code == 2
