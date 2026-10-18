@@ -364,7 +364,7 @@ const TYPE_META = {
 const PR_ALL = [
   'back_squat','front_squat','clean_pull','deadlift','rdl','snatch_deadlift',
   'klokov_squat','klokov_trapi','berestov_squat',
-  'snatch','hang_power_snatch','muscle_snatch','snatch_balance','snatch_high_pull',
+  'snatch','hang_power_snatch','muscle_snatch','snatch_balance','snatch_high_pull','snatch_pull',
   'clean','clean_and_jerk','push_jerk','jerk_from_rack',
   'power_clean','hang_power_clean',
   'overhead_press','wide_overhead_press','push_press','overhead_squat','sots_press','behind_neck_press',
@@ -1026,24 +1026,6 @@ function MobilityTab() {
 }
 
 const PRIORITY_ORDER = {essential:0, high:1, medium:2, low:3};
-
-// ── Reports helpers ───────────────────────────────────────────────────────────
-function parseRepsNum(r) {
-  if (!r) return 3;
-  const s = String(r);
-  if (s.includes('+')) return s.split('+').reduce((a,b) => a+(parseInt(b)||0), 0);
-  if (/\d+s$/.test(s)) return 0;
-  const m = s.match(/(\d+)[–\-](\d+)/);
-  if (m) return Math.round((+m[1] + +m[2]) / 2);
-  return parseInt(s) || 3;
-}
-
-function fmtMonthYear(isoDate) {
-  if(!isoDate) return '';
-  const [y,m]=isoDate.slice(0,7).split('-');
-  const mon=new Date(+y,+m-1).toLocaleString('default',{month:'short'});
-  return `${mon}'${y.slice(2)}`;
-}
 
 function SVGLineChart({data, series, height=160, yMax:yMaxProp}){
   const [tip,setTip]=useState(null);
@@ -2684,6 +2666,7 @@ function LogCalendar({logs, week, onEdit, onDelete}) {
   const today = new Date().toISOString().slice(0, 10);
   const [ym, setYm] = useState(() => { const d = new Date(); return [d.getFullYear(), d.getMonth()]; });
   const [picked, setPicked] = useState(null);
+  const [confirmDel, setConfirmDel] = useState(null);   // delete also removes it from the cloud — two taps
   const [y, m] = ym;
   const cells = monthCells(y, m);
   const logged = new Set(Object.values(logs).map(e => e && e.date).filter(Boolean));
@@ -2733,7 +2716,9 @@ function LogCalendar({logs, week, onEdit, onDelete}) {
                 </div>
                 <div style={{display:"flex",gap:6}}>
                   <Btn small ghost onClick={() => onEdit(key, e)}>EDIT</Btn>
-                  <Btn small ghost onClick={() => { onDelete(key); }}>DELETE</Btn>
+                  {confirmDel === key
+                    ? <Btn small onClick={() => { setConfirmDel(null); onDelete(key); }}>CONFIRM DELETE</Btn>
+                    : <Btn small ghost onClick={() => setConfirmDel(key)}>DELETE</Btn>}
                 </div>
               </div>
               {logDaySets(e, keys, get).map(r => (
@@ -2941,7 +2926,7 @@ function OlyTracker() {
   const [logs,setLogs]       = useState({});
   const [loading,setLoading] = useState(true);
   const [toast,setToast]     = useState(null);
-  const [newPR,setNewPR]     = useState({lift:"Back Squat",weight:"",reps:"1"});
+  const [newPR,setNewPR]     = useState({lift:"back_squat",weight:"",reps:"1"});
   const [logForm,setLogForm] = useState(()=>({dayId:"d1",date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
   const [logModal,setLogModal] = useState(false);
   const [logEditKey,setLogEditKey] = useState(null);
@@ -3176,7 +3161,7 @@ function OlyTracker() {
     const _logB2Day = _logBlk?.block!==1 ? (_logWeekPlan?.days||[]).find(dd=>dd.id===logForm.dayId) : null;
     const _logB2Exercises = _logB2Day ? exercisesFor(lw, _logB2Day.id) : null;
     const _logTestDay = _logWeekPlan?.phase === "Test" ? WEEK8_TEST[logForm.dayId] : null;
-    const d = _logB2Day || DAYS.find(d=>d.id===logForm.dayId);
+    const d = _logB2Day || (lw<=BLOCK_BOUNDS[0].end?DAYS_SUMMER:DAYS_SCHOOL).find(d=>d.id===logForm.dayId);
     const expectedTotal = _logB2Exercises ? _logB2Exercises.reduce((acc,ex)=>{
           const c=typeof ex.sets==="number"?ex.sets:parseInt(ex.sets)||3;
           return acc+c;
@@ -3193,17 +3178,22 @@ function OlyTracker() {
     try{doneSets=doneSetsFor(prefix,Object.keys(localStorage),k=>localStorage.getItem(k));}catch{}
     const sessionPct=expectedTotal>0?Math.round((doneSets/expectedTotal)*100):null;
     const key = logEditKey || `${Date.now()}`;
+    // A calendar edit (logForm.week set) of an unchanged day keeps what was
+    // recorded then: re-deriving it now can lose a Block 1 D5 label or a pct
+    // snapshot whose set ticks no longer exist on this device.
+    const _prev=logEditKey&&logForm.week!=null?logs[logEditKey]:null;
+    const _keep=_prev&&logEntryDayId(_prev)===logForm.dayId;
     const updated={...logs,[key]:{
       date:logForm.date||new Date().toISOString().slice(0,10),
-      dayName:_logB2Day?.primary||d?.name||logForm.dayId,
-      dayLabel:d?.label||"",
+      dayName:_keep?_prev.dayName:_logB2Day?.primary||d?.name||logForm.dayId,
+      dayLabel:_keep?_prev.dayLabel:d?.label||"",
       week:lw,notes:logForm.notes,weights:logForm.weights,
       backPain:logForm.backPain,nightShift:logForm.nightShift,
       techniqueFeel:logForm.techniqueFeel,
       energyLevel:logForm.energyLevel,
       focusNext:logForm.focusNext,
       rating:logForm.rating,
-      pct:sessionPct,
+      pct:_keep&&_prev.pct!=null?_prev.pct:sessionPct,
     }};
     setLogs(updated);
     try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
@@ -3214,7 +3204,16 @@ function OlyTracker() {
     showToast("Session logged ✓");
   }
 
-  const logEntries=Object.entries(logs).sort(([,a],[,b])=>b.date.localeCompare(a.date));
+
+  // Close the log form. Closing an EDIT resets the form, so a calendar edit's
+  // week (and its notes) can't leak into the next fresh COMPLETE SESSION.
+  function closeLogModal(){
+    setLogModal(false);
+    if(logEditKey){
+      setLogEditKey(null);
+      setLogForm(f=>({...f,week:undefined,date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
+    }
+  }
 
   async function deleteLog(key){
     const updated={...logs};
@@ -3223,7 +3222,6 @@ function OlyTracker() {
     try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
     sbSync.deleteSession(key);
   }
-  const isLogged=(w)=>Object.values(logs).some(l=>l.week===w);
 
 
   const sleepMeta = day ? SLEEP[day.sleep] : null;
@@ -3265,7 +3263,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.18.0 · 2026-10-17
+                PROGRAM v3.18.1 · 2026-10-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -3325,7 +3323,7 @@ function OlyTracker() {
                 viewWeek={progViewWeek}
                 onWeekChange={setProgViewWeek}
                 currentWeek={currentWeek}
-                isSummer={isSummer}
+                isSummer={progViewWeek <= BLOCK_BOUNDS[0].end}
               />
             )}
 
@@ -3517,7 +3515,7 @@ function OlyTracker() {
                               setLogForm({dayId:_b2Day.id,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
                               setLogEditKey(existingKey);
                             }else{
-                              setLogForm(f=>({...f,dayId:_b2Day.id,date:new Date().toISOString().slice(0,10)}));
+                              setLogForm(f=>({...f,week:undefined,dayId:_b2Day.id,date:new Date().toISOString().slice(0,10)}));
                               setLogEditKey(null);
                             }
                             setLogModal(true);
@@ -3640,7 +3638,7 @@ function OlyTracker() {
                               setLogForm({dayId:day.id,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
                               setLogEditKey(existingKey);
                             }else{
-                              setLogForm(f=>({...f,dayId:day.id,date:new Date().toISOString().slice(0,10)}));
+                              setLogForm(f=>({...f,week:undefined,dayId:day.id,date:new Date().toISOString().slice(0,10)}));
                               setLogEditKey(null);
                             }
                             setLogModal(true);
@@ -3678,7 +3676,7 @@ function OlyTracker() {
                   setLogForm({dayId:logDayId,date:l.date||new Date().toISOString().slice(0,10),notes:l.notes||"",weights:l.weights||"",backPain:l.backPain||"0",nightShift:l.nightShift||false,techniqueFeel:l.techniqueFeel||"",energyLevel:l.energyLevel||"",focusNext:l.focusNext||"",rating:l.rating||""});
                   setLogEditKey(existingKey);
                 }else{
-                  setLogForm(f=>({...f,dayId:logDayId,date:new Date().toISOString().slice(0,10)}));
+                  setLogForm(f=>({...f,week:undefined,dayId:logDayId,date:new Date().toISOString().slice(0,10)}));
                   setLogEditKey(null);
                 }
                 setLogModal(true);
@@ -3861,7 +3859,7 @@ function OlyTracker() {
 
     {/* ═══ LOG MODAL ═══ */}
     {logModal && (
-      <div onClick={e=>{if(e.target===e.currentTarget)setLogModal(false);}}
+      <div onClick={e=>{if(e.target===e.currentTarget)closeLogModal();}}
         style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",zIndex:200,overflowY:"auto",padding:"20px 16px 40px"}}>
         <div style={{maxWidth:480,margin:"0 auto",background:"var(--bg1)",borderRadius:12,
           border:"1px solid var(--border)",padding:"20px 16px"}}>
@@ -3870,7 +3868,7 @@ function OlyTracker() {
             <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:20,letterSpacing:0.5,color:"var(--gold)"}}>
               {logEditKey ? "EDIT SESSION" : "COMPLETE SESSION"}
             </div>
-            <button onClick={()=>setLogModal(false)}
+            <button onClick={closeLogModal}
               style={{background:"transparent",border:"none",color:"var(--text3)",fontSize:22,cursor:"pointer",lineHeight:1}}>×</button>
           </div>
 
@@ -3884,9 +3882,10 @@ function OlyTracker() {
           <div style={{marginBottom:12}}>
             <label style={{fontSize:9,color:"var(--text3)",letterSpacing:2,fontFamily:"'DM Mono',monospace",display:"block",marginBottom:6}}>SESSION</label>
             <Sel value={logForm.dayId} onChange={e=>setLogForm(f=>({...f,dayId:e.target.value}))}>
-              {_b2Days
-                ? _b2Days.map(d=><option key={d.id} value={d.id}>{d.label} — {d.primary}</option>)
-                : DAYS.map(d=><option key={d.id} value={d.id}>{d.label} — {d.schedule} — {d.name}</option>)}
+              {(()=>{const mw=logForm.week??week, md=blockFor(mw)?.block!==1?weekPlan(mw)?.days:null;
+                return md
+                  ? md.map(d=><option key={d.id} value={d.id}>{d.label} — {d.primary}</option>)
+                  : (mw<=BLOCK_BOUNDS[0].end?DAYS_SUMMER:DAYS_SCHOOL).map(d=><option key={d.id} value={d.id}>{d.label} — {d.schedule} — {d.name}</option>);})()}
             </Sel>
           </div>
 
