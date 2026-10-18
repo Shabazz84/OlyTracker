@@ -725,17 +725,6 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
             </div>
           )}
 
-          {/* Phase load reference */}
-          <div style={{display:"flex", gap:10, marginBottom:14}}>
-            {[["WK 1–3", ex.l1, phase===0], ["WK 4–6", ex.l2, phase===1]].map(([lbl,val,active]) => (
-              <div key={lbl} style={{flex:1, background:"var(--bg2)", borderRadius:6, padding:"8px 12px",
-                border:`1px solid ${active ? "var(--gold)" : "var(--border)"}`}}>
-                <div style={{fontSize:9, color:"var(--text3)", letterSpacing:1.5, fontFamily:"'DM Mono',monospace", marginBottom:3}}>{lbl}</div>
-                <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:18, color:active?"var(--gold)":"var(--text3)"}}>{val}</div>
-              </div>
-            ))}
-          </div>
-
           {/* Set tracker */}
           <div style={{marginBottom:14}}>
             <div style={{fontSize:9, color:"var(--text2)", letterSpacing:2, fontFamily:"'DM Mono',monospace", marginBottom:8}}>
@@ -868,48 +857,6 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
           <p style={{fontSize:12, color:"var(--text2)", lineHeight:1.75}}>{ex.note}</p>
         </div>
       )}
-    </div>
-  );
-}
-
-// ── Schedule view ─────────────────────────────────────────────────────────────
-function ScheduleView() {
-  const rows = [
-    {day:"Monday",   work:"Off",          sleep:"Full night",  hrs:"7–8h", quality:"⭐⭐⭐", session:"Day 1 — Heavy", note:"Best day"},
-    {day:"Tuesday",  work:"Off",          sleep:"Full night",  hrs:"7–8h", quality:"⭐⭐⭐", session:"Day 2 — Heavy", note:"Best day"},
-    {day:"Wednesday",work:"7pm→7:30am",   sleep:"Full night",  hrs:"7–8h", quality:"⭐⭐",   session:"Day 3 — Moderate", note:"Work starts 7pm"},
-    {day:"Thursday", work:"7pm→7:30am",   sleep:"8:30am→2pm",  hrs:"5.5h", quality:"⭐⭐",   session:"Day 4 — Jerk (summer)", note:"Summer only"},
-    {day:"Friday",   work:"7pm→7:30am",   sleep:"Post-shift sleep", hrs:"5.5h", quality:"❌",    session:"Rest", note:"Sleep after shift"},
-    {day:"Saturday", work:"7pm→7:30am",   sleep:"8:30am→2pm",  hrs:"5.5h", quality:"⭐⭐",   session:"Day 5 — Quad Hypertrophy + Lunges", note:"Summer only"},
-    {day:"Sunday",   work:"Finish 7:30am",sleep:"Recovery",    hrs:"Full", quality:"❌",    session:"Rest only", note:"Last shift ends"},
-  ];
-  return (
-    <div>
-      <Label>WEEKLY SCHEDULE OVERVIEW</Label>
-      {rows.map((r,i)=>(
-        <div key={i} style={{display:"flex",gap:10,padding:"10px 12px",
-          background:i%2===0?"var(--bg1)":"var(--bg2)",
-          borderRadius:i===0?"8px 8px 0 0":i===rows.length-1?"0 0 8px 8px":"0",
-          border:"1px solid var(--border)",borderTop:i===0?"1px solid var(--border)":"none",
-          alignItems:"center",flexWrap:"wrap"}}>
-          <div style={{width:80,fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5}}>{r.day}</div>
-          <div style={{width:60,fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{r.quality}</div>
-          <div style={{flex:1,fontSize:12,color:"var(--text2)"}}>{r.session}</div>
-          <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{r.hrs}</div>
-          <div style={{fontSize:10,color:"var(--text3)",fontStyle:"italic"}}>{r.note}</div>
-        </div>
-      ))}
-      <div style={{marginTop:12,background:"#080d14",border:"1px solid #1a2a3a",borderRadius:8,padding:"12px 14px"}}>
-        <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--blue)",letterSpacing:1.5,marginBottom:6}}>
-          🌙 SHIFT PROTOCOL
-        </div>
-        <p style={{fontSize:12,color:"#556",lineHeight:1.75}}>
-          Thu/Sat training happens on 5.5h sleep (summer: 8:30am→2pm). No PR attempts these days.
-          Daily max singles on jerk = climb to a solid single, stop before a miss.
-          Fri is rest — sleep post-shift before last night. Wed: work starts 7pm — hard stop at 3pm, max 80%.
-          When school resumes in August, Sat drops back to ~3.5h sleep — revert to 4-day Mon/Tue/Thu/Sat.
-        </p>
-      </div>
     </div>
   );
 }
@@ -4545,7 +4492,10 @@ function OlyTracker() {
   const [tab,setTab]         = useState("program");
   const [dayIdx,setDayIdx]   = useState(0);
   const [week,setWeek]       = useState(1);
-  const [isSummer,setIsSummer] = useState(true);
+  // Was a stored SUMMER/SCHOOL toggle (retired 2026-10-17, UI slim-down). Block 1
+  // was trained on the 5-day summer catalogue, so its weeks keep it; every later
+  // week is the Mon/Tue/Thu/Sat school week. oly_summer stays in storage, unread.
+  const isSummer = week <= BLOCK_BOUNDS[0].end;
   const [prs,setPrs]         = useState({});
   const [logs,setLogs]       = useState({});
   const [loading,setLoading] = useState(true);
@@ -4624,11 +4574,10 @@ function OlyTracker() {
   async function load() {
     let finalPrs={}, finalLogs={};
     try {
-      const [p,l,w,s] = await Promise.allSettled([
+      const [p,l,w] = await Promise.allSettled([
         storage.get("oly_prs"),
         storage.get("oly_logs"),
         storage.get("oly_week"),
-        storage.get("oly_summer"),
       ]);
       if(p.status==="fulfilled"&&p.value){
         finalPrs=migratePRs(JSON.parse(p.value.value));
@@ -4643,7 +4592,6 @@ function OlyTracker() {
       }
       if(l.status==="fulfilled"&&l.value){finalLogs=JSON.parse(l.value.value);setLogs(finalLogs);}
       if(w.status==="fulfilled"&&w.value) setWeek(JSON.parse(w.value.value));
-      if(s.status==="fulfilled"&&s.value) setIsSummer(JSON.parse(s.value.value));
       // Load supplements
       const [sc, sn] = await Promise.allSettled([
         storage.get("oly_supp_history"),
@@ -4750,15 +4698,11 @@ function OlyTracker() {
   }
 
   // A week's day ids: its own plan days past Block 1, else the Block 1 catalog.
-  const dayIdsFor = w => ((blockFor(w)?.block !== 1 && weekPlan(w)?.days) || DAYS).map(d => d.id);
+  const dayIdsFor = w => ((blockFor(w)?.block !== 1 && weekPlan(w)?.days) ||
+    (w <= BLOCK_BOUNDS[0].end ? DAYS_SUMMER : DAYS_SCHOOL)).map(d => d.id);
   async function saveWeek(w){
     setDayIdx(remapDayIdx(dayIdsFor(week), dayIdx, dayIdsFor(w)));
     setWeek(w);try{await storage.set("oly_week",JSON.stringify(w));}catch{}}
-  async function toggleSummer(v){
-    setIsSummer(v);
-    if(dayIdx>=4&&!v) setDayIdx(0);
-    try{await storage.set("oly_summer",JSON.stringify(v));}catch{}
-  }
 
   async function handleAddPR(){
     if(!newPR.weight||isNaN(newPR.weight)) return;
@@ -4890,19 +4834,6 @@ function OlyTracker() {
                   {_headerWeekPlan ? _headerWeekPlan.phase.toUpperCase() : `PHASE ${phase+1}`}
                 </div>
               </div>
-              {/* Summer toggle */}
-              <div style={{display:"flex",gap:1,background:"var(--bg2)",borderRadius:5,border:"1px solid var(--border)",overflow:"hidden"}}>
-                <button onClick={()=>toggleSummer(true)} style={{
-                  padding:"4px 10px",fontSize:9,fontFamily:"'DM Mono',monospace",fontWeight:600,letterSpacing:1,
-                  border:"none",cursor:"pointer",background:isSummer?"var(--gold)":"transparent",
-                  color:isSummer?"#000":"var(--text3)",transition:"all 0.15s",
-                }}>☀️ SUMMER</button>
-                <button onClick={()=>toggleSummer(false)} style={{
-                  padding:"4px 10px",fontSize:9,fontFamily:"'DM Mono',monospace",fontWeight:600,letterSpacing:1,
-                  border:"none",cursor:"pointer",background:!isSummer?"var(--gold)":"transparent",
-                  color:!isSummer?"#000":"var(--text3)",transition:"all 0.15s",
-                }}>🎒 SCHOOL</button>
-              </div>
             </div>
           </div>
           <div style={{display:"flex",gap:0,overflowX:"auto",WebkitOverflowScrolling:"touch",
@@ -4928,12 +4859,10 @@ function OlyTracker() {
 
             {/* Program / Schedule sub-tabs */}
             <div style={{display:"flex",gap:6,marginBottom:16}}>
-              <Btn small ghost={progTab!=="program"} active={progTab==="program"} onClick={()=>setProgTab("program")}>TRAINING DAYS</Btn>
-              <Btn small ghost={progTab!=="schedule"} active={progTab==="schedule"} onClick={()=>setProgTab("schedule")}>SCHEDULE</Btn>
+              <Btn small ghost={progTab!=="program"} active={progTab==="program"} onClick={()=>setProgTab("program")}>TRAINING</Btn>
               <Btn small ghost={progTab!=="weekplan"} active={progTab==="weekplan"} onClick={()=>setProgTab("weekplan")}>WEEK PLAN</Btn>
             </div>
 
-            {progTab==="schedule" && <ScheduleView />}
             {progTab==="weekplan" && (
               <ProgramWeekView
                 viewWeek={progViewWeek}
@@ -4944,61 +4873,24 @@ function OlyTracker() {
             )}
 
             {progTab==="program" && <>
-              {/* Mode banner */}
-              <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:16,
-                background:"var(--bg2)",borderRadius:8,padding:"10px 14px",
-                border:`1px solid ${isSummer?"#d4a84344":"#4a90d944"}`}}>
-                <span style={{fontSize:18}}>{isSummer?"☀️":"🎒"}</span>
-                <div>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:16,letterSpacing:0.5,
-                    color:isSummer?"var(--gold)":"var(--blue)"}}>
-                    {isSummer?"SUMMER MODE — 5 DAYS/WEEK":"SCHOOL TERM — 4 DAYS/WEEK"}
+              {/* Week stepper — replaces the summer/school banner, the 24-button week
+                  grid and the phase banner (UI slim-down, 2026-10-17). */}
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14,background:"var(--bg2)",
+                border:`1px solid ${_phaseBanner.border}`,borderRadius:8,padding:"8px 10px"}}>
+                <button aria-label="Previous week" disabled={week<=1} onClick={()=>saveWeek(Math.max(1,week-1))} style={{
+                  width:36,height:36,borderRadius:6,border:"1px solid var(--border)",background:"var(--bg1)",
+                  color:week<=1?"var(--text3)":"var(--text2)",fontSize:18,cursor:week<=1?"default":"pointer",flexShrink:0}}>‹</button>
+                <div style={{flex:1,minWidth:0,textAlign:"center"}}>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:19,letterSpacing:0.8,color:_phaseBanner.color,lineHeight:1.15}}>
+                    {`WEEK ${week} · ${(_headerWeekPlan?.focus || _phaseBanner.label || "").toUpperCase()}`}
                   </div>
-                  <div style={{fontSize:10,color:"var(--text3)",marginTop:2}}>
-                    {isSummer?"Mon–Thu + Sat · Extended sleep on shift days (8:30am→2pm)":"Mon/Tue/Thu/Sat · Sat drops to ~3.5h sleep when school resumes"}
-                  </div>
-                </div>
-              </div>
-
-              {/* Week selector */}
-              <Label>SELECT WEEK</Label>
-              <div style={{display:"flex",gap:7,marginBottom:20,flexWrap:"wrap",alignItems:"center"}}>
-                {/* Through the last block with per-exercise cards (Block 3 ends
-                    week 24). Was a literal 16 — week 17 was unreachable. */}
-                {Array.from({length:BLOCK_BOUNDS.find(b=>b.block===3).end},(_,i)=>i+1).map(w=>{
-                  const active=w===week,logged=isLogged(w);
-                  return(
-                    <button key={w} onClick={()=>saveWeek(w)} style={{
-                      width:44,height:44,borderRadius:6,cursor:"pointer",
-                      fontFamily:"'DM Mono',monospace",fontSize:14,fontWeight:700,transition:"all 0.15s",
-                      background:active?"var(--gold)":logged?"rgba(90,158,69,0.1)":"var(--bg2)",
-                      color:active?"#000":logged?"var(--green)":"var(--text3)",
-                      border:active?"none":logged?"1px solid var(--green)":"1px solid var(--border)",
-                      boxShadow:active?"0 0 16px rgba(212,168,67,0.3)":"none",
-                    }}>{w}</button>
-                  );
-                })}
-                {_headerBlk.block===1&&(
-                  <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginLeft:4}}>
-                    PH1: 1–3 · PH2: 4–6
-                  </span>
-                )}
-              </div>
-
-              {/* Phase banner */}
-              <div style={{background:"var(--bg2)",borderRadius:8,padding:"12px 16px",marginBottom:20,
-                border:`1px solid ${_phaseBanner.border}`,
-                display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:21,letterSpacing:0.5,
-                    color:_phaseBanner.color}}>
-                    {_phaseBanner.label}
-                  </div>
-                  <div style={{fontSize:11,color:"var(--text2)",marginTop:4,lineHeight:1.6}}>
-                    {_phaseBanner.sub}
+                  <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:2}}>
+                    {_headerWeekPlan?.load || _phaseBanner.sub}
                   </div>
                 </div>
-                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:54,color:"var(--bg3)",userSelect:"none"}}>{week}</div>
+                <button aria-label="Next week" disabled={week>=BLOCK_BOUNDS.find(b=>b.block===3).end} onClick={()=>saveWeek(Math.min(BLOCK_BOUNDS.find(b=>b.block===3).end,week+1))} style={{
+                  width:36,height:36,borderRadius:6,border:"1px solid var(--border)",background:"var(--bg1)",
+                  color:week>=BLOCK_BOUNDS.find(b=>b.block===3).end?"var(--text3)":"var(--text2)",fontSize:18,cursor:week>=BLOCK_BOUNDS.find(b=>b.block===3).end?"default":"pointer",flexShrink:0}}>›</button>
               </div>
 
               {/* Day tabs */}
@@ -5088,11 +4980,11 @@ function OlyTracker() {
                 )}
               </div>
 
-              {/* Phase note */}
-              <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
+              {/* Phase note — Block 1 only; Block 2+ shows the week's load in the stepper */}
+              {_headerBlk.block===1 && <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
                 padding:"9px 12px",marginBottom:14,fontSize:11,color:"var(--text2)"}}>
                 {_phaseBanner.note}
-              </div>
+              </div>}
 
               {_outlineOnly ? (
                 <div style={{background:"var(--bg2)",borderRadius:8,padding:"14px 16px",border:"1px solid var(--border)"}}>
@@ -5338,18 +5230,6 @@ function OlyTracker() {
                   letterSpacing:1,cursor:"pointer"}}>
                 COMPLETE SESSION
               </button>
-
-              {/* Back pain protocol */}
-              <div style={{marginTop:12,background:"#120808",border:"1px solid #3a1818",borderRadius:8,padding:"12px 14px"}}>
-                <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--red)",letterSpacing:1.5,marginBottom:6}}>
-                  ⚠️ BACK PAIN PROTOCOL
-                </div>
-                <p style={{fontSize:12,color:"#665",lineHeight:1.75}}>
-                  Back flares: drop all floor pulls, replace with seated cable rows or T-bar rows.
-                  Reduce squat to pain-free depth. Never train through sharp or radiating pain.
-                  Technique at 60% is always safe. Log back pain level (0–10) in session notes.
-                </p>
-              </div>
             </>}
           </div>
         )}
@@ -5571,7 +5451,6 @@ function OlyTracker() {
                     oly_prs: prs,
                     oly_logs: logs,
                     oly_week: week,
-                    oly_summer: isSummer,
                     oly_supp_history: suppChecked,
                     oly_supp_notes: suppNotes,
                   };
@@ -5601,7 +5480,6 @@ function OlyTracker() {
                       if(data.oly_prs) { const m=migratePRs(data.oly_prs); setPrs(m); await storage.set("oly_prs",JSON.stringify(m)); }
                       if(data.oly_logs) { setLogs(data.oly_logs); await storage.set("oly_logs",JSON.stringify(data.oly_logs)); }
                       if(data.oly_week) { setWeek(data.oly_week); await storage.set("oly_week",JSON.stringify(data.oly_week)); }
-                      if(data.oly_summer !== undefined) { setIsSummer(data.oly_summer); await storage.set("oly_summer",JSON.stringify(data.oly_summer)); }
                       if(data.oly_supp_history) { setSuppHistory(data.oly_supp_history); await storage.set("oly_supp_history",JSON.stringify(data.oly_supp_history)); }
                       if(data.oly_supp_notes !== undefined) { setSuppNotes(data.oly_supp_notes); await storage.set("oly_supp_notes",data.oly_supp_notes); }
                       showToast("✓ Data restored successfully");
