@@ -1,0 +1,3076 @@
+{
+  "retrieval": {
+    "limit": 12,
+    "threshold": 0.58,
+    "collection": "oly_transcripts"
+  },
+  "citations": [
+    {
+      "handle": "E101.1",
+      "question_key": "snatch",
+      "note_path": "HvyWH2tBmhk_best_snatch_cues_for_olympic_weightlifting.md",
+      "source": "https://www.youtube.com/watch?v=HvyWH2tBmhk",
+      "score": 0.6776292,
+      "sha256": "f7c97bfcc9b5a5a8e16c61699c5b41af12d53410efd9882779f178db6b167247",
+      "comment_section": false,
+      "same_source_as": [
+        "E101.2"
+      ]
+    },
+    {
+      "handle": "E101.2",
+      "question_key": "snatch",
+      "note_path": "HvyWH2tBmhk_best_snatch_cues_for_olympic_weightlifting.md",
+      "source": "https://www.youtube.com/watch?v=HvyWH2tBmhk",
+      "score": 0.6730877,
+      "sha256": "a5c348146e5293dd6ed12279b9118b16aad4396f538a977a084723511ce5011b",
+      "comment_section": false,
+      "same_source_as": [
+        "E101.1"
+      ]
+    },
+    {
+      "handle": "E101.3",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle1769get_cozy_down_there_improving_the_snatch_jerk_.md",
+      "source": "https://www.catalystathletics.com/article/1769/Get-Cozy-Down-There-Improving-The-Snatch-Jerk-Receiving-Pos/",
+      "score": 0.6666793,
+      "sha256": "deb8e22a1a5a0e277e1d896f41eb41418ba7399f0fe3ce48dd6d96117217de3d",
+      "comment_section": false,
+      "same_source_as": [
+        "E101.6"
+      ]
+    },
+    {
+      "handle": "E101.4",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle1795weightlifting_technique_with_evidence_lifting_.md",
+      "source": "https://www.catalystathletics.com/article/1795/Weightlifting-Technique-with-Evidence-Lifting-the-Feet-in-th/",
+      "score": 0.66521627,
+      "sha256": "ebe10c89ef7512b77cb2674e732c63cc8734c73456a8ce92a5311fb36f549bfb",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E101.5",
+      "question_key": "snatch",
+      "note_path": "xJgjsTr_AaI_anton_fixes_my_snatch.md",
+      "source": "https://www.youtube.com/watch?v=xJgjsTr_AaI",
+      "score": 0.6623521,
+      "sha256": "a86926e66a391b92235cec711ef3ecc6548cdfa45d375a0e64178f1512f5dd1e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E101.6",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle1769get_cozy_down_there_improving_the_snatch_jerk_.md",
+      "source": "https://www.catalystathletics.com/article/1769/Get-Cozy-Down-There-Improving-The-Snatch-Jerk-Receiving-Pos/",
+      "score": 0.66030675,
+      "sha256": "8ff3ea9be6dd375c6075848e96cb21b403a31897395d1d04d3dba66876bd522b",
+      "comment_section": true,
+      "same_source_as": [
+        "E101.3"
+      ]
+    },
+    {
+      "handle": "E101.7",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle2017foot_movement_in_the_olympic_lifts_middle_top_.md",
+      "source": "https://www.catalystathletics.com/article/2017/Foot-Movement-in-the-Olympic-Lifts-Middle-Top-Middle/",
+      "score": 0.6596366,
+      "sha256": "164e78f00defe4329f764a7819c0645df2ad92486c0c2aac205f34dc6f7e8726",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E101.8",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle2107ask_greg_hang_snatch_better_than_from_floor.md",
+      "source": "https://www.catalystathletics.com/article/2107/Ask-Greg-Hang-Snatch-Better-Than-from-Floor/",
+      "score": 0.65937704,
+      "sha256": "f97d6eac77beb49ed0c5612ed603d2a456c1725840fe96a12b5eff45d84f52f0",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E101.9",
+      "question_key": "snatch",
+      "note_path": "RmBJR8w4qUA_arnold_sports_festival_vlog_ft_sonny_webster.md",
+      "source": "https://www.youtube.com/watch?v=RmBJR8w4qUA",
+      "score": 0.65862846,
+      "sha256": "9aecb8ad838945b07675e7df77781cc924feacf5710c9ff8ae2e4b5794d72b4d",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E101.10",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle1848a_different_thought_about_snatch_technique_kee.md",
+      "source": "https://www.catalystathletics.com/article/1848/A-Different-Thought-About-Snatch-Technique-Keeping-the-Bar-C/",
+      "score": 0.65762293,
+      "sha256": "8f1951a36bedfcd2018d85857f841442987fd8bc6827508df49ad17085e2b8fd",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E101.11",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle1948ask_greg_cant_receive_the_snatch_low_with_heav.md",
+      "source": "https://www.catalystathletics.com/article/1948/Ask-Greg-Cant-Receive-the-Snatch-Low-with-Heavier-Weights/",
+      "score": 0.65173113,
+      "sha256": "755b9c657ba230b469e21fe7f278af53842316b3abd0ed08f022be65d8f254da",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E101.12",
+      "question_key": "snatch",
+      "note_path": "wwwcatalystathleticscomarticle1855ask_greg_jumping_in_the_snatch.md",
+      "source": "https://www.catalystathletics.com/article/1855/Ask-Greg-Jumping-in-the-Snatch/",
+      "score": 0.65087855,
+      "sha256": "108b3451c98611cba0cb592f788b00b0d4d73852dd677177df323730e6badfa6",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.1",
+      "question_key": "power_snatch",
+      "note_path": "URRmaz1mI8o_everyones_got_that_one_mate_that_cant_power.md",
+      "source": "https://www.youtube.com/watch?v=URRmaz1mI8o",
+      "score": 0.72709894,
+      "sha256": "39792376dcbdee7009f2479583483e831a482568066ca91aad691455463d9245",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.2",
+      "question_key": "power_snatch",
+      "note_path": "wwwcatalystathleticscomarticle1965the_rip_dive_crash_technique_and_why_it_will_k.md",
+      "source": "https://www.catalystathletics.com/article/1965/The-Rip-Dive-Crash-Technique-And-Why-It-Will-Kill-You/",
+      "score": 0.6941248,
+      "sha256": "47aa62c59e195b5ce9c406818e9b5174228cb7a245d046eee2282f12846dca69",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.3",
+      "question_key": "power_snatch",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.693688,
+      "sha256": "4cbebd6a9d5797549debf6f993508ab4f372e48a7f6522b3e9faddecbd9b0c61",
+      "comment_section": false,
+      "same_source_as": [
+        "E102.9"
+      ]
+    },
+    {
+      "handle": "E102.4",
+      "question_key": "power_snatch",
+      "note_path": "H0NjcE2U1rM_huge_power_cleans_shethar_hits_pb_dylan_cooper_160kg_snatch_.md",
+      "source": "https://www.youtube.com/watch?v=H0NjcE2U1rM",
+      "score": 0.69183886,
+      "sha256": "56bc6841d1c77997da7bbe7fc954dc57e2a3df549de34582fba29e0524a7f1bd",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.5",
+      "question_key": "power_snatch",
+      "note_path": "1ky7WX-pymk_do_you_know_why_you_should_be_power_snatching.md",
+      "source": "https://www.youtube.com/watch?v=1ky7WX-pymk",
+      "score": 0.6878349,
+      "sha256": "44341b00fb207c98c3b9cadc73394f8224f5007af3b11f57f954e3fac8665385",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.6",
+      "question_key": "power_snatch",
+      "note_path": "QfezSB5JsDQ_weightlifting_coaches_react_to_2018_96kg_world_championship.md",
+      "source": "https://www.youtube.com/watch?v=QfezSB5JsDQ",
+      "score": 0.6858471,
+      "sha256": "af52b1d067bdafa0470c213ba571beecf51da8e3aa00e6609ba0053b83b97a9c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.7",
+      "question_key": "power_snatch",
+      "note_path": "Y_W778f-pkc_stop_power_snatching_start_squat_snatching.md",
+      "source": "https://www.youtube.com/watch?v=Y_W778f-pkc",
+      "score": 0.68327034,
+      "sha256": "82ea04f4d7769f6d5b2a2a104b5df2be8e2da0303f0667ce20c15afd9d446231",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.8",
+      "question_key": "power_snatch",
+      "note_path": "shRJ2FGb8-k_hafr_squat_mess_up_5025kg_deadlift_double_bw_female_snatch_s.md",
+      "source": "https://www.youtube.com/watch?v=shRJ2FGb8-k",
+      "score": 0.68087786,
+      "sha256": "fb8ad3e8c9482bdb7b9dc361832f5938c2ba3860b5007209a09b629ddfb1c22d",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.9",
+      "question_key": "power_snatch",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.6797979,
+      "sha256": "38daec6f88db8625b9f6d4365665282a5f7baf1841ed1a527277a2bb9586664c",
+      "comment_section": false,
+      "same_source_as": [
+        "E102.3"
+      ]
+    },
+    {
+      "handle": "E102.10",
+      "question_key": "power_snatch",
+      "note_path": "wwwcatalystathleticscomarticle131starter_program_for_catalyst_athletics_online_w.md",
+      "source": "https://www.catalystathletics.com/article/131/Starter-Program-for-Catalyst-Athletics-Online-Workouts/",
+      "score": 0.6767758,
+      "sha256": "dff3f69a4626ae893c7c0ef370d74b0a0c281e48e46e20ea25a589f938793f2d",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.11",
+      "question_key": "power_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2080about_this_its_a_power_snatch_if_its_above_par.md",
+      "source": "https://www.catalystathletics.com/article/2080/About-This-Its-a-Power-Snatch-If-Its-Above-Parallel-Thing-/",
+      "score": 0.671347,
+      "sha256": "9d34a1c313acce59ddf09450434996d86bb6efb6232c80e0515495856e0b27c1",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E102.12",
+      "question_key": "power_snatch",
+      "note_path": "wwwcatalystathleticscomarticle1705back_to_the_bottom_squat_stance_in_the_snatch_.md",
+      "source": "https://www.catalystathletics.com/article/1705/Back-to-the-Bottom-Squat-Stance-in-the-Snatch-and-Clean/",
+      "score": 0.66550744,
+      "sha256": "87b9b5243a1547a3d1f12bd92a9f89b0193bdd0162ac5ef5a637d0806ab87667",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.1",
+      "question_key": "snatch_from_blocks",
+      "note_path": "FBrL1afuvCs_karlos_nasar_block_snatching_180kg_olympicweightlifting_squa.md",
+      "source": "https://www.youtube.com/watch?v=FBrL1afuvCs",
+      "score": 0.6455642,
+      "sha256": "4d7c534ebf1da56e1d58c2410da540cf36f774af0ac0a3155ae38b73a10aa502",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.2",
+      "question_key": "snatch_from_blocks",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.64274645,
+      "sha256": "3f9215c0fea3b7317336a9179ac97b85994387c415cdc63f0aa26cde7e3a4eb6",
+      "comment_section": false,
+      "same_source_as": [
+        "E103.7"
+      ]
+    },
+    {
+      "handle": "E103.3",
+      "question_key": "snatch_from_blocks",
+      "note_path": "NyIqP4c8Chk_full_week_of_training_on_the_elite_program.md",
+      "source": "https://www.youtube.com/watch?v=NyIqP4c8Chk",
+      "score": 0.6298961,
+      "sha256": "49b429cd2afecadb7639fc8f47aa2167990b1fd49f01f880be92108d1f1797e9",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.4",
+      "question_key": "snatch_from_blocks",
+      "note_path": "SQpGeBCfpfI_natty_or_not_beef_unknown_lifter_is_back_heavy_hang_cleans.md",
+      "source": "https://www.youtube.com/watch?v=SQpGeBCfpfI",
+      "score": 0.61344737,
+      "sha256": "032183f2edbdfe9314c1ac1ea8b9f2aa51bec94fbfbac46134fcca8888ace54b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.5",
+      "question_key": "snatch_from_blocks",
+      "note_path": "XV70UbQ_iuI_going_huge_off_the_blocks_wednesday_training.md",
+      "source": "https://www.youtube.com/watch?v=XV70UbQ_iuI",
+      "score": 0.6129796,
+      "sha256": "b6137175b55fb3cee62d0dd5e2f5c5433da301bb8c22f11c0117dc4c6d80b0b4",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.6",
+      "question_key": "snatch_from_blocks",
+      "note_path": "hHnC0jXEko0_chinese_weightlifting_programming_with_yilin_squat_jerk_jour.md",
+      "source": "https://www.youtube.com/watch?v=hHnC0jXEko0",
+      "score": 0.60899234,
+      "sha256": "2b1d5a3bc76c68a9c3bc22f69c2e7336568fda699c55f5f3bada9265d69ca883",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.7",
+      "question_key": "snatch_from_blocks",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.5952835,
+      "sha256": "aeffe8f3a814896b285a01a4a65e2032c8b404019a2e8334e2f8e37365acb063",
+      "comment_section": false,
+      "same_source_as": [
+        "E103.2"
+      ]
+    },
+    {
+      "handle": "E103.8",
+      "question_key": "snatch_from_blocks",
+      "note_path": "HvyWH2tBmhk_best_snatch_cues_for_olympic_weightlifting.md",
+      "source": "https://www.youtube.com/watch?v=HvyWH2tBmhk",
+      "score": 0.59500647,
+      "sha256": "a5c348146e5293dd6ed12279b9118b16aad4396f538a977a084723511ce5011b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.9",
+      "question_key": "snatch_from_blocks",
+      "note_path": "HaxJl3fosnY_rizki_juniansyah_snatch_technique_breakdown.md",
+      "source": "https://www.youtube.com/watch?v=HaxJl3fosnY",
+      "score": 0.5946921,
+      "sha256": "8ec056a8d77b3f9ceb96561df8c4b98ed6e75d0f1a21dd6c84e89d0b2d3d44d7",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.10",
+      "question_key": "snatch_from_blocks",
+      "note_path": "7yLsOCYC-1Y_how_to_program_snatch_snatch_variations.md",
+      "source": "https://www.youtube.com/watch?v=7yLsOCYC-1Y",
+      "score": 0.5921457,
+      "sha256": "6d3e3b68172612f400e046ff161ad9f33eee2c1606f988488c8591b4ad879efa",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.11",
+      "question_key": "snatch_from_blocks",
+      "note_path": "wwwcatalystathleticscomarticle2068ask_greg_should_snatches_be_received_as_high_o.md",
+      "source": "https://www.catalystathletics.com/article/2068/Ask-Greg-Should-Snatches-Be-Received-as-High-or-Low-as-Possi/",
+      "score": 0.5911709,
+      "sha256": "ac56ad1976971fff338225cef71a02bd9401ff2c6ee043a0315736022a6cbc57",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E103.12",
+      "question_key": "snatch_from_blocks",
+      "note_path": "QfezSB5JsDQ_weightlifting_coaches_react_to_2018_96kg_world_championship.md",
+      "source": "https://www.youtube.com/watch?v=QfezSB5JsDQ",
+      "score": 0.5898658,
+      "sha256": "af52b1d067bdafa0470c213ba571beecf51da8e3aa00e6609ba0053b83b97a9c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.1",
+      "question_key": "three_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle1917all_hang_positions_great_small.md",
+      "source": "https://www.catalystathletics.com/article/1917/All-Hang-Positions-Great-Small/",
+      "score": 0.68540436,
+      "sha256": "3d9ba2fdc8a0daad6f9f947ab6b955c5eff9f9d157860009e331121b30f3a7e2",
+      "comment_section": false,
+      "same_source_as": [
+        "E104.5"
+      ]
+    },
+    {
+      "handle": "E104.2",
+      "question_key": "three_position_snatch",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.6709956,
+      "sha256": "4cbebd6a9d5797549debf6f993508ab4f372e48a7f6522b3e9faddecbd9b0c61",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.3",
+      "question_key": "three_position_snatch",
+      "note_path": "jZB_T3071ro_my_coach_has_48_hours_to_fix_my_snatch.md",
+      "source": "https://www.youtube.com/watch?v=jZB_T3071ro",
+      "score": 0.66385365,
+      "sha256": "3d7f8b9d90ca85b52fd357bc53de888333bcee697500173ad393a73ebecae23b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.4",
+      "question_key": "three_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle135squat_stance_the_olympic_lifts_the_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/135/Squat-Stance-the-Olympic-Lifts-The-Snatch-Clean-Receiving-/",
+      "score": 0.6599397,
+      "sha256": "af1abd4163cac5ef4b8b3992607fdff093bc155b270b12990de403ed1e39db12",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.5",
+      "question_key": "three_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle1917all_hang_positions_great_small.md",
+      "source": "https://www.catalystathletics.com/article/1917/All-Hang-Positions-Great-Small/",
+      "score": 0.65766746,
+      "sha256": "cc4b80ea3732fe356c42c2a37cd8dbcc001ffbde954229b74ac9ba380296995a",
+      "comment_section": true,
+      "same_source_as": [
+        "E104.1"
+      ]
+    },
+    {
+      "handle": "E104.6",
+      "question_key": "three_position_snatch",
+      "note_path": "QfezSB5JsDQ_weightlifting_coaches_react_to_2018_96kg_world_championship.md",
+      "source": "https://www.youtube.com/watch?v=QfezSB5JsDQ",
+      "score": 0.6516569,
+      "sha256": "af52b1d067bdafa0470c213ba571beecf51da8e3aa00e6609ba0053b83b97a9c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.7",
+      "question_key": "three_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle49the_olympic_lift_starting_position_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/49/The-Olympic-Lift-Starting-Position-Snatch-Clean/",
+      "score": 0.6481633,
+      "sha256": "eabdb7e01140b02407a614c0269fd18a246b0018018c821a45644cea6d62fca5",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.8",
+      "question_key": "three_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle1769get_cozy_down_there_improving_the_snatch_jerk_.md",
+      "source": "https://www.catalystathletics.com/article/1769/Get-Cozy-Down-There-Improving-The-Snatch-Jerk-Receiving-Pos/",
+      "score": 0.64762473,
+      "sha256": "deb8e22a1a5a0e277e1d896f41eb41418ba7399f0fe3ce48dd6d96117217de3d",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.9",
+      "question_key": "three_position_snatch",
+      "note_path": "t18FhGP2W08_paris_2024_59kg_womens_weightlifting_sika_strength_commentar.md",
+      "source": "https://www.youtube.com/watch?v=t18FhGP2W08",
+      "score": 0.6436741,
+      "sha256": "9de992c6bae8c285bb7fe9669b8a1a98804dc56e896e580ee780002dd8246d5d",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.10",
+      "question_key": "three_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2107ask_greg_hang_snatch_better_than_from_floor.md",
+      "source": "https://www.catalystathletics.com/article/2107/Ask-Greg-Hang-Snatch-Better-Than-from-Floor/",
+      "score": 0.6431882,
+      "sha256": "f97d6eac77beb49ed0c5612ed603d2a456c1725840fe96a12b5eff45d84f52f0",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.11",
+      "question_key": "three_position_snatch",
+      "note_path": "hHnC0jXEko0_chinese_weightlifting_programming_with_yilin_squat_jerk_jour.md",
+      "source": "https://www.youtube.com/watch?v=hHnC0jXEko0",
+      "score": 0.6411805,
+      "sha256": "2b1d5a3bc76c68a9c3bc22f69c2e7336568fda699c55f5f3bada9265d69ca883",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E104.12",
+      "question_key": "three_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2050the_effects_of_knee_position_in_the_split_jerk.md",
+      "source": "https://www.catalystathletics.com/article/2050/The-Effects-of-Knee-Position-in-the-Split-Jerk/",
+      "score": 0.6385989,
+      "sha256": "890aca9211f6c06f287fa6bd1cfe3e4107298c96ad74cb48970d3a5d5f37b43b",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.1",
+      "question_key": "two_position_snatch",
+      "note_path": "sLjxErstpBg_when_to_use_hang_snatches_olympicweightlifting.md",
+      "source": "https://www.youtube.com/watch?v=sLjxErstpBg",
+      "score": 0.73002875,
+      "sha256": "c110d098bf26e20df26cab97ce46ecdf3e2cf167ed24ee3103964f92c942b4e7",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.2",
+      "question_key": "two_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2107ask_greg_hang_snatch_better_than_from_floor.md",
+      "source": "https://www.catalystathletics.com/article/2107/Ask-Greg-Hang-Snatch-Better-Than-from-Floor/",
+      "score": 0.7197275,
+      "sha256": "f97d6eac77beb49ed0c5612ed603d2a456c1725840fe96a12b5eff45d84f52f0",
+      "comment_section": false,
+      "same_source_as": [
+        "E105.4",
+        "E105.8"
+      ]
+    },
+    {
+      "handle": "E105.3",
+      "question_key": "two_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle1917all_hang_positions_great_small.md",
+      "source": "https://www.catalystathletics.com/article/1917/All-Hang-Positions-Great-Small/",
+      "score": 0.7105446,
+      "sha256": "3d9ba2fdc8a0daad6f9f947ab6b955c5eff9f9d157860009e331121b30f3a7e2",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.4",
+      "question_key": "two_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2107ask_greg_hang_snatch_better_than_from_floor.md",
+      "source": "https://www.catalystathletics.com/article/2107/Ask-Greg-Hang-Snatch-Better-Than-from-Floor/",
+      "score": 0.6881762,
+      "sha256": "d4a9c93460c6e101c3b8c07a38d77a4356517f365ab37e9ddbaee8812a786844",
+      "comment_section": false,
+      "same_source_as": [
+        "E105.2",
+        "E105.8"
+      ]
+    },
+    {
+      "handle": "E105.5",
+      "question_key": "two_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2120ask_greg_snatch_crashing_from_floor_but_not_bl.md",
+      "source": "https://www.catalystathletics.com/article/2120/Ask-Greg-Snatch-Crashing-from-Floor-but-Not-Blocks-or-Hang/",
+      "score": 0.68485725,
+      "sha256": "61058fdee81cf1770c0d77e05ef1e9ea3d3b0084c1625b1195838ad044adea42",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.6",
+      "question_key": "two_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2195ask_greg_slow_snatch_turnover.md",
+      "source": "https://www.catalystathletics.com/article/2195/Ask-Greg-Slow-Snatch-Turnover/",
+      "score": 0.6837549,
+      "sha256": "22c4fd87fe0de526745bc9ab35ef60cef8893e042a8a32abdc2bcaedabef37aa",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.7",
+      "question_key": "two_position_snatch",
+      "note_path": "TmuX1d389Zs_live_qa_with_greg_everett.md",
+      "source": "https://www.youtube.com/watch?v=TmuX1d389Zs",
+      "score": 0.68340915,
+      "sha256": "05dc5556738a68757b73e49508c5f8a2043cba339e1f512f9cd76db6fd3aef5c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.8",
+      "question_key": "two_position_snatch",
+      "note_path": "wwwcatalystathleticscomarticle2107ask_greg_hang_snatch_better_than_from_floor.md",
+      "source": "https://www.catalystathletics.com/article/2107/Ask-Greg-Hang-Snatch-Better-Than-from-Floor/",
+      "score": 0.6790858,
+      "sha256": "10c1a3082d31d708d6e518c538290967ff5a651b3270db0205287cc6e87038c2",
+      "comment_section": false,
+      "same_source_as": [
+        "E105.2",
+        "E105.4"
+      ]
+    },
+    {
+      "handle": "E105.9",
+      "question_key": "two_position_snatch",
+      "note_path": "8Q7gUAxFJEU_this_is_how_to_program_for_weightlifting.md",
+      "source": "https://www.youtube.com/watch?v=8Q7gUAxFJEU",
+      "score": 0.6703155,
+      "sha256": "3a004a11f4bc5d8695066cb8803bff2aebb9ba59dc039240ca75851374074367",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.10",
+      "question_key": "two_position_snatch",
+      "note_path": "HvyWH2tBmhk_best_snatch_cues_for_olympic_weightlifting.md",
+      "source": "https://www.youtube.com/watch?v=HvyWH2tBmhk",
+      "score": 0.6698662,
+      "sha256": "a5c348146e5293dd6ed12279b9118b16aad4396f538a977a084723511ce5011b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.11",
+      "question_key": "two_position_snatch",
+      "note_path": "Ou5X6bNVuhE_fix_your_snatch_clean_pulls_push_into_extension.md",
+      "source": "https://www.youtube.com/watch?v=Ou5X6bNVuhE",
+      "score": 0.66814524,
+      "sha256": "d50bab56bdf4ad962276aecfb61072121681cc822f2f8a55d9884d2de48b2994",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E105.12",
+      "question_key": "two_position_snatch",
+      "note_path": "hiWgQrn38uM_is_bench_press_harder_than_snatch.md",
+      "source": "https://www.youtube.com/watch?v=hiWgQrn38uM",
+      "score": 0.6656863,
+      "sha256": "0db9c4efd13d6b52e8f11df005d0d463040a5c9505baf9e70e609874bf5ac8f4",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E106.1",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "Ku9oqhNm6Nw_how_much_should_i_overhead_squat_for_the_snatch.md",
+      "source": "https://www.youtube.com/watch?v=Ku9oqhNm6Nw",
+      "score": 0.7367579,
+      "sha256": "8c7250b6a9006731554eaaf6adc5b8705833ccb3b8050fe3adf5f491e772a8b6",
+      "comment_section": false,
+      "same_source_as": [
+        "E106.10",
+        "E106.11"
+      ]
+    },
+    {
+      "handle": "E106.2",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "wwwcatalystathleticscomarticle2130ask_greg_improving_clean_power_clean_and_snatc.md",
+      "source": "https://www.catalystathletics.com/article/2130/Ask-Greg-Improving-Clean-Power-Clean-and-Snatch-Overhead-Squ/",
+      "score": 0.72752386,
+      "sha256": "6d09acfcb96e40fa076469f027362342bea00043ba706a573ff2ae96c149a8e6",
+      "comment_section": false,
+      "same_source_as": [
+        "E106.6"
+      ]
+    },
+    {
+      "handle": "E106.3",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "up9WzZSOQkE_how_im_using_hang_snatches_overhead_squats_for_my_snatch.md",
+      "source": "https://www.youtube.com/watch?v=up9WzZSOQkE",
+      "score": 0.7053601,
+      "sha256": "630008ab5c7165734836d6338a417dd528fd5b6a1697999b917730e1e93faf2d",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E106.4",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "o_j2hMhwFho_how_to_be_stronger_overhead_on_snatch.md",
+      "source": "https://www.youtube.com/watch?v=o_j2hMhwFho",
+      "score": 0.70528483,
+      "sha256": "8a0a60fc37dbbcf3506ea08475470c57bff8a450a21d09b0899516d4289f29bb",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E106.5",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "8o6iMyibQcQ_gui_malheiros_the_best_snatch_in_crossfit_138kg305lb_snatch.md",
+      "source": "https://www.youtube.com/watch?v=8o6iMyibQcQ",
+      "score": 0.69214916,
+      "sha256": "7cf58d9bb0cb98e1b1d546f2b963c32f3740d05759bb483a8e031566871eec39",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E106.6",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "wwwcatalystathleticscomarticle2130ask_greg_improving_clean_power_clean_and_snatc.md",
+      "source": "https://www.catalystathletics.com/article/2130/Ask-Greg-Improving-Clean-Power-Clean-and-Snatch-Overhead-Squ/",
+      "score": 0.69156885,
+      "sha256": "3baff3627b58a1188b55ad9b2606180863c34ec8b6a57de98e7eddc578fb17d7",
+      "comment_section": false,
+      "same_source_as": [
+        "E106.2"
+      ]
+    },
+    {
+      "handle": "E106.7",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "wwwcatalystathleticscomarticle2156ask_greg_what_causes_pressouts_and_how_to_fix_.md",
+      "source": "https://www.catalystathletics.com/article/2156/Ask-Greg-What-Causes-Pressouts-and-How-to-Fix-Them/",
+      "score": 0.6906331,
+      "sha256": "b5fdde7314fecb45c35a92e04439c3257b72e08ed9ccbf9cd5ee816701e98671",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E106.8",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "wix0T3FuCyY_snatch_grip_overhead_carry_squat_olympic_weightlifting_exerc.md",
+      "source": "https://www.youtube.com/watch?v=wix0T3FuCyY",
+      "score": 0.6897531,
+      "sha256": "eafe633d04b12b18443120dccbf4b73069c1b17d3c3e6fcff85b3572fd00b914",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E106.9",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "wwwcatalystathleticscomarticle1718ask_greg_weightlifting_technique_development.md",
+      "source": "https://www.catalystathletics.com/article/1718/Ask-Greg-Weightlifting-Technique-Development/",
+      "score": 0.67697424,
+      "sha256": "d4f30e2a1b91e4637efef19dbdb61c96b589c9c5923789c224692ff274c108f3",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E106.10",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "Ku9oqhNm6Nw_how_much_should_i_overhead_squat_for_the_snatch.md",
+      "source": "https://www.youtube.com/watch?v=Ku9oqhNm6Nw",
+      "score": 0.67660815,
+      "sha256": "feea72b5ec6552f76805e0b07ed61ac66022a873531bceec374083b76f92cb25",
+      "comment_section": false,
+      "same_source_as": [
+        "E106.1",
+        "E106.11"
+      ]
+    },
+    {
+      "handle": "E106.11",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "Ku9oqhNm6Nw_how_much_should_i_overhead_squat_for_the_snatch.md",
+      "source": "https://www.youtube.com/watch?v=Ku9oqhNm6Nw",
+      "score": 0.67540586,
+      "sha256": "cf7b6bdc8a46db528766c6cb138b3889c5ae6a866da5a3cf6d4bd384036eee29",
+      "comment_section": false,
+      "same_source_as": [
+        "E106.1",
+        "E106.10"
+      ]
+    },
+    {
+      "handle": "E106.12",
+      "question_key": "snatch_ohs_complex",
+      "note_path": "wwwcatalystathleticscomarticle1948ask_greg_cant_receive_the_snatch_low_with_heav.md",
+      "source": "https://www.catalystathletics.com/article/1948/Ask-Greg-Cant-Receive-the-Snatch-Low-with-Heavier-Weights/",
+      "score": 0.6725759,
+      "sha256": "a083e9d71152513dba1806e86d9cb9c518e4a2aafdee4ab64ca095021fbab878",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.1",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle1739spread_the_bar_but_not_that_way_holding_the_sn.md",
+      "source": "https://www.catalystathletics.com/article/1739/Spread-the-Bar-But-Not-That-Way-Holding-the-Snatch-Overhead/",
+      "score": 0.68898875,
+      "sha256": "78349b1db4d7a4054c1445e951e5f18fc5f30d3d155dde03bc18a9f07070979a",
+      "comment_section": true,
+      "same_source_as": [
+        "E107.5"
+      ]
+    },
+    {
+      "handle": "E107.2",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle1682flexibility_for_the_overhead_squat.md",
+      "source": "https://www.catalystathletics.com/article/1682/Flexibility-for-the-Overhead-Squat/",
+      "score": 0.6603663,
+      "sha256": "40db796d7e8f0c849e262fd84ffb3aaf90c119b05d528509bbf503b461eaf047",
+      "comment_section": true,
+      "same_source_as": [
+        "E107.7"
+      ]
+    },
+    {
+      "handle": "E107.3",
+      "question_key": "overhead_squat",
+      "note_path": "Ku9oqhNm6Nw_how_much_should_i_overhead_squat_for_the_snatch.md",
+      "source": "https://www.youtube.com/watch?v=Ku9oqhNm6Nw",
+      "score": 0.65890837,
+      "sha256": "8c7250b6a9006731554eaaf6adc5b8705833ccb3b8050fe3adf5f491e772a8b6",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.4",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle135squat_stance_the_olympic_lifts_the_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/135/Squat-Stance-the-Olympic-Lifts-The-Snatch-Clean-Receiving-/",
+      "score": 0.6452113,
+      "sha256": "3045bf04732c27d1a4fa3d3fd93ceca2e72b753236e5f3a1759842a5c6264fa6",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.5",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle1739spread_the_bar_but_not_that_way_holding_the_sn.md",
+      "source": "https://www.catalystathletics.com/article/1739/Spread-the-Bar-But-Not-That-Way-Holding-the-Snatch-Overhead/",
+      "score": 0.6361822,
+      "sha256": "a235cb1273608914a0ba79322dd459f5f8c1418b58f1dc3fd0f37d207c07508c",
+      "comment_section": false,
+      "same_source_as": [
+        "E107.1"
+      ]
+    },
+    {
+      "handle": "E107.6",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle123hook_grip_or_not_overhead_in_the_snatch.md",
+      "source": "https://www.catalystathletics.com/article/123/Hook-Grip-or-Not-Overhead-in-the-Snatch/",
+      "score": 0.63412094,
+      "sha256": "9eae16babe6e7f474d9569801777b1cab873a542087801c8b90cc0cd38d49d95",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.7",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle1682flexibility_for_the_overhead_squat.md",
+      "source": "https://www.catalystathletics.com/article/1682/Flexibility-for-the-Overhead-Squat/",
+      "score": 0.63393986,
+      "sha256": "7b43652adeb7c0d01c037fe2ab84ec3d11ea010b993e1e76d4d2e374b02acf66",
+      "comment_section": true,
+      "same_source_as": [
+        "E107.2"
+      ]
+    },
+    {
+      "handle": "E107.8",
+      "question_key": "overhead_squat",
+      "note_path": "Mxv1bcXGtuU_2_tips_from_ilya_ilyins_snatch_technique.md",
+      "source": "https://www.youtube.com/watch?v=Mxv1bcXGtuU",
+      "score": 0.6310946,
+      "sha256": "2a873d85051ee81380498cd9a524db913b0dc2f01896885ef9fa38563a3e4a4c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.9",
+      "question_key": "overhead_squat",
+      "note_path": "hHnC0jXEko0_chinese_weightlifting_programming_with_yilin_squat_jerk_jour.md",
+      "source": "https://www.youtube.com/watch?v=hHnC0jXEko0",
+      "score": 0.62958443,
+      "sha256": "2b1d5a3bc76c68a9c3bc22f69c2e7336568fda699c55f5f3bada9265d69ca883",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.10",
+      "question_key": "overhead_squat",
+      "note_path": "xJgjsTr_AaI_anton_fixes_my_snatch.md",
+      "source": "https://www.youtube.com/watch?v=xJgjsTr_AaI",
+      "score": 0.6288997,
+      "sha256": "a86926e66a391b92235cec711ef3ecc6548cdfa45d375a0e64178f1512f5dd1e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.11",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle1848a_different_thought_about_snatch_technique_kee.md",
+      "source": "https://www.catalystathletics.com/article/1848/A-Different-Thought-About-Snatch-Technique-Keeping-the-Bar-C/",
+      "score": 0.62649274,
+      "sha256": "8f1951a36bedfcd2018d85857f841442987fd8bc6827508df49ad17085e2b8fd",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E107.12",
+      "question_key": "overhead_squat",
+      "note_path": "wwwcatalystathleticscomarticle2238staying_over_the_bar_in_the_snatch_clean_what_.md",
+      "source": "https://www.catalystathletics.com/article/2238/Staying-Over-the-Bar-in-the-Snatch-Clean-What-Why-How/",
+      "score": 0.6226083,
+      "sha256": "8619aaf40b1596a33cdaa5cf8c028ca4d88857bd1755661bbf0bde1764e11cf6",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.1",
+      "question_key": "snatch_deadlift",
+      "note_path": "KP6JyqqNS1I_the_power_position_in_the_snatch_torokhtiy.md",
+      "source": "https://www.youtube.com/watch?v=KP6JyqqNS1I",
+      "score": 0.6740302,
+      "sha256": "fadde93ac63ec396b0f7ccb16b3981044a42e0e0c1abceb51477a14d858ea9d3",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.2",
+      "question_key": "snatch_deadlift",
+      "note_path": "RmBJR8w4qUA_arnold_sports_festival_vlog_ft_sonny_webster.md",
+      "source": "https://www.youtube.com/watch?v=RmBJR8w4qUA",
+      "score": 0.67234886,
+      "sha256": "448e2d9eab362b982bfe57443b766e97fa290e767153695f4c87cf0b450066d5",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.3",
+      "question_key": "snatch_deadlift",
+      "note_path": "wwwcatalystathleticscomarticle49the_olympic_lift_starting_position_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/49/The-Olympic-Lift-Starting-Position-Snatch-Clean/",
+      "score": 0.67139614,
+      "sha256": "3d3e193b197852d3a02578af1f43fb3be0e6488c1b743c3051ae60abb6684a4d",
+      "comment_section": true,
+      "same_source_as": [
+        "E108.7",
+        "E108.10"
+      ]
+    },
+    {
+      "handle": "E108.4",
+      "question_key": "snatch_deadlift",
+      "note_path": "HvyWH2tBmhk_best_snatch_cues_for_olympic_weightlifting.md",
+      "source": "https://www.youtube.com/watch?v=HvyWH2tBmhk",
+      "score": 0.65724224,
+      "sha256": "f7c97bfcc9b5a5a8e16c61699c5b41af12d53410efd9882779f178db6b167247",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.5",
+      "question_key": "snatch_deadlift",
+      "note_path": "wwwcatalystathleticscomarticle70the_role_of_strength_in_weightlifting.md",
+      "source": "https://www.catalystathletics.com/article/70/The-Role-of-Strength-in-Weightlifting/",
+      "score": 0.6558877,
+      "sha256": "633a51bcb96d19c197599bbdfc32c2c45c5b11ef73ee00596f382527f3f74173",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.6",
+      "question_key": "snatch_deadlift",
+      "note_path": "MTLca2HmblE_lu_xiaojun_180kg_snatch_analysis_olympicweightlifting.md",
+      "source": "https://www.youtube.com/watch?v=MTLca2HmblE",
+      "score": 0.6519162,
+      "sha256": "02fd88b524fc216540ddcbc1f9a901b995ab07f4517f1cba4326d4e9588ec9ba",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.7",
+      "question_key": "snatch_deadlift",
+      "note_path": "wwwcatalystathleticscomarticle49the_olympic_lift_starting_position_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/49/The-Olympic-Lift-Starting-Position-Snatch-Clean/",
+      "score": 0.64948297,
+      "sha256": "f057092df9f9c0aa7f667a8b7c31fbb34060a7ba6e89c1bc38000f2d85329632",
+      "comment_section": false,
+      "same_source_as": [
+        "E108.3",
+        "E108.10"
+      ]
+    },
+    {
+      "handle": "E108.8",
+      "question_key": "snatch_deadlift",
+      "note_path": "gS3tK55MIEU_180kg_halt_clean_wednesday_training.md",
+      "source": "https://www.youtube.com/watch?v=gS3tK55MIEU",
+      "score": 0.64340377,
+      "sha256": "a27ae6a764e3d861c957c1d9025af7358add011ca90ee82221ff49f9810e1bdc",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.9",
+      "question_key": "snatch_deadlift",
+      "note_path": "QfezSB5JsDQ_weightlifting_coaches_react_to_2018_96kg_world_championship.md",
+      "source": "https://www.youtube.com/watch?v=QfezSB5JsDQ",
+      "score": 0.64261746,
+      "sha256": "af52b1d067bdafa0470c213ba571beecf51da8e3aa00e6609ba0053b83b97a9c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.10",
+      "question_key": "snatch_deadlift",
+      "note_path": "wwwcatalystathleticscomarticle49the_olympic_lift_starting_position_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/49/The-Olympic-Lift-Starting-Position-Snatch-Clean/",
+      "score": 0.63672507,
+      "sha256": "b9f215167660a0e03f08f98337bad4767be09a68d382582d423f300d5b099952",
+      "comment_section": true,
+      "same_source_as": [
+        "E108.3",
+        "E108.7"
+      ]
+    },
+    {
+      "handle": "E108.11",
+      "question_key": "snatch_deadlift",
+      "note_path": "wwwcatalystathleticscomarticle2215fix_the_hips_shooting_up_in_the_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/2215/Fix-the-Hips-Shooting-Up-in-the-Snatch-Clean/",
+      "score": 0.63521355,
+      "sha256": "d66646b7d693835a4907ee59330a320b26c72238a32be28b72ce1b49639d1f10",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E108.12",
+      "question_key": "snatch_deadlift",
+      "note_path": "agrKBjKRoBQ_zack_telander_training_w_dozer_ep_7.md",
+      "source": "https://www.youtube.com/watch?v=agrKBjKRoBQ",
+      "score": 0.6342937,
+      "sha256": "ab8eeb3429bfee857dfc0c9003e0f26a2f4a8284043d20385190e84f3b8189f6",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.1",
+      "question_key": "snatch_push_press",
+      "note_path": "wwwcatalystathleticscomarticle1762get_it_behind_your_neck_improving_the_snatch_a.md",
+      "source": "https://www.catalystathletics.com/article/1762/Get-it-Behind-Your-Neck-Improving-the-Snatch-and-Jerk-Overhe/",
+      "score": 0.6817727,
+      "sha256": "511d22e5a8118304869fb33ce69edea1858563057a748383272da9ff231c2aca",
+      "comment_section": true,
+      "same_source_as": [
+        "E109.2"
+      ]
+    },
+    {
+      "handle": "E109.2",
+      "question_key": "snatch_push_press",
+      "note_path": "wwwcatalystathleticscomarticle1762get_it_behind_your_neck_improving_the_snatch_a.md",
+      "source": "https://www.catalystathletics.com/article/1762/Get-it-Behind-Your-Neck-Improving-the-Snatch-and-Jerk-Overhe/",
+      "score": 0.6561848,
+      "sha256": "2c6ac374c35ad76aae8854eee6f834d6bfd95252cfc4d7541e167ca2a17e9719",
+      "comment_section": true,
+      "same_source_as": [
+        "E109.1"
+      ]
+    },
+    {
+      "handle": "E109.3",
+      "question_key": "snatch_push_press",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6448071,
+      "sha256": "b38dc04ed4b5793a317a69b2c80fe1e3dc369bc6464fcc948b301a5a129ce481",
+      "comment_section": false,
+      "same_source_as": [
+        "E109.6"
+      ]
+    },
+    {
+      "handle": "E109.4",
+      "question_key": "snatch_push_press",
+      "note_path": "wwwcatalystathleticscomarticle2049ask_greg_should_the_heels_stay_flat_in_the_pus.md",
+      "source": "https://www.catalystathletics.com/article/2049/Ask-Greg-Should-the-Heels-Stay-Flat-in-the-Push-Press/",
+      "score": 0.6364155,
+      "sha256": "0dca8ae3084a75c6a3395eb162c81530a257bcbe1d1db2e8bb25582627d2875b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.5",
+      "question_key": "snatch_push_press",
+      "note_path": "wwwcatalystathleticscomarticle1917all_hang_positions_great_small.md",
+      "source": "https://www.catalystathletics.com/article/1917/All-Hang-Positions-Great-Small/",
+      "score": 0.635394,
+      "sha256": "cc4b80ea3732fe356c42c2a37cd8dbcc001ffbde954229b74ac9ba380296995a",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.6",
+      "question_key": "snatch_push_press",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6337075,
+      "sha256": "4d664999a942b97f0f891c7f77e2d84e070ea661d1c4491f6eae7e6af5e8b085",
+      "comment_section": false,
+      "same_source_as": [
+        "E109.3"
+      ]
+    },
+    {
+      "handle": "E109.7",
+      "question_key": "snatch_push_press",
+      "note_path": "8o6iMyibQcQ_gui_malheiros_the_best_snatch_in_crossfit_138kg305lb_snatch.md",
+      "source": "https://www.youtube.com/watch?v=8o6iMyibQcQ",
+      "score": 0.62770045,
+      "sha256": "7cf58d9bb0cb98e1b1d546f2b963c32f3740d05759bb483a8e031566871eec39",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.8",
+      "question_key": "snatch_push_press",
+      "note_path": "wwwcatalystathleticscomarticle2212ask_greg_extending_the_knees_too_much_too_soon.md",
+      "source": "https://www.catalystathletics.com/article/2212/Ask-Greg-Extending-the-Knees-Too-Much-Too-Soon-in-the-Pull-a/",
+      "score": 0.6262852,
+      "sha256": "193314f414d8fbf5d97654e663a0a7d7fd63dbf43f8f175e73d365c7af2f7027",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.9",
+      "question_key": "snatch_push_press",
+      "note_path": "wwwcatalystathleticscomarticle123hook_grip_or_not_overhead_in_the_snatch.md",
+      "source": "https://www.catalystathletics.com/article/123/Hook-Grip-or-Not-Overhead-in-the-Snatch/",
+      "score": 0.62424254,
+      "sha256": "727431883aba6935ab47f808fe08e683289f308b056e58290a4165acec90d1b2",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.10",
+      "question_key": "snatch_push_press",
+      "note_path": "wwwcatalystathleticscomarticle2108dont_lock_your_elbows_in_the_pull.md",
+      "source": "https://www.catalystathletics.com/article/2108/Dont-Lock-Your-Elbows-in-the-Pull/",
+      "score": 0.62145746,
+      "sha256": "b1e99bef23bf1845ab1f2d29f0a84dae4f7ae18c9c64a38cd7affac218080a14",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.11",
+      "question_key": "snatch_push_press",
+      "note_path": "QfezSB5JsDQ_weightlifting_coaches_react_to_2018_96kg_world_championship.md",
+      "source": "https://www.youtube.com/watch?v=QfezSB5JsDQ",
+      "score": 0.62124485,
+      "sha256": "af52b1d067bdafa0470c213ba571beecf51da8e3aa00e6609ba0053b83b97a9c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E109.12",
+      "question_key": "snatch_push_press",
+      "note_path": "Pka6h0iQr4U_sc_coaches_react_to_throwers_doing_power_cleans.md",
+      "source": "https://www.youtube.com/watch?v=Pka6h0iQr4U",
+      "score": 0.61519533,
+      "sha256": "b131ee77870dcdd78c35ec54a8d5f300578286d7cfbbb8fe6f2756ff16197201",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E110.1",
+      "question_key": "power_clean",
+      "note_path": "wwwcatalystathleticscomarticle1874the_clean_and_jerk_rack_positions.md",
+      "source": "https://www.catalystathletics.com/article/1874/The-Clean-and-Jerk-Rack-Positions/",
+      "score": 0.72453344,
+      "sha256": "3e9e032f08e020728e50c24f2333504fad4d8ad8ffd7da38f3fe4e27a150ba7d",
+      "comment_section": true,
+      "same_source_as": [
+        "E110.6",
+        "E110.10"
+      ]
+    },
+    {
+      "handle": "E110.2",
+      "question_key": "power_clean",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.71738863,
+      "sha256": "ca893db264087aa49fda60252312f7c3865877b78ae151c120bfde506fb22274",
+      "comment_section": false,
+      "same_source_as": [
+        "E110.4"
+      ]
+    },
+    {
+      "handle": "E110.3",
+      "question_key": "power_clean",
+      "note_path": "H0NjcE2U1rM_huge_power_cleans_shethar_hits_pb_dylan_cooper_160kg_snatch_.md",
+      "source": "https://www.youtube.com/watch?v=H0NjcE2U1rM",
+      "score": 0.690884,
+      "sha256": "0be0fba7d54f715062fde8570d83b822e8023b4b29389edca9dc6b0f5a74fec7",
+      "comment_section": false,
+      "same_source_as": [
+        "E110.9"
+      ]
+    },
+    {
+      "handle": "E110.4",
+      "question_key": "power_clean",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.6845951,
+      "sha256": "4cbebd6a9d5797549debf6f993508ab4f372e48a7f6522b3e9faddecbd9b0c61",
+      "comment_section": false,
+      "same_source_as": [
+        "E110.2"
+      ]
+    },
+    {
+      "handle": "E110.5",
+      "question_key": "power_clean",
+      "note_path": "Y7uOSYj8SeE_5_tips_for_power_cleans.md",
+      "source": "https://www.youtube.com/watch?v=Y7uOSYj8SeE",
+      "score": 0.6818119,
+      "sha256": "1a03dfd7e806d39c34d5be7d5ed4bdab17547e8ca502139ac093440f1066fe35",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E110.6",
+      "question_key": "power_clean",
+      "note_path": "wwwcatalystathleticscomarticle1874the_clean_and_jerk_rack_positions.md",
+      "source": "https://www.catalystathletics.com/article/1874/The-Clean-and-Jerk-Rack-Positions/",
+      "score": 0.6765874,
+      "sha256": "928ba96e117941d759d6c05f26ff249e05d9aa0798dfa6ed357ce9d5461aea1f",
+      "comment_section": true,
+      "same_source_as": [
+        "E110.1",
+        "E110.10"
+      ]
+    },
+    {
+      "handle": "E110.7",
+      "question_key": "power_clean",
+      "note_path": "RmBJR8w4qUA_arnold_sports_festival_vlog_ft_sonny_webster.md",
+      "source": "https://www.youtube.com/watch?v=RmBJR8w4qUA",
+      "score": 0.66790205,
+      "sha256": "e6b6ca31fcc29eb29db7421d0465496a07c89168ca3fee80ace218a4fed1b837",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E110.8",
+      "question_key": "power_clean",
+      "note_path": "9nhRD58wCsg_why_power_cleans_are_great_for_track_cycling_harrie_lavreyse.md",
+      "source": "https://www.youtube.com/watch?v=9nhRD58wCsg",
+      "score": 0.66751313,
+      "sha256": "80fc5b2222f471e30f997a15d1f64338fd0b7f4a76956588784dd321704b8150",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E110.9",
+      "question_key": "power_clean",
+      "note_path": "H0NjcE2U1rM_huge_power_cleans_shethar_hits_pb_dylan_cooper_160kg_snatch_.md",
+      "source": "https://www.youtube.com/watch?v=H0NjcE2U1rM",
+      "score": 0.6672234,
+      "sha256": "2015a071278a391b40b80ad193cc5fd9887d8525a34117e1bed96e46b5f91b26",
+      "comment_section": false,
+      "same_source_as": [
+        "E110.3"
+      ]
+    },
+    {
+      "handle": "E110.10",
+      "question_key": "power_clean",
+      "note_path": "wwwcatalystathleticscomarticle1874the_clean_and_jerk_rack_positions.md",
+      "source": "https://www.catalystathletics.com/article/1874/The-Clean-and-Jerk-Rack-Positions/",
+      "score": 0.66535425,
+      "sha256": "1a49ef642f16009fd4ca913041858a8d362077810ca9f086a8d0e3b030fc89fb",
+      "comment_section": false,
+      "same_source_as": [
+        "E110.1",
+        "E110.6"
+      ]
+    },
+    {
+      "handle": "E110.11",
+      "question_key": "power_clean",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6651498,
+      "sha256": "b38dc04ed4b5793a317a69b2c80fe1e3dc369bc6464fcc948b301a5a129ce481",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E110.12",
+      "question_key": "power_clean",
+      "note_path": "903ISGyOz4k_gabriel_fixes_eoins_clean_technique_gsincraian.md",
+      "source": "https://www.youtube.com/watch?v=903ISGyOz4k",
+      "score": 0.6650059,
+      "sha256": "235c0faa0e53ac15125166b3e1022b587bfc6633c1035e43cbc267ff58084092",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.1",
+      "question_key": "clean_from_blocks",
+      "note_path": "RSRf78q8vsw_whats_the_deal_with_meso_hassonas_clean_hang_clean_ft_interv.md",
+      "source": "https://www.youtube.com/watch?v=RSRf78q8vsw",
+      "score": 0.6602706,
+      "sha256": "119421e8a82968c82f91c4b3a9c0184ea2ba9fbe85ebef006d8901d0b927e039",
+      "comment_section": false,
+      "same_source_as": [
+        "E111.6"
+      ]
+    },
+    {
+      "handle": "E111.2",
+      "question_key": "clean_from_blocks",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.6460648,
+      "sha256": "4cbebd6a9d5797549debf6f993508ab4f372e48a7f6522b3e9faddecbd9b0c61",
+      "comment_section": false,
+      "same_source_as": [
+        "E111.10"
+      ]
+    },
+    {
+      "handle": "E111.3",
+      "question_key": "clean_from_blocks",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6322965,
+      "sha256": "b38dc04ed4b5793a317a69b2c80fe1e3dc369bc6464fcc948b301a5a129ce481",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.4",
+      "question_key": "clean_from_blocks",
+      "note_path": "903ISGyOz4k_gabriel_fixes_eoins_clean_technique_gsincraian.md",
+      "source": "https://www.youtube.com/watch?v=903ISGyOz4k",
+      "score": 0.6243166,
+      "sha256": "235c0faa0e53ac15125166b3e1022b587bfc6633c1035e43cbc267ff58084092",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.5",
+      "question_key": "clean_from_blocks",
+      "note_path": "SA--KLVKFPI_mike_burgener_training_w_dozer_ep_15.md",
+      "source": "https://www.youtube.com/watch?v=SA--KLVKFPI",
+      "score": 0.62373626,
+      "sha256": "05cc3ddc38be81b2ffc1611dfefaa985ee44e233015687afac2360a843b135b6",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.6",
+      "question_key": "clean_from_blocks",
+      "note_path": "RSRf78q8vsw_whats_the_deal_with_meso_hassonas_clean_hang_clean_ft_interv.md",
+      "source": "https://www.youtube.com/watch?v=RSRf78q8vsw",
+      "score": 0.6161885,
+      "sha256": "8df005b64ddb49633a69d7f9e49d990b9df4532b17582ba5c905e02f18873764",
+      "comment_section": false,
+      "same_source_as": [
+        "E111.1"
+      ]
+    },
+    {
+      "handle": "E111.7",
+      "question_key": "clean_from_blocks",
+      "note_path": "H0NjcE2U1rM_huge_power_cleans_shethar_hits_pb_dylan_cooper_160kg_snatch_.md",
+      "source": "https://www.youtube.com/watch?v=H0NjcE2U1rM",
+      "score": 0.6149939,
+      "sha256": "dfdf831d57a3ee9f061f30ffa8c0fd102df4646087af2b604990a9af2fc06fc0",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.8",
+      "question_key": "clean_from_blocks",
+      "note_path": "L8mctC2TijI_training_with_a_2x_national_champion.md",
+      "source": "https://www.youtube.com/watch?v=L8mctC2TijI",
+      "score": 0.61363035,
+      "sha256": "93432e491125b3fa45b0e10741235ba0a00325d3295db1387c62ce60415b5e47",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.9",
+      "question_key": "clean_from_blocks",
+      "note_path": "XV70UbQ_iuI_going_huge_off_the_blocks_wednesday_training.md",
+      "source": "https://www.youtube.com/watch?v=XV70UbQ_iuI",
+      "score": 0.6087441,
+      "sha256": "3ccfe0c27e00eb2d19f0d958a0c732ca722f785d7faab77d89290fe60bdcfc1f",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.10",
+      "question_key": "clean_from_blocks",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.6069987,
+      "sha256": "38daec6f88db8625b9f6d4365665282a5f7baf1841ed1a527277a2bb9586664c",
+      "comment_section": false,
+      "same_source_as": [
+        "E111.2"
+      ]
+    },
+    {
+      "handle": "E111.11",
+      "question_key": "clean_from_blocks",
+      "note_path": "eeVQG5TF-Vo_rebecca_rouse_training_w_dozer_ep_4.md",
+      "source": "https://www.youtube.com/watch?v=eeVQG5TF-Vo",
+      "score": 0.6066563,
+      "sha256": "6b5c27ec9c1177db445c8a7173215fc096512859dec9f333931f2de6d8601a88",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E111.12",
+      "question_key": "clean_from_blocks",
+      "note_path": "torokhtiycomblogsguidesweightlifting_terms.md",
+      "source": "https://torokhtiy.com/blogs/guides/weightlifting-terms",
+      "score": 0.6027912,
+      "sha256": "b0e205a1513fb10639be154689b69cda9284c6670dc5df828777aa291f32995a",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.1",
+      "question_key": "three_position_clean",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.683766,
+      "sha256": "4cbebd6a9d5797549debf6f993508ab4f372e48a7f6522b3e9faddecbd9b0c61",
+      "comment_section": false,
+      "same_source_as": [
+        "E112.5"
+      ]
+    },
+    {
+      "handle": "E112.2",
+      "question_key": "three_position_clean",
+      "note_path": "ogfEZIFxHIs_weightlifting_coaches_react_to_2014_world_championships.md",
+      "source": "https://www.youtube.com/watch?v=ogfEZIFxHIs",
+      "score": 0.6469215,
+      "sha256": "41adfed7e0581ec6965a3c86460b4561b761b462a2a23ffb61b8c6870aceab2d",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.3",
+      "question_key": "three_position_clean",
+      "note_path": "7jIlwZ9afUM_stronger_than_karlos_nasar_noah_lyles_power_cleans_huge_dead.md",
+      "source": "https://www.youtube.com/watch?v=7jIlwZ9afUM",
+      "score": 0.63659203,
+      "sha256": "7c4d5d9d02fae1ebbfba88633e04f3310ea149c86d40a186e9d9051fc2cfcd6f",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.4",
+      "question_key": "three_position_clean",
+      "note_path": "eeVQG5TF-Vo_rebecca_rouse_training_w_dozer_ep_4.md",
+      "source": "https://www.youtube.com/watch?v=eeVQG5TF-Vo",
+      "score": 0.62758076,
+      "sha256": "6b5c27ec9c1177db445c8a7173215fc096512859dec9f333931f2de6d8601a88",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.5",
+      "question_key": "three_position_clean",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.62704635,
+      "sha256": "ca893db264087aa49fda60252312f7c3865877b78ae151c120bfde506fb22274",
+      "comment_section": false,
+      "same_source_as": [
+        "E112.1"
+      ]
+    },
+    {
+      "handle": "E112.6",
+      "question_key": "three_position_clean",
+      "note_path": "903ISGyOz4k_gabriel_fixes_eoins_clean_technique_gsincraian.md",
+      "source": "https://www.youtube.com/watch?v=903ISGyOz4k",
+      "score": 0.6265687,
+      "sha256": "235c0faa0e53ac15125166b3e1022b587bfc6633c1035e43cbc267ff58084092",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.7",
+      "question_key": "three_position_clean",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.62559015,
+      "sha256": "4d664999a942b97f0f891c7f77e2d84e070ea661d1c4491f6eae7e6af5e8b085",
+      "comment_section": false,
+      "same_source_as": [
+        "E112.10"
+      ]
+    },
+    {
+      "handle": "E112.8",
+      "question_key": "three_position_clean",
+      "note_path": "GhlL2jKwLT4_why_ilya_ilyin_is_so_great_at_cleaning_big_weights.md",
+      "source": "https://www.youtube.com/watch?v=GhlL2jKwLT4",
+      "score": 0.6163593,
+      "sha256": "bdd9fd7e2dbffc65390f4368d8669b488567f7c1042491f8fab37edb9d69f8d8",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.9",
+      "question_key": "three_position_clean",
+      "note_path": "XQ5WkilqHeU_weightlifting_coaches_react_to_2005_85kg_world_championship.md",
+      "source": "https://www.youtube.com/watch?v=XQ5WkilqHeU",
+      "score": 0.61614215,
+      "sha256": "9a09188af4741eb56242e8eb4e735a2c25664a0428834c2f61d349bdaf40e41e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.10",
+      "question_key": "three_position_clean",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6149832,
+      "sha256": "b38dc04ed4b5793a317a69b2c80fe1e3dc369bc6464fcc948b301a5a129ce481",
+      "comment_section": false,
+      "same_source_as": [
+        "E112.7"
+      ]
+    },
+    {
+      "handle": "E112.11",
+      "question_key": "three_position_clean",
+      "note_path": "IWrpYzEbgWY_weightlifting_coaches_react_to_2016_european_85kg_weightlift.md",
+      "source": "https://www.youtube.com/watch?v=IWrpYzEbgWY",
+      "score": 0.6142531,
+      "sha256": "8e889c80c7eb42b3b9487ca127e1c1a3d1f6a513a26359621556a609731d9512",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E112.12",
+      "question_key": "three_position_clean",
+      "note_path": "kviA2VCCDGM_weightlifting_coaches_react_85kg_2016_rio.md",
+      "source": "https://www.youtube.com/watch?v=kviA2VCCDGM",
+      "score": 0.61278343,
+      "sha256": "d2d24f78be81d4bc1ebd4500abe4d0abac68c8bb365f6d4de862d40b11b849a4",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.1",
+      "question_key": "two_position_clean",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.6892794,
+      "sha256": "4cbebd6a9d5797549debf6f993508ab4f372e48a7f6522b3e9faddecbd9b0c61",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.2",
+      "question_key": "two_position_clean",
+      "note_path": "903ISGyOz4k_gabriel_fixes_eoins_clean_technique_gsincraian.md",
+      "source": "https://www.youtube.com/watch?v=903ISGyOz4k",
+      "score": 0.6891024,
+      "sha256": "235c0faa0e53ac15125166b3e1022b587bfc6633c1035e43cbc267ff58084092",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.3",
+      "question_key": "two_position_clean",
+      "note_path": "H1AhqMO3Vkc_best_cues_to_improve_your_clean.md",
+      "source": "https://www.youtube.com/watch?v=H1AhqMO3Vkc",
+      "score": 0.666491,
+      "sha256": "c8b7104c5bda56d3b8f21eaf19357d10062882984ab2aaa7c37fd8e66f1e9e93",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.4",
+      "question_key": "two_position_clean",
+      "note_path": "RmBJR8w4qUA_arnold_sports_festival_vlog_ft_sonny_webster.md",
+      "source": "https://www.youtube.com/watch?v=RmBJR8w4qUA",
+      "score": 0.65063655,
+      "sha256": "e6b6ca31fcc29eb29db7421d0465496a07c89168ca3fee80ace218a4fed1b837",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.5",
+      "question_key": "two_position_clean",
+      "note_path": "eSPcGer22Gs_whats_the_deal_with_viktor_gettss_clean_ft_interview_with_vi.md",
+      "source": "https://www.youtube.com/watch?v=eSPcGer22Gs",
+      "score": 0.6489384,
+      "sha256": "b133bfd54d408e43024b9d18481c9afed6eb3af800253966a007f7e9ec9a5826",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.6",
+      "question_key": "two_position_clean",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6481358,
+      "sha256": "4d664999a942b97f0f891c7f77e2d84e070ea661d1c4491f6eae7e6af5e8b085",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.7",
+      "question_key": "two_position_clean",
+      "note_path": "sLjxErstpBg_when_to_use_hang_snatches_olympicweightlifting.md",
+      "source": "https://www.youtube.com/watch?v=sLjxErstpBg",
+      "score": 0.6426961,
+      "sha256": "c110d098bf26e20df26cab97ce46ecdf3e2cf167ed24ee3103964f92c942b4e7",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.8",
+      "question_key": "two_position_clean",
+      "note_path": "RSRf78q8vsw_whats_the_deal_with_meso_hassonas_clean_hang_clean_ft_interv.md",
+      "source": "https://www.youtube.com/watch?v=RSRf78q8vsw",
+      "score": 0.64202815,
+      "sha256": "8df005b64ddb49633a69d7f9e49d990b9df4532b17582ba5c905e02f18873764",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.9",
+      "question_key": "two_position_clean",
+      "note_path": "torokhtiycomblogsguideshang_clean_benefits.md",
+      "source": "https://torokhtiy.com/blogs/guides/hang-clean-benefits",
+      "score": 0.6402722,
+      "sha256": "fb6e4a30d9b83361bbf60565580578ee0b5320f39fcd3de519795e0c64aeabcd",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.10",
+      "question_key": "two_position_clean",
+      "note_path": "5qLdOEfsNjg_kakhi_kakhiashvilis_clean_technical_analysis.md",
+      "source": "https://www.youtube.com/watch?v=5qLdOEfsNjg",
+      "score": 0.63902533,
+      "sha256": "584075150929baa353d11d22e4aee30bdc4e4cea91ace08e90742b3d0330e8e2",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.11",
+      "question_key": "two_position_clean",
+      "note_path": "wwwcatalystathleticscomarticle122improving_the_clean_through_a_better_turnover.md",
+      "source": "https://www.catalystathletics.com/article/122/Improving-the-Clean-through-a-Better-Turnover/",
+      "score": 0.63845503,
+      "sha256": "4280ed90c3c140c12642d1fd2f862ff4abfdb1036dfad4fc703df3e225564b63",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E113.12",
+      "question_key": "two_position_clean",
+      "note_path": "IWrpYzEbgWY_weightlifting_coaches_react_to_2016_european_85kg_weightlift.md",
+      "source": "https://www.youtube.com/watch?v=IWrpYzEbgWY",
+      "score": 0.6357516,
+      "sha256": "f3a1bfc33e626d2238fcd4d6cefdd60208b1f76772aa9ff349fcbc38f27a010a",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.1",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "OuId3q2tOAg_eoins_training_vlog_7_165kg_clean_jerk_complex.md",
+      "source": "https://www.youtube.com/watch?v=OuId3q2tOAg",
+      "score": 0.7618221,
+      "sha256": "090c033de12c833fb0b46d69bb4e7dcd769500e1636a28f7b4d622acd266af7c",
+      "comment_section": false,
+      "same_source_as": [
+        "E114.7"
+      ]
+    },
+    {
+      "handle": "E114.2",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "jX38056Syy0_422lb_clean_and_jerk_full_week_of_training.md",
+      "source": "https://www.youtube.com/watch?v=jX38056Syy0",
+      "score": 0.74683964,
+      "sha256": "f9aa5203950a6995a87553f2740b7937839acfea87841be26ffc55ca6d46ea91",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.3",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "IWrpYzEbgWY_weightlifting_coaches_react_to_2016_european_85kg_weightlift.md",
+      "source": "https://www.youtube.com/watch?v=IWrpYzEbgWY",
+      "score": 0.7430569,
+      "sha256": "8e889c80c7eb42b3b9487ca127e1c1a3d1f6a513a26359621556a609731d9512",
+      "comment_section": false,
+      "same_source_as": [
+        "E114.6"
+      ]
+    },
+    {
+      "handle": "E114.4",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.73679554,
+      "sha256": "4d664999a942b97f0f891c7f77e2d84e070ea661d1c4491f6eae7e6af5e8b085",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.5",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "wwwcatalystathleticscomarticle1874the_clean_and_jerk_rack_positions.md",
+      "source": "https://www.catalystathletics.com/article/1874/The-Clean-and-Jerk-Rack-Positions/",
+      "score": 0.73504806,
+      "sha256": "3e9e032f08e020728e50c24f2333504fad4d8ad8ffd7da38f3fe4e27a150ba7d",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.6",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "IWrpYzEbgWY_weightlifting_coaches_react_to_2016_european_85kg_weightlift.md",
+      "source": "https://www.youtube.com/watch?v=IWrpYzEbgWY",
+      "score": 0.7330192,
+      "sha256": "f3a1bfc33e626d2238fcd4d6cefdd60208b1f76772aa9ff349fcbc38f27a010a",
+      "comment_section": false,
+      "same_source_as": [
+        "E114.3"
+      ]
+    },
+    {
+      "handle": "E114.7",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "OuId3q2tOAg_eoins_training_vlog_7_165kg_clean_jerk_complex.md",
+      "source": "https://www.youtube.com/watch?v=OuId3q2tOAg",
+      "score": 0.73233104,
+      "sha256": "949acf69297a3998a5f0ea6499ad84e58cf3b68ae26a8dc80171772efb8daacd",
+      "comment_section": false,
+      "same_source_as": [
+        "E114.1"
+      ]
+    },
+    {
+      "handle": "E114.8",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.72085387,
+      "sha256": "4cbebd6a9d5797549debf6f993508ab4f372e48a7f6522b3e9faddecbd9b0c61",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.9",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "eeVQG5TF-Vo_rebecca_rouse_training_w_dozer_ep_4.md",
+      "source": "https://www.youtube.com/watch?v=eeVQG5TF-Vo",
+      "score": 0.71995765,
+      "sha256": "6b5c27ec9c1177db445c8a7173215fc096512859dec9f333931f2de6d8601a88",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.10",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "wwwcatalystathleticscomarticle2050the_effects_of_knee_position_in_the_split_jerk.md",
+      "source": "https://www.catalystathletics.com/article/2050/The-Effects-of-Knee-Position-in-the-Split-Jerk/",
+      "score": 0.71625394,
+      "sha256": "890aca9211f6c06f287fa6bd1cfe3e4107298c96ad74cb48970d3a5d5f37b43b",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.11",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "-Bx05GmzSow_should_the_press_the_jerk_grip_be_the_same.md",
+      "source": "https://www.youtube.com/watch?v=-Bx05GmzSow",
+      "score": 0.7137525,
+      "sha256": "893cf4dfae8c3a4c280add5f76e4fb7798f31361ac929a75e11fa87be9bb3a16",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E114.12",
+      "question_key": "clean_fs_jerk_complex",
+      "note_path": "torokhtiycomblogsguidesolympic_lifting_complexes.md",
+      "source": "https://torokhtiy.com/blogs/guides/olympic-lifting-complexes",
+      "score": 0.70214784,
+      "sha256": "c3604a52b07b215dcfbe557a7abf550350a09945c81c047a7377a17bc3f131dc",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E115.1",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle1903the_jerk_technique_nobody_talks_about.md",
+      "source": "https://www.catalystathletics.com/article/1903/The-Jerk-Technique-Nobody-Talks-About/",
+      "score": 0.7300607,
+      "sha256": "b1d4a36cb13a40dae7d459f461576729cbc5c44d7d4950a49b7fb6d13097f285",
+      "comment_section": true,
+      "same_source_as": [
+        "E115.2"
+      ]
+    },
+    {
+      "handle": "E115.2",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle1903the_jerk_technique_nobody_talks_about.md",
+      "source": "https://www.catalystathletics.com/article/1903/The-Jerk-Technique-Nobody-Talks-About/",
+      "score": 0.67874223,
+      "sha256": "fe92ae290e33ac872b38ae83dfa200a5c63131905bb6c34ad22e7e851a0cabe4",
+      "comment_section": true,
+      "same_source_as": [
+        "E115.1"
+      ]
+    },
+    {
+      "handle": "E115.3",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "A4ELi4nyta8_push_jerk_vs_power_jerk.md",
+      "source": "https://www.youtube.com/watch?v=A4ELi4nyta8",
+      "score": 0.6685451,
+      "sha256": "73d35050891691f47dc30337acb58569eb5bad9d2b9330b831693405e0e03ce2",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E115.4",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle2194split_jerk_power_jerk_squat_jerk_why_who.md",
+      "source": "https://www.catalystathletics.com/article/2194/Split-Jerk-Power-Jerk-Squat-Jerk-Why-Who/",
+      "score": 0.6655698,
+      "sha256": "8e5f0f9b9d6bbde5a8d897755567b8e77dd582af0a46d17699d73e8a372a05c9",
+      "comment_section": false,
+      "same_source_as": [
+        "E115.8"
+      ]
+    },
+    {
+      "handle": "E115.5",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle1860ask_greg_should_i_give_up_on_the_split_jerk.md",
+      "source": "https://www.catalystathletics.com/article/1860/Ask-Greg-Should-I-Give-Up-on-the-Split-Jerk/",
+      "score": 0.6628613,
+      "sha256": "0f3dd56d6a27392192a6882aa6b8085f4f5d357bd5c9b204f5ea73e3742a8051",
+      "comment_section": false,
+      "same_source_as": [
+        "E115.6"
+      ]
+    },
+    {
+      "handle": "E115.6",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle1860ask_greg_should_i_give_up_on_the_split_jerk.md",
+      "source": "https://www.catalystathletics.com/article/1860/Ask-Greg-Should-I-Give-Up-on-the-Split-Jerk/",
+      "score": 0.6590475,
+      "sha256": "6273309eabca72cf0ac86977117fcc36c7deaab0a9340e3c998f82306ce8b7da",
+      "comment_section": true,
+      "same_source_as": [
+        "E115.5"
+      ]
+    },
+    {
+      "handle": "E115.7",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle106correcting_jerk_weaknesses.md",
+      "source": "https://www.catalystathletics.com/article/106/Correcting-Jerk-Weaknesses/",
+      "score": 0.6574531,
+      "sha256": "b6b7471414890992d0727afabdf6e5c9229e10b59bc014bbc97d7d89dba8a940",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E115.8",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle2194split_jerk_power_jerk_squat_jerk_why_who.md",
+      "source": "https://www.catalystathletics.com/article/2194/Split-Jerk-Power-Jerk-Squat-Jerk-Why-Who/",
+      "score": 0.65134263,
+      "sha256": "c13dc5cb05fa876b1d81229d401f3a64f5b1ecd91f939a138a456f285980f7cb",
+      "comment_section": false,
+      "same_source_as": [
+        "E115.4"
+      ]
+    },
+    {
+      "handle": "E115.9",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle1995finding_your_jerk_drive_stance.md",
+      "source": "https://www.catalystathletics.com/article/1995/Finding-Your-Jerk-Drive-Stance/",
+      "score": 0.64949507,
+      "sha256": "d181120da7f0be43b3f99cc7bd1cee1b0c9f73bf2cc89b87c6027b001755f774",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E115.10",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "TmuX1d389Zs_live_qa_with_greg_everett.md",
+      "source": "https://www.youtube.com/watch?v=TmuX1d389Zs",
+      "score": 0.647848,
+      "sha256": "611a125d3f657bbe972e82ec354606c42f0a6ddd8ee04db0f09dcdb55f51ab99",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E115.11",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "wwwcatalystathleticscomarticle1886top_5_assistance_exercises_for_the_jerk.md",
+      "source": "https://www.catalystathletics.com/article/1886/Top-5-Assistance-Exercises-for-the-Jerk/",
+      "score": 0.6470019,
+      "sha256": "643781a00f3f4e7c1c68161de4f9b2912aa8a7207eebf9025c3347eed40d1f8a",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E115.12",
+      "question_key": "power_clean_power_jerk",
+      "note_path": "4lVhS5k7fvY_lower_abs_for_better_jerks.md",
+      "source": "https://www.youtube.com/watch?v=4lVhS5k7fvY",
+      "score": 0.6456335,
+      "sha256": "7b8c05877849c45eceffb1e4e5385133e2f76a735f537e3bb1ccedd23d69695e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E116.1",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "g6ej_VutmsU_neck_it_band_training_power_jerk_for_athletes.md",
+      "source": "https://www.youtube.com/watch?v=g6ej_VutmsU",
+      "score": 0.75676966,
+      "sha256": "e6513ff7047e25b35f216b9a921214ecea5f7767c4b9dc504ab4ce62d653760a",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E116.2",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "TmuX1d389Zs_live_qa_with_greg_everett.md",
+      "source": "https://www.youtube.com/watch?v=TmuX1d389Zs",
+      "score": 0.7563958,
+      "sha256": "611a125d3f657bbe972e82ec354606c42f0a6ddd8ee04db0f09dcdb55f51ab99",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E116.3",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "wwwcatalystathleticscomarticle2097ask_greg_driving_forward_in_the_split_jerk.md",
+      "source": "https://www.catalystathletics.com/article/2097/Ask-Greg-Driving-Forward-in-the-Split-Jerk/",
+      "score": 0.75335646,
+      "sha256": "7fa37ee91206e59723ffcc38ebe60693685640234c4fc10ae157f5478c0dc2e9",
+      "comment_section": true,
+      "same_source_as": [
+        "E116.12"
+      ]
+    },
+    {
+      "handle": "E116.4",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "wwwcatalystathleticscomarticle2194split_jerk_power_jerk_squat_jerk_why_who.md",
+      "source": "https://www.catalystathletics.com/article/2194/Split-Jerk-Power-Jerk-Squat-Jerk-Why-Who/",
+      "score": 0.7487911,
+      "sha256": "c13dc5cb05fa876b1d81229d401f3a64f5b1ecd91f939a138a456f285980f7cb",
+      "comment_section": false,
+      "same_source_as": [
+        "E116.8"
+      ]
+    },
+    {
+      "handle": "E116.5",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "wwwcatalystathleticscomarticle1860ask_greg_should_i_give_up_on_the_split_jerk.md",
+      "source": "https://www.catalystathletics.com/article/1860/Ask-Greg-Should-I-Give-Up-on-the-Split-Jerk/",
+      "score": 0.7460826,
+      "sha256": "6273309eabca72cf0ac86977117fcc36c7deaab0a9340e3c998f82306ce8b7da",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E116.6",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "mzywc-XF29U_oleksiy_torokhtiy_training_w_dozer_ep_17.md",
+      "source": "https://www.youtube.com/watch?v=mzywc-XF29U",
+      "score": 0.74202645,
+      "sha256": "702bdffcc81f0b2f2d37e5f5d85226f455155f6c92969e68983a4bdd27eaa486",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E116.7",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "cKKBDo-gu4s_liu_huanhuas_split_jerk_technique_breakdown.md",
+      "source": "https://www.youtube.com/watch?v=cKKBDo-gu4s",
+      "score": 0.74117756,
+      "sha256": "17b11d0da8809a8505dfb42488a8b478b2df6d2777477eb7f64ef953dc7d7717",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E116.8",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "wwwcatalystathleticscomarticle2194split_jerk_power_jerk_squat_jerk_why_who.md",
+      "source": "https://www.catalystathletics.com/article/2194/Split-Jerk-Power-Jerk-Squat-Jerk-Why-Who/",
+      "score": 0.73896575,
+      "sha256": "772c0fb971ccc3e0e838c0e60ea4564a733acf6d7fe4a7e1815e3605242ea015",
+      "comment_section": true,
+      "same_source_as": [
+        "E116.4"
+      ]
+    },
+    {
+      "handle": "E116.9",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "wCKOcihDOa0_learn_to_jerk_like_stefan_botev_split_jerk_technical_analysi.md",
+      "source": "https://www.youtube.com/watch?v=wCKOcihDOa0",
+      "score": 0.73866844,
+      "sha256": "756f08e3531bdbf93929120e813d470ad20dbc4b26bafc3e49254a5ec1e7950e",
+      "comment_section": false,
+      "same_source_as": [
+        "E116.11"
+      ]
+    },
+    {
+      "handle": "E116.10",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "rrt_APVTr44_forde_2025_88kg_weightlifting_sika_strength_live_commentary.md",
+      "source": "https://www.youtube.com/watch?v=rrt_APVTr44",
+      "score": 0.7337103,
+      "sha256": "410a514141734d5ce68f2dbec53ad8b45284073b1664d3afdaf5a0fb38be20f3",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E116.11",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "wCKOcihDOa0_learn_to_jerk_like_stefan_botev_split_jerk_technical_analysi.md",
+      "source": "https://www.youtube.com/watch?v=wCKOcihDOa0",
+      "score": 0.732013,
+      "sha256": "14b3f846ec0926c7894075ac9bdc1641240e1a8f5591bb4294e90f6d96f56288",
+      "comment_section": false,
+      "same_source_as": [
+        "E116.9"
+      ]
+    },
+    {
+      "handle": "E116.12",
+      "question_key": "power_split_jerk_combo",
+      "note_path": "wwwcatalystathleticscomarticle2097ask_greg_driving_forward_in_the_split_jerk.md",
+      "source": "https://www.catalystathletics.com/article/2097/Ask-Greg-Driving-Forward-in-the-Split-Jerk/",
+      "score": 0.73120445,
+      "sha256": "6899e3497ac631348f4423b3f407e42aa00bfe62a7d23eabb6b8f4c8a7abf946",
+      "comment_section": false,
+      "same_source_as": [
+        "E116.3"
+      ]
+    },
+    {
+      "handle": "E117.1",
+      "question_key": "front_squat",
+      "note_path": "wwwcatalystathleticscomarticle1926why_weightlifters_should_front_squat_with_a_cl.md",
+      "source": "https://www.catalystathletics.com/article/1926/Why-Weightlifters-Should-Front-Squat-With-a-Closed-Fist-Inst/",
+      "score": 0.6672567,
+      "sha256": "854bd7a3dcad57bfd66fb3b79c30690557e1ae7e0706f6806774cd4fe7f2d158",
+      "comment_section": false,
+      "same_source_as": [
+        "E117.2"
+      ]
+    },
+    {
+      "handle": "E117.2",
+      "question_key": "front_squat",
+      "note_path": "wwwcatalystathleticscomarticle1926why_weightlifters_should_front_squat_with_a_cl.md",
+      "source": "https://www.catalystathletics.com/article/1926/Why-Weightlifters-Should-Front-Squat-With-a-Closed-Fist-Inst/",
+      "score": 0.6671815,
+      "sha256": "11c4e29700a65c9f142bdbe68bb96790e8be175209742898162779816bcb2833",
+      "comment_section": false,
+      "same_source_as": [
+        "E117.1"
+      ]
+    },
+    {
+      "handle": "E117.3",
+      "question_key": "front_squat",
+      "note_path": "NNDJSEVTO74_american_squat_jerks_strongman_press_huge_cleans.md",
+      "source": "https://www.youtube.com/watch?v=NNDJSEVTO74",
+      "score": 0.6397611,
+      "sha256": "8c5c4f4018bcc383d9205bfb80408bf0e2077c21c5dd957d4669a66e3ffca576",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.4",
+      "question_key": "front_squat",
+      "note_path": "9Nrx6umAsic_strength_development_for_long_legs_w_max_aita.md",
+      "source": "https://www.youtube.com/watch?v=9Nrx6umAsic",
+      "score": 0.6314181,
+      "sha256": "9d1f170672368f9d3ac741e2c74f13e6bead9e67b2cd368d45d28f7848cf5447",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.5",
+      "question_key": "front_squat",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6305592,
+      "sha256": "4d664999a942b97f0f891c7f77e2d84e070ea661d1c4491f6eae7e6af5e8b085",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.6",
+      "question_key": "front_squat",
+      "note_path": "torokhtiycomblogsguidesfront_rack_mobility_secrets.md",
+      "source": "https://torokhtiy.com/blogs/guides/front-rack-mobility-secrets",
+      "score": 0.6281563,
+      "sha256": "081fb8ed18b1e972a7499e1b5120b0d6b9b9ce13b635a22e340fdf9a8ace3d7f",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.7",
+      "question_key": "front_squat",
+      "note_path": "YV6EQoRV4G4_barkleys_crazy_nfl_jumps_rizki_jerks_massive_nino_squats_big.md",
+      "source": "https://www.youtube.com/watch?v=YV6EQoRV4G4",
+      "score": 0.6273787,
+      "sha256": "700edf6c8a3ffb384a1a52bc064af329b4374bba706736d55916ed519fc87ae8",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.8",
+      "question_key": "front_squat",
+      "note_path": "nHWKskwzaeo_qa_weightlifting_is_hard_mma_sc_knee_sleeves_stuck_on_5x5.md",
+      "source": "https://www.youtube.com/watch?v=nHWKskwzaeo",
+      "score": 0.62608063,
+      "sha256": "f2dac5241a0b524004a8bf4952af0c94b0b57659d08d65ee6f8855665e0210ee",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.9",
+      "question_key": "front_squat",
+      "note_path": "wwwcatalystathleticscomarticle1874the_clean_and_jerk_rack_positions.md",
+      "source": "https://www.catalystathletics.com/article/1874/The-Clean-and-Jerk-Rack-Positions/",
+      "score": 0.6245837,
+      "sha256": "928ba96e117941d759d6c05f26ff249e05d9aa0798dfa6ed357ce9d5461aea1f",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.10",
+      "question_key": "front_squat",
+      "note_path": "SA--KLVKFPI_mike_burgener_training_w_dozer_ep_15.md",
+      "source": "https://www.youtube.com/watch?v=SA--KLVKFPI",
+      "score": 0.6236677,
+      "sha256": "14f9553812f527b1b38a3c1a311bce7955950445d2b5d6e08e8917beac85d492",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.11",
+      "question_key": "front_squat",
+      "note_path": "GuliXQF1jsc_qa_squatting_faster_special_forces_fitness_standards_bench_p.md",
+      "source": "https://www.youtube.com/watch?v=GuliXQF1jsc",
+      "score": 0.6180122,
+      "sha256": "3d311ea82faacdf809c364a3eac42cb7a0be9db575958d19fbe45b9aa5c67459",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E117.12",
+      "question_key": "front_squat",
+      "note_path": "PmtBbGKYVoY_how_to_conquer_weightlifting_mentally.md",
+      "source": "https://www.youtube.com/watch?v=PmtBbGKYVoY",
+      "score": 0.61785877,
+      "sha256": "e7228cc1d95082f5bce60546d48c0aab1071d74082f0b12281a3f01c274812ab",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E118.1",
+      "question_key": "back_squat",
+      "note_path": "kjrsct1TVDw_how_to_deep_squat_as_a_tall_lifter.md",
+      "source": "https://www.youtube.com/watch?v=kjrsct1TVDw",
+      "score": 0.69260085,
+      "sha256": "7b67b0ea8b545c04c604dd243d404118fb761881774088516487219326bbcd63",
+      "comment_section": false,
+      "same_source_as": [
+        "E118.3"
+      ]
+    },
+    {
+      "handle": "E118.2",
+      "question_key": "back_squat",
+      "note_path": "wwwcatalystathleticscomarticle135squat_stance_the_olympic_lifts_the_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/135/Squat-Stance-the-Olympic-Lifts-The-Snatch-Clean-Receiving-/",
+      "score": 0.69070834,
+      "sha256": "8fcd688d1372be0ba5c7fb947bf7667f5f427f1ab1dc660ba58ef2f513059c3b",
+      "comment_section": true,
+      "same_source_as": [
+        "E118.4",
+        "E118.5"
+      ]
+    },
+    {
+      "handle": "E118.3",
+      "question_key": "back_squat",
+      "note_path": "kjrsct1TVDw_how_to_deep_squat_as_a_tall_lifter.md",
+      "source": "https://www.youtube.com/watch?v=kjrsct1TVDw",
+      "score": 0.6754197,
+      "sha256": "8c5f7c0d838b511fc643a7c7d8e165ce1089a2567645f0da8792c1e861ddc75d",
+      "comment_section": false,
+      "same_source_as": [
+        "E118.1"
+      ]
+    },
+    {
+      "handle": "E118.4",
+      "question_key": "back_squat",
+      "note_path": "wwwcatalystathleticscomarticle135squat_stance_the_olympic_lifts_the_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/135/Squat-Stance-the-Olympic-Lifts-The-Snatch-Clean-Receiving-/",
+      "score": 0.67358375,
+      "sha256": "3045bf04732c27d1a4fa3d3fd93ceca2e72b753236e5f3a1759842a5c6264fa6",
+      "comment_section": true,
+      "same_source_as": [
+        "E118.2",
+        "E118.5"
+      ]
+    },
+    {
+      "handle": "E118.5",
+      "question_key": "back_squat",
+      "note_path": "wwwcatalystathleticscomarticle135squat_stance_the_olympic_lifts_the_snatch_clean.md",
+      "source": "https://www.catalystathletics.com/article/135/Squat-Stance-the-Olympic-Lifts-The-Snatch-Clean-Receiving-/",
+      "score": 0.6673527,
+      "sha256": "695f90e0b123a1786aa6cbee69b4e5accd6330d331d249c663fff6f1c8735b57",
+      "comment_section": true,
+      "same_source_as": [
+        "E118.2",
+        "E118.4"
+      ]
+    },
+    {
+      "handle": "E118.6",
+      "question_key": "back_squat",
+      "note_path": "wwwcatalystathleticscomarticle113proper_foot_position_in_the_squat.md",
+      "source": "https://www.catalystathletics.com/article/113/Proper-Foot-Position-in-the-Squat/",
+      "score": 0.66696525,
+      "sha256": "cb8dd54a61cab595699d73f4203a3ae2b1b96a8ec49a12bd54575abb1c2c4fff",
+      "comment_section": false,
+      "same_source_as": [
+        "E118.10"
+      ]
+    },
+    {
+      "handle": "E118.7",
+      "question_key": "back_squat",
+      "note_path": "7tmOqDh44Sk_liu_huanhuas_insane_squat_progress_olympicweightlifting.md",
+      "source": "https://www.youtube.com/watch?v=7tmOqDh44Sk",
+      "score": 0.664948,
+      "sha256": "d290f6d04b6668f55f2c101fae858225dfcb07a7a57389ec7758c338d2627ae5",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E118.8",
+      "question_key": "back_squat",
+      "note_path": "iRZ-NdzDZ_o_hafthor_pulls_470kg_raw_double_bodyweight_power_cleans_sika_.md",
+      "source": "https://www.youtube.com/watch?v=iRZ-NdzDZ_o",
+      "score": 0.66399896,
+      "sha256": "8b32df035703b1d350401340582618432484a5f008bf7cb108aca3e426fe121b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E118.9",
+      "question_key": "back_squat",
+      "note_path": "o-Do_xR15IE_how_to_back_squat_like_a_professional_weightlifter.md",
+      "source": "https://www.youtube.com/watch?v=o-Do_xR15IE",
+      "score": 0.66057944,
+      "sha256": "94492fef60f239a7ad11db0e7b63705753699705e2d58ef2ee08bde5484ac815",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E118.10",
+      "question_key": "back_squat",
+      "note_path": "wwwcatalystathleticscomarticle113proper_foot_position_in_the_squat.md",
+      "source": "https://www.catalystathletics.com/article/113/Proper-Foot-Position-in-the-Squat/",
+      "score": 0.6544242,
+      "sha256": "7c599ec2f19692a7cae1691751048d431d5e29f6c91d8a7e310a50d748048cbd",
+      "comment_section": true,
+      "same_source_as": [
+        "E118.6"
+      ]
+    },
+    {
+      "handle": "E118.11",
+      "question_key": "back_squat",
+      "note_path": "ysWvosXOOqM_squat_tips_for_tall_lifters.md",
+      "source": "https://www.youtube.com/watch?v=ysWvosXOOqM",
+      "score": 0.65380704,
+      "sha256": "6ca3b20500afeba41c42ddebf74caa6fecde5ae0c52a20a305c402d4afded821",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E118.12",
+      "question_key": "back_squat",
+      "note_path": "wwwcatalystathleticscomarticle1925weightlifting_pull_technique_knees_back_vs_pus.md",
+      "source": "https://www.catalystathletics.com/article/1925/Weightlifting-Pull-Technique-Knees-Back-vs-Push-Up/",
+      "score": 0.65137565,
+      "sha256": "39f552d8e71c693b0fc981540a9c8d0459fa22e98194ea3b5ba2a6876f1b628e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.1",
+      "question_key": "pause_back_squat",
+      "note_path": "U87fnz3t5wU_big_announcement_operation_370_ep_1.md",
+      "source": "https://www.youtube.com/watch?v=U87fnz3t5wU",
+      "score": 0.6800257,
+      "sha256": "e8f13a39b9daaee65b60b6b6567a400445c66185ae31259bf1128b1754e976e1",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.2",
+      "question_key": "pause_back_squat",
+      "note_path": "7jIlwZ9afUM_stronger_than_karlos_nasar_noah_lyles_power_cleans_huge_dead.md",
+      "source": "https://www.youtube.com/watch?v=7jIlwZ9afUM",
+      "score": 0.65553796,
+      "sha256": "a62b8050cfa1ce1b2d9a2155715e66d2af06b16e0ab26911e6fb9cdb3b7e25da",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.3",
+      "question_key": "pause_back_squat",
+      "note_path": "hZgi84frEyU_karlos_nasar_secret_hideout_athletes_prep_hard_for_the_paris.md",
+      "source": "https://www.youtube.com/watch?v=hZgi84frEyU",
+      "score": 0.65437025,
+      "sha256": "898da7924f3d1cb2e4276c3e765b0160eb25e5e806bf4c18372d697835f8628c",
+      "comment_section": false,
+      "same_source_as": [
+        "E119.10",
+        "E119.12"
+      ]
+    },
+    {
+      "handle": "E119.4",
+      "question_key": "pause_back_squat",
+      "note_path": "zPMPajL3d1U_400lb_clean_wednesday_training.md",
+      "source": "https://www.youtube.com/watch?v=zPMPajL3d1U",
+      "score": 0.6479498,
+      "sha256": "87c3093ff88048be9f79d318e2891a28b7ec6f522391145852e36dda95fbe442",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.5",
+      "question_key": "pause_back_squat",
+      "note_path": "3MVukmMF8jA_squats_pause_vs_bounce.md",
+      "source": "https://www.youtube.com/watch?v=3MVukmMF8jA",
+      "score": 0.6431835,
+      "sha256": "4ec8ae2f0fed02355289b461b21a82208371f7aac1a9f56b6d21e6e18f32a87f",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.6",
+      "question_key": "pause_back_squat",
+      "note_path": "EwESBn75XH0_underrated_snatch_cue.md",
+      "source": "https://www.youtube.com/watch?v=EwESBn75XH0",
+      "score": 0.6294117,
+      "sha256": "0d61fed30313dce7cb1ea7ead3a0baa7820ae1c8af54e374befc8dbd67b0e91d",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.7",
+      "question_key": "pause_back_squat",
+      "note_path": "wwwcatalystathleticscomarticle2039dialing_in_your_squat_stance_position_movement.md",
+      "source": "https://www.catalystathletics.com/article/2039/Dialing-in-Your-Squat-Stance-Position-Movement/",
+      "score": 0.6284924,
+      "sha256": "d19c53091c7beee7c92540ecabefe308eb7e53f9970b4d7aa2d96e84e0b7ebf0",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.8",
+      "question_key": "pause_back_squat",
+      "note_path": "wwwcatalystathleticscomarticle2266tipping_in_the_squat_legs_not_hips.md",
+      "source": "https://www.catalystathletics.com/article/2266/Tipping-in-The-Squat-Legs-Not-Hips/",
+      "score": 0.6273148,
+      "sha256": "f5f735842b01085e570f5ec8e948ce9ddcd589bbc6b150229130c3d85e2c4eb3",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.9",
+      "question_key": "pause_back_squat",
+      "note_path": "GuliXQF1jsc_qa_squatting_faster_special_forces_fitness_standards_bench_p.md",
+      "source": "https://www.youtube.com/watch?v=GuliXQF1jsc",
+      "score": 0.6257964,
+      "sha256": "e86467ca111000738d1a97fdf1f560454296ada688f3fef33eada36fa62aee97",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.10",
+      "question_key": "pause_back_squat",
+      "note_path": "hZgi84frEyU_karlos_nasar_secret_hideout_athletes_prep_hard_for_the_paris.md",
+      "source": "https://www.youtube.com/watch?v=hZgi84frEyU",
+      "score": 0.62034845,
+      "sha256": "fd7901c791e378c96134e527c92d5d4e05b6a337442043b986a14e28ae07ff5a",
+      "comment_section": false,
+      "same_source_as": [
+        "E119.3",
+        "E119.12"
+      ]
+    },
+    {
+      "handle": "E119.11",
+      "question_key": "pause_back_squat",
+      "note_path": "torokhtiycomblogsguidesolympic_weightlifting_program_for_beginners.md",
+      "source": "https://torokhtiy.com/blogs/guides/olympic-weightlifting-program-for-beginners",
+      "score": 0.6184574,
+      "sha256": "9841d8eae044068358212d551c288180fe5eacab809d10dfb77932f6c3a73e6c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E119.12",
+      "question_key": "pause_back_squat",
+      "note_path": "hZgi84frEyU_karlos_nasar_secret_hideout_athletes_prep_hard_for_the_paris.md",
+      "source": "https://www.youtube.com/watch?v=hZgi84frEyU",
+      "score": 0.6178799,
+      "sha256": "7737450093a6f006d1423ba363db86e5d8c6609f58f3dcf5e95208f06a771382",
+      "comment_section": false,
+      "same_source_as": [
+        "E119.3",
+        "E119.10"
+      ]
+    },
+    {
+      "handle": "E120.1",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6614409,
+      "sha256": "c95d80339c619477098099dc324ca36ede2c43fe3a91dff1850cbd48096bdb0e",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.6"
+      ]
+    },
+    {
+      "handle": "E120.2",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "ZpNMtX9TL1E_weightlifting_coaches_react_to_96kg_2019_world_championships.md",
+      "source": "https://www.youtube.com/watch?v=ZpNMtX9TL1E",
+      "score": 0.6521362,
+      "sha256": "36b6847950fe5981048bedbce5922b9edd0e42c4b02e6baeef80e847f14c33d7",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E120.3",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "tczdk8DAVS0_my_workout_romanian_deadlift_thruster_eng_sub.md",
+      "source": "https://www.youtube.com/watch?v=tczdk8DAVS0",
+      "score": 0.64156234,
+      "sha256": "139e03677059302b87b2d3fe3687655c7c7054d9c74a6277422b7a32e308ec17",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.4",
+        "E120.8",
+        "E120.10"
+      ]
+    },
+    {
+      "handle": "E120.4",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "tczdk8DAVS0_my_workout_romanian_deadlift_thruster_eng_sub.md",
+      "source": "https://www.youtube.com/watch?v=tczdk8DAVS0",
+      "score": 0.634847,
+      "sha256": "e428a46efdbe6b97fc7d5156af02068f22858c86e5c98ee96087cb73547ff90e",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.3",
+        "E120.8",
+        "E120.10"
+      ]
+    },
+    {
+      "handle": "E120.5",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "6LHBUwdowAw_alex_lee_trainiing_w_dozer_ep_3.md",
+      "source": "https://www.youtube.com/watch?v=6LHBUwdowAw",
+      "score": 0.63199914,
+      "sha256": "1d408e5493e62531181c5b4f5b18948b0ec616fb23a9968edbaf84ad6971bbfc",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.11"
+      ]
+    },
+    {
+      "handle": "E120.6",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6319665,
+      "sha256": "4d664999a942b97f0f891c7f77e2d84e070ea661d1c4491f6eae7e6af5e8b085",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.1"
+      ]
+    },
+    {
+      "handle": "E120.7",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "NUakq9x_CBQ_weightlifting_coaches_analysis_of_two_russian_super_heavywei.md",
+      "source": "https://www.youtube.com/watch?v=NUakq9x_CBQ",
+      "score": 0.629503,
+      "sha256": "875368426754adb0ea11ec0ca98c1f85bd51ea38d0030d66cf532cb9b2adcfb5",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E120.8",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "tczdk8DAVS0_my_workout_romanian_deadlift_thruster_eng_sub.md",
+      "source": "https://www.youtube.com/watch?v=tczdk8DAVS0",
+      "score": 0.62855494,
+      "sha256": "cf1fc4e6729b517d9be61cf99fa30e1cba4e5ffea99c034b6c203b6cb8abf2c2",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.3",
+        "E120.4",
+        "E120.10"
+      ]
+    },
+    {
+      "handle": "E120.9",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "ljQkdx9syww_pyrros_dimas_kakhi_kakhiashvili_the_greek_weightlifting_prog.md",
+      "source": "https://www.youtube.com/watch?v=ljQkdx9syww",
+      "score": 0.6277548,
+      "sha256": "ea9856bbbd139707aedd03538f02dea8e15a031229124b0379b6bfeac41d98cc",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E120.10",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "tczdk8DAVS0_my_workout_romanian_deadlift_thruster_eng_sub.md",
+      "source": "https://www.youtube.com/watch?v=tczdk8DAVS0",
+      "score": 0.6277442,
+      "sha256": "90ebf07031adbe6c0941b676ae69978429f33955bd9db1ae8141b90073c744f9",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.3",
+        "E120.4",
+        "E120.8"
+      ]
+    },
+    {
+      "handle": "E120.11",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "6LHBUwdowAw_alex_lee_trainiing_w_dozer_ep_3.md",
+      "source": "https://www.youtube.com/watch?v=6LHBUwdowAw",
+      "score": 0.62478495,
+      "sha256": "ad58b44a0c110dd41bbb1ada3fea08cab51ddde9dd278f6e3dd84f12e9f06098",
+      "comment_section": false,
+      "same_source_as": [
+        "E120.5"
+      ]
+    },
+    {
+      "handle": "E120.12",
+      "question_key": "stiff_legged_deadlift",
+      "note_path": "hHnC0jXEko0_chinese_weightlifting_programming_with_yilin_squat_jerk_jour.md",
+      "source": "https://www.youtube.com/watch?v=hHnC0jXEko0",
+      "score": 0.6241112,
+      "sha256": "247927094bd2b917a49f6022254d0a809d9d945841677ec447062b96c55bcad0",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E121.1",
+      "question_key": "strict_press",
+      "note_path": "hHnC0jXEko0_chinese_weightlifting_programming_with_yilin_squat_jerk_jour.md",
+      "source": "https://www.youtube.com/watch?v=hHnC0jXEko0",
+      "score": 0.6705752,
+      "sha256": "2b1d5a3bc76c68a9c3bc22f69c2e7336568fda699c55f5f3bada9265d69ca883",
+      "comment_section": false,
+      "same_source_as": [
+        "E121.5"
+      ]
+    },
+    {
+      "handle": "E121.2",
+      "question_key": "strict_press",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6558311,
+      "sha256": "c95d80339c619477098099dc324ca36ede2c43fe3a91dff1850cbd48096bdb0e",
+      "comment_section": false,
+      "same_source_as": [
+        "E121.4"
+      ]
+    },
+    {
+      "handle": "E121.3",
+      "question_key": "strict_press",
+      "note_path": "ZpNMtX9TL1E_weightlifting_coaches_react_to_96kg_2019_world_championships.md",
+      "source": "https://www.youtube.com/watch?v=ZpNMtX9TL1E",
+      "score": 0.6430848,
+      "sha256": "36b6847950fe5981048bedbce5922b9edd0e42c4b02e6baeef80e847f14c33d7",
+      "comment_section": false,
+      "same_source_as": [
+        "E121.7"
+      ]
+    },
+    {
+      "handle": "E121.4",
+      "question_key": "strict_press",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.63924736,
+      "sha256": "4d664999a942b97f0f891c7f77e2d84e070ea661d1c4491f6eae7e6af5e8b085",
+      "comment_section": false,
+      "same_source_as": [
+        "E121.2"
+      ]
+    },
+    {
+      "handle": "E121.5",
+      "question_key": "strict_press",
+      "note_path": "hHnC0jXEko0_chinese_weightlifting_programming_with_yilin_squat_jerk_jour.md",
+      "source": "https://www.youtube.com/watch?v=hHnC0jXEko0",
+      "score": 0.6357911,
+      "sha256": "247927094bd2b917a49f6022254d0a809d9d945841677ec447062b96c55bcad0",
+      "comment_section": false,
+      "same_source_as": [
+        "E121.1"
+      ]
+    },
+    {
+      "handle": "E121.6",
+      "question_key": "strict_press",
+      "note_path": "Pka6h0iQr4U_sc_coaches_react_to_throwers_doing_power_cleans.md",
+      "source": "https://www.youtube.com/watch?v=Pka6h0iQr4U",
+      "score": 0.63178706,
+      "sha256": "5dbdd9ddb001f2829f45984d60cc368e5fd3983a7cf920a0f7d61236e254cd5c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E121.7",
+      "question_key": "strict_press",
+      "note_path": "ZpNMtX9TL1E_weightlifting_coaches_react_to_96kg_2019_world_championships.md",
+      "source": "https://www.youtube.com/watch?v=ZpNMtX9TL1E",
+      "score": 0.6264199,
+      "sha256": "e8f6862a585ab413e9a79bbc6ff508c060c2e53154a9681278c9983f416aab7f",
+      "comment_section": false,
+      "same_source_as": [
+        "E121.3"
+      ]
+    },
+    {
+      "handle": "E121.8",
+      "question_key": "strict_press",
+      "note_path": "wwwcatalystathleticscomarticle2134ask_greg_improving_overhead_strength_stability.md",
+      "source": "https://www.catalystathletics.com/article/2134/Ask-Greg-Improving-Overhead-Strength-Stability/",
+      "score": 0.62276024,
+      "sha256": "b6f2832f8d1552fc53e12df34cfcc8119e727d13d6da1378d9a310d9b110067a",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E121.9",
+      "question_key": "strict_press",
+      "note_path": "ljQkdx9syww_pyrros_dimas_kakhi_kakhiashvili_the_greek_weightlifting_prog.md",
+      "source": "https://www.youtube.com/watch?v=ljQkdx9syww",
+      "score": 0.6226969,
+      "sha256": "ea9856bbbd139707aedd03538f02dea8e15a031229124b0379b6bfeac41d98cc",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E121.10",
+      "question_key": "strict_press",
+      "note_path": "ogfEZIFxHIs_weightlifting_coaches_react_to_2014_world_championships.md",
+      "source": "https://www.youtube.com/watch?v=ogfEZIFxHIs",
+      "score": 0.6217022,
+      "sha256": "e9b37225b8513a29e00ebd80c8243c2ffbefca6da91bf588fa25c6df40fd9b8b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E121.11",
+      "question_key": "strict_press",
+      "note_path": "a3puhE1EBt8_chinese_weightlifting_team_physio_stephane_gregory.md",
+      "source": "https://www.youtube.com/watch?v=a3puhE1EBt8",
+      "score": 0.61908287,
+      "sha256": "c00ad6cf6171d10a5b894aa1c4970f7fc8f195e39ddae4d430f946c17d36958b",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E121.12",
+      "question_key": "strict_press",
+      "note_path": "6LHBUwdowAw_alex_lee_trainiing_w_dozer_ep_3.md",
+      "source": "https://www.youtube.com/watch?v=6LHBUwdowAw",
+      "score": 0.61725426,
+      "sha256": "19d081b7fb34b38b62f38d9c10376d0c5ce7cb28810a53eedddecad6d27bb7d5",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.1",
+      "question_key": "barbell_row",
+      "note_path": "rt3Q8IsJxD0_3_accessories_every_olympic_weightlifter_needs_to_do.md",
+      "source": "https://www.youtube.com/watch?v=rt3Q8IsJxD0",
+      "score": 0.6806829,
+      "sha256": "26fae8fc551d9f1d315a52f37f2e59bfb9f97594f878422c8eab54e530e86e07",
+      "comment_section": false,
+      "same_source_as": [
+        "E122.3"
+      ]
+    },
+    {
+      "handle": "E122.2",
+      "question_key": "barbell_row",
+      "note_path": "wwwcatalystathleticscomarticle125hips_meet_bar_bar_body_contact_in_the_extension.md",
+      "source": "https://www.catalystathletics.com/article/125/Hips-Meet-Bar-Bar-Body-Contact-in-the-Extension-of-the-Snatc/",
+      "score": 0.6656506,
+      "sha256": "ec41ba787fc7f5d50454f4dd4611207ffc896e73f0ef4698cfd96b72e3c01248",
+      "comment_section": true,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.3",
+      "question_key": "barbell_row",
+      "note_path": "rt3Q8IsJxD0_3_accessories_every_olympic_weightlifter_needs_to_do.md",
+      "source": "https://www.youtube.com/watch?v=rt3Q8IsJxD0",
+      "score": 0.6560817,
+      "sha256": "6ac666d16b7737271750aa84816e399ac5ff6671a2c11e36dcb51c9c28249b7c",
+      "comment_section": false,
+      "same_source_as": [
+        "E122.1"
+      ]
+    },
+    {
+      "handle": "E122.4",
+      "question_key": "barbell_row",
+      "note_path": "XH0vMcNGjek_lasha_is_olympic_ready_tian_tao_is_back_hafrs_heaviest_raw_d.md",
+      "source": "https://www.youtube.com/watch?v=XH0vMcNGjek",
+      "score": 0.6549839,
+      "sha256": "a26fb0326729326666f65330a480f3c2c3163ca82a13f2ffe5a7b1eabe093e61",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.5",
+      "question_key": "barbell_row",
+      "note_path": "dhM4LMQIAAA_heavy_snatch_and_clean_and_jerk_ft_zack_telander.md",
+      "source": "https://www.youtube.com/watch?v=dhM4LMQIAAA",
+      "score": 0.6539567,
+      "sha256": "c4a7ac44118c0d78520a9ee5ffaff70c0ff5625b9436a2efd0e5f9287a134f04",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.6",
+      "question_key": "barbell_row",
+      "note_path": "mgI4EcL6v9c_breaking_down_the_chinese_weightlifting_system.md",
+      "source": "https://www.youtube.com/watch?v=mgI4EcL6v9c",
+      "score": 0.6510681,
+      "sha256": "bb50146880a884819057e989b69c2221c27f66473bfc2d7b5eb2050386f8e2c2",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.7",
+      "question_key": "barbell_row",
+      "note_path": "l7BPjvqFkgA_best_bodybuilding_exercises_for_weightlifting.md",
+      "source": "https://www.youtube.com/watch?v=l7BPjvqFkgA",
+      "score": 0.6509978,
+      "sha256": "6a634005bd3e640d53d423784d8f7997e5eb66167d290f5f36b246559fd04295",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.8",
+      "question_key": "barbell_row",
+      "note_path": "DFTnpBs2A_k_3_ways_of_improving_your_weightlifting_technique.md",
+      "source": "https://www.youtube.com/watch?v=DFTnpBs2A_k",
+      "score": 0.6502247,
+      "sha256": "0b335cfe9a05b6e3de69f40f86d4daa01b9ffdbeeff958cf4e03c8106f6ff734",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.9",
+      "question_key": "barbell_row",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.6478641,
+      "sha256": "c95d80339c619477098099dc324ca36ede2c43fe3a91dff1850cbd48096bdb0e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.10",
+      "question_key": "barbell_row",
+      "note_path": "6LHBUwdowAw_alex_lee_trainiing_w_dozer_ep_3.md",
+      "source": "https://www.youtube.com/watch?v=6LHBUwdowAw",
+      "score": 0.64729893,
+      "sha256": "77e11e34bf9676824b6d92b1c5e789b69b5aa50858731a4d9ea798970e38d913",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.11",
+      "question_key": "barbell_row",
+      "note_path": "Mxv1bcXGtuU_2_tips_from_ilya_ilyins_snatch_technique.md",
+      "source": "https://www.youtube.com/watch?v=Mxv1bcXGtuU",
+      "score": 0.64390504,
+      "sha256": "2a873d85051ee81380498cd9a524db913b0dc2f01896885ef9fa38563a3e4a4c",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E122.12",
+      "question_key": "barbell_row",
+      "note_path": "RmBJR8w4qUA_arnold_sports_festival_vlog_ft_sonny_webster.md",
+      "source": "https://www.youtube.com/watch?v=RmBJR8w4qUA",
+      "score": 0.63579893,
+      "sha256": "0efd21c70f9cd530006355f93fe27559e2ad1201a599e00f12cb764fc94f8418",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E123.1",
+      "question_key": "plank",
+      "note_path": "qAj810NlQAI_kolbi_ferguson_training_w_dozer_ep_11.md",
+      "source": "https://www.youtube.com/watch?v=qAj810NlQAI",
+      "score": 0.61468244,
+      "sha256": "867278c044380d0e1bd95097a825ab18b8815d3ba355a6978e6d7e5285347eea",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E123.2",
+      "question_key": "plank",
+      "note_path": "a3puhE1EBt8_chinese_weightlifting_team_physio_stephane_gregory.md",
+      "source": "https://www.youtube.com/watch?v=a3puhE1EBt8",
+      "score": 0.6056006,
+      "sha256": "d3d14ce7a2ca86e93c51d6e2532411a38dfb71e4e207eb643477e9936278f195",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E123.3",
+      "question_key": "plank",
+      "note_path": "wwwcatalystathleticscomarticle1865fixing_droopy_elbows_in_the_jerk.md",
+      "source": "https://www.catalystathletics.com/article/1865/Fixing-Droopy-Elbows-in-the-Jerk/",
+      "score": 0.59560525,
+      "sha256": "651bce08a1993f74f0068eb3592919458230f4e5ee246fb5d342fb269df708ec",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E124.1",
+      "question_key": "ab_wheel",
+      "note_path": "7jIlwZ9afUM_stronger_than_karlos_nasar_noah_lyles_power_cleans_huge_dead.md",
+      "source": "https://www.youtube.com/watch?v=7jIlwZ9afUM",
+      "score": 0.60291845,
+      "sha256": "da86d6b7b6895c141b47a46dded5d7f812221e0a044f5c85b9512d02139f2ede",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E124.2",
+      "question_key": "ab_wheel",
+      "note_path": "W2HUNnT1HHg_qa_thoughts_on_conjugate_tendon_health_running_squatting_bes.md",
+      "source": "https://www.youtube.com/watch?v=W2HUNnT1HHg",
+      "score": 0.58999145,
+      "sha256": "587b9fe2a613961d0f1f2f21b7e48a9804924385c0f5aae9389d40ff91f2d601",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E124.3",
+      "question_key": "ab_wheel",
+      "note_path": "qAj810NlQAI_kolbi_ferguson_training_w_dozer_ep_11.md",
+      "source": "https://www.youtube.com/watch?v=qAj810NlQAI",
+      "score": 0.5892847,
+      "sha256": "867278c044380d0e1bd95097a825ab18b8815d3ba355a6978e6d7e5285347eea",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E124.4",
+      "question_key": "ab_wheel",
+      "note_path": "aQd-ApfZ17w_smashing_my_upper_body_perfecting_my_snatch_technique.md",
+      "source": "https://www.youtube.com/watch?v=aQd-ApfZ17w",
+      "score": 0.5857074,
+      "sha256": "41b33d9967056c7388e576d37fc4511ab57b56d0ef078733e5be95321d7529f2",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E124.5",
+      "question_key": "ab_wheel",
+      "note_path": "XQ5WkilqHeU_weightlifting_coaches_react_to_2005_85kg_world_championship.md",
+      "source": "https://www.youtube.com/watch?v=XQ5WkilqHeU",
+      "score": 0.5832082,
+      "sha256": "9a09188af4741eb56242e8eb4e735a2c25664a0428834c2f61d349bdaf40e41e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E125.1",
+      "question_key": "trunk_static_strength",
+      "note_path": "wwwcatalystathleticscomarticle2134ask_greg_improving_overhead_strength_stability.md",
+      "source": "https://www.catalystathletics.com/article/2134/Ask-Greg-Improving-Overhead-Strength-Stability/",
+      "score": 0.65731657,
+      "sha256": "bae7d061ed20f1857107a3fa825a1fe4e3f15f6d603e9f94b478e89a22deba51",
+      "comment_section": true,
+      "same_source_as": [
+        "E125.3",
+        "E125.6",
+        "E125.7",
+        "E125.10"
+      ]
+    },
+    {
+      "handle": "E125.2",
+      "question_key": "trunk_static_strength",
+      "note_path": "torokhtiycomblogsguidesweightlifting_terms.md",
+      "source": "https://torokhtiy.com/blogs/guides/weightlifting-terms",
+      "score": 0.6347115,
+      "sha256": "cd1321dd744f256caa5ad9fea3df204ea360e6380e7bee6f6c06875dcd11e9d8",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E125.3",
+      "question_key": "trunk_static_strength",
+      "note_path": "wwwcatalystathleticscomarticle2134ask_greg_improving_overhead_strength_stability.md",
+      "source": "https://www.catalystathletics.com/article/2134/Ask-Greg-Improving-Overhead-Strength-Stability/",
+      "score": 0.614758,
+      "sha256": "b6f2832f8d1552fc53e12df34cfcc8119e727d13d6da1378d9a310d9b110067a",
+      "comment_section": false,
+      "same_source_as": [
+        "E125.1",
+        "E125.6",
+        "E125.7",
+        "E125.10"
+      ]
+    },
+    {
+      "handle": "E125.4",
+      "question_key": "trunk_static_strength",
+      "note_path": "XH0vMcNGjek_lasha_is_olympic_ready_tian_tao_is_back_hafrs_heaviest_raw_d.md",
+      "source": "https://www.youtube.com/watch?v=XH0vMcNGjek",
+      "score": 0.61217374,
+      "sha256": "8a7ae857a1af3de0e8c0cba15e6b8c53667c705169d2c95f1afa4f541facc87f",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E125.5",
+      "question_key": "trunk_static_strength",
+      "note_path": "wwwcatalystathleticscomarticle2048stability_in_the_bottom_of_the_snatch_jerk.md",
+      "source": "https://www.catalystathletics.com/article/2048/Stability-in-the-Bottom-of-the-Snatch-Jerk/",
+      "score": 0.61029446,
+      "sha256": "1e1531e83ad3c88b51f93e25665923b372974cc4519ca351a462343d6bdaec41",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E125.6",
+      "question_key": "trunk_static_strength",
+      "note_path": "wwwcatalystathleticscomarticle2134ask_greg_improving_overhead_strength_stability.md",
+      "source": "https://www.catalystathletics.com/article/2134/Ask-Greg-Improving-Overhead-Strength-Stability/",
+      "score": 0.6072801,
+      "sha256": "3cc4a9c63a5e0af00b6ba9b084cde5a16709c14c3a7c921b125a1e5efda3192c",
+      "comment_section": false,
+      "same_source_as": [
+        "E125.1",
+        "E125.3",
+        "E125.7",
+        "E125.10"
+      ]
+    },
+    {
+      "handle": "E125.7",
+      "question_key": "trunk_static_strength",
+      "note_path": "wwwcatalystathleticscomarticle2134ask_greg_improving_overhead_strength_stability.md",
+      "source": "https://www.catalystathletics.com/article/2134/Ask-Greg-Improving-Overhead-Strength-Stability/",
+      "score": 0.6068556,
+      "sha256": "cd0b555b6f3b49de254ad671d991521984cc4e7e42360ed62411cec2d06413b7",
+      "comment_section": false,
+      "same_source_as": [
+        "E125.1",
+        "E125.3",
+        "E125.6",
+        "E125.10"
+      ]
+    },
+    {
+      "handle": "E125.8",
+      "question_key": "trunk_static_strength",
+      "note_path": "sS_mUvoTVmI_weightlifters_get_strong_first_olympicweightlifting_strength.md",
+      "source": "https://www.youtube.com/watch?v=sS_mUvoTVmI",
+      "score": 0.6046623,
+      "sha256": "4b587c80f8d87603e26f762c5a2fc5adcb2e007b868ad68dc7b989e3b6d90074",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E125.9",
+      "question_key": "trunk_static_strength",
+      "note_path": "03ZHCdx3hjw_weightlifting_coaches_react_to_81kg_2019_world_champioships.md",
+      "source": "https://www.youtube.com/watch?v=03ZHCdx3hjw",
+      "score": 0.60444325,
+      "sha256": "c95d80339c619477098099dc324ca36ede2c43fe3a91dff1850cbd48096bdb0e",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E125.10",
+      "question_key": "trunk_static_strength",
+      "note_path": "wwwcatalystathleticscomarticle2134ask_greg_improving_overhead_strength_stability.md",
+      "source": "https://www.catalystathletics.com/article/2134/Ask-Greg-Improving-Overhead-Strength-Stability/",
+      "score": 0.59923476,
+      "sha256": "5ed761228ca6bb327d43d03dea76f1914018f29794c5dc2c0581cc45b4fe24bf",
+      "comment_section": false,
+      "same_source_as": [
+        "E125.1",
+        "E125.3",
+        "E125.6",
+        "E125.7"
+      ]
+    },
+    {
+      "handle": "E125.11",
+      "question_key": "trunk_static_strength",
+      "note_path": "torokhtiycomblogsguideswhat_muscles_does_hang_clean_work.md",
+      "source": "https://torokhtiy.com/blogs/guides/what-muscles-does-hang-clean-work",
+      "score": 0.59903467,
+      "sha256": "1a6f3eeb314c163e374c18c18bb2aaf62500536eaa6f9ad98a6ca4d27993eb82",
+      "comment_section": false,
+      "same_source_as": []
+    },
+    {
+      "handle": "E125.12",
+      "question_key": "trunk_static_strength",
+      "note_path": "ruvYggPwn8A_why_do_weightlifters_have_weak_upper_arms_and_how_to_fix_it.md",
+      "source": "https://www.youtube.com/watch?v=ruvYggPwn8A",
+      "score": 0.59613955,
+      "sha256": "431b3a9472d22774fedf0bae7d70ac53277f93c27fca5cd80584090609db4e02",
+      "comment_section": false,
+      "same_source_as": []
+    }
+  ]
+}

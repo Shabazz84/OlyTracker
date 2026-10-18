@@ -96,7 +96,8 @@ const EXERCISE_CATALOG = {
     desc:"Internal rotation, not external, in the catch — front side pulls in short, back gets long. External rotation causes disconnection and an early drop in turnover; directly addresses your OHS limiter. (Dozer, high-confidence)" },
   snatch_balance:         { id:'snatch_balance',         name:'Snatch Balance',              type:'snatch',
     desc:"Bar on the back, snatch grip. Short dip-drive, then push yourself down under the bar into a full overhead squat. Hold the bottom 5 sec before standing [E11.3]. Overhead check: snatch balance should reach your best snatch, ideally 10–15 kg over [E10.3]." },
-  overhead_squat:         { id:'overhead_squat',         name:'Overhead Squat',              type:'snatch'    },
+  overhead_squat:         { id:'overhead_squat',         name:'Overhead Squat',              type:'snatch',
+    desc:"Lock the bar in forcefully, then keep upper back, shoulders, arms and bar motionless for the whole rep. (Everett)\nShoulder blades squeezed up and together; bar over the back of the neck, in the palm just behind the forearm; grip only as tight as control needs. (Everett)\nThe goal is a bottom position so routine you never hesitate to receive a snatch there. (Everett)" },
   sots_press:             { id:'sots_press',             name:'Sots Press',                  type:'snatch'    },
   hang_power_clean:       { id:'hang_power_clean',       name:'Hang Power Clean',            type:'cj',
     desc:"Elbows out and down, not high/narrow, to create a posterior trap shelf. A wider grip helps posterior connection — avoid a forward shoulder lean. (Dozer)" },
@@ -108,8 +109,10 @@ const EXERCISE_CATALOG = {
     desc:"Dip like a basketball jump — load quads and glutes, keep the bar directly over your foot pressure throughout. (Webster)" },
   clean_and_jerk:         { id:'clean_and_jerk',         name:'Clean & Jerk',                type:'cj',
     desc:"Maintain the diaphragm brace from clean into jerk dip — don't exhale or reset. Treat clean and jerk as one lift, not two. (Dozer/Webster, high-confidence)" },
-  back_squat:             { id:'back_squat',             name:'Back Squat',                  type:'strength'  },
-  front_squat:            { id:'front_squat',            name:'Front Squat',                 type:'strength'  },
+  back_squat:             { id:'back_squat',             name:'Back Squat',                  type:'strength',
+    desc:"Set your lower back's natural arch, not an exaggerated one, and keep it for the whole rep: no rounding at the bottom, no hip thrust at the top. (Sika)\nGo heavy only as deep as that arch holds. (Everett)\nKnees forward over the toes, hips close to the heels. Standing up, keep driving the knees forward so the hips don't shoot back. (Sika)" },
+  front_squat:            { id:'front_squat',            name:'Front Squat',                 type:'strength',
+    desc:"Rack: shoulders forward and slightly up, bar sitting on them, and a full hand around the bar, not two fingers. (Everett · Foreman)\nKnees travel forward over the toes and the pressure stays in the quads, with the torso upright. (Sika/Telander)" },
   klokov_squat:           { id:'klokov_squat',           name:'Klokov Squat',                type:'strength'  },
   berestov_squat:         { id:'berestov_squat',         name:'Berestov Squat',              type:'strength'  },
   rdl:                    { id:'rdl',                    name:'Romanian Deadlift',            type:'strength',
@@ -127,17 +130,23 @@ const EXERCISE_CATALOG = {
   face_pull:              { id:'face_pull',              name:'Face Pull',                   type:'accessory' },
   pallof_press:           { id:'pallof_press',           name:'Pallof Press',                type:'accessory' },
   dead_bug:               { id:'dead_bug',               name:'Dead Bug',                    type:'accessory' },
-  plank:                  { id:'plank',                  name:'Plank',                       type:'accessory' },
-  ab_wheel:               { id:'ab_wheel',               name:'Ab Wheel / Rollout',          type:'accessory' },
+  plank:                  { id:'plank',                  name:'Plank',                       type:'accessory',
+    desc:"Brace as you would under a bar: lower abs tight and pushed down, not sucked in. (Everett)\nHold the position still. In the lifts the trunk's job is to be a rigid support. (Everett)" },
+  ab_wheel:               { id:'ab_wheel',               name:'Ab Wheel / Rollout',          type:'accessory',
+    desc:"Roll out only as far as you can still control the position, hold it there, then roll back. (Gregory, via Sika)" },
   // ── Snatch variations ─────────────────────────────────────────────────────
-  snatch:                      { id:'snatch',                      name:'Snatch',                       type:'snatch' },
-  power_snatch:                { id:'power_snatch',                name:'Power Snatch',                 type:'snatch' },
+  snatch:                      { id:'snatch',                      name:'Snatch',                       type:'snatch',
+    desc:"Off the floor, shoulders and hips rise together; shins vertical by the time the bar reaches the knee. (Dozer · Sika)\nArms long and shoulders down until the bar reaches the hip; then keep the elbows above the bar until it passes your chest. (Dozer)\nSettle the bottom position before you stand. Don't rush out of the squat. (Everett · Dozer)" },
+  power_snatch:                { id:'power_snatch',                name:'Power Snatch',                 type:'snatch',
+    desc:"Finish the pull, then get under fast. Having less time and distance to get under the bar is what trains second- and third-pull speed. (Everett)\nThe bar has to go higher than in a squat snatch. (Webster)" },
   hang_snatch:                 { id:'hang_snatch',                 name:'Hang Snatch',                  type:'snatch' },
-  snatch_from_blocks:          { id:'snatch_from_blocks',          name:'Snatch from Blocks',           type:'snatch' },
+  snatch_from_blocks:          { id:'snatch_from_blocks',          name:'Snatch from Blocks',           type:'snatch',
+    desc:"Start in the position you'd pass through from the floor. Blocks only carry over to the floor if the position matches. (Sika)\nAbove the knee the job is speed: no early arm bend, then a fast, vertical extension. (Sika)\nIt's easier to commit under the bar off blocks than off the floor. Use that to practise going under. (Dozer)" },
   snatch_pull:                 { id:'snatch_pull',                 name:'Snatch Pull',                  type:'snatch',
     desc:"Full foot engagement — spread toes, create arch pressure, not heels. Prevents balance loss through the pull. (Dozer/Webster, high-confidence)" },
   snatch_high_pull:            { id:'snatch_high_pull',            name:'Snatch High Pull',             type:'snatch' },
-  snatch_deadlift:             { id:'snatch_deadlift',             name:'Snatch Deadlift',              type:'snatch' },
+  snatch_deadlift:             { id:'snatch_deadlift',             name:'Snatch Deadlift',              type:'snatch',
+    desc:"Same positions as your snatch, done slowly. Feel the back angle so you can carry it into the lift. (Torokhtiy)\nKeep one back angle through the first pull; at the knee, shins vertical and shoulders in front of the bar. (Everett · Sika)\nThis isn't a max deadlift: at snatch weights you can keep the back set, so keep it set. (Everett)" },
   drop_snatch:                 { id:'drop_snatch',                 name:'Drop Snatch',                  type:'snatch' },
   tall_snatch:                 { id:'tall_snatch',                 name:'Tall Snatch',                  type:'snatch' },
   pause_snatch:                { id:'pause_snatch',                name:'Pause Snatch',                 type:'snatch' },
@@ -148,9 +157,11 @@ const EXERCISE_CATALOG = {
   pressing_snatch_balance:     { id:'pressing_snatch_balance',     name:'Pressing Snatch Balance',      type:'snatch' },
   // ── Clean variations ──────────────────────────────────────────────────────
   clean:                  { id:'clean',                  name:'Clean',                       type:'cj' },
-  power_clean:            { id:'power_clean',            name:'Power Clean',                 type:'cj' },
+  power_clean:            { id:'power_clean',            name:'Power Clean',                 type:'cj',
+    desc:"Finish the extension, then pull yourself down onto the bar, keeping the torso upright. (Sika)\nLand in your squat stance with hips back over the heels, not a wide starfish, so a heavy one can ride down into a full clean. (Sika)\nRack it on shoulders pushed forward and slightly up. (Everett)" },
   hang_clean:             { id:'hang_clean',             name:'Hang Clean',                  type:'cj' },
-  clean_from_blocks:      { id:'clean_from_blocks',      name:'Clean from Blocks',           type:'cj' },
+  clean_from_blocks:      { id:'clean_from_blocks',      name:'Clean from Blocks',           type:'cj',
+    desc:"Above the knee the work is the second pull and the turnover: explode, then get under fast. (Sika · Torokhtiy)\nStart in the position you'd pass through from the floor. (Sika)" },
   muscle_clean:           { id:'muscle_clean',           name:'Muscle Clean',                type:'cj' },
   tall_clean:             { id:'tall_clean',             name:'Tall Clean',                  type:'cj' },
   pause_clean:            { id:'pause_clean',            name:'Pause Clean',                 type:'cj' },
@@ -171,7 +182,8 @@ const EXERCISE_CATALOG = {
   jerk_from_blocks:       { id:'jerk_from_blocks',       name:'Jerk from Blocks',            type:'cj' },
   push_jerk:              { id:'push_jerk',              name:'Push Jerk',                   type:'cj' },
   // ── Squat variations ──────────────────────────────────────────────────────
-  pause_back_squat:       { id:'pause_back_squat',       name:'Pause Back Squat',            type:'strength' },
+  pause_back_squat:       { id:'pause_back_squat',       name:'Pause Back Squat',            type:'strength',
+    desc:"Hold the full 3-second pause, then stand without a bounce. Taking away the stretch reflex is the point. (Torokhtiy)\nUse a weight you can stand up in good position. A slow rep in the right position beats a fast one that tips forward. (Everett)" },
   tempo_back_squat:       { id:'tempo_back_squat',       name:'Tempo Back Squat',            type:'strength' },
   pause_front_squat:      { id:'pause_front_squat',      name:'Pause Front Squat',           type:'strength' },
   tempo_front_squat:      { id:'tempo_front_squat',      name:'Tempo Front Squat',           type:'strength' },
@@ -193,7 +205,8 @@ const EXERCISE_CATALOG = {
   high_pull:              { id:'high_pull',              name:'High Pull',                   type:'strength' },
   // ── Upper — press ─────────────────────────────────────────────────────────
   overhead_press:         { id:'overhead_press',         name:'Overhead Press',              type:'strength' },
-  strict_press:           { id:'strict_press',           name:'Strict Press',                type:'strength' },
+  strict_press:           { id:'strict_press',           name:'Strict Press',                type:'strength',
+    desc:"Finish in the jerk's overhead position: bar over the back of the neck, shoulder blades squeezed up and together, elbows slightly out. (Everett)\nGrip only as tight as control needs, with the bar in the palm just behind the centre of the forearm. (Everett)" },
   bench_press:            { id:'bench_press',            name:'Bench Press',                 type:'strength' },
   decline_bench_press:    { id:'decline_bench_press',    name:'Decline Bench Press',         type:'strength' },
   landmine_press:         { id:'landmine_press',         name:'Landmine Press',              type:'strength' },
@@ -202,7 +215,8 @@ const EXERCISE_CATALOG = {
   // ── Upper — pull ──────────────────────────────────────────────────────────
   pull_up:                { id:'pull_up',                name:'Pull Up',                     type:'strength' },
   lat_pulldown:           { id:'lat_pulldown',           name:'Lat Pulldown',                type:'strength' },
-  barbell_row:            { id:'barbell_row',            name:'Barbell Row',                 type:'strength' },
+  barbell_row:            { id:'barbell_row',            name:'Barbell Row',                 type:'strength',
+    desc:"Pendlay style carries over most: bar from the floor every rep, hips high as in a deadlift, pull to the ribs, plates back to the floor each time. (Dozer)\nTrain the back directly. Pulls and squats alone don't do it. (Sika)" },
   pendlay_row:            { id:'pendlay_row',            name:'Pendlay Row',                 type:'strength' },
   seal_row:               { id:'seal_row',               name:'Seal Row',                    type:'strength' },
   dumbbell_row:           { id:'dumbbell_row',           name:'Dumbbell Row',                type:'strength' },
@@ -253,25 +267,36 @@ const EXERCISE_CATALOG = {
   snpp_ohs_complex:        { id:'snpp_ohs_complex',        name:'SnPP + OHS Complex',             type:'snatch' },
   snatch_opener:           { id:'snatch_opener',           name:'Light Snatch Opener',            type:'snatch' },
   floating_snatch:         { id:'floating_snatch',         name:'Floating Snatch',                type:'snatch' },
-  three_position_snatch:   { id:'three_position_snatch',   name:'3-Position Snatch',              type:'snatch' },
+  three_position_snatch:   { id:'three_position_snatch',   name:'3-Position Snatch',              type:'snatch',
+    desc:"Top down: mid-thigh first, then knee, then floor. Start where it's easiest and add distance each rep. (Everett)\nEvery rep passes through the same mid-thigh position: shins vertical, shoulders slightly in front of the bar, weight just behind mid-foot, not on the heels. (Everett)" },
   jerk_dip_drive:          { id:'jerk_dip_drive',          name:'Jerk Dip/Drive Drill',           type:'cj',
     desc:"Achieve full extension before initiating the split. Control the dip deliberately — maintain bar contact throughout. (Webster)" },
   pull_drill:              { id:'pull_drill',              name:'Pull Drill (Power Position)',    type:'accessory',
     desc:"Snatch-grip pull, no catch. First reps from the power position (bar at the hip crease, standing tall), then from the lowest hang you can hold well. Push the floor away into extension, bar close with the lats — it should not copy the snatch extension exactly [E42.1]. Warm-up weight." },
-  trunk_static_strength:   { id:'trunk_static_strength',   name:'Trunk — Static Strength',        type:'accessory' },
+  trunk_static_strength:   { id:'trunk_static_strength',   name:'Trunk — Static Strength',        type:'accessory',
+    desc:"Static holds, not crunches: in the lifts the trunk's job is to act as a rigid support. (Everett)\nAim at the front and sides. The lifts, squats and pulls already load the back. (Everett)" },
   trunk_stiffness_dip:     { id:'trunk_stiffness_dip',     name:'Trunk Stiffness (Dip)',          type:'accessory' },
   bodybuilding_core_block: { id:'bodybuilding_core_block', name:'Bodybuilding + Core Block',      type:'accessory' },
-  snatch_push_press:       { id:'snatch_push_press',       name:'Snatch Push Press',              type:'snatch' },
+  snatch_push_press:       { id:'snatch_push_press',       name:'Snatch Push Press',              type:'snatch',
+    desc:"Dip and drive straight down and up with the knees only. Don't push the hips back. (Everett)\nTreat it as a leg exercise: drive hard enough that your heels come up. (Everett)\nNo grinding reps. (Everett)" },
   hang_snatch_pull:        { id:'hang_snatch_pull',        name:'Hang / Block Snatch Pull',       type:'snatch' },
   // ── Block 3 (BLOCK3_EXERCISES in program.js) — not in Blocks 1–2 ────────────
-  stiff_legged_deadlift:   { id:'stiff_legged_deadlift',   name:'Stiff-Legged Deadlift',          type:'strength' },
-  three_position_clean:    { id:'three_position_clean',    name:'3-Position Clean',               type:'cj' },
-  power_split_jerk_combo:  { id:'power_split_jerk_combo',  name:'2 Power Jerks + 1 Split Jerk',   type:'cj' },
-  snatch_ohs_complex:      { id:'snatch_ohs_complex',      name:'Snatch + 2 Overhead Squats',     type:'snatch' },
-  clean_fs_jerk_complex:   { id:'clean_fs_jerk_complex',   name:'Clean + 2 Front Squats + Jerk',  type:'cj' },
-  power_clean_power_jerk:  { id:'power_clean_power_jerk',  name:'Power Clean + Power Jerk',       type:'cj' },
-  two_position_snatch:     { id:'two_position_snatch',     name:'2-Position Snatch',              type:'snatch' },
-  two_position_clean:      { id:'two_position_clean',      name:'2-Position Clean',               type:'cj' },
+  stiff_legged_deadlift:   { id:'stiff_legged_deadlift',   name:'Stiff-Legged Deadlift',          type:'strength',
+    desc:"Knees slightly bent and fixed, back straight. The movement is all in the hinge. (Torokhtiy)\nIt builds the lower back, hamstrings and glutes that keep the trunk solid in the jerk. (Torokhtiy)" },
+  three_position_clean:    { id:'three_position_clean',    name:'3-Position Clean',               type:'cj',
+    desc:"Top down, the same order as the 3-position snatch: mid-thigh, then knee, then floor. (Everett)\nMake contact with the knees still bent and drive the legs into the bar. Don't stand up first and then bang it. (Dozer)\nCatch with the elbows high. (Dozer)" },
+  power_split_jerk_combo:  { id:'power_split_jerk_combo',  name:'2 Power Jerks + 1 Split Jerk',   type:'cj',
+    desc:"Same dip and drive for all three: straight down, straight up, complete. Only the feet change on the split. (Everett)\nThe power jerks groove a balanced, vertical dip and drive. They only help while they stay that way. (Everett)\nGo smoothly from the dip straight into the drive, with no pause at the bottom. (Sika)" },
+  snatch_ohs_complex:      { id:'snatch_ohs_complex',      name:'Snatch + 2 Overhead Squats',     type:'snatch',
+    desc:"After the snatch, keep the bar locked and still for both squats: shoulder blades squeezed up and together, bar over the back of the neck. (Everett)\nOverhead squats straight after the snatch train you to lock the bar out harder in the bottom. (Sika)" },
+  clean_fs_jerk_complex:   { id:'clean_fs_jerk_complex',   name:'Clean + 2 Front Squats + Jerk',  type:'cj',
+    desc:"After the front squats, stand tall: straight, braced torso before the dip, not an over-arched one. (Sika)\nThe front squats make the jerk harder, so keep its dip and drive vertical anyway. (Sika · Everett)" },
+  power_clean_power_jerk:  { id:'power_clean_power_jerk',  name:'Power Clean + Power Jerk',       type:'cj',
+    desc:"Before the dip: knees unlocked, quads tight, full breath. Dipping from locked knees shifts you forward. (Everett)\nDip at a speed that keeps the bar on your shoulders, then drive straight up. (Everett)\nCatch in your squat stance, thighs above parallel, bar pushed back over the back of the neck. (Everett)" },
+  two_position_snatch:     { id:'two_position_snatch',     name:'2-Position Snatch',              type:'snatch',
+    desc:"Mid-thigh rep first, then the floor. (Everett)\nUse the hang rep to feel staying connected in the turnover and meeting the bar at the right height, then copy that from the floor. (Everett)" },
+  two_position_clean:      { id:'two_position_clean',      name:'2-Position Clean',               type:'cj',
+    desc:"Mid-thigh rep first, then the floor, as in the 2-position snatch. Copy the hang rep's contact from the floor. (Everett)\nBe patient: the legs push, the knees get out of the way, and contact comes with the legs still bent. (Dozer)" },
 };
 
 function getEx(id) { return EXERCISE_CATALOG[id] ?? { id, name: id, type: 'strength' }; }
@@ -420,6 +445,13 @@ const Tex = ({style,...p}) => (
   <textarea style={{background:"var(--bg2)",border:"1px solid var(--border2)",borderRadius:6,
     color:"var(--text)",padding:"10px 12px",fontSize:13,width:"100%",
     fontFamily:"'DM Sans',sans-serif",minHeight:80,resize:"vertical",...style}} {...p}/>
+);
+// A catalog `desc`: one cue per line, each ending with the coach it came from.
+const CueText = ({text,style}) => (
+  <div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:6,
+    padding:"9px 12px",fontSize:11,color:"var(--text2)",lineHeight:1.6,fontStyle:"italic",...style}}>
+    {text.split("\n").map((line, i) => <div key={i} style={i ? {marginTop:5} : undefined}>{line}</div>)}
+  </div>
 );
 
 // ── Weight generator ──────────────────────────────────────────────────────────
@@ -572,16 +604,10 @@ function ExCard({ex, phase, sessionKey, onProgress, onSetsChange, forceReload, o
       {open && (
         <div style={{borderTop:"1px solid var(--border)", padding:"14px", background:"var(--bg)"}}>
 
-          {/* Coaching cue — real cited cue from dozer_cue_index.md where one
-              exists for this exercise; most exercises have none (that index
-              only covers 7 movement-phase categories) and this block just
-              doesn't render, rather than showing an invented description. */}
-          {catalog.desc && (
-            <div style={{background:"var(--bg2)", border:"1px solid var(--border)", borderRadius:6,
-              padding:"9px 12px", marginBottom:14, fontSize:11, color:"var(--text2)", lineHeight:1.6, fontStyle:"italic"}}>
-              {catalog.desc}
-            </div>
-          )}
+          {/* Coaching cue — every line traces to a retrieved passage (Block 3's:
+              docs/programs/2026-10-18-block3-cues.md). An exercise with no
+              cue renders nothing here rather than an invented description. */}
+          {catalog.desc && <CueText text={catalog.desc} style={{marginBottom:14}}/>}
 
           {/* Set tracker */}
           <div style={{marginBottom:14}}>
@@ -1249,6 +1275,7 @@ function ExercisesTab() {
                       <div style={{fontSize:9, color:'var(--text3)', fontFamily:"'DM Mono',monospace", letterSpacing:1}}>
                         {ex.id}
                       </div>
+                      {ex.desc && <CueText text={ex.desc} style={{marginTop:8}}/>}
                       {best != null && (
                         <div style={{marginTop:6, fontSize:11, color:'var(--text2)'}}>
                           Best logged: <span style={{color:'var(--gold)', fontWeight:600}}>{best} kg</span>
@@ -3263,7 +3290,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.18.1 · 2026-10-17
+                PROGRAM v3.19.0 · 2026-10-18
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>

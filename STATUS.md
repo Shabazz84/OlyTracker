@@ -2,11 +2,11 @@
 name: OlyTracker
 category: fitness
 status: active
-phase: "UI slimmed to 4 tabs (v3.18.1, 2026-10-17): Program (week stepper, in-session warm-up: loaded ankle stretch + McGill round before, spine after), Log (month calendar with per-day weights/notes, sessions/week), PRs (10 lifts with progression), More (Exercises, Mobility, System=Blocks, Settings). Supps, Analytics, Reports, summer toggle, AI review removed. Block 2 week 16 (test Sat 2026-10-24); Block 3 SHIPPED v3.17.0 (2026-10-17): weeks 17-24 built on ONE program instead of the whole corpus -- Catalyst General Cycle (Everett) adapted to Mon/Tue/Thu/Sat with an 11-item edit ledger (3 heavy squats Mon/Thu/Sat, lean Thursday, split jerk, fast week 17 Wed/Thu/Sat, maxes wk20 + test wk23 Dec 12). Source text kept local (gitignored program_sources/) since Catalyst asks not to republish."
+phase: "Coaching cues (v3.19.0, 2026-10-18): all 33 Block 3 exercises carry cited cues, one per line, in the session card and the Exercises tab -- every line traced to a verbatim passage (docs/programs/2026-10-18-block3-cues.md; pack via main.py evidence --catalog cues; check_citations now also verifies quotes). UI slimmed to 4 tabs (v3.18.1, 2026-10-17): Program (week stepper, in-session warm-up: loaded ankle stretch + McGill round before, spine after), Log (month calendar with per-day weights/notes, sessions/week), PRs (10 lifts with progression), More (Exercises, Mobility, System=Blocks, Settings). Supps, Analytics, Reports, summer toggle, AI review removed. Block 2 week 16 (test Sat 2026-10-24); Block 3 SHIPPED v3.17.0 (2026-10-17): weeks 17-24 built on ONE program instead of the whole corpus -- Catalyst General Cycle (Everett) adapted to Mon/Tue/Thu/Sat with an 11-item edit ledger (3 heavy squats Mon/Thu/Sat, lean Thursday, split jerk, fast week 17 Wed/Thu/Sat, maxes wk20 + test wk23 Dec 12). Source text kept local (gitignored program_sources/) since Catalyst asks not to republish."
 progress: 98
 blocked_on: none
 next_step: "After the Oct 24 test: update TRAINING_MAX (snatch, cleanAndJerk, frontSquat, snatchBalance, clean) and redeploy before the first Block 3 session Wed Oct 28. Week 20 checkpoint: if Thursday front squats keep stopping short, move them for weeks 21-23. Logging gap: sets store weight only, no reps. Old open items, status unknown: Telegram token in the Z840 journal, persist numbered synthesis context, re-run main.py index, Brain_Dump 20-file drift."
-updated: 2026-10-17
+updated: 2026-10-18
 tags: [react, esbuild, supabase, weightlifting, training, claude-api, whisper]
 stack:
   - component: Claude API client (sole surviving summarizer module)
