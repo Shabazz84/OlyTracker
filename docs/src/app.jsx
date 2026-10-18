@@ -73,148 +73,6 @@ const reviewStorage = {
   },
 };
 
-const LM_CFG_KEY = "oly_lm_cfg";
-const LM_CFG_DEFAULT = { apiKey:"" };
-const lmCfgStorage = {
-  get:  () => {
-    try {
-      const stored = JSON.parse(localStorage.getItem(LM_CFG_KEY)||"null") || LM_CFG_DEFAULT;
-      if (!stored.apiKey && window.__CLAUDE_KEY) { stored.apiKey = window.__CLAUDE_KEY; stored._src = "deployed"; }
-      else if (stored.apiKey) stored._src = "localStorage";
-      return stored;
-    } catch { return { apiKey: window.__CLAUDE_KEY || "", _src: "deployed" }; }
-  },
-  save: (cfg) => { try { localStorage.setItem(LM_CFG_KEY, JSON.stringify(cfg)); } catch {} return cfg; },
-};
-
-// ── Claude API client ─────────────────────────────────────────────────────────
-async function callClaude(systemPrompt, userPrompt, apiKey) {
-  const cleanKey = (apiKey || "").trim();
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": cleanKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-    }),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    const keyHint = `(key[${cleanKey.length}]: ${cleanKey.slice(0,20)}…${cleanKey.slice(-4)})`;
-    throw new Error(`Claude API ${res.status}: ${err.error?.message || res.statusText} ${keyHint}`);
-  }
-  const data = await res.json();
-  if (!data.content?.length) throw new Error("Claude returned no content");
-  return data.content[0].text;
-}
-
-function parseAiResponse(text) {
-  if (typeof text !== "string") text = String(text ?? "");
-  const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-  const objMatch   = text.match(/\{[\s\S]*\}/);
-  const jsonStr    = fenceMatch ? fenceMatch[1] : (objMatch ? objMatch[0] : null);
-  if (jsonStr) {
-    try {
-      const p = JSON.parse(jsonStr);
-      return {
-        narrative:           p.narrative           ?? text,
-        loadRecommendation:  ["advance","hold","reduce"].includes(p.loadRecommendation) ? p.loadRecommendation : "hold",
-        skipExercises:       Array.isArray(p.skipExercises)       ? p.skipExercises       : [],
-        reduceLoadExercises: Array.isArray(p.reduceLoadExercises) ? p.reduceLoadExercises : [],
-        substitutions:       Array.isArray(p.substitutions)
-          ? p.substitutions.map(s => ({ skip: String(s.skip||""), sub: String(s.sub||"") }))
-          : [],
-        flags:               Array.isArray(p.flags)
-          ? p.flags.map(f => ({
-              day:      typeof f.day      === "string" ? f.day      : "",
-              exercise: typeof f.exercise === "string" ? f.exercise : "",
-              action:   f.action === "skip" || f.action === "reduce" ? f.action : "reduce",
-              reason:   typeof f.reason   === "string" ? f.reason   : "",
-            }))
-          : [],
-        generatedAt:         new Date().toISOString(),
-      };
-    } catch {}
-  }
-  return { narrative: text, loadRecommendation: "hold", skipExercises: [], reduceLoadExercises: [], substitutions: [], flags: [], generatedAt: new Date().toISOString() };
-}
-
-function buildReviewPrompt(week, weekData, formData, isSummer) {
-  const dayList = isSummer ? DAYS_SUMMER : DAYS_SCHOOL;
-
-  const exerciseList = dayList.map(d =>
-    `${d.label}: ${d.exercises.map(e => getEx(e.id)?.name || e.id).join(", ")}`
-  ).join("\n");
-
-  const weekLog = dayList.map(d => {
-    const ds = formData.days[d.id] || { status: "done", notes: "" };
-    return `${d.label}: ${ds.status.toUpperCase()}${ds.notes ? ` — ${ds.notes}` : ""}`;
-  }).join("\n");
-
-  const injuryText = formData.injuries.length > 0
-    ? formData.injuries.map(inj => `${inj.bodyPart} (${inj.type} pain, severity: ${inj.severity})`).join("; ")
-    : "None reported";
-
-  const system = `You are an Olympic weightlifting coach reviewing a training week for a specific athlete. Give concrete, safe recommendations for the following week.
-
-ATHLETE PROFILE:
-- 102.5 kg bodyweight, intermediate strength background transitioning to Olympic weightlifting
-- Bests: Back Squat 130 kg, Front Squat 115 kg, Hang Power Clean 87 kg, Clean 80 kg, Jerk 72.5 kg, OHS 72 kg, Hang Power Snatch 66 kg
-- Jerk is far behind the clean — priority weak point. OHS is 58% of the back squat (was 42%); the normal ratio is 65–70%, so overhead stability is still a snatch limiter but no longer the dominant one.
-- The hang lifts are AHEAD of the lifts from the floor (HPS 66 vs a floor snatch last tested at 55). Treat the hang as a crutch to be paid off, not as evidence of floor capacity.
-- Chronic back pain (manageable). Push/power jerk only so far — split jerk not yet trained, but no longer off-limits.
-- Night shifts Wed–Sun 7pm–7:30am (5.5h sleep Thu/Sat training days).
-- Current block: Block 2 Technique Consolidation, weeks 9–16 — competition lifts moved to the floor. Weeks 9–10 are technique loading: 1–3 reps at 60–70% of training max, correctness gates any load increase.
-
-INJURY PROTOCOL (apply strictly):
-- Sharp pain reported → skip exercises loading that EXACT structure; do NOT over-apply to unrelated movements
-- Left bicep / shoulder / elbow injury → SKIP: overhead pressing, overhead pulling, snatch-pattern exercises, anything with arms overhead or bicep under eccentric load. SAFE TO CONTINUE: all squats (bar sits on back/front — bicep not loaded), lower body pulls, Romanian deadlifts, GHR, lunges, core work, jerk from rack (unless shoulder pain is the primary complaint)
-- Lower back sharp pain → skip all spinal loading (squats, pulls, presses)
-- Dull ache → reduce load 15%, monitor
-- Jerk priority: preserve jerk work unless the injury directly involves the jerk mechanics (shoulder, elbow, wrist)
-- Do NOT skip an exercise unless it directly loads the injured structure — err on the side of keeping the athlete training
-
-RESPONSE FORMAT — output ONLY a \`\`\`json block, nothing else:
-{
-  "narrative": "2-3 sentence plain-English summary of the week and key issue",
-  "loadRecommendation": "advance" | "hold" | "reduce",
-  "skipExercises": ["Exact Exercise Name As Listed Below", ...],
-  "reduceLoadExercises": ["Exact Exercise Name As Listed Below", ...],
-  "substitutions": [
-    { "skip": "Skipped Exercise Name", "sub": "Substitute exercise name + sets/reps/load" }
-  ],
-  "flags": [
-    { "day": "d1", "exercise": "Exact Exercise Name", "action": "skip" | "reduce" }
-  ]
-}
-Substitution rules: for every skipped exercise, provide one substitute that preserves the training stimulus without loading the injured structure. Keep sub descriptions short (e.g. "Snatch Deadlift 4×4 @ 80kg"). Use ONLY exercise names in skipExercises/reduceLoadExercises exactly as they appear in PLANNED EXERCISES below.`;
-
-  const user = `WEEK ${week} — ${weekData.phase} (${weekData.load})
-Focus: ${weekData.focus}
-Note: ${weekData.note}
-
-PLANNED EXERCISES:
-${exerciseList}
-
-WEEK LOG:
-${weekLog}
-
-INJURIES THIS WEEK:
-${injuryText}
-
-ADDITIONAL NOTES:
-${formData.generalNotes || "None"}`;
-
-  return { system, user };
-}
-
 // ── Sleep quality badges ──────────────────────────────────────────────────────
 const SLEEP = {
   full:    {label:"FULL SLEEP",    color:"#5a9e45", bg:"rgba(90,158,69,0.12)"},
@@ -1167,536 +1025,7 @@ function MobilityTab() {
   );
 }
 
-// ── Supplements Data ──────────────────────────────────────────────────────────
-const SUPPS = [
-  // ── CURRENT STACK ────────────────────────────────────────────────────────
-  {
-    id:"creatine", name:"Creatine Monohydrate", dose:"5g", status:"current",
-    priority:"essential", category:"performance",
-    timing:[
-      {label:"POST-TRAINING", when:"Immediately after session", color:"#5a9e45",
-       note:"Best absorbed post-training with carbs. On rest days, any time consistently — timing matters less than daily consistency."},
-    ],
-    rationale:"Directly increases phosphocreatine stores for explosive lifting. Every kg of strength gains in the snatch and jerk is supported by this. Non-negotiable for hypertrophy block.",
-    nightShift:"Take post-gym on training days. On shift days, take with your first meal after waking (1pm).",
-    warning:null,
-  },
-  {
-    id:"d3", name:"Vitamin D3 5000IU", dose:"5000 IU", status:"discontinued",
-    priority:"essential", category:"foundational",
-    timing:[
-      {label:"WITH FIRST MEAL", when:"With food containing fat", color:"#d4a843",
-       note:"Replaced by D3+K2. Do not take both."},
-    ],
-    rationale:"Replaced by D3+K2 combo. Discontinued.",
-    nightShift:"N/A — replaced by D3+K2.",
-    warning:"✅ DISCONTINUED: Replaced by Vitamin D3+K2. Stop taking standalone D3.",
-  },
-  {
-    id:"magnesium", name:"Magnesium Glycinate", dose:"210mg elemental (per serving)", status:"current",
-    priority:"essential", category:"recovery",
-    timing:[
-      {label:"BEFORE SLEEP", when:"30–60 min before your sleep window", color:"#8b5cf6",
-       note:"Magnesium directly improves sleep quality and depth — your most compromised variable as a night shift worker. Take before both sleep windows: daytime sleep after shift AND night sleep on off days. Glycinate form is among the best absorbed — pairs well with Glycine before sleep."},
-    ],
-    rationale:"Critical for muscle recovery, back pain management (QL tension), and sleep architecture. Glycinate form has superior bioavailability and is gentler on digestion than oxide. 210mg elemental is a solid dose — can stack 2 servings (420mg) if sleep quality is still poor.",
-    nightShift:"Take at ~8–8:30am before sleeping post-shift. On off days, take at your normal bedtime. Pairs with Ashwagandha and Glycine.",
-    warning:null,
-  },
-  {
-    id:"bcomplex", name:"B-Right B Complex", dose:"1 cap", status:"current",
-    priority:"high", category:"foundational",
-    timing:[
-      {label:"WITH FIRST MEAL", when:"Morning meal or first meal after waking", color:"#d4a843",
-       note:"B vitamins are energising — take at the start of your active day, not before sleep. On shift days, take at your 1pm wake-up meal."},
-    ],
-    rationale:"Night shifts disrupt circadian-linked B vitamin metabolism. B complex supports energy production, nervous system function, and stress resilience under shift work.",
-    nightShift:"Always with your first meal after waking. Never before your sleep window — B vitamins can interfere with sleep onset.",
-    warning:null,
-  },
-  {
-    id:"zinc", name:"Zinc", dose:"25mg (reduce from 50mg)", status:"current",
-    priority:"medium", category:"foundational",
-    timing:[
-      {label:"WITH FOOD", when:"With a meal, away from iron sources", color:"#4a90d9",
-       note:"Take with food to prevent nausea. Keep away from iron-containing foods (red meat) by 2hrs — zinc and iron compete for absorption."},
-    ],
-    rationale:"Testosterone synthesis, immune function, wound healing. Important for heavy training but 50mg daily is above the tolerable upper limit (40mg). Reduce to 25mg.",
-    nightShift:"Take with your main meal — any time of day.",
-    warning:"⚠️ REDUCE DOSE: 50mg daily long-term exceeds the 40mg UL. Drop to 25mg (half your current dose) or take every other day.",
-  },
-  {
-    id:"copper", name:"Copper", dose:"2mg", status:"current",
-    priority:"medium", category:"foundational",
-    timing:[
-      {label:"WITH FOOD", when:"Same meal as zinc, or separate meal", color:"#4a90d9",
-       note:"Zinc and copper compete — they can be taken together or at separate meals. Both with food."},
-    ],
-    rationale:"Correctly paired with zinc. Copper supports connective tissue synthesis (collagen cross-linking), iron metabolism, and antioxidant function. Keep this ratio.",
-    nightShift:"With any main meal.",
-    warning:null,
-  },
-  {
-    id:"omega3", name:"Omega-3", dose:"2500mg (4 caps) — 1200mg EPA / 850mg DHA", status:"current",
-    priority:"essential", category:"recovery",
-    timing:[
-      {label:"WITH LARGEST MEAL", when:"With your highest-fat meal of the day", color:"#5a9e45",
-       note:"Fat-soluble, needs dietary fat for absorption. Splitting across 2 meals also works — 2 caps with 2 meals. Reduces fishy aftertaste and improves absorption."},
-    ],
-    rationale:"Joint and tendon protection for Olympic lifting. Reduces post-session inflammation. Particularly important for wrists, elbows, shoulders under snatch and C&J load. Provides 2050mg EPA+DHA total — meets the 2g daily target.",
-    nightShift:"Split: 2 caps with 1pm meal, 2 caps with pre-shift meal (~5pm).",
-    warning:null,
-  },
-  {
-    id:"glucosamine", name:"Glucosamine Complex", dose:"4 caps", status:"current",
-    priority:"high", category:"recovery",
-    timing:[
-      {label:"WITH FOOD", when:"With your main meal, split if possible", color:"#d4a843",
-       note:"GI upset is common without food. Split across 2 meals if 4 caps at once causes discomfort."},
-    ],
-    rationale:"Cartilage and connective tissue support. Olympic lifting puts extreme stress on knees, hips, and spine. Long-term investment — effects build over 8–12 weeks.",
-    nightShift:"With 1pm meal and/or pre-shift meal.",
-    warning:null,
-  },
-  {
-    id:"vitE", name:"Vitamin E", dose:"400 IU", status:"current",
-    priority:"low", category:"foundational",
-    timing:[
-      {label:"WITH FAT-CONTAINING MEAL", when:"With food containing fat", color:"#888",
-       note:"Fat-soluble. Completely ineffective without dietary fat. Take with same meal as D3 and omega-3."},
-    ],
-    rationale:"Antioxidant support. Some evidence for muscle recovery. Lower priority than other antioxidants in your stack.",
-    nightShift:"With 1pm meal alongside D3.",
-    warning:"Note: high-dose vitamin E (400IU+) may blunt some training adaptations if taken immediately post-workout. Take with your first meal, not post-training.",
-  },
-  {
-    id:"ashwagandha", name:"Ashwagandha KSM-66", dose:"450mg", status:"current",
-    priority:"high", category:"recovery",
-    timing:[
-      {label:"BEFORE SLEEP", when:"30 min before sleep window", color:"#8b5cf6",
-       note:"Most effective taken before sleep — reduces cortisol, improves sleep depth and recovery. Pairs well with magnesium. Take both together before your sleep window."},
-    ],
-    rationale:"Cortisol management is critical for night shift workers. Ashwagandha directly reduces cortisol and supports testosterone levels under chronic stress. Directly addresses your training-recovery bottleneck.",
-    nightShift:"Take at ~8–8:30am before daytime sleep after shift. On off days, take at your normal bedtime. Pairs with magnesium.",
-    warning:null,
-  },
-  {
-    id:"rhodiola", name:"Rhodiola Rosea", dose:"400mg", status:"current",
-    priority:"medium", category:"performance",
-    timing:[
-      {label:"WITH FIRST MEAL", when:"Morning or first meal, NOT before sleep", color:"#4a90d9",
-       note:"Rhodiola is stimulating — take at the start of your active day. On shift days, take with your 1pm wake-up meal. Never before sleep."},
-    ],
-    rationale:"Adaptogen for physical and mental fatigue — directly applicable to night shift pattern. Cycle 8 weeks on, 2 weeks off to maintain effectiveness.",
-    nightShift:"Always with first meal after waking. On shift days: 1pm meal. Cycling: note your start date.",
-    warning:"⚠️ CYCLE: 8 weeks on / 2 weeks off. Track your cycle start date in notes below.",
-  },
-  {
-    id:"ginkgo", name:"Ginkgo Biloba", dose:"120mg", status:"current",
-    priority:"low", category:"optional",
-    timing:[
-      {label:"WITH FIRST MEAL", when:"Start of active day", color:"#888",
-       note:"Cognitive focus and circulation. Take at start of active day."},
-    ],
-    rationale:"Cognitive focus and cerebral circulation. Low priority for training performance. Fine to keep.",
-    nightShift:"With first meal after waking.",
-    warning:null,
-  },
-  {
-    id:"cranberry", name:"Cranberry", dose:"4200mg (2 caps)", status:"current",
-    priority:"low", category:"optional",
-    timing:[
-      {label:"WITH FOOD", when:"Any meal", color:"#888",
-       note:"Urinary health maintenance. Timing not critical."},
-    ],
-    rationale:"Urinary health — unrelated to training performance. Fine to keep.",
-    nightShift:"Any meal, any time.",
-    warning:null,
-  },
-
-  // ── NEW ARRIVALS ─────────────────────────────────────────────────────────
-  {
-    id:"taurine", name:"Taurine", dose:"1000mg (1 cap)", status:"current",
-    priority:"medium", category:"recovery",
-    timing:[
-      {label:"POST-TRAINING", when:"Immediately after session", color:"#5a9e45",
-       note:"Post-training is the primary window — repletes electrolytes, reduces oxidative stress from the session, and supports recovery. Can also be stacked pre-training if performance is the goal."},
-    ],
-    rationale:"Electrolyte balance and cardiovascular support — directly relevant for night shift workers whose sodium-potassium regulation is chronically disrupted. Reduces DOMS and muscle soreness. Antioxidant properties counter training-induced oxidative stress. Evidence for improved power output and reduced fatigue.",
-    nightShift:"Post-gym, regardless of session time. On rest/shift days: with any main meal.",
-    warning:null,
-  },
-  {
-    id:"glycine", name:"Glycine", dose:"3g (1 serving)", status:"current",
-    priority:"high", category:"recovery",
-    timing:[
-      {label:"BEFORE SLEEP", when:"30 min before sleep window", color:"#8b5cf6",
-       note:"3g before sleep shown to improve sleep quality and reduce time to sleep onset — directly targets your most compromised variable. Pairs with Magnesium Glycinate and Ashwagandha. Also: take pre-training alongside Collagen — glycine is the primary amino acid in collagen and amplifies tendon synthesis."},
-    ],
-    rationale:"Dual purpose: (1) sleep quality — 3g glycine before sleep measurably improves slow-wave sleep and reduces fatigue on waking; directly addresses night shift sleep deficit. (2) Tendon synthesis — glycine is the most abundant amino acid in collagen; pre-training glycine amplifies the collagen peptides + VitC protocol already in your stack. High-value addition.",
-    nightShift:"Before daytime sleep (8–8:30am after shift) AND before night sleep on off days. Can double-dose pre-training (3g with Collagen) for tendon protocol.",
-    warning:"Can also take 3g pre-training alongside Collagen + VitC for enhanced tendon synthesis. Two windows of use: sleep quality AND pre-training tendon protocol.",
-  },
-  {
-    id:"glutamine", name:"L-Glutamine", dose:"5g (1 serving)", status:"current",
-    priority:"medium", category:"recovery",
-    timing:[
-      {label:"POST-TRAINING", when:"After session, with creatine", color:"#5a9e45",
-       note:"Post-training is the primary window — gut permeability increases with heavy training and glutamine directly repairs intestinal barrier. Can also be taken before sleep for recovery."},
-    ],
-    rationale:"Gut integrity under training stress — glutamine is the primary fuel for enterocytes; heavy training transiently increases gut permeability and glutamine supplementation directly addresses this. Immune support for night shift workers (glutamine is primary fuel for immune cells). May reduce muscle soreness and accelerate recovery. Less critical than sleep/recovery supplements but solid addition given training volume.",
-    nightShift:"Post-gym on training days. On rest days, take before sleep. Shift days: after gym session.",
-    warning:null,
-  },
-  {
-    id:"argcitr", name:"L-Arginine + L-Citrulline", dose:"750mg/cap — take 4–6 caps (3–4.5g)", status:"current",
-    priority:"medium", category:"performance",
-    timing:[
-      {label:"PRE-TRAINING (30–60 MIN)", when:"With Collagen + VitC window", color:"#c94f3a",
-       note:"Nitric oxide precursors — take 30–60 min pre-training. Stacks naturally with the Collagen pre-training window. L-Citrulline is more bioavailable for NO production than arginine alone. At 750mg/cap: 4 caps = 3g, 6 caps = 4.5g. Target 3–4.5g for meaningful vasodilation."},
-    ],
-    rationale:"Nitric oxide production via arginine/citrulline → vasodilation → improved nutrient and oxygen delivery to working muscle. Particularly relevant for the jerk and clean pulls where vascular delivery to upper back, shoulders, and legs all matter simultaneously. Citrulline also reduces fatigue during high-rep accessory work and may reduce post-session DOMS.",
-    nightShift:"30–60 min before gym session regardless of time. Stack with Collagen + VitC in the pre-training window.",
-    warning:"Dose: 4–6 caps (3–4.5g) for meaningful effect. 1–2 caps will do nothing. Start with 4 caps and assess tolerance (may cause GI upset in some at higher doses).",
-  },
-
-  // ── DISCONTINUED ─────────────────────────────────────────────────────────
-  {
-    id:"fishOil", name:"Fish Oil EPA/DHA", dose:"2–3g EPA+DHA", status:"discontinued",
-    priority:"essential", category:"recovery",
-    timing:[
-      {label:"SPLIT WITH MEALS", when:"2 meals with fat content", color:"#5a9e45",
-       note:"Redundant — existing Omega-3 already provides 2050mg EPA+DHA."},
-    ],
-    rationale:"Discontinued — existing Omega-3 (1200mg EPA + 850mg DHA = 2050mg EPA+DHA) already meets the 2g target.",
-    nightShift:"N/A — covered by existing Omega-3.",
-    warning:"✅ DISCONTINUED: Omega-3 (1200mg EPA / 850mg DHA) already covers the target range. No need to add this.",
-  },
-  {
-    id:"d3k2", name:"Vitamin D3 + K2", dose:"5000IU D3 (125mcg) / 100mcg K2", status:"current",
-    priority:"essential", category:"foundational",
-    timing:[
-      {label:"WITH FAT-CONTAINING MEAL", when:"First meal after waking", color:"#d4a843",
-       note:"Fat-soluble. K2 directs calcium to bones rather than soft tissue — important given D3 supplementation at 5000IU. Replaces standalone D3."},
-    ],
-    rationale:"Upgrade from standalone D3. K2 (MK-7 form preferred) ensures the calcium mobilised by D3 goes to bones and teeth rather than arteries or soft tissue. Directly supports bone density for Olympic lifting.",
-    nightShift:"Same timing as old D3 — with 1pm meal after waking.",
-    warning:"⚠️ Standalone D3 5000IU is now discontinued — do not double-dose. If your D3+K2 product includes Vitamin E, discontinue standalone Vitamin E as well.",
-  },
-  {
-    id:"collagen", name:"Collagen Peptides + Vitamin C", dose:"15g collagen / 50mg VitC", status:"current",
-    priority:"high", category:"recovery",
-    timing:[
-      {label:"PRE-TRAINING (30–60 MIN)", when:"30–60 min before session starts", color:"#c94f3a",
-       note:"This is the evidence-based protocol specifically. Collagen synthesis peaks ~1hr after ingestion and requires mechanical loading to direct to tendons. The Vitamin C is required for collagen synthesis. Take, then train."},
-    ],
-    rationale:"The most direct tendon and ligament support available. Olympic lifting is hard on wrists, elbows, shoulders, and knees. Hydrolyzed collagen peptides + Vitamin C pre-training is the specific protocol shown in research to increase collagen synthesis in tendons.",
-    nightShift:"Take 30–60 min before your gym session regardless of what time it is. Pre-training timing is everything for this one.",
-    warning:"Must be hydrolyzed collagen peptides (not gelatin). Must include or be paired with Vitamin C. Timing is critical — the effect requires exercise stimulus after ingestion.",
-  },
-];
-
-const SUPP_CATEGORIES = {
-  performance:  {label:"PERFORMANCE",  color:"#5a9e45"},
-  foundational: {label:"FOUNDATIONAL", color:"#4a90d9"},
-  recovery:     {label:"RECOVERY",     color:"#8b5cf6"},
-  optional:     {label:"OPTIONAL",     color:"#555"},
-};
-
 const PRIORITY_ORDER = {essential:0, high:1, medium:2, low:3};
-
-// ── Supplement Card ───────────────────────────────────────────────────────────
-function SuppCard({supp, checked, history7, onToggle}) {
-  const [open, setOpen] = useState(false);
-  const cat = SUPP_CATEGORIES[supp.category];
-  const isIncoming = supp.status === "incoming";
-  const priorityColors = {essential:"#d4a843", high:"#5a9e45", medium:"#4a90d9", low:"#555"};
-  const pc = priorityColors[supp.priority];
-
-  return (
-    <div style={{
-      background: isIncoming ? "#0a0f0a" : "var(--bg1)",
-      border: `1px solid ${checked ? "#5a9e4466" : isIncoming ? "#2a3a2a" : "var(--border)"}`,
-      borderRadius:8, marginBottom:8, overflow:"hidden",
-      opacity: isIncoming ? 0.85 : 1, transition:"all 0.2s",
-    }}>
-      <div style={{display:"flex", alignItems:"center", gap:10, padding:"11px 14px"}}>
-        {/* Checkbox */}
-        {!isIncoming && (
-          <div onClick={onToggle} style={{
-            width:20, height:20, borderRadius:5, flexShrink:0, cursor:"pointer",
-            background: checked ? "var(--green)" : "var(--bg3)",
-            border: `1.5px solid ${checked ? "var(--green)" : "var(--border2)"}`,
-            display:"flex", alignItems:"center", justifyContent:"center",
-            transition:"all 0.15s",
-          }}>
-            {checked && <span style={{color:"#000", fontSize:11, fontWeight:800}}>✓</span>}
-          </div>
-        )}
-        {isIncoming && (
-          <div style={{width:20, height:20, borderRadius:5, flexShrink:0,
-            background:"#1a2a1a", border:"1.5px solid #3a5a3a",
-            display:"flex", alignItems:"center", justifyContent:"center"}}>
-            <span style={{fontSize:10}}>📦</span>
-          </div>
-        )}
-
-        {/* Name + dose */}
-        <div style={{flex:1, cursor:"pointer"}} onClick={()=>setOpen(!open)}>
-          <div style={{display:"flex", alignItems:"center", gap:8, flexWrap:"wrap"}}>
-            <span style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:16, letterSpacing:0.3,
-              textDecoration: checked ? "line-through" : "none",
-              color: checked ? "var(--text3)" : "var(--text)"}}>
-              {supp.name}
-            </span>
-            {isIncoming && <Tag color="#5a9e45" bg="rgba(90,158,69,0.1)">INCOMING</Tag>}
-          </div>
-          <div style={{fontSize:11, color:"var(--text3)", fontFamily:"'DM Mono',monospace", marginTop:2}}>
-            {supp.dose}
-          </div>
-        </div>
-
-        {/* History dots — last 7 days */}
-        {!isIncoming && history7 && (
-          <div style={{display:"flex", gap:3, alignItems:"center", flexShrink:0}}>
-            {history7.map((taken, i) => (
-              <div key={i} style={{
-                width:6, height:6, borderRadius:"50%",
-                background: taken ? "var(--green)" : "var(--bg3)",
-                border: `1px solid ${taken ? "var(--green)" : "var(--border2)"}`,
-              }}/>
-            ))}
-          </div>
-        )}
-
-        {/* Tags */}
-        <div style={{display:"flex", gap:5, alignItems:"center"}}>
-          <Tag color={cat.color} bg={cat.color+"18"}>{cat.label}</Tag>
-          <Tag color={pc} bg={pc+"18"}>{supp.priority.toUpperCase()}</Tag>
-          <span onClick={()=>setOpen(!open)} style={{color:"var(--text3)", fontSize:10, cursor:"pointer", marginLeft:2}}>
-            {open?"▲":"▼"}
-          </span>
-        </div>
-      </div>
-
-      {open && (
-        <div style={{borderTop:"1px solid var(--border)", padding:"14px", background:"var(--bg)"}}>
-          {/* Timing blocks */}
-          <div style={{marginBottom:12}}>
-            <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2, fontFamily:"'DM Mono',monospace", marginBottom:8}}>
-              TIMING
-            </div>
-            {supp.timing.map((t,i)=>(
-              <div key={i} style={{background:"var(--bg2)", borderRadius:6, padding:"10px 12px",
-                borderLeft:`3px solid ${t.color}`, marginBottom:6}}>
-                <div style={{fontFamily:"'DM Mono',monospace", fontSize:10, color:t.color,
-                  letterSpacing:1, marginBottom:4}}>{t.label} — {t.when}</div>
-                <p style={{fontSize:12, color:"var(--text2)", lineHeight:1.7}}>{t.note}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Night shift specific */}
-          <div style={{background:"#08080f", border:"1px solid #1a1a3a", borderRadius:6,
-            padding:"10px 12px", marginBottom:10}}>
-            <div style={{fontFamily:"'DM Mono',monospace", fontSize:9, color:"var(--blue)",
-              letterSpacing:1.5, marginBottom:5}}>🌙 NIGHT SHIFT TIMING</div>
-            <p style={{fontSize:12, color:"#667", lineHeight:1.7}}>{supp.nightShift}</p>
-          </div>
-
-          {/* Rationale */}
-          <p style={{fontSize:12, color:"var(--text2)", lineHeight:1.7, marginBottom: supp.warning?10:0}}>
-            {supp.rationale}
-          </p>
-
-          {/* Warning */}
-          {supp.warning && (
-            <div style={{background:"#120808", border:"1px solid #3a1818", borderRadius:6,
-              padding:"8px 12px", marginTop:8}}>
-              <p style={{fontSize:12, color:"#c94f3a", lineHeight:1.7}}>{supp.warning}</p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Supplements Tab ───────────────────────────────────────────────────────────
-function SuppsTab({checked, history, onToggle, suppNotes, onNoteChange}) {
-  const [filter, setFilter] = useState("all");
-  const [dayType, setDayType] = useState("off");
-
-  function last7(suppId) {
-    const days = [];
-    for(let i=6;i>=0;i--){
-      const d=new Date(); d.setDate(d.getDate()-i);
-      const key=d.toISOString().slice(0,10);
-      days.push(!!(history[key]?.[suppId]));
-    }
-    return days;
-  }
-
-  const current = SUPPS.filter(s=>s.status==="current");
-  const incoming = SUPPS.filter(s=>s.status==="incoming");
-
-  const filtered = (list) => {
-    if(filter==="all") return list.sort((a,b)=>PRIORITY_ORDER[a.priority]-PRIORITY_ORDER[b.priority]);
-    return list.filter(s=>s.category===filter)
-      .sort((a,b)=>PRIORITY_ORDER[a.priority]-PRIORITY_ORDER[b.priority]);
-  };
-
-  const doneCount = current.filter(s=>checked[s.id]).length;
-
-  // Build timing schedule based on day type
-  const SCHEDULE = {
-    off: [
-      {time:"On Waking", items:["B Complex (with breakfast)","Rhodiola (with breakfast)","Ginkgo (with breakfast)"]},
-      {time:"With First Meal (fat-containing)", items:["D3+K2","Vitamin E 400IU","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
-      {time:"30–60 Min Pre-Training", items:["Collagen + Vitamin C (15g / 50mg VitC)","Glycine 3g (tendon protocol)","L-Arginine + L-Citrulline (4–6 caps)"]},
-      {time:"Post-Training", items:["Creatine 5g","L-Glutamine 5g","Taurine 1g"]},
-      {time:"Second Meal", items:["Glucosamine (2 caps)","Omega-3 (2 caps)","Glucosamine (2 caps remaining)"]},
-      {time:"Before Sleep", items:["Magnesium Glycinate 210mg","Ashwagandha 450mg","Glycine 3g"]},
-    ],
-    shift: [
-      {time:"~1pm (Wake + First Meal)", items:["D3+K2","Vitamin E","B Complex","Rhodiola","Ginkgo","Omega-3 (2 caps)","Zinc 25mg","Copper 2mg"]},
-      {time:"~12:30–3pm (Gym)", items:["Collagen + VitC 30–60 min before","Glycine 3g (with Collagen)","L-Arginine + L-Citrulline (4–6 caps)","Creatine + L-Glutamine + Taurine post-session"]},
-      {time:"~5pm (Pre-Shift Meal)", items:["Omega-3 (2 caps)","Glucosamine (2 caps)"]},
-      {time:"~8–8:30am (After Shift, Before Sleep)", items:["Magnesium Glycinate 210mg","Ashwagandha 450mg","Glycine 3g","Glucosamine (2 caps remaining)"]},
-    ],
-  };
-
-  const schedule = SCHEDULE[dayType];
-
-  return (
-    <div className="fade">
-      {/* Progress bar */}
-      <div style={{background:"var(--bg2)", borderRadius:8, padding:"12px 14px", marginBottom:16,
-        border:"1px solid var(--border)"}}>
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:18, letterSpacing:0.5}}>
-            TODAY'S STACK
-          </div>
-          <div style={{fontFamily:"'DM Mono',monospace", fontSize:13, color:"var(--gold)"}}>
-            {doneCount}/{current.length}
-          </div>
-        </div>
-        <div style={{background:"var(--bg3)", borderRadius:20, height:6, overflow:"hidden"}}>
-          <div style={{width:`${(doneCount/current.length)*100}%`, height:"100%",
-            background:"var(--gold)", borderRadius:20, transition:"width 0.3s"}}/>
-        </div>
-      </div>
-
-      {/* Day type toggle */}
-      <div style={{display:"flex", gap:6, marginBottom:16}}>
-        <button onClick={()=>setDayType("off")} style={{
-          flex:1, padding:"10px", borderRadius:6, cursor:"pointer", fontWeight:600,
-          fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:1, border:"none",
-          background:dayType==="off"?"var(--gold)":"var(--bg2)",
-          color:dayType==="off"?"#000":"var(--text2)",
-          transition:"all 0.15s",
-        }}>☀️ DAY OFF (MON/TUE)</button>
-        <button onClick={()=>setDayType("shift")} style={{
-          flex:1, padding:"10px", borderRadius:6, cursor:"pointer", fontWeight:600,
-          fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:1, border:"none",
-          background:dayType==="shift"?"var(--blue)":"var(--bg2)",
-          color:dayType==="shift"?"#fff":"var(--text2)",
-          transition:"all 0.15s",
-        }}>🌙 SHIFT DAY (WED–SAT)</button>
-      </div>
-
-      {/* Schedule view */}
-      <div style={{marginBottom:20}}>
-        <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2.5,
-          fontFamily:"'DM Mono',monospace", marginBottom:10, fontWeight:600}}>
-          {dayType==="off"?"OFF DAY SCHEDULE":"SHIFT DAY SCHEDULE"}
-        </div>
-        {schedule.map((block,i)=>(
-          <div key={i} style={{display:"flex", gap:12, marginBottom:10}}>
-            <div style={{width:130, flexShrink:0}}>
-              <div style={{fontSize:10, color:"var(--gold)", fontFamily:"'DM Mono',monospace",
-                fontWeight:600, letterSpacing:0.5, lineHeight:1.4}}>{block.time}</div>
-            </div>
-            <div style={{flex:1, background:"var(--bg2)", borderRadius:6, padding:"8px 12px",
-              border:"1px solid var(--border)"}}>
-              {block.items.map((item,j)=>(
-                <div key={j} style={{fontSize:11, color: item.includes("incoming")?"#5a9e45":"var(--text2)",
-                  fontStyle: item.includes("incoming")?"italic":"normal",
-                  padding:"1px 0", lineHeight:1.6}}>{item}</div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Filter tabs */}
-      <div style={{display:"flex", gap:6, marginBottom:14, flexWrap:"wrap"}}>
-        {[["all","ALL"],["performance","PERFORMANCE"],["recovery","RECOVERY"],
-          ["foundational","FOUNDATION"],["optional","OPTIONAL"]].map(([id,lbl])=>(
-          <button key={id} onClick={()=>setFilter(id)} style={{
-            padding:"5px 12px", borderRadius:4, cursor:"pointer", fontSize:9,
-            fontFamily:"'DM Mono',monospace", fontWeight:600, letterSpacing:1,
-            border:"none", transition:"all 0.15s",
-            background:filter===id?"var(--gold)":"var(--bg2)",
-            color:filter===id?"#000":"var(--text3)",
-          }}>{lbl}</button>
-        ))}
-      </div>
-
-      {/* Current supplements */}
-      <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2.5,
-        fontFamily:"'DM Mono',monospace", marginBottom:10, fontWeight:600, marginTop:4}}>
-        CURRENT STACK — {filtered(current).length} SUPPLEMENTS
-      </div>
-      {filtered(current).map(s=>(
-        <SuppCard key={s.id} supp={s} checked={!!checked[s.id]} history7={last7(s.id)} onToggle={()=>onToggle(s.id)}/>
-      ))}
-
-      {/* Incoming */}
-      <div style={{fontSize:9, color:"#5a9e45", letterSpacing:2.5,
-        fontFamily:"'DM Mono',monospace", marginBottom:10, fontWeight:600, marginTop:20}}>
-        INCOMING — {filtered(incoming).length} SUPPLEMENTS
-      </div>
-      {filtered(incoming).map(s=>(
-        <SuppCard key={s.id} supp={s} checked={false} onToggle={()=>{}}/>
-      ))}
-
-      {/* Notes */}
-      <div style={{fontSize:9, color:"var(--text3)", letterSpacing:2.5,
-        fontFamily:"'DM Mono',monospace", marginBottom:8, fontWeight:600, marginTop:20}}>
-        RHODIOLA CYCLE NOTES
-      </div>
-      <textarea
-        style={{background:"var(--bg2)", border:"1px solid var(--border2)", borderRadius:6,
-          color:"var(--text)", padding:"10px 12px", fontSize:12, width:"100%",
-          fontFamily:"'DM Sans',sans-serif", minHeight:60, resize:"vertical"}}
-        placeholder="e.g. Rhodiola cycle start: May 15 — off Aug 9. Notes..."
-        value={suppNotes}
-        onChange={e=>onNoteChange(e.target.value)}
-      />
-
-      {/* Key flags */}
-      <div style={{marginTop:16, background:"#120808", border:"1px solid #3a1818",
-        borderRadius:8, padding:"12px 14px"}}>
-        <div style={{fontFamily:"'DM Mono',monospace", fontSize:9, color:"var(--red)",
-          letterSpacing:1.5, marginBottom:8}}>⚠️ ACTION ITEMS</div>
-        {[
-          "Reduce Zinc from 50mg → 25mg (currently above tolerable upper limit)",
-          "When D3+K2 arrives: discontinue standalone D3 5000IU",
-          "When fish oil arrives: verify EPA+DHA content, consolidate with current omega-3",
-          "Collagen + VitC: must be taken 30–60 min pre-training specifically",
-          "Rhodiola: cycle 8 weeks on / 2 weeks off — track start date above",
-          "Vitamin E: never take post-training — may blunt adaptations",
-        ].map((item,i)=>(
-          <div key={i} style={{display:"flex", gap:8, marginBottom:6}}>
-            <span style={{color:"var(--red)", fontSize:11, flexShrink:0}}>→</span>
-            <span style={{fontSize:12, color:"#886", lineHeight:1.6}}>{item}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ── Reports helpers ───────────────────────────────────────────────────────────
 function parseRepsNum(r) {
@@ -2676,30 +2005,6 @@ function Reports({prs, logs, week}){
 }
 
 // ── System Tab ────────────────────────────────────────────────────────────────
-const PRINCIPLES = [
-  {n:"1", text:"Back is a stabilizer, not a mover — spine rigid throughout all pulls"},
-  {n:"2", text:"Explosive intent at sub-max loads (65–85%) builds the motor pattern"},
-  {n:"3", text:"Auto-regulate daily — CNS status and pain dictate intensity, not the calendar"},
-  {n:"4", text:"OHS must lead snatch — OHS max stays 15–20% above current snatch max"},
-  {n:"5", text:"Jerk is the priority weak point — Day 4 is jerk day, full energy"},
-  {n:"6", text:"Touch competition movement every session — even 2×3 at 50%"},
-  {n:"7", text:"High frequency, low volume per session over low frequency, high volume"},
-  {n:"8", text:"8-week cycles with testing — test, assess, adjust; never run indefinitely"},
-];
-
-const PAIN_PROTOCOL = [
-  {level:"🟢 No pain",    action:"Train as planned",                                  color:"#5a9e45"},
-  {level:"🟡 1–3/10",     action:"Back squat → front squat · pulls –15% · keep technique", color:"#d4a843"},
-  {level:"🔴 4+/10",      action:"No axial loading · leg press + belt squat + rack rows", color:"#c94f3a"},
-  {level:"🚫 Numbness",   action:"No training — seek medical assessment",              color:"#888"},
-];
-
-const LMS_PHASES = [
-  {id:"volume",    label:"HIGH VOLUME",    color:"#4a90d9", desc:"65–78% · more sets · metabolic emphasis · hypertrophy and work capacity"},
-  {id:"intensity", label:"HIGH INTENSITY", color:"#c94f3a", desc:"85–90% · low volume · daily max singles · neural extraction"},
-  {id:"micro",     label:"MICRO-WEIGHT",   color:"#5a9e45", desc:"50–60% · technique only · CNS reset · after pain flares or intensity blocks"},
-];
-
 function SyncSection() {
   const [migrating, setMigrating] = React.useState(false);
   const [status, setStatus] = React.useState(null);
@@ -2779,18 +2084,10 @@ function SystemTab({week}) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   }
 
-  const lmsPhase = data.lmsPhase || "volume";
-  function setLmsPhase(p) {
-    const next = {...data, lmsPhase: p};
-    setData(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  }
-
+  // Blocks only (UI slim-down, 2026-10-17): the LMS-phase selector changed
+  // nothing elsewhere, and Principles / Pain are reference text kept in CLAUDE.md.
   const sections = [
     {id:"blocks",   label:"BLOCKS"},
-    {id:"lms",      label:"LMS PHASE"},
-    {id:"rules",    label:"PRINCIPLES"},
-    {id:"pain",     label:"PAIN"},
   ];
 
   return (
@@ -2915,255 +2212,6 @@ function SystemTab({week}) {
         </div>
       )}
 
-      {/* ── LMS PHASE ── */}
-      {section==="lms" && (
-        <div>
-          <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:12}}>
-            GOLOVINSKY LMS PHASE — SELECT CURRENT TRAINING MODE
-          </div>
-          <div style={{fontSize:11,color:"var(--text2)",marginBottom:16,lineHeight:1.5}}>
-            Never mix intensities in one week. Pick a mode and commit to it for 2–4 weeks before cycling.
-          </div>
-          {LMS_PHASES.map(p => (
-            <div key={p.id} onClick={() => setLmsPhase(p.id)} style={{
-              background: lmsPhase===p.id ? `${p.color}18` : "var(--bg2)",
-              border: `1px solid ${lmsPhase===p.id ? p.color : "var(--border)"}`,
-              borderRadius:10,padding:"14px 16px",marginBottom:10,cursor:"pointer",
-              transition:"all 0.2s",
-            }}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,
-                  color: lmsPhase===p.id ? p.color : "var(--text2)",letterSpacing:0.5}}>{p.label}</span>
-                {lmsPhase===p.id && (
-                  <span style={{fontSize:9,color:p.color,fontFamily:"'DM Mono',monospace",
-                    letterSpacing:1,background:`${p.color}22`,padding:"2px 8px",borderRadius:4}}>ACTIVE</span>
-                )}
-              </div>
-              <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.4}}>{p.desc}</div>
-            </div>
-          ))}
-
-          {/* LMS rules */}
-          <div style={{background:"var(--bg2)",borderRadius:10,padding:"14px 16px",marginTop:4,
-            border:"1px solid var(--border)"}}>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5,
-              color:"var(--text2)",marginBottom:10}}>MAX ATTEMPT RULES</div>
-            {[
-              "High Volume phase: max attempt every 3–5 weeks only",
-              "High Intensity phase: daily max single on jerk; weekly max on snatch/clean",
-              "Micro-Weight phase: no max attempts — technique and recovery only",
-              "Natural athlete: conservative volume — do not 'over-plow'",
-            ].map((r,i) => (
-              <div key={i} style={{fontSize:11,color:"var(--text2)",marginBottom:8,paddingLeft:8,
-                borderLeft:"2px solid var(--gold)44",lineHeight:1.4}}>{r}</div>
-            ))}
-          </div>
-
-          {/* Golovinsky general principles */}
-          <div style={{background:"var(--bg2)",borderRadius:10,padding:"14px 16px",marginTop:10,
-            border:"1px solid var(--border)"}}>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5,
-              color:"var(--text2)",marginBottom:4}}>GOLOVINSKY — GENERAL PRINCIPLES</div>
-            <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",
-              letterSpacing:1,marginBottom:12}}>FROM HIS TRAINING VIDEOS & LIVESTREAMS</div>
-
-            {[
-              {cat:"AUTO-REGULATION", items:[
-                "No struggle — if the bar slows or requires isometric locking, the weight is too heavy. Reduce immediately. Speed is the signal.",
-                "Attack method: climb 75%×3 → 85%×2 → 91%×1. Each cluster = one attack. Rest 20 min between attacks — do accessory work in between.",
-                "Adjust the top % daily. If today is off, finish at 85% and call it. Never force the number.",
-                "Comfortable limit — stop the set when technique degrades even if the weight feels manageable.",
-              ]},
-              {cat:"NIGHT SHIFT WARM-UP", items:[
-                "15 min low-intensity cardio (orbitrek) before any barbell. Keep HR under 130bpm. Raises blood pressure and activates CNS — not optional after a night shift.",
-                "Never start with heavy singles when coming from a shift. The warm-up IS the first training task.",
-                "Testosterone rises during warm-up — another reason not to skip it before maximal effort.",
-              ]},
-              {cat:"REP SCHEME GUIDANCE", items:[
-                "3×3 = pure neural drive, minimal hypertrophy. Use in High Intensity phase.",
-                "4×4 = his recommendation for natural athletes — strength + hypertrophy balance without excessive fatigue.",
-                "5×5 = more hypertrophy but higher fatigue cost. Only use when recovery is solid.",
-                "Tendons recover slower than muscles — don't jump loads just because the muscle feels ready.",
-              ]},
-              {cat:"SUPPLEMENTS (from interviews & livestreams)", items:[
-                "Creatine — baseline, always.",
-                "Protein — baseline.",
-                "Zinc (methylated) — supports natural testosterone. Many strong naturals take it.",
-                "Vitamin C — daily.",
-                "Multivitamin complex (Optimen or similar) — 1/day.",
-                "Vitamin D + K2 together — D alone can cause calcium issues at high doses; K2 directs calcium properly. Target blood level ≥ 32 ng/ml.",
-                "Vitamin B complex (e.g. Barraj Daru) — 1/day.",
-                "BCAAs — low priority, essentially flavored drinks. Skip if budget is tight.",
-              ]},
-              {cat:"RECOVERY & HORMONAL MONITORING", items:[
-                "If progress stalls despite good sleep and nutrition — suspect hormones before blaming training.",
-                "Blood panel to run: LH · total testosterone · estradiol · prolactin.",
-                "Testosterone 11 nmol/l at age 25–27 = very low. Response: reduce volume AND intensity, not just one.",
-                "Sleep 7–8 hours. More than 8 hours = groggy and counterproductive. Walk outside instead.",
-              ]},
-              {cat:"CLEAN PULL CUES (coaching video)", items:[
-                "Bar goes strictly vertical — no backward arc away from the body at any point.",
-                "\"Зазорчик\" — micro-relax the arms just before the hip strike to create a tiny gap, then explode. Don't grip and rip from the start.",
-                "Shoulders down, elbows forward throughout the pull — do not rotate elbows out.",
-              ]},
-              {cat:"LOGGING", items:[
-                "Record every session — exact weights, sets, reps, how it felt. Without this you cannot identify what stalled and why.",
-                "Review logs weekly. If the same weight appears 3+ sessions in a row, something needs to change.",
-              ]},
-            ].map(section => (
-              <div key={section.cat} style={{marginBottom:14}}>
-                <div style={{fontSize:9,color:"var(--gold)",fontFamily:"'DM Mono',monospace",
-                  letterSpacing:1,marginBottom:6}}>{section.cat}</div>
-                {section.items.map((item,i) => (
-                  <div key={i} style={{fontSize:11,color:"var(--text2)",marginBottom:6,paddingLeft:8,
-                    borderLeft:"2px solid var(--gold)33",lineHeight:1.5}}>{item}</div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ── PRINCIPLES ── */}
-      {section==="rules" && (
-        <div>
-          <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:12}}>
-            8 NON-NEGOTIABLE PRINCIPLES · ALL SOURCES AGREE
-          </div>
-          {PRINCIPLES.map(p => (
-            <div key={p.n} style={{
-              display:"flex",gap:14,padding:"12px 0",
-              borderBottom:"1px solid var(--border)",alignItems:"flex-start",
-            }}>
-              <div style={{
-                width:26,height:26,borderRadius:6,flexShrink:0,
-                background:"var(--bg2)",border:"1px solid var(--border2)",
-                display:"flex",alignItems:"center",justifyContent:"center",
-                fontFamily:"'DM Mono',monospace",fontSize:11,fontWeight:700,color:"var(--gold)",
-              }}>{p.n}</div>
-              <div style={{fontSize:12,color:"var(--text)",lineHeight:1.5}}>{p.text}</div>
-            </div>
-          ))}
-
-          {/* Sources */}
-          <div style={{background:"var(--bg2)",borderRadius:10,padding:"14px 16px",marginTop:16,
-            border:"1px solid var(--border)"}}>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5,
-              color:"var(--text2)",marginBottom:10}}>SOURCE CONTRIBUTIONS</div>
-            {[
-              {coach:"Pavlukhin",       contrib:"High start · drag cue · neural drive first · modified Bulgarian singles · pain-driven periodization"},
-              {coach:"Berestov",        contrib:"Lead-up exercises every session · 8-week cycles · technique before load always"},
-              {coach:"Torokhtiy",       contrib:"4% ATW rule = +10 kg total · feel-based loading · scapular shelf · thoracic drive"},
-              {coach:"Catalyst/Everett",contrib:"Practice makes permanent · 4–6 exercises max · bone lock overhead · program weak points or they don't get trained"},
-              {coach:"Dozer",           contrib:"Continuous kinetics · sit and relax squat · rack holds for OHS · spine whip jerk · demon back protocol"},
-              {coach:"Webster",         contrib:"Beat the bar · 90-min mobility · question mark back = ankle/thoracic deficit · duck walks + turtle squats"},
-              {coach:"Golovinsky/LMS",  contrib:"Phase cycling (volume/intensity/micro) · attack method · no-struggle auto-regulation · night shift warm-up protocol · 4×4 for naturals · clean pull cues (vertical bar path, зазорчик, elbows forward)"},
-              {coach:"Atletisty",       contrib:"Torque management (shins close) · explosive intent vs maximal load · rapid relaxation · Vorobyev setup rules"},
-            ].map(s => (
-              <div key={s.coach} style={{marginBottom:10,paddingLeft:8,
-                borderLeft:"2px solid var(--purple)44"}}>
-                <div style={{fontSize:10,color:"var(--purple)",fontFamily:"'DM Mono',monospace",
-                  letterSpacing:0.5,marginBottom:2}}>{s.coach.toUpperCase()}</div>
-                <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.4}}>{s.contrib}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ── PAIN PROTOCOL ── */}
-      {section==="pain" && (
-        <div>
-          <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:12}}>
-            BACK PAIN TRAFFIC LIGHT — ALL 8 SOURCES AGREE
-          </div>
-          {PAIN_PROTOCOL.map(p => (
-            <div key={p.level} style={{
-              background:"var(--bg2)",borderRadius:10,padding:"14px 16px",marginBottom:10,
-              border:`1px solid ${p.color}44`,
-            }}>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:16,color:p.color,
-                letterSpacing:0.5,marginBottom:6}}>{p.level}</div>
-              <div style={{fontSize:12,color:"var(--text)",lineHeight:1.5}}>{p.action}</div>
-            </div>
-          ))}
-
-          <div style={{background:"var(--bg2)",borderRadius:10,padding:"14px 16px",marginTop:4,
-            border:"1px solid var(--border)"}}>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5,
-              color:"var(--text2)",marginBottom:10}}>RETREAT MICROCYCLE (🔴 flare)</div>
-            {[
-              "Reduce all loads 40% immediately",
-              "Machine isolation replaces barbell compounds",
-              "Maintain mobility work — it shortens the flare duration",
-              "Return to full training only after 2 consecutive pain-free training days",
-              "Log every flare — track patterns to find root cause",
-            ].map((r,i) => (
-              <div key={i} style={{fontSize:11,color:"var(--text2)",marginBottom:8,paddingLeft:8,
-                borderLeft:"2px solid var(--red)44",lineHeight:1.4}}>{r}</div>
-            ))}
-          </div>
-
-          <div style={{background:"var(--bg2)",borderRadius:10,padding:"14px 16px",marginTop:10,
-            border:"1px solid var(--border)"}}>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:0.5,
-              color:"var(--text2)",marginBottom:10}}>DEMON BACK — WEEKLY ESSENTIALS</div>
-            {[
-              "Reverse Hyperextension × 3×15 (or back extension as substitute)",
-              "Dead Bug × 3×10 per side",
-              "Core bracing (McGill Big Three + Bird Dog): see DAILY CORE in the Mobility tab — do it daily, not just on back-focused days",
-            ].map((r,i) => (
-              <div key={i} style={{fontSize:11,color:"var(--text2)",marginBottom:8,paddingLeft:8,
-                borderLeft:"2px solid var(--green)44",lineHeight:1.4}}>{r}</div>
-            ))}
-          </div>
-        </div>
-      )}
-      <SyncSection />
-    </div>
-  );
-}
-
-// ── Claude API Settings Panel ─────────────────────────────────────────────────
-function LmSettingsPanel() {
-  const [cfg, setCfg] = React.useState(lmCfgStorage.get);
-  const [saved, setSaved] = React.useState(false);
-  const timerRef = React.useRef(null);
-  React.useEffect(() => () => clearTimeout(timerRef.current), []);
-  const save = () => {
-    lmCfgStorage.save(cfg);
-    setSaved(true);
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setSaved(false), 2000);
-  };
-  const masked = cfg.apiKey.length > 8
-    ? cfg.apiKey.slice(0, 8) + "••••••••" + cfg.apiKey.slice(-4)
-    : cfg.apiKey;
-  return (
-    <div>
-      <div style={{marginBottom:10}}>
-        <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>ANTHROPIC API KEY</div>
-        <input value={cfg.apiKey} onChange={e=>setCfg(c=>({...c,apiKey:e.target.value}))}
-          placeholder="sk-ant-..."
-          type="password"
-          style={{width:"100%",boxSizing:"border-box",background:"var(--bg3)",border:"1px solid var(--border2)",
-            borderRadius:5,color:"var(--text)",padding:"6px 10px",fontSize:10,fontFamily:"'DM Mono',monospace"}}/>
-        {cfg.apiKey && <div style={{fontSize:9,color:"var(--text3)",marginTop:3,fontFamily:"'DM Mono',monospace"}}>{masked}</div>}
-      </div>
-      <div style={{fontSize:9,color:"var(--text3)",marginBottom:10,lineHeight:1.5}}>
-        Model: <span style={{color:"var(--text2)"}}>claude-sonnet-4-6</span>
-      </div>
-      <div style={{display:"flex",gap:8,alignItems:"center"}}>
-        <Btn small onClick={save} style={saved?{color:"#5a9e45",borderColor:"#5a9e45"}:{color:"var(--gold)",borderColor:"var(--gold)"}}>
-          {saved ? "✓ SAVED" : "SAVE"}
-        </Btn>
-        {window.__CLAUDE_KEY && (
-          <Btn small onClick={()=>{lmCfgStorage.save({apiKey:""});setCfg({apiKey:window.__CLAUDE_KEY});setSaved(true);clearTimeout(timerRef.current);timerRef.current=setTimeout(()=>setSaved(false),2000);}}
-            style={{color:"var(--text3)",borderColor:"var(--border)"}}>
-            USE DEPLOYED KEY
-          </Btn>
-        )}
-      </div>
     </div>
   );
 }
@@ -3263,8 +2311,6 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     });
     return { rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days };
   });
-  const [aiLoading, setAiLoading] = React.useState(false);
-  const [aiError,   setAiError]   = React.useState(null);
   const [expanded,  setExpanded]  = React.useState(false);
 
   React.useEffect(() => {
@@ -3279,7 +2325,6 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
     });
     setForm({ rating:"green", energyTrend:"stable", injuries:[], generalNotes:"", ai:null, confirmed:false, ...(saved||{}), days });
     setExpanded(false);
-    setAiError(null);
   }, [week, isSummer]);
 
   const setDay    = (id, patch) => setForm(f => ({ ...f, days:{ ...f.days, [id]:{ ...f.days[id], ...patch } } }));
@@ -3287,22 +2332,6 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
   const setInjury = (i, patch)  => setForm(f => ({ ...f, injuries:f.injuries.map((inj,idx) => idx===i ? {...inj,...patch} : inj) }));
   const removeInj = (i)         => setForm(f => ({ ...f, injuries:f.injuries.filter((_,idx) => idx!==i) }));
 
-  const handleGenerate = async () => {
-    const { apiKey, _src } = lmCfgStorage.get();
-    if (!apiKey) { setAiError("No API key configured. Go to SETTINGS → CLAUDE API."); return; }
-    setAiLoading(true);
-    setAiError(null);
-    try {
-      const { system, user } = buildReviewPrompt(week, weekData, form, isSummer);
-      const raw    = await callClaude(system, user, apiKey);
-      const parsed = parseAiResponse(raw);
-      setForm(f => ({ ...f, ai: parsed }));
-    } catch (e) {
-      setAiError((e.message || "Claude API unreachable.") + ` [src:${_src}]`);
-    } finally {
-      setAiLoading(false);
-    }
-  };
 
   const handleSave = () => {
     const saved = reviewStorage.save(week, { ...form, confirmed:true });
@@ -3449,23 +2478,6 @@ function WeekReviewForm({ week, weekData, isSummer, onSaved }) {
           style={{width:"100%",boxSizing:"border-box",background:"var(--bg2)",border:"1px solid var(--border)",
             borderRadius:6,color:"var(--text)",padding:"7px 10px",fontSize:11,resize:"vertical"}}/>
       </div>
-
-      <button onClick={handleGenerate} disabled={aiLoading}
-        style={{width:"100%",padding:"10px",borderRadius:8,
-          border:`1px solid ${aiLoading?"var(--border)":"var(--gold)"}`,
-          background:aiLoading?"transparent":"#d4a84311",
-          color:aiLoading?"var(--text3)":"var(--gold)",
-          fontSize:11,fontFamily:"'DM Mono',monospace",letterSpacing:0.5,
-          cursor:aiLoading?"default":"pointer",marginBottom:8}}>
-        {aiLoading ? "GENERATING…" : "⚡ GENERATE AI REVIEW"}
-      </button>
-
-      {aiError && (
-        <div style={{fontSize:10,color:"#c94f3a",marginBottom:10,padding:"7px 10px",
-          background:"#c94f3a11",borderRadius:6,border:"1px solid #c94f3a33"}}>
-          {aiError}
-        </div>
-      )}
 
       {form.ai && (
         <div style={{marginBottom:14,padding:"12px 14px",background:"var(--bg2)",borderRadius:8,border:"1px solid var(--gold)33"}}>
@@ -4370,6 +3382,10 @@ function WarmupCard({part, sessionKey, forceReload}) {
   );
 }
 
+// Screens behind the MORE tab. Supps and Analytics were retired 2026-10-17;
+// their stored data is untouched.
+const MORE_TABS = [["exercises","EXERCISES"],["mobility","MOBILITY"],["system","SYSTEM"],["settings","SETTINGS"]];
+
 function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, forceReload, onNewPR}) {
   const stepCount = ladder.length + 1;
   const [steps, setSteps] = useState(() => [
@@ -4534,6 +3550,7 @@ function Block2DayToggle({sessionKey, onProgress, onSetsChange, forceReload}) {
 // ── Main App ──────────────────────────────────────────────────────────────────
 function OlyTracker() {
   const [tab,setTab]         = useState("program");
+  const [moreOpen,setMoreOpen] = useState(false);
   const [dayIdx,setDayIdx]   = useState(0);
   const [week,setWeek]       = useState(1);
   // Was a stored SUMMER/SCHOOL toggle (retired 2026-10-17, UI slim-down). Block 1
@@ -4883,18 +3900,34 @@ function OlyTracker() {
           </div>
           <div style={{display:"flex",gap:0,overflowX:"auto",WebkitOverflowScrolling:"touch",
             scrollbarWidth:"none",msOverflowStyle:"none"}}>
-            {[["program","PROGRAM"],["exercises","EXERCISES"],["mobility","MOBILITY"],["supps","SUPPS"],["log","LOG"],["prs","PRs"],["reports","REPORTS"],["analytics","ANALYTICS"],["system","SYSTEM"],["settings","SETTINGS"]].map(([id,lbl])=>(
-              <button key={id} onClick={()=>setTab(id)} style={{
+            {[["program","PROGRAM"],["log","LOG"],["prs","PRs"],["more","MORE ▾"]].map(([id,lbl])=>{
+              const on = id==="more" ? MORE_TABS.some(([m])=>m===tab) : tab===id;
+              return (
+              <button key={id} onClick={()=>id==="more" ? setMoreOpen(o=>!o) : (setTab(id), setMoreOpen(false))} style={{
                 padding:"9px 12px",cursor:"pointer",fontSize:10,fontWeight:600,letterSpacing:1.5,
                 border:"none",background:"transparent",fontFamily:"'DM Mono',monospace",
-                color:tab===id?"var(--gold)":"var(--text3)",
-                borderBottom:tab===id?"2px solid var(--gold)":"2px solid transparent",
+                color:on?"var(--gold)":"var(--text3)",
+                borderBottom:on?"2px solid var(--gold)":"2px solid transparent",
                 transition:"all 0.15s",whiteSpace:"nowrap",flexShrink:0,
               }}>{lbl}</button>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
+
+      {/* MORE menu: the screens the athlete rarely opens (UI slim-down, 2026-10-17) */}
+      {moreOpen && (
+        <div style={{maxWidth:700,margin:"0 auto",padding:"8px 16px 0",display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+          {MORE_TABS.map(([id,lbl])=>(
+            <button key={id} onClick={()=>{setTab(id);setMoreOpen(false);}} style={{
+              padding:"10px",borderRadius:6,cursor:"pointer",fontSize:10,fontWeight:600,letterSpacing:1.5,
+              fontFamily:"'DM Mono',monospace",border:`1px solid ${tab===id?"var(--gold)":"var(--border)"}`,
+              background:tab===id?"#d4a84314":"var(--bg2)",color:tab===id?"var(--gold)":"var(--text2)",
+            }}>{lbl}</button>
+          ))}
+        </div>
+      )}
 
       <div style={{maxWidth:700,margin:"0 auto",padding:"20px 16px 80px"}}>
 
@@ -5287,8 +4320,6 @@ function OlyTracker() {
         {/* ═══ MOBILITY ═══ */}
         {tab==="mobility" && <MobilityTab/>}
 
-        {/* ═══ SUPPS ═══ */}
-        {tab==="supps" && <SuppsTab checked={suppChecked} history={suppHistory} onToggle={toggleSupp} suppNotes={suppNotes} onNoteChange={saveSuppNotes}/>}
 
         {/* ═══ LOG ═══ */}
         {tab==="log" && (
@@ -5473,7 +4504,6 @@ function OlyTracker() {
 
         {/* ═══ REPORTS ═══ */}
         {tab==="reports" && <Reports prs={prs} logs={logs} week={week}/>}
-        {tab==="analytics" && <AnalyticsTab prs={prs} logs={logs} week={week}/>}
 
         {/* ═══ SYSTEM ═══ */}
         {tab==="system" && <SystemTab week={week}/>}
@@ -5559,16 +4589,7 @@ function OlyTracker() {
               </div>
             </div>
 
-            {/* LM Studio settings */}
-            <div style={{marginTop:12,background:"#0a0a1a",border:"1px solid #2a2a4a",borderRadius:8,padding:"14px"}}>
-              <div style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--gold)",letterSpacing:1.5,marginBottom:8}}>
-                ⚡ CLAUDE API (AI REVIEW)
-              </div>
-              <p style={{fontSize:10,color:"var(--text3)",lineHeight:1.6,marginBottom:10}}>
-                Weekly review is analyzed by Claude Sonnet. Paste your Anthropic API key below — it's stored locally in your browser only.
-              </p>
-              <LmSettingsPanel />
-            </div>
+            <SyncSection />
 
           </div>
         )}
