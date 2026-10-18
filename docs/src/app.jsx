@@ -3195,15 +3195,10 @@ function inferDaysFromLogs(week, dayList) {
     if (entry?.pct != null) {
       pct = entry.pct;
     } else {
-      const prefix = `sets_w${week}_${d.id}_`;
       let doneSets = 0;
       try {
-        Object.keys(localStorage).forEach(k => {
-          if (k.startsWith(prefix)) {
-            const sets = JSON.parse(localStorage.getItem(k) || "[]");
-            doneSets += sets.filter(s => s.done).length;
-          }
-        });
+        // Warm-up ticks share the sets_ prefix (so they sync) but never count.
+        doneSets = doneSetsFor(`sets_w${week}_${d.id}_`, Object.keys(localStorage), k => localStorage.getItem(k));
       } catch {}
       pct = expectedTotal > 0 ? Math.round((doneSets / expectedTotal) * 100) : null;
     }
@@ -4326,6 +4321,55 @@ const testLadderKg = (target, pct) => Math.round(target * pct / 2.5) * 2.5;
 // ExCard's persistence pattern (storage + sbSync.upsertSets under the same
 // `sets_w<week>_<day>_<exId>` key shape) so sync, the session-progress bar,
 // and COMPLETE SESSION all keep working the same way on test days.
+// In-session warm-up (UI slim-down, 2026-10-17): the parts of DAILY ANKLE /
+// CORE / SPINE the athlete actually does, inside the session where they're seen.
+// Ticks persist under sets_w{week}_{day}_warmup_before|after through the same
+// storage + sbSync path as set ticks, but never report onProgress and are
+// skipped by doneSetsFor — a rushed day without them is still a complete session.
+function WarmupCard({part, sessionKey, forceReload}) {
+  const rows = WARMUP[part];
+  const key = `sets_${sessionKey}_warmup_${part}`;
+  const [ticks, setTicks] = useState(() => rows.map(() => ({done:false})));
+  const [open, setOpen] = useState(null);
+  useEffect(() => {
+    storage.get(key).then(r => {
+      let saved = [];
+      try { saved = r ? JSON.parse(r.value) : []; } catch {}
+      setTicks(rows.map((_, i) => ({done: !!(saved[i] && saved[i].done)})));
+    });
+  }, [key, forceReload]);
+  async function toggle(i) {
+    const updated = ticks.map((t, j) => j === i ? {done: !t.done} : t);
+    setTicks(updated);
+    try { await storage.set(key, JSON.stringify(updated)); sbSync.upsertSets(key, updated); } catch {}
+  }
+  const done = ticks.filter(t => t.done).length;
+  const title = part === "before" ? "BEFORE · ~12 MIN" : "AFTER · ~4 MIN";
+  return (
+    <div style={{background:"var(--bg1)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 12px",marginBottom:10}}>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+        <span style={{fontSize:8,letterSpacing:1.2,fontFamily:"'DM Mono',monospace",color:"var(--green)",
+          border:"1px solid #5a9e4555",borderRadius:3,padding:"2px 6px"}}>WARM-UP</span>
+        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:15,letterSpacing:0.5,flex:1}}>{title}</span>
+        <span style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{done}/{rows.length}</span>
+      </div>
+      {rows.map((r, i) => (
+        <div key={r.id} data-warmup-row="" style={{padding:"5px 0",borderTop:i?"1px solid var(--border)":"none"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <div onClick={() => toggle(i)} style={{width:22,height:22,borderRadius:5,cursor:"pointer",flexShrink:0,
+              border:`1px solid ${ticks[i].done ? "var(--green)" : "var(--text3)"}`,
+              background:ticks[i].done ? "var(--green)" : "var(--bg2)",display:"grid",placeItems:"center",
+              color:"#000",fontSize:12}}>{ticks[i].done ? "✓" : ""}</div>
+            <div onClick={() => setOpen(open === i ? null : i)} style={{flex:1,minWidth:0,cursor:"pointer",fontSize:12,color:"var(--text)"}}>{r.name}</div>
+            <span style={{fontSize:9,color:"var(--text2)",fontFamily:"'DM Mono',monospace",whiteSpace:"nowrap"}}>{r.dose}</span>
+          </div>
+          {open === i && <div style={{fontSize:11,color:"var(--text2)",lineHeight:1.5,margin:"6px 0 2px 32px"}}>{r.note}</div>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, forceReload, onNewPR}) {
   const stepCount = ladder.length + 1;
   const [steps, setSteps] = useState(() => [
@@ -4746,7 +4790,8 @@ function OlyTracker() {
         },0) : 0;
     const prefix=`sets_w${week}_${logForm.dayId}_`;
     let doneSets=0;
-    try{Object.keys(localStorage).forEach(k=>{if(k.startsWith(prefix)){const s=JSON.parse(localStorage.getItem(k)||"[]");doneSets+=s.filter(s=>s.done).length;}});}catch{}
+    // Warm-up ticks share the prefix (so they sync) but never count toward the session.
+    try{doneSets=doneSetsFor(prefix,Object.keys(localStorage),k=>localStorage.getItem(k));}catch{}
     const sessionPct=expectedTotal>0?Math.round((doneSets/expectedTotal)*100):null;
     const key = logEditKey || `${Date.now()}`;
     const updated={...logs,[key]:{
@@ -5074,6 +5119,7 @@ function OlyTracker() {
                       </div>
                     );
                   })()}
+                  <WarmupCard part="before" sessionKey={`w${week}_${_b2Day.id}`} forceReload={syncRevision}/>
                   {_b2Exercises.map((ex,i)=>ex.test ? (
                     <TestLiftCard key={`${week}_${_b2Day.id}_${ex.id}`} lift={ex} ladder={B2_TEST_LADDER}
                       sessionKey={`w${week}_${_b2Day.id}`} forceReload={syncRevision} onSetsChange={()=>setSetsVersion(v=>v+1)}
@@ -5086,6 +5132,7 @@ function OlyTracker() {
                       onNewPR={handleAutoPR}
                     />
                   ))}
+                  <WarmupCard part="after" sessionKey={`w${week}_${_b2Day.id}`} forceReload={syncRevision}/>
                 </>
               ) : _b2Day ? (
                 <>
