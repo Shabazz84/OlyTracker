@@ -2945,7 +2945,8 @@ function OlyTracker() {
   const [logForm,setLogForm] = useState(()=>({dayId:"d1",date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
   const [logModal,setLogModal] = useState(false);
   const [logEditKey,setLogEditKey] = useState(null);
-  const [prTab,setPrTab]     = useState("key");
+  const [prTab,setPrTab]     = useState("list");
+  const [prOpen,setPrOpen]   = useState(null);
   const [progTab,setProgTab] = useState("program");
   const currentWeek = computeCurrentWeek();
   const [progViewWeek, setProgViewWeek] = useState(currentWeek);
@@ -3224,9 +3225,6 @@ function OlyTracker() {
   }
   const isLogged=(w)=>Object.values(logs).some(l=>l.week===w);
 
-  const KEY_PRS=[["Back Squat","🏋️"],["Clean","💪"],["Clean & Jerk","⚡"],["Snatch (Floor)","🎯"],
-    ["Hang Power Snatch","🔥"],["Push Jerk","🎯"],["Overhead Squat","📐"],["Clean Pull","💥"],
-    ["Jerk from Rack","🎯"],["Sots Press","🧘"]];
 
   const sleepMeta = day ? SLEEP[day.sleep] : null;
 
@@ -3267,7 +3265,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.17.2 · 2026-10-17
+                PROGRAM v3.18.0 · 2026-10-17
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
@@ -3714,101 +3712,38 @@ function OlyTracker() {
         {/* ═══ PRs ═══ */}
         {tab==="prs" && (
           <div className="fade">
-            <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
-              {[["key","KEY LIFTS"],["strength","STRENGTH"],["overhead","OVERHEAD"],["all","ALL"],["add","+ ADD PR"]].map(([id,lbl])=>(
-                <Btn key={id} small ghost={prTab!==id} active={prTab===id} onClick={()=>setPrTab(id)}>{lbl}</Btn>
-              ))}
-            </div>
-
-            {prTab==="key"&&(
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {KEY_PRS.map(([lift,icon])=>{
-                  const pr=prs[lift];
-                  return(
-                    <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",
-                      borderLeft:"3px solid var(--gold)",borderRadius:10,padding:"14px 14px"}}>
-                      <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:5}}>
-                        {icon} {lift.toUpperCase()}
-                      </div>
-                      {pr?(
-                        <>
-                          <div style={{display:"flex",alignItems:"baseline",gap:4}}>
-                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:28,color:"var(--gold)",lineHeight:1}}>{pr.weight}</span>
-                            <span style={{fontSize:12,color:"var(--text3)"}}>kg</span>
-                            {pr.reps>1&&<span style={{fontSize:12,color:"var(--text2)"}}>×{pr.reps}</span>}
-                          </div>
-                          <div style={{fontSize:9,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:4}}>{pr.date}</div>
-                        </>
-                      ):(
-                        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--text3)"}}>—</div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {prTab==="strength"&&(
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {["Deadlift","RDL Pull","Snatch Deadlift","Klokov Squats","Klokov Deadlift",
-                  "Good Morning","T-Bar Row","Lat Pulldown","Incline Barbell Press","Romanian Deadlift","Seated Cable Row"].map(lift=>{
-                  const pr=prs[lift];
-                  return(
-                    <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",borderRadius:8,padding:"12px"}}>
-                      <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>{lift.toUpperCase()}</div>
-                      {pr?(
-                        <div style={{display:"flex",alignItems:"baseline",gap:4}}>
-                          <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--gold)"}}>{pr.weight}</span>
-                          <span style={{fontSize:10,color:"var(--text3)"}}>kg</span>
-                          {pr.reps>1&&<span style={{fontSize:10,color:"var(--text2)"}}>×{pr.reps}</span>}
-                        </div>
-                      ):<div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,color:"var(--text3)"}}>—</div>}
-                      {pr&&<div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:2}}>{pr.date}</div>}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {prTab==="overhead"&&(
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {["Overhead Press","Wide Overhead Press","Push Press","Behind Neck Press",
-                  "Overhead Squat","Sots Press","Snatch Balance","Lunge (Barbell)"].map(lift=>{
-                  const pr=prs[lift];
-                  return(
-                    <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",
-                      borderLeft:"3px solid var(--blue)",borderRadius:8,padding:"12px"}}>
-                      <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>{lift.toUpperCase()}</div>
-                      {pr?(
-                        <div style={{display:"flex",alignItems:"baseline",gap:4}}>
-                          <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--blue)"}}>{pr.weight}</span>
-                          <span style={{fontSize:10,color:"var(--text3)"}}>kg</span>
-                          {pr.reps>1&&<span style={{fontSize:10,color:"var(--text2)"}}>×{pr.reps}</span>}
-                        </div>
-                      ):<div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,color:"var(--text3)"}}>—</div>}
-                      {pr&&<div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:2}}>{pr.date}</div>}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {prTab==="all"&&(
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {Object.entries(prs).sort((a,b)=>b[1].weight-a[1].weight).map(([lift,pr])=>(
-                  <div key={lift} style={{background:"var(--bg1)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 12px"}}>
-                    <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:3}}>{lift.toUpperCase()}</div>
-                    <div style={{display:"flex",alignItems:"baseline",gap:4}}>
-                      <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:22,color:"var(--gold)"}}>{pr.weight}</span>
-                      <span style={{fontSize:10,color:"var(--text3)"}}>kg</span>
-                      {pr.reps>1&&<span style={{fontSize:10,color:"var(--text2)"}}>×{pr.reps}</span>}
-                    </div>
-                    <div style={{fontSize:8,color:"var(--text3)",fontFamily:"'DM Mono',monospace",marginTop:2}}>{pr.date}</div>
+            {/* The 10 lifts that matter (UI slim-down, 2026-10-17). Each row is the
+                heaviest entry across the ids a lift has been stored under
+                (program.js PR_ROWS / prRow); tap for its progression. Every other
+                exercise's PRs are still detected and stored — only unlisted here.
+                No reps column: auto-detected PRs are all stored as 1 rep. */}
+            {PR_ROWS.map(row=>{
+              const r=prRow(prs,row), open=prOpen===row.key;
+              const chart=r.history.reduce((acc,h)=>{
+                const prev=acc.length?acc[acc.length-1].weight:0;
+                if(h.weight!=null&&h.weight>=prev) acc.push({date:h.date,weight:h.weight,label:(h.date||"").slice(5)});
+                return acc;
+              },[]);
+              return(
+                <div key={row.key} style={{background:"var(--bg1)",border:`1px solid ${open?"var(--gold)":"var(--border)"}`,borderRadius:8,marginBottom:6}}>
+                  <div onClick={()=>setPrOpen(open?null:row.key)} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 12px",cursor:"pointer"}}>
+                    <span style={{flex:1,minWidth:0,fontFamily:"'Bebas Neue',sans-serif",fontSize:17,letterSpacing:0.4}}>{row.label}</span>
+                    <span style={{fontFamily:"'DM Mono',monospace",fontSize:13,color:r.weight!=null?"var(--gold)":"var(--text3)"}}>{r.weight!=null?`${r.weight} kg`:"—"}</span>
+                    <span style={{fontFamily:"'DM Mono',monospace",fontSize:9,color:"var(--text3)",width:70,textAlign:"right"}}>{r.date||""}</span>
                   </div>
-                ))}
-              </div>
-            )}
-
+                  {open&&(
+                    <div data-pr-chart="" style={{padding:"0 12px 12px"}}>
+                      {chart.length>1
+                        ? <SVGLineChart data={chart} height={100} series={[{key:"weight",color:"#d4a843",label:`${row.label} (kg)`}]}/>
+                        : <div style={{fontSize:11,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{chart.length?"One record so far — the chart starts with the next.":"No record yet."}</div>}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <div style={{margin:"12px 0"}}>
+              <Btn small ghost={prTab!=="add"} active={prTab==="add"} onClick={()=>setPrTab(prTab==="add"?"list":"add")}>+ ADD PR</Btn>
+            </div>
             {prTab==="add"&&(
               <Card>
                 <div style={{marginBottom:12}}>
@@ -3829,17 +3764,6 @@ function OlyTracker() {
                 </div>
                 <Btn onClick={handleAddPR}>SAVE RECORD</Btn>
               </Card>
-            )}
-
-            {(prTab==="key"||prTab==="all")&&(
-              <div style={{marginTop:16,background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:8,padding:"12px 14px"}}>
-                <div style={{fontSize:9,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:6}}>
-                  📊 IMPORTED FROM FITNOTES — DEC 2024 TO MAY 2026
-                </div>
-                <p style={{fontSize:11,color:"var(--text3)",lineHeight:1.7}}>
-                  17 months of training history pre-loaded. Key gap to fill in Week 1: Jerk from Rack and Sots Press baselines need to be established and logged.
-                </p>
-              </div>
             )}
           </div>
         )}
