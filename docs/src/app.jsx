@@ -1122,456 +1122,6 @@ function SVGLineChart({data, series, height=160, yMax:yMaxProp}){
   );
 }
 
-function PRCards({prs}) {
-  const MAIN=[
-    {key:'Snatch (Floor)',    label:'SNATCH',       color:'var(--gold)'},
-    {key:'Clean & Jerk',     label:'CLEAN & JERK',  color:'var(--gold)'},
-    {key:'Back Squat',       label:'BACK SQUAT',    color:'var(--blue)'},
-    {key:'Deadlift',         label:'DEADLIFT',      color:'var(--green)'},
-    {key:'Flat Bench Press', label:'BENCH PRESS',   color:'var(--purple)'},
-  ];
-  return (
-    <div style={{display:'flex',flexDirection:'column',gap:8}}>
-      {MAIN.map(({key,label,color})=>{
-        const entry=prs[key];
-        if(!entry) return (
-          <div key={key} style={{background:'var(--bg1)',borderRadius:8,padding:'12px 14px',border:'1px solid var(--border)'}}>
-            <div style={{fontSize:8,color:'var(--text3)',letterSpacing:2,fontFamily:"'DM Mono',monospace"}}>{label}</div>
-            <div style={{fontSize:12,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:4}}>— not logged yet</div>
-          </div>
-        );
-        const history=entry.history||[{weight:entry.weight??0,date:entry.date??'',reps:entry.reps??1}];
-        const weights=history.map(h=>h.weight);
-        const minW=Math.min(...weights)*0.9, maxW=Math.max(...weights);
-        const W=80,H=36,pad=4;
-        const xi=i=>history.length===1?W/2:pad+i*(W-2*pad)/(history.length-1);
-        const yi=w=>H-pad-((w-minW)/(maxW-minW||1))*(H-2*pad);
-        return (
-          <div key={key} style={{background:'var(--bg1)',borderRadius:8,padding:'12px 14px',border:`1px solid ${color}33`}}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-              <div>
-                <div style={{fontSize:8,color:'var(--text3)',letterSpacing:2,fontFamily:"'DM Mono',monospace"}}>{label}</div>
-                <div style={{fontSize:28,fontWeight:700,color,lineHeight:1.1,fontFamily:"'Bebas Neue',sans-serif"}}>
-                  {entry.weight}<span style={{fontSize:13,color:'var(--text2)',marginLeft:3,fontFamily:"'DM Mono',monospace"}}>kg ×{entry.reps}</span>
-                </div>
-                <div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:2}}>{entry.date||'—'}</div>
-              </div>
-              {history.length>1&&(
-                <svg viewBox={`0 0 ${W} ${H}`} style={{width:W,height:H,flexShrink:0}}>
-                  <polyline points={history.map((h,i)=>`${xi(i)},${yi(h.weight)}`).join(' ')}
-                    fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
-                  {history.map((h,i)=>(
-                    <circle key={i} cx={xi(i)} cy={yi(h.weight)} r={i===history.length-1?3:2}
-                      fill={color} opacity={i===history.length-1?1:0.5}/>
-                  ))}
-                </svg>
-              )}
-            </div>
-            {history.length>0&&(
-              <div style={{marginTop:8,paddingTop:6,borderTop:'1px solid var(--border)',display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
-                {history.map((h,i)=>(
-                  <span key={i} style={{fontSize:9,fontFamily:"'DM Mono',monospace",
-                    color:i===history.length-1?color:'var(--text3)',
-                    fontWeight:i===history.length-1?600:400}}>
-                    {h.weight}kg{i===history.length-1?' ★':` ${fmtMonthYear(h.date)}`}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function OverviewCards({logs,week,setsData,dateMap}){
-  const today=new Date().toISOString().slice(0,10);
-  const monthPfx=today.slice(0,7);
-
-  // Days this month
-  const daysThisMonth=Object.values(logs).filter(e=>e.date?.startsWith(monthPfx)).length;
-
-  // Current streak (consecutive days ending today)
-  const trainedSet=new Set(Object.values(logs).filter(e=>e.date).map(e=>e.date));
-  let streak=0;
-  const sd=new Date();
-  while(trainedSet.has(sd.toISOString().slice(0,10))){streak++;sd.setDate(sd.getDate()-1);}
-
-  // Back pain 7d avg
-  const cutoff=new Date();cutoff.setDate(cutoff.getDate()-7);
-  const cutStr=cutoff.toISOString().slice(0,10);
-  const bpLogs=Object.values(logs).filter(e=>e.date>=cutStr&&e.backPain!=null&&e.backPain!=='');
-  const bpAvg=bpLogs.length?(bpLogs.reduce((a,e)=>a+(parseFloat(e.backPain)||0),0)/bpLogs.length).toFixed(1):null;
-
-  // ATW last 30d vs prev 30d
-  const exRepsMap={};
-  DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{exRepsMap[ex.id]=parseRepsNum(ex.reps);}));
-  function calcATW(fromStr,toStr){
-    let ton=0,reps=0;
-    Object.entries(setsData).forEach(([key,setArr])=>{
-      const m=key.match(/^sets_(w\d+_d\d+)_(.+)$/);
-      if(!m||!Array.isArray(setArr))return;
-      const date=dateMap[m[1]];
-      if(!date||date<fromStr||date>toStr)return;
-      const exReps=exRepsMap[m[2]]||3;
-      setArr.forEach(s=>{if(s.done&&parseFloat(s.weight)>0){ton+=parseFloat(s.weight)*exReps;reps+=exReps;}});
-    });
-    return reps>0?(ton/reps):null;
-  }
-  const d30=new Date();d30.setDate(d30.getDate()-30);
-  const d60=new Date();d60.setDate(d60.getDate()-60);
-  const atwNow=calcATW(d30.toISOString().slice(0,10),today);
-  const atwPrev=calcATW(d60.toISOString().slice(0,10),d30.toISOString().slice(0,10));
-  const atwDelta=atwNow&&atwPrev?((atwNow-atwPrev)/atwPrev*100).toFixed(1):null;
-
-  // Block info — derive from program start, not stored week
-  const programWeek=Math.max(1,Math.min(28,Math.floor((Date.now()-new Date("2026-05-19").getTime())/(7*24*3600*1000))+1));
-  const _blk=blockFor(programWeek)||BLOCK_BOUNDS[BLOCK_BOUNDS.length-1];
-  const blockWeek=programWeek-_blk.start+1;
-  const blockTotal=_blk.end-_blk.start+1;
-  const blockName=_blk.name;
-
-  const card=(color,label,value,sub)=>(
-    <div style={{background:'var(--bg1)',border:`1px solid ${color}33`,borderRadius:8,padding:'12px 14px'}}>
-      <div style={{fontSize:8,color:'var(--text3)',letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:4}}>{label}</div>
-      <div style={{fontSize:24,fontWeight:700,color,lineHeight:1,fontFamily:"'Bebas Neue',sans-serif"}}>{value}</div>
-      {sub&&<div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:3}}>{sub}</div>}
-    </div>
-  );
-
-  return (
-    <div>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
-        {card('var(--gold)','BLOCK PROGRESS',`W${blockWeek} / ${blockTotal}`,`Block · ${blockName}`)}
-        {card('var(--blue)','DAYS THIS MONTH',daysThisMonth,'sessions logged')}
-        {card('var(--green)','CURRENT STREAK',streak>0?`${streak}d`:'0','consecutive days')}
-        {card('var(--red)','BACK PAIN (7D AVG)',bpAvg!=null?`${bpAvg}/10`:'—',bpLogs.length?`${bpLogs.length} sessions`:'no data')}
-      </div>
-      <div style={{background:'var(--bg1)',border:'1px solid #8b5cf633',borderRadius:8,padding:'12px 14px'}}>
-        <div style={{fontSize:8,color:'var(--text3)',letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginBottom:4}}>AVG TRAINING WEIGHT (LAST 30D)</div>
-        <div style={{display:'flex',alignItems:'baseline',gap:12}}>
-          <div style={{fontSize:24,fontWeight:700,color:'var(--purple)',lineHeight:1,fontFamily:"'Bebas Neue',sans-serif"}}>
-            {atwNow?`${(+atwNow).toFixed(1)} kg`:'—'}
-          </div>
-          {atwDelta&&(
-            <div style={{fontSize:11,color:atwDelta>0?'var(--green)':'var(--red)'}}>
-              {atwDelta>0?'↑':'↓'} {Math.abs(atwDelta)}% vs prev month
-            </div>
-          )}
-        </div>
-        <div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:3}}>
-          target: +4% for +10kg to total (Torokhtiy)
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LoadDevelopment({setsData,dateMap}){
-  const exRepsMap=useMemo(()=>{
-    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.id]=parseRepsNum(ex.reps);}));return m;
-  },[]);
-
-  const sessions=useMemo(()=>{
-    const s={};
-    Object.entries(setsData).forEach(([key,setArr])=>{
-      const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
-      if(!m||!Array.isArray(setArr))return;
-      const[,sk,,, exRaw]=m;
-      const exId=exRaw;
-      const exReps=exRepsMap[exId]||3;
-      if(!s[sk])s[sk]={key:sk,week:+m[2],dayId:m[3],tonnage:0,reps:0};
-      setArr.forEach(st=>{
-        if(st.done&&parseFloat(st.weight)>0){
-          s[sk].tonnage+=parseFloat(st.weight)*exReps;
-          s[sk].reps+=exReps;
-        }
-      });
-    });
-    return Object.values(s)
-      .map(s=>({...s,date:dateMap[s.key]||null,atw:s.reps>0?+(s.tonnage/s.reps).toFixed(1):null,label:`W${s.week} ${s.dayId.toUpperCase()}`}))
-      .filter(s=>s.reps>0)
-      .sort((a,b)=>(a.date||a.label).localeCompare(b.date||b.label));
-  },[setsData,dateMap,exRepsMap]);
-
-  const [tooltip,setTooltip]=useState(null);
-
-  if(sessions.length===0) return (
-    <div style={{color:'var(--text3)',fontSize:12,padding:'16px 0',fontFamily:"'DM Mono',monospace"}}>
-      No volume data yet — check off sets with weights to populate this.
-    </div>
-  );
-
-  function BarChart({data,valueKey,color,height=120,label}){
-    const max=Math.max(...data.map(d=>d[valueKey]||0),1);
-    const barW=Math.max(8,Math.min(28,Math.floor(320/data.length)-2));
-    return (
-      <div>
-        <div style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:6}}>{label}</div>
-        <div style={{position:'relative',display:'flex',alignItems:'flex-end',gap:2,height,background:'var(--bg)',borderRadius:4,padding:'8px 4px 4px'}}>
-          {data.map((d,i)=>{
-            const val=d[valueKey]||0;
-            const h=Math.max(2,(val/max)*(height-20));
-            const isHovered=tooltip?.key===d.key&&tooltip?.chart===valueKey;
-            return (
-              <div key={d.key} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',cursor:'pointer'}}
-                onMouseEnter={()=>setTooltip({key:d.key,chart:valueKey,val,date:d.date,label:d.label})}
-                onMouseLeave={()=>setTooltip(null)}
-                onTouchStart={e=>{e.preventDefault();setTooltip({key:d.key,chart:valueKey,val,date:d.date,label:d.label});}}
-                onTouchEnd={()=>setTimeout(()=>setTooltip(null),1500)}>
-                <div style={{width:'100%',height:h,background:isHovered?'#fff':color,borderRadius:'2px 2px 0 0',opacity:isHovered?1:0.85,transition:'all 0.1s'}}/>
-              </div>
-            );
-          })}
-          {tooltip&&(
-            <div style={{position:'absolute',top:4,left:'50%',transform:'translateX(-50%)',
-              background:'var(--bg2)',border:'1px solid var(--border2)',borderRadius:6,padding:'4px 8px',
-              fontSize:10,color:'var(--text)',fontFamily:"'DM Mono',monospace",pointerEvents:'none',whiteSpace:'nowrap',zIndex:10}}>
-              {tooltip.label}{tooltip.date?` · ${tooltip.date.slice(5)}`:''} · {tooltip.chart==='atw'?`ATW: ${tooltip.val} kg`:`${Math.round(tooltip.val)} kg`}
-            </div>
-          )}
-        </div>
-        <div style={{display:'flex',justifyContent:'space-between',marginTop:3}}>
-          {[0,Math.floor(data.length/2),data.length-1].filter((v,i,a)=>a.indexOf(v)===i).map(i=>(
-            <div key={i} style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>
-              {String(data[i]?.date||data[i]?.label||'').slice(-5)}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{display:'flex',flexDirection:'column',gap:16}}>
-      <BarChart data={sessions} valueKey="atw" color="var(--purple)" height={120} label="AVG TRAINING WEIGHT PER SESSION (kg)"/>
-      <BarChart data={sessions} valueKey="tonnage" color="var(--gold)" height={100} label="TONNAGE PER SESSION (kg × reps)"/>
-    </div>
-  );
-}
-
-function ExerciseBreakdown({setsData,dateMap}){
-  const [openEx,setOpenEx]=useState(null);
-
-  const exRepsMap=useMemo(()=>{
-    const m={};DAYS_SUMMER.forEach(day=>day.exercises.forEach(ex=>{m[ex.id]=parseRepsNum(ex.reps);}));return m;
-  },[]);
-
-  const exercises=useMemo(()=>{
-    const map={};
-    Object.entries(setsData).forEach(([key,setArr])=>{
-      const m=key.match(/^sets_(w(\d+)_(d\d+))_(.+)$/);
-      if(!m||!Array.isArray(setArr))return;
-      const[,sk,wk,dk,exRaw]=m;
-      const exId=exRaw;
-      const exReps=exRepsMap[exId]||3;
-      const date=dateMap[sk]||null;
-      const doneSets=setArr.filter(s=>s.done&&parseFloat(s.weight)>0);
-      if(doneSets.length===0)return;
-      if(!map[exId])map[exId]={id:exId,name:getEx(exId)?.name||exId,sessions:[],best:0,totalTon:0,totalReps:0};
-      const maxW=Math.max(...doneSets.map(s=>parseFloat(s.weight)));
-      map[exId].sessions.push({sk,week:+wk,dayId:dk,date,label:`W${wk} ${dk.toUpperCase()}`,sets:setArr,maxW});
-      map[exId].best=Math.max(map[exId].best,maxW);
-      doneSets.forEach(s=>{map[exId].totalTon+=parseFloat(s.weight)*exReps;map[exId].totalReps+=exReps;});
-    });
-    const PR_KEYS=new Set(['snatch','clean_and_jerk','back_squat','deadlift','bench_press']);
-    return Object.values(map)
-      .filter(ex=>!PR_KEYS.has(ex.id))
-      .map(ex=>({...ex,
-        atw:ex.totalReps>0?+(ex.totalTon/ex.totalReps).toFixed(1):null,
-        sessions:ex.sessions.sort((a,b)=>(a.date||a.label).localeCompare(b.date||b.label)),
-      }))
-      .sort((a,b)=>b.sessions.length-a.sessions.length);
-  },[setsData,dateMap,exRepsMap]);
-
-  if(exercises.length===0) return (
-    <div style={{color:'var(--text3)',fontSize:12,padding:'16px 0',fontFamily:"'DM Mono',monospace"}}>
-      No exercise data yet — log sets with weights to see breakdown.
-    </div>
-  );
-
-  return (
-    <div style={{display:'flex',flexDirection:'column',gap:1}}>
-      {exercises.map((ex,ei)=>{
-        const isOpen=openEx===ex.id;
-        const exReps=exRepsMap[ex.id]||3;
-        const sparkSessions=[...ex.sessions].slice(-12);
-        const sparkMax=Math.max(...sparkSessions.map(s=>s.maxW),1);
-        const sparkMin=Math.min(...sparkSessions.map(s=>s.maxW))*0.9;
-        const W=120,H=36,pad=4;
-        const xi=i=>sparkSessions.length===1?W/2:pad+i*(W-2*pad)/(sparkSessions.length-1);
-        const yi=w=>H-pad-((w-sparkMin)/(sparkMax-sparkMin||1))*(H-2*pad);
-        return (
-          <div key={ex.id} style={{background:'var(--bg1)',border:'1px solid var(--border)',
-            borderRadius:ei===0?'8px 8px 0 0':ei===exercises.length-1?'0 0 8px 8px':'0',borderTop:ei>0?'none':undefined}}>
-            <div onClick={()=>setOpenEx(isOpen?null:ex.id)}
-              style={{padding:'10px 14px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-              <div>
-                <div style={{fontSize:9,color:isOpen?'var(--gold)':'var(--text)',fontFamily:"'DM Mono',monospace",fontWeight:isOpen?600:400,letterSpacing:0.5}}>
-                  {ex.name.toUpperCase()}
-                </div>
-                <div style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:1}}>
-                  best: {ex.best} kg · {ex.sessions.length} session{ex.sessions.length!==1?'s':''}
-                </div>
-              </div>
-              <span style={{fontSize:10,color:'var(--text3)'}}>{isOpen?'▾':'▸'}</span>
-            </div>
-            {isOpen&&(
-              <div style={{padding:'0 14px 14px',borderTop:'1px solid var(--border)'}}>
-                {/* Summary cards */}
-                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6,margin:'12px 0 10px'}}>
-                  {[
-                    ['BEST',`${ex.best} kg`,'var(--gold)'],
-                    ['VOLUME',`${(ex.totalTon/1000).toFixed(1)} t`,'var(--text)'],
-                    ['ATW',ex.atw?`${ex.atw} kg`:'—','var(--purple)'],
-                  ].map(([lbl,val,col])=>(
-                    <div key={lbl} style={{background:'var(--bg)',borderRadius:6,padding:'8px',textAlign:'center'}}>
-                      <div style={{fontSize:7,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:2}}>{lbl}</div>
-                      <div style={{fontSize:16,fontWeight:700,color:col,fontFamily:"'Bebas Neue',sans-serif"}}>{val}</div>
-                    </div>
-                  ))}
-                </div>
-                {/* Sparkline */}
-                {sparkSessions.length>1&&(
-                  <div style={{marginBottom:10}}>
-                    <div style={{fontSize:7,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:4}}>MAX WEIGHT PER SESSION</div>
-                    <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%',height:'auto',display:'block',background:'var(--bg)',borderRadius:4}}>
-                      <polyline points={sparkSessions.map((s,i)=>`${xi(i)},${yi(s.maxW)}`).join(' ')}
-                        fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
-                      {sparkSessions.map((s,i)=>(
-                        <circle key={i} cx={xi(i)} cy={yi(s.maxW)} r={i===sparkSessions.length-1?2.5:1.5}
-                          fill="var(--gold)" opacity={i===sparkSessions.length-1?1:0.5}/>
-                      ))}
-                    </svg>
-                  </div>
-                )}
-                {/* Session history */}
-                <div style={{fontSize:7,color:'var(--text3)',fontFamily:"'DM Mono',monospace",letterSpacing:1,marginBottom:6}}>SESSION HISTORY</div>
-                <div style={{display:'flex',flexDirection:'column',gap:4}}>
-                  {[...ex.sessions].reverse().map((sess,si)=>{
-                    const isBest=sess.maxW===ex.best;
-                    const doneSets=sess.sets.filter(s=>s.done&&parseFloat(s.weight)>0);
-                    const sessReps=exRepsMap[ex.id]||3;
-                    const sessTon=doneSets.reduce((a,s)=>a+parseFloat(s.weight)*sessReps,0);
-                    const sessATW=doneSets.length>0?(sessTon/(doneSets.length*sessReps)).toFixed(1):null;
-                    return (
-                      <div key={si} style={{background:'var(--bg)',borderRadius:6,padding:'8px 10px',
-                        borderLeft:`2px solid ${isBest?'var(--gold)':'var(--border2)'}`,}}>
-                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
-                          <span style={{fontSize:9,color:isBest?'var(--gold)':'var(--text2)',fontFamily:"'DM Mono',monospace",fontWeight:isBest?600:400}}>
-                            {sess.date||sess.label}{sess.date?` · ${sess.label}`:''}
-                          </span>
-                          {isBest&&<span style={{fontSize:8,color:'var(--gold)',fontFamily:"'DM Mono',monospace"}}>★ best</span>}
-                        </div>
-                        <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
-                          {sess.sets.map((s,i)=>{
-                            const w=parseFloat(s.weight);
-                            const isMax=w===sess.maxW&&s.done;
-                            return s.done&&w>0?(
-                              <span key={i} style={{fontSize:10,fontFamily:"'DM Mono',monospace",padding:'2px 6px',borderRadius:3,
-                                background:isMax?'rgba(212,168,67,0.12)':'var(--bg1)',
-                                color:isMax?'var(--gold)':'var(--text2)'}}>
-                                {w}×{sessReps}
-                              </span>
-                            ):null;
-                          })}
-                        </div>
-                        {sessTon>0&&<div style={{fontSize:8,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:4}}>
-                          vol: {Math.round(sessTon)} kg{sessATW?` · ATW: ${sessATW} kg`:''}
-                        </div>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function CalendarHeatmap({logs}){
-  const [selected,setSelected]=useState(null);
-  const entries=Object.values(logs).filter(e=>e.date);
-  const trainedSet=new Set(entries.map(e=>e.date));
-  const ratingOf=date=>{const e=entries.find(x=>x.date===date);return e?(e.rating?e.rating.length:3):0;};
-  const entryOf=date=>entries.find(x=>x.date===date)||null;
-  const today=new Date();
-  const days=Array.from({length:91},(_,i)=>{const d=new Date(today);d.setDate(d.getDate()-(90-i));return d.toISOString().slice(0,10);});
-  const dow0=new Date(days[0]).getDay();
-  const pad=(dow0===0?6:dow0-1);
-  const cells=[...Array(pad).fill(null),...days];
-  const weeks=[];
-  for(let i=0;i<cells.length;i+=7)weeks.push(cells.slice(i,i+7));
-  const cellColor=date=>{
-    if(!date||!trainedSet.has(date))return 'var(--bg3)';
-    const r=ratingOf(date);
-    return r>=4?'var(--green)':r>=3?'var(--blue)':r>=2?'var(--gold)':'var(--text3)';
-  };
-  const monthLabels=[];
-  weeks.forEach((wk,wi)=>{
-    const fd=wk.find(d=>d);if(!fd)return;
-    const m=fd.split('-')[1];
-    const prev=weeks[wi-1]?.find(d=>d);
-    if(!prev||prev.split('-')[1]!==m)monthLabels.push([wi,new Date(fd).toLocaleString('default',{month:'short'})]);
-  });
-  const sel=selected?entryOf(selected):null;
-  return (
-    <div>
-      <div style={{overflowX:'auto'}}>
-        <div style={{position:'relative',paddingTop:18,minWidth:'fit-content'}}>
-          <div style={{display:'flex',gap:3,position:'absolute',top:0,left:0}}>
-            {weeks.map((_,wi)=>{
-              const ml=monthLabels.find(([w])=>w===wi);
-              return <div key={wi} style={{width:14,fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>{ml?ml[1]:''}</div>;
-            })}
-          </div>
-          <div style={{display:'flex',gap:3}}>
-            {weeks.map((wk,wi)=>(
-              <div key={wi} style={{display:'flex',flexDirection:'column',gap:3}}>
-                {wk.map((d,di)=>(
-                  <div key={di} title={d||''} onClick={()=>d&&trainedSet.has(d)&&setSelected(selected===d?null:d)}
-                    style={{width:14,height:14,borderRadius:2,background:cellColor(d),opacity:d?1:0,
-                      cursor:d&&trainedSet.has(d)?'pointer':'default',
-                      outline:selected===d?'2px solid var(--gold)':'none',outlineOffset:1}}/>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{display:'flex',gap:12,marginTop:10,flexWrap:'wrap'}}>
-          {[['5★','var(--green)'],['3–4★','var(--blue)'],['1–2★','var(--gold)'],['No rating','var(--text3)'],['Rest','var(--bg3)']].map(([l,c])=>(
-            <div key={l} style={{display:'flex',alignItems:'center',gap:4}}>
-              <div style={{width:10,height:10,borderRadius:2,background:c,border:'1px solid var(--border2)'}}/>
-              <span style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>{l}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      {sel&&(
-        <div style={{marginTop:12,background:'var(--bg1)',borderRadius:8,padding:'12px 14px',border:'1px solid var(--border2)'}}>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
-            <div style={{fontSize:11,color:'var(--gold)',fontFamily:"'DM Mono',monospace",fontWeight:600}}>{selected} · {sel.dayName||''}</div>
-            <div onClick={()=>setSelected(null)} style={{cursor:'pointer',fontSize:14,color:'var(--text3)',lineHeight:1}}>×</div>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6,fontSize:10,fontFamily:"'DM Mono',monospace"}}>
-            {sel.rating&&<div><span style={{color:'var(--text3)'}}>rating </span><span style={{color:'var(--gold)'}}>{sel.rating}</span></div>}
-            {sel.energyLevel&&<div><span style={{color:'var(--text3)'}}>energy </span><span style={{color:'var(--text)'}}>{sel.energyLevel}</span></div>}
-            {sel.backPain!=null&&sel.backPain!==''&&<div><span style={{color:'var(--text3)'}}>back </span><span style={{color:'var(--red)'}}>{sel.backPain}/10</span></div>}
-            {sel.techniqueFeel&&<div><span style={{color:'var(--text3)'}}>tech </span><span style={{color:'var(--text)'}}>{sel.techniqueFeel}</span></div>}
-            {sel.nightShift&&<div style={{gridColumn:'1/-1'}}><span style={{color:'var(--text3)'}}>🌙 post-shift session</span></div>}
-          </div>
-          {sel.notes&&<div style={{marginTop:8,fontSize:10,color:'var(--text2)',fontFamily:"'DM Mono',monospace"}}>{sel.notes}</div>}
-          {sel.focusNext&&<div style={{marginTop:4,fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace"}}>next: {sel.focusNext}</div>}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function ExercisesTab() {
   const [filter, setFilter] = React.useState('all');
   const [search, setSearch] = React.useState('');
@@ -1734,270 +1284,6 @@ function ExercisesTab() {
       {filtered.length === 0 && (
         <div style={{color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace", padding:'20px 0'}}>
           No exercises match your filter.
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AnalyticsTab({ prs, logs, week }) {
-  const setsData = useMemo(() => {
-    const d = {};
-    Object.keys(localStorage).filter(k => k.startsWith('sets_')).forEach(k => {
-      try { d[k] = JSON.parse(localStorage.getItem(k) || '[]'); } catch {}
-    });
-    return d;
-  }, []);
-
-  const completionByWeek = useMemo(() => {
-    const counts = {};
-    Object.values(logs).forEach(l => { if (l.week) counts[l.week] = (counts[l.week] || 0) + 1; });
-    const maxW = Math.max(week, ...Object.keys(counts).map(Number), 1);
-    return Array.from({ length: maxW }, (_, i) => ({ label: `W${i+1}`, sessions: counts[i+1] || 0 }));
-  }, [logs, week]);
-
-  const exFreq = useMemo(() => {
-    const m = {};
-    Object.entries(setsData).forEach(([key, arr]) => {
-      const match = key.match(/^sets_w\d+_d\d+_(.+)$/);
-      if (!match) return;
-      const exId = match[1];
-      const exName = getEx(exId)?.name || exId;
-      if (!m[exName]) m[exName] = 0;
-      arr.forEach(s => { if (s.done) m[exName]++; });
-    });
-    return Object.entries(m).filter(([,v]) => v > 0).sort((a,b) => b[1]-a[1]).slice(0, 12)
-      .map(([name, sets]) => ({ name, sets }));
-  }, [setsData]);
-
-  const PR_LIFTS = [
-    { key: 'snatch',            label: 'SNATCH',         color: 'var(--gold)'   },
-    { key: 'clean_and_jerk',    label: 'C&J',            color: 'var(--blue)'   },
-    { key: 'clean',             label: 'CLEAN',          color: 'var(--green)'  },
-    { key: 'back_squat',        label: 'BACK SQUAT',     color: 'var(--purple)' },
-    { key: 'hang_power_snatch', label: 'HNG PWR SNATCH', color: 'var(--red)'    },
-  ];
-
-  const sec = { marginBottom: 28 };
-  const hd = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 20, letterSpacing: 1, color: 'var(--text)', marginBottom: 14 };
-  const sub = { fontSize: 9, color: 'var(--text3)', fontFamily: "'DM Mono',monospace", marginBottom: 8, letterSpacing: 1.5 };
-
-  return (
-    <div className="fade">
-
-      {/* Sync status pill */}
-      <div style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 12px',
-        borderRadius:8, background:'var(--bg1)', border:'1px solid var(--border)', marginBottom:20 }}>
-        <div style={{ width:7, height:7, borderRadius:'50%', background: sbSync.ready ? 'var(--green)' : 'var(--text3)', flexShrink:0 }}/>
-        <span style={{ fontSize:10, color: sbSync.ready ? 'var(--text2)' : 'var(--text3)', fontFamily:"'DM Mono',monospace" }}>
-          {sbSync.ready ? 'SUPABASE CONNECTED · DATA PERSISTED' : 'SUPABASE NOT CONFIGURED · LOCALSTORAGE ONLY'}
-        </span>
-      </div>
-
-      {/* Weekly sessions chart */}
-      <div style={sec}>
-        <div style={hd}>SESSIONS PER WEEK</div>
-        <div style={sub}>LOGGED SESSIONS (TARGET: 5)</div>
-        {completionByWeek.length > 0 ? (
-          <>
-            <div style={{ display:'flex', gap:3, alignItems:'flex-end', height:80, background:'var(--bg)', borderRadius:6, padding:'8px 6px 4px' }}>
-              {completionByWeek.map((w, i) => {
-                const h = Math.max(0, (w.sessions / 5) * 60);
-                const col = w.sessions >= 5 ? 'var(--green)' : w.sessions >= 3 ? 'var(--gold)' : w.sessions > 0 ? 'var(--red)' : 'var(--bg3)';
-                return (
-                  <div key={i} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'flex-end', height:64 }}>
-                    <div style={{ width:'100%', height:h, background:col, borderRadius:'2px 2px 0 0', minHeight: w.sessions > 0 ? 3 : 0, transition:'height 0.2s' }}/>
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{ display:'flex', justifyContent:'space-between', marginTop:4 }}>
-              {[0, Math.floor(completionByWeek.length/2), completionByWeek.length-1]
-                .filter((v,i,a) => a.indexOf(v)===i)
-                .map(i => (
-                  <span key={i} style={{ fontSize:8, color:'var(--text3)', fontFamily:"'DM Mono',monospace" }}>
-                    {completionByWeek[i]?.label}
-                  </span>
-                ))}
-            </div>
-          </>
-        ) : (
-          <div style={{ color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace" }}>No sessions logged yet.</div>
-        )}
-      </div>
-
-      {/* PR Progression */}
-      <div style={sec}>
-        <div style={hd}>PR PROGRESSION</div>
-        {PR_LIFTS.map(lift => {
-          const entry = prs[lift.key];
-          if (!entry?.history?.length) return null;
-          const chartData = [...entry.history]
-            .sort((a, b) => (a.date||'').localeCompare(b.date||''))
-            .reduce((acc, h) => {
-              const prevMax = acc.length ? acc[acc.length-1].weight : 0;
-              if (h.weight >= prevMax) acc.push({ date: h.date, weight: h.weight, label: h.date?.slice(5)||'' });
-              return acc;
-            }, []);
-          return (
-            <div key={lift.key} style={{ marginBottom:20 }}>
-              <div style={sub}>{lift.label}</div>
-              <SVGLineChart data={chartData} height={100}
-                series={[{ key:'weight', color:lift.color, label:`${lift.label} (kg)` }]} />
-            </div>
-          );
-        })}
-        {PR_LIFTS.every(l => !prs[l.key]?.history?.length) && (
-          <div style={{ color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace" }}>Log PRs to see progression charts.</div>
-        )}
-      </div>
-
-      {/* Exercise frequency */}
-      <div style={sec}>
-        <div style={hd}>TOP EXERCISES</div>
-        <div style={sub}>COMPLETED SETS ACROSS ALL WEEKS</div>
-        {exFreq.length > 0 ? (
-          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-            {exFreq.map((ex, i) => {
-              const pct = Math.round((ex.sets / exFreq[0].sets) * 100);
-              return (
-                <div key={ex.name} style={{ display:'flex', alignItems:'center', gap:10 }}>
-                  <span style={{ width:16, fontSize:9, color:'var(--text3)', fontFamily:"'DM Mono',monospace", textAlign:'right', flexShrink:0 }}>{i+1}</span>
-                  <div style={{ flex:1 }}>
-                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
-                      <span style={{ fontSize:12, color:'var(--text)', fontFamily:"'Bebas Neue',sans-serif", letterSpacing:0.3 }}>{ex.name}</span>
-                      <span style={{ fontSize:9, color:'var(--text2)', fontFamily:"'DM Mono',monospace" }}>{ex.sets} sets</span>
-                    </div>
-                    <div style={{ height:4, background:'var(--bg2)', borderRadius:2 }}>
-                      <div style={{ height:'100%', width:`${pct}%`, background:'var(--gold)', borderRadius:2 }}/>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div style={{ color:'var(--text3)', fontSize:12, fontFamily:"'DM Mono',monospace" }}>Complete sets to see exercise rankings.</div>
-        )}
-      </div>
-
-    </div>
-  );
-}
-
-function Reports({prs, logs, week}){
-  const setsData=useMemo(()=>{
-    const d={};
-    Object.keys(localStorage).filter(k=>k.startsWith('sets_')).forEach(k=>{
-      try{d[k]=JSON.parse(localStorage.getItem(k)||'[]');}catch{}
-    });
-    return d;
-  },[]);
-
-  const dateMap=useMemo(()=>{
-    const m={};
-    Object.values(logs).forEach(entry=>{
-      if(!entry.week)return;
-      const day=DAYS_SUMMER.find(d=>d.name===entry.dayName||d.id===entry.dayName);
-      if(day)m[`w${entry.week}_${day.id}`]=entry.date;
-    });
-    return m;
-  },[logs]);
-
-  const qualityData=useMemo(()=>{
-    const EL={'High':4,'Normal':3,'Low':2,'Post-shift':1};
-    const TF={'Clicked':4,'Decent':3,'Inconsistent':2,'Off today':1};
-    return Object.values(logs)
-      .filter(e=>e.date)
-      .sort((a,b)=>a.date.localeCompare(b.date))
-      .map(e=>({
-        date:e.date,label:e.date.slice(5),
-        rating:e.rating?e.rating.length:null,
-        energy:EL[e.energyLevel]??null,
-        backPain:e.backPain?parseInt(e.backPain)||null:null,
-        tech:TF[e.techniqueFeel]??null,
-        nightShift:e.nightShift,
-      }));
-  },[logs]);
-
-  const shiftStats=useMemo(()=>{
-    const s=qualityData.filter(d=>d.nightShift&&d.rating!=null);
-    const r=qualityData.filter(d=>!d.nightShift&&d.rating!=null);
-    const avg=arr=>arr.length?(arr.reduce((a,d)=>a+d.rating,0)/arr.length).toFixed(1):null;
-    const avgBP=arr=>arr.length?(arr.reduce((a,d)=>a+(d.backPain||0),0)/arr.length).toFixed(1):null;
-    return{shifted:{data:s,avgRating:avg(s),avgBP:avgBP(s)},rested:{data:r,avgRating:avg(r),avgBP:avgBP(r)}};
-  },[qualityData]);
-
-  const sec={marginBottom:28};
-  const hd={fontFamily:"'Bebas Neue',sans-serif",fontSize:20,letterSpacing:1,color:'var(--text)',marginBottom:14};
-  const sub={fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginBottom:8,letterSpacing:1.5};
-
-  return (
-    <div className="fade">
-
-      <div style={sec}>
-        <div style={hd}>OVERVIEW</div>
-        <OverviewCards logs={logs} week={week} setsData={setsData} dateMap={dateMap}/>
-      </div>
-
-      <div style={sec}>
-        <div style={hd}>PERSONAL RECORDS</div>
-        <PRCards prs={prs}/>
-      </div>
-
-      <div style={sec}>
-        <div style={hd}>LOAD DEVELOPMENT</div>
-        <LoadDevelopment setsData={setsData} dateMap={dateMap}/>
-      </div>
-
-      <div style={sec}>
-        <div style={hd}>EXERCISE BREAKDOWN</div>
-        <ExerciseBreakdown setsData={setsData} dateMap={dateMap}/>
-      </div>
-
-      <div style={sec}>
-        <div style={hd}>SESSION QUALITY</div>
-        {qualityData.length>0?(<>
-          <div style={sub}>RATING (1–5★) · ENERGY (4=HIGH→1=POST-SHIFT) · BACK PAIN (0–10)</div>
-          <SVGLineChart data={qualityData} height={160} yMax={10}
-            series={[
-              {key:'rating',color:'var(--gold)',label:'Rating'},
-              {key:'energy',color:'var(--green)',label:'Energy'},
-              {key:'backPain',color:'var(--red)',label:'Back pain'},
-            ]}/>
-          <div style={{...sub,marginTop:14}}>TECHNIQUE FEEL (4=CLICKED→1=OFF)</div>
-          <SVGLineChart data={qualityData} height={100} yMax={4}
-            series={[{key:'tech',color:'var(--blue)',label:'Technique'}]}/>
-        </>):(
-          <div style={{color:'var(--text3)',fontSize:12,padding:'16px 0'}}>No session logs yet.</div>
-        )}
-      </div>
-
-      <div style={sec}>
-        <div style={hd}>TRAINING FREQUENCY</div>
-        <div style={sub}>LAST 90 DAYS — TAP A DAY TO SEE SESSION DETAILS</div>
-        <CalendarHeatmap logs={logs}/>
-      </div>
-
-      {(shiftStats.shifted.data.length>0||shiftStats.rested.data.length>0)&&(
-        <div style={sec}>
-          <div style={hd}>NIGHT SHIFT IMPACT</div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-            {[['POST-SHIFT',shiftStats.shifted,'var(--gold)'],['RESTED',shiftStats.rested,'var(--green)']].map(([lbl,stat,col])=>(
-              <div key={lbl} style={{background:'var(--bg1)',borderRadius:8,padding:14,border:`1px solid ${col}44`}}>
-                <div style={{fontSize:9,color:'var(--text3)',letterSpacing:2,fontFamily:"'DM Mono',monospace",marginBottom:8}}>{lbl}</div>
-                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:30,color:col,lineHeight:1}}>
-                  {stat.avgRating!=null?`${stat.avgRating}★`:'—'}
-                </div>
-                <div style={{fontSize:10,color:'var(--text2)',fontFamily:"'DM Mono',monospace",marginTop:6}}>
-                  avg back pain: {stat.avgBP!=null?`${stat.avgBP}/10`:'—'}
-                </div>
-                <div style={{fontSize:9,color:'var(--text3)',fontFamily:"'DM Mono',monospace",marginTop:2}}>
-                  n = {stat.data.length}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       )}
     </div>
@@ -3386,6 +2672,100 @@ function WarmupCard({part, sessionKey, forceReload}) {
 // their stored data is untouched.
 const MORE_TABS = [["exercises","EXERCISES"],["mobility","MOBILITY"],["system","SYSTEM"],["settings","SETTINGS"]];
 
+// ── Log calendar (UI slim-down, 2026-10-17) ─────────────────────────────────
+// Replaces the flat log list and the Reports tab: a month grid with training days
+// marked; tapping a day shows every session logged on it — each exercise's logged
+// weights (from the sets_ keys), then the notes. Edit opens the existing log form
+// for that entry's own week; Delete is the existing deleteLog.
+const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+const SESSIONS_TARGET = 4;   // the school-term week; Analytics' old target of 5 was summer's
+
+function LogCalendar({logs, week, onEdit, onDelete}) {
+  const today = new Date().toISOString().slice(0, 10);
+  const [ym, setYm] = useState(() => { const d = new Date(); return [d.getFullYear(), d.getMonth()]; });
+  const [picked, setPicked] = useState(null);
+  const [y, m] = ym;
+  const cells = monthCells(y, m);
+  const logged = new Set(Object.values(logs).map(e => e && e.date).filter(Boolean));
+  const shift = n => { setPicked(null); setYm(([yy, mm]) => { const d = new Date(yy, mm + n, 1); return [d.getFullYear(), d.getMonth()]; }); };
+  const entries = picked ? logsOnDate(logs, picked) : [];
+  let keys = [];
+  try { keys = Object.keys(localStorage); } catch {}
+  const get = k => { try { return localStorage.getItem(k); } catch { return null; } };
+
+  const counts = {};
+  Object.values(logs).forEach(l => { if (l && l.week) counts[l.week] = (counts[l.week] || 0) + 1; });
+  const maxW = Math.max(week, ...Object.keys(counts).map(Number), 1);
+  const perWeek = Array.from({length: maxW}, (_, i) => ({label: `W${i + 1}`, n: counts[i + 1] || 0}));
+
+  const navBtn = {width:34,height:34,borderRadius:6,border:"1px solid var(--border)",background:"var(--bg1)",color:"var(--text2)",fontSize:16,cursor:"pointer"};
+  const mono = {fontFamily:"'DM Mono',monospace"};
+  return (
+    <div className="fade">
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+        <button aria-label="Previous month" onClick={() => shift(-1)} style={navBtn}>‹</button>
+        <div style={{flex:1,textAlign:"center",fontFamily:"'Bebas Neue',sans-serif",fontSize:20,letterSpacing:1,color:"var(--gold)"}}>{`${MONTHS[m]} ${y}`}</div>
+        <button aria-label="Next month" onClick={() => shift(1)} style={navBtn}>›</button>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:4}}>
+        {["M","T","W","T","F","S","S"].map((d, i) => <div key={i} style={{...mono,fontSize:8,color:"var(--text3)",textAlign:"center"}}>{d}</div>)}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:16}}>
+        {cells.map((c, i) => c === null ? <div key={i}/> : (
+          <button key={c} onClick={() => setPicked(picked === c ? null : c)} style={{
+            aspectRatio:"1",borderRadius:6,cursor:"pointer",...mono,fontSize:11,
+            border:`1px solid ${picked === c ? "var(--gold)" : c === today ? "var(--text3)" : "var(--border)"}`,
+            background:logged.has(c) ? "rgba(90,158,69,0.18)" : "var(--bg2)",
+            color:logged.has(c) ? "var(--green)" : "var(--text3)",fontWeight:logged.has(c) ? 600 : 400,
+          }}>{String(Number(c.slice(8)))}</button>
+        ))}
+      </div>
+
+      {picked && (
+        <div style={{marginBottom:20}}>
+          {entries.length === 0 && <div style={{...mono,fontSize:11,color:"var(--text3)"}}>No session logged on {picked}.</div>}
+          {entries.map(([key, e]) => (
+            <Card key={key} style={{marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                <div>
+                  <div style={{...mono,fontSize:9,color:"var(--gold)",letterSpacing:1.5}}>WK {e.week} · {e.dayLabel || ""}</div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17,letterSpacing:0.3}}>{e.dayName}</div>
+                </div>
+                <div style={{display:"flex",gap:6}}>
+                  <Btn small ghost onClick={() => onEdit(key, e)}>EDIT</Btn>
+                  <Btn small ghost onClick={() => { onDelete(key); }}>DELETE</Btn>
+                </div>
+              </div>
+              {logDaySets(e, keys, get).map(r => (
+                <div key={r.exId} style={{display:"flex",justifyContent:"space-between",gap:10,padding:"4px 0",borderTop:"1px solid var(--border)"}}>
+                  <span style={{fontSize:12,color:"var(--text)"}}>{getEx(r.exId).name}</span>
+                  <span style={{...mono,fontSize:11,color:"var(--gold)",textAlign:"right"}}>
+                    {r.sets.some(s => s.weight != null && s.weight !== "") ? `${r.sets.filter(s => s.weight != null && s.weight !== "").map(s => s.weight).join(" · ")} kg` : `${r.sets.length} done`}
+                  </span>
+                </div>
+              ))}
+              {e.notes && <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.6,marginTop:8}}>{e.notes}</div>}
+            </Card>
+          ))}
+        </div>
+      )}
+
+      <div style={{...mono,fontSize:9,color:"var(--text3)",letterSpacing:1.5,marginBottom:2}}>SESSIONS PER WEEK</div>
+      <div style={{...mono,fontSize:8,color:"var(--text3)",marginBottom:8}}>TARGET: {SESSIONS_TARGET}</div>
+      <div style={{display:"flex",gap:3,alignItems:"flex-end",height:70,background:"var(--bg2)",borderRadius:6,padding:"6px"}}>
+        {perWeek.map(w => (
+          <div key={w.label} title={`${w.label}: ${w.n}`} style={{flex:1,height:`${Math.min(1, w.n / SESSIONS_TARGET) * 100}%`,minHeight:w.n ? 3 : 0,borderRadius:"2px 2px 0 0",
+            background:w.n >= SESSIONS_TARGET ? "var(--green)" : w.n >= 2 ? "var(--gold)" : w.n > 0 ? "var(--red)" : "var(--bg3)"}}/>
+        ))}
+      </div>
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+        <span style={{...mono,fontSize:8,color:"var(--text3)"}}>W1</span>
+        <span style={{...mono,fontSize:8,color:"var(--text3)"}}>W{maxW}</span>
+      </div>
+    </div>
+  );
+}
+
 function TestLiftCard({lift, ladder, sessionKey, onProgress, onSetsChange, forceReload, onNewPR}) {
   const stepCount = ladder.length + 1;
   const [steps, setSteps] = useState(() => [
@@ -3783,16 +3163,17 @@ function OlyTracker() {
 
   async function handleLog(){
     if(!logForm.notes&&!logForm.weights&&!logForm.rating) return;
+    const lw = logForm.week ?? week;   // a calendar edit keeps its entry's week
     // Snapshot pct at log time so review doesn't re-read stale localStorage later.
     // Mirrors the live session-progress calc: Deload's real reduced sets via
     // weekAdjustedExercises(), Test's ladder-step count via WEEK8_TEST, Block
     // 2+'s single session toggle via Block2DayToggle — not the Block 1
     // catalog's full Phase 2 volume, and not Block 1's dayName/label for a
     // Block 2+ session (the ids overlap — "d1".."d4" — but the content doesn't).
-    const _logWeekPlan = weekPlan(week);
-    const _logBlk = blockFor(week);
+    const _logWeekPlan = weekPlan(lw);
+    const _logBlk = blockFor(lw);
     const _logB2Day = _logBlk?.block!==1 ? (_logWeekPlan?.days||[]).find(dd=>dd.id===logForm.dayId) : null;
-    const _logB2Exercises = _logB2Day ? exercisesFor(week, _logB2Day.id) : null;
+    const _logB2Exercises = _logB2Day ? exercisesFor(lw, _logB2Day.id) : null;
     const _logTestDay = _logWeekPlan?.phase === "Test" ? WEEK8_TEST[logForm.dayId] : null;
     const d = _logB2Day || DAYS.find(d=>d.id===logForm.dayId);
     const expectedTotal = _logB2Exercises ? _logB2Exercises.reduce((acc,ex)=>{
@@ -3801,11 +3182,11 @@ function OlyTracker() {
         },0)
       : _logB2Day ? 1
       : _logTestDay ? _logTestDay.lifts.reduce((acc)=>acc+_logTestDay.ladder.length+1,0)
-      : d ? weekAdjustedExercises(d, week).reduce((acc,ex)=>{
+      : d ? weekAdjustedExercises(d, lw).reduce((acc,ex)=>{
           const c=typeof ex.sets==="number"?ex.sets:parseInt(ex.sets)||3;
           return acc+c;
         },0) : 0;
-    const prefix=`sets_w${week}_${logForm.dayId}_`;
+    const prefix=`sets_w${lw}_${logForm.dayId}_`;
     let doneSets=0;
     // Warm-up ticks share the prefix (so they sync) but never count toward the session.
     try{doneSets=doneSetsFor(prefix,Object.keys(localStorage),k=>localStorage.getItem(k));}catch{}
@@ -3815,7 +3196,7 @@ function OlyTracker() {
       date:logForm.date||new Date().toISOString().slice(0,10),
       dayName:_logB2Day?.primary||d?.name||logForm.dayId,
       dayLabel:d?.label||"",
-      week,notes:logForm.notes,weights:logForm.weights,
+      week:lw,notes:logForm.notes,weights:logForm.weights,
       backPain:logForm.backPain,nightShift:logForm.nightShift,
       techniqueFeel:logForm.techniqueFeel,
       energyLevel:logForm.energyLevel,
@@ -3826,7 +3207,7 @@ function OlyTracker() {
     setLogs(updated);
     try{await storage.set("oly_logs",JSON.stringify(updated));}catch{}
     sbSync.upsertSession(key, updated[key]);
-    setLogForm(f=>({...f,date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
+    setLogForm(f=>({...f,week:undefined,date:new Date().toISOString().slice(0,10),notes:"",weights:"",backPain:"0",nightShift:false,techniqueFeel:"",energyLevel:"",focusNext:"",rating:""}));
     setLogEditKey(null);
     setLogModal(false);
     showToast("Session logged ✓");
@@ -4323,52 +3704,13 @@ function OlyTracker() {
 
         {/* ═══ LOG ═══ */}
         {tab==="log" && (
-          <div className="fade">
-            <Label>PAST SESSIONS</Label>
-            {logEntries.length===0&&(
-              <p style={{color:"var(--text3)",fontSize:13,fontStyle:"italic"}}>No sessions yet. Get under the bar.</p>
-            )}
-            {logEntries.map(([key,entry],i)=>(
-              <Card key={key} style={{marginBottom:10}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
-                  <div>
-                    {entry.dayLabel&&<div style={{fontSize:9,color:"var(--gold)",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,marginBottom:2}}>{entry.dayLabel}</div>}
-                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,letterSpacing:0.3}}>{entry.dayName}</div>
-                    {entry.rating&&<div style={{fontSize:14,marginTop:2}}>{entry.rating}</div>}
-                  </div>
-                  <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
-                    <div style={{textAlign:"right"}}>
-                      <div style={{fontSize:10,color:"var(--gold)",fontFamily:"'DM Mono',monospace"}}>WK {entry.week}</div>
-                      <div style={{fontSize:10,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{entry.date}</div>
-                    </div>
-                    <button onClick={()=>deleteLog(key)} style={{
-                      background:"transparent",border:"none",cursor:"pointer",
-                      color:"var(--text3)",fontSize:16,padding:"0 2px",lineHeight:1,
-                    }} title="Delete log">×</button>
-                  </div>
-                </div>
-                {entry.weights&&<div style={{fontSize:11,color:"var(--gold)",fontFamily:"'DM Mono',monospace",marginBottom:8}}>{entry.weights}</div>}
-                <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
-                  {entry.techniqueFeel&&<span style={{fontSize:10,background:"var(--bg2)",color:"var(--text2)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>{entry.techniqueFeel}</span>}
-                  {entry.energyLevel&&<span style={{fontSize:10,background:"var(--bg2)",color:"var(--text2)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>{entry.energyLevel}</span>}
-                  {entry.backPain&&parseInt(entry.backPain)>0&&(
-                    <span style={{fontSize:10,background:"rgba(201,79,58,0.1)",color:"var(--red)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>
-                      BACK {entry.backPain}/10
-                    </span>
-                  )}
-                  {entry.nightShift&&<span style={{fontSize:10,background:"rgba(74,144,217,0.1)",color:"var(--blue)",borderRadius:4,padding:"2px 8px",fontFamily:"'DM Mono',monospace"}}>🌙 NIGHT SHIFT</span>}
-                </div>
-                {entry.focusNext&&(
-                  <div style={{fontSize:11,color:"var(--purple)",fontFamily:"'DM Mono',monospace",marginBottom:6}}>
-                    NEXT: {entry.focusNext}
-                  </div>
-                )}
-                {entry.notes&&<div style={{fontSize:12,color:"var(--text2)",lineHeight:1.7}}>{entry.notes}</div>}
-              </Card>
-            ))}
-          </div>
+          <LogCalendar logs={logs} week={week} onDelete={deleteLog} onEdit={(key, e)=>{
+            setLogForm({dayId:logEntryDayId(e)||"d1",week:e.week,date:e.date||"",notes:e.notes||"",weights:e.weights||"",
+              backPain:e.backPain||"0",nightShift:e.nightShift||false,techniqueFeel:e.techniqueFeel||"",
+              energyLevel:e.energyLevel||"",focusNext:e.focusNext||"",rating:e.rating||""});
+            setLogEditKey(key);setLogModal(true);
+          }}/>
         )}
-
         {/* ═══ PRs ═══ */}
         {tab==="prs" && (
           <div className="fade">
@@ -4501,9 +3843,6 @@ function OlyTracker() {
             )}
           </div>
         )}
-
-        {/* ═══ REPORTS ═══ */}
-        {tab==="reports" && <Reports prs={prs} logs={logs} week={week}/>}
 
         {/* ═══ SYSTEM ═══ */}
         {tab==="system" && <SystemTab week={week}/>}
