@@ -776,3 +776,104 @@ const BLOCKS = [
     advancement:[],
   },
 ];
+
+// ── UI slim helpers (docs/superpowers/specs/2026-10-17-ui-slim-design.md) ─────
+// Pure functions behind the 4-tab UI. Storage is passed in as (keys, getItem)
+// so tests/js/ui-slim.test.mjs can drive them without a browser.
+
+// The PRs tab lists only these 10 lifts. A lift has been stored under more than
+// one id across blocks; the heaviest entry across a row's ids wins. Deliberately
+// NOT mapped: split_jerk (the empty-bar drill — would read "Split Jerk 20 kg"),
+// push_jerk (a different lift) and the jerk inside clean_and_jerk.
+const PR_ROWS = [
+  {key:"snatch",         label:"Snatch",         ids:["snatch", "snatch_from_floor"]},
+  {key:"clean_and_jerk", label:"Clean & Jerk",   ids:["clean_and_jerk"]},
+  {key:"clean",          label:"Clean",          ids:["clean", "clean_front_squat_floor"]},
+  {key:"split_jerk",     label:"Split Jerk",     ids:["split_jerk_from_rack", "jerk_from_rack"]},
+  {key:"back_squat",     label:"Back Squat",     ids:["back_squat"]},
+  {key:"front_squat",    label:"Front Squat",    ids:["front_squat"]},
+  {key:"snatch_balance", label:"Snatch Balance", ids:["snatch_balance"]},
+  {key:"overhead_squat", label:"Overhead Squat", ids:["overhead_squat"]},
+  {key:"snatch_pull",    label:"Snatch Pull",    ids:["snatch_pull"]},
+  {key:"clean_pull",     label:"Clean Pull",     ids:["clean_pull"]},
+];
+
+function prRow(prs, row) {
+  let best = null;
+  const history = [];
+  for (const id of row.ids) {
+    const e = prs && prs[id];
+    if (!e) continue;
+    if (e.weight != null && (!best || e.weight > best.weight)) best = e;
+    for (const h of e.history || []) history.push({weight:h.weight, date:h.date});
+  }
+  history.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  return {weight: best ? best.weight : null, date: best ? best.date || null : null, history};
+}
+
+// In-session warm-up, drawn from the app's DAILY ANKLE / CORE / SPINE routines
+// (MOBILITY in app.jsx). Before ~12 min: the ankle stretch at its EFFECTIVE dose —
+// the routine itself says a light stretch does nothing — plus one core round.
+// After ~4 min: spine stages 1-2, after the session, never before (Principle 12).
+const WARMUP = {
+  before: [
+    {id:"ankle_loaded", name:"Loaded Ankle Dorsiflexion Stretch", dose:"2–3 × 90 s per side",
+     note:"Half-kneeling, 15–25 kg on the knee, drive it forward over the toe. Moderate discomfort, never tearing pain."},
+    {id:"mcgill_round", name:"McGill Curl-Up · Side Plank · Bird Dog", dose:"1 round",
+     note:"One set of each of the McGill Big Three — brace a neutral spine before loading it."},
+  ],
+  after: [
+    {id:"pelvic_tilt", name:"Supine Pelvic Tilt [E]", dose:"2 × 10 slow",
+     note:"Back flat, knees bent: tilt the pelvis back and forward, slowly — lumbar segments moving on their own."},
+    {id:"cat_cow", name:"Cat-Cow (segmental) [E]", dose:"2 min",
+     note:"One vertebra at a time from the tailbone. Sequencing, not range."},
+  ],
+};
+// Warm-up ticks live beside set ticks (sets_w{week}_{day}_warmup_before|after) so
+// the existing set sync carries them — and every set count must skip them.
+const WARMUP_IDS = ["warmup_before", "warmup_after"];
+const isWarmupKey = k => WARMUP_IDS.some(id => k.endsWith("_" + id));
+
+function doneSetsFor(prefix, keys, getItem) {
+  let n = 0;
+  for (const k of keys) {
+    if (!k.startsWith(prefix) || isWarmupKey(k)) continue;
+    try { n += (JSON.parse(getItem(k) || "[]") || []).filter(s => s && s.done).length; } catch {}
+  }
+  return n;
+}
+
+// "D3 Thu ⭐⭐" -> "d3": the label's first digit, the rule inferDaysFromLogs uses.
+function logEntryDayId(entry) {
+  const m = entry && entry.dayLabel && entry.dayLabel.match(/(\d+)/);
+  return m ? `d${m[1]}` : null;
+}
+
+function logDaySets(entry, keys, getItem) {
+  const day = logEntryDayId(entry);
+  if (!day) return [];
+  const prefix = `sets_w${entry.week}_${day}_`;
+  const rows = [];
+  for (const k of keys) {
+    if (!k.startsWith(prefix) || isWarmupKey(k)) continue;
+    let sets = [];
+    try { sets = JSON.parse(getItem(k) || "[]") || []; } catch {}
+    const kept = sets.filter(s => s && (s.done || s.weight != null));
+    if (kept.length) rows.push({exId: k.slice(prefix.length), sets: kept});
+  }
+  return rows;
+}
+
+function logsOnDate(logs, date) {
+  return Object.entries(logs || {}).filter(([, e]) => e && e.date === date);
+}
+
+// Monday-first month grid: null pads, then ISO dates, padded to whole weeks.
+function monthCells(year, month0) {
+  const iso = d => `${year}-${String(month0 + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  const lead = (new Date(Date.UTC(year, month0, 1)).getUTCDay() + 6) % 7;
+  const days = new Date(Date.UTC(year, month0 + 1, 0)).getUTCDate();
+  const cells = [...Array(lead).fill(null), ...Array.from({length: days}, (_, i) => iso(i + 1))];
+  while (cells.length % 7) cells.push(null);
+  return cells;
+}
