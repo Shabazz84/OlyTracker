@@ -3,7 +3,7 @@
 ## Development Rules
 
 - **App source of truth is `docs/src/app.jsx`** (NOT the HTML). The app is React + JSX. `index.html` is now a thin shell that loads pre-transpiled `docs/app.js`. **Never edit `docs/app.js` by hand** — it is generated. Edit `docs/src/app.jsx`, then run `npm run build` (esbuild → `docs/app.js`). Use `npm run watch` during development. The in-browser Babel transpiler was removed (was ~2.8 MB + per-load transpile cost).
-- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.19.0 · 2026-10-18`.
+- **Version bump on every commit that touches the app** (`docs/src/app.jsx`, `docs/app.js`, or `docs/index.html`) — update `PROGRAM v<X.Y.Z> · <date>` in the header (the string lives in `app.jsx`) before committing, and rebuild so `app.js` carries it. No exceptions, including minor fixes. Format: `major.minor.patch`. Current version: `v3.19.1 · 2026-10-25`.
 - **Version bump on every commit that touches `VideoReview.html`** — update `v<X.Y.Z> · <date>` in the header before committing. Same format. Current version: `v1.0.0 · 2026-05-28`.
 - **Cloud sync is Supabase only.** The GitHub Gist sync path was removed — `sbSync` (`docs/sync.js`, hand-written, not generated) auto-syncs sessions/sets/reviews on every mutation and pulls on startup. Set writes are local-first: each is queued in `localStorage.oly_sync_pending` until Supabase confirms it, the startup pull never overwrites a pending key, and pending writes retry on launch / reconnect / return-to-foreground — without this, sets logged mid-workout were wiped when Android killed the backgrounded PWA (v3.13.1). Tests: `node --test "tests/js/*.test.mjs"`. Don't reintroduce a second sync backend.
 - **`docs/key.js` is PUBLIC on Pages.** It is gitignored locally, but `.github/workflows/deploy.yml` regenerates it during deploy and everything under `docs/` is uploaded as the Pages artifact — so `<pages-url>/key.js` is world-readable. Only publishable values may be written into it; the Supabase publishable key qualifies. **This file previously carried `ANTHROPIC_API_KEY`, which was therefore published on every deploy from the workflow's creation until 2026-08-16** (found by the Block 2 final review; vector removed, exposed key rotated, and the workflow now fails the build if a private-key pattern appears under `docs/`). A browser cannot hold a Claude key securely — production AI review needs a serverless proxy that keeps the key server-side. Your *local* `docs/key.js` is a different, unpublished key and is gitignored.
@@ -28,13 +28,13 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 | Weight class    | 102 kg or 109 kg                                      |
 | Power Snatch    | 60 kg (tested)                                        |
 | Hang Power Snatch | 66 kg (wk8 test, 2026-08-25)                        |
-| Full Snatch     | 55 kg floor (Nov 2025) — **not retested since**; the hang is now ahead of the floor |
-| Best Clean      | 80 kg                                                 |
-| Best Jerk       | 72.5 kg (wk5 training top); wk8 test only made 70 kg on a night-shift day |
+| Full Snatch     | 70 kg from the floor (wk16 test, 2026-10-24) — was 55 (Nov 2025) |
+| Best Clean      | 85 kg (made inside the 85 kg C&J, wk16 test) — not tested alone |
+| Clean & Jerk    | 85 kg (wk16 test, 2026-10-24) — so the jerk is at least 85 |
 | Clean Pull      | 120 kg × 3                                            |
 | Snatch High Pull | 92 kg × 4                                            |
 | Back Squat      | 137 kg × 1 (2026-09-26, wk12 Sat; 133 on 2026-09-08) — both backfilled into the set log 2026-10-01 |
-| Front Squat     | 115 kg × 1 (wk8 test, 2026-08-27)                     |
+| Front Squat     | 120 kg × 1 (wk16 test, 2026-10-24); 115 at the wk8 test |
 | Overhead Squat  | 72 kg × 1 (wk8 test) — 53% of the 137 back squat, corpus norm 65–70% [E10.6] |
 | Overhead Press  | 62 kg × 2                                             |
 | Experience      | Intermediate strength athlete mid-transition to OLY   |
@@ -43,7 +43,7 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 | Training days   | 5 days/week (summer) → 4 days/week (school term Aug+) |
 | Work schedule   | Night shifts Wed–Sun, 7pm→7:30am                      |
 | Limitations     | Chronic back pain (manageable, not acute)             |
-| Weak points     | Jerk (far behind clean), floor lifts far behind the hang variants, split jerk (untrained). OHS stability much improved but not yet at the 65–70% ratio |
+| Weak points     | Split jerk (new — Block 3 trains it). The wk16 test closed the old gaps: the jerk caught up with the clean (85 C&J) and the floor snatch (70) passed the hang power snatch (66). OHS stability much improved but not yet at the 65–70% ratio |
 | Strong points   | Clean pull strength, posterior chain, squat           |
 | Influences      | Klokov, Berestov already visible in training log      |
 
@@ -51,9 +51,9 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 
 | Lift          | Training Max |
 |---------------|-------------|
-| Snatch        | 63 kg       |
-| Clean & Jerk  | 72 kg       |
-| Front Squat   | 115 kg      |
+| Snatch        | 70 kg       |
+| Clean & Jerk  | 85 kg       |
+| Front Squat   | 120 kg      |
 | Back Squat    | 137 kg      |
 | Push Press    | 65 kg       |
 | Clean Pull    | 120 kg      |
@@ -61,8 +61,8 @@ Extract transcripts from selected YouTube/web coaching sources focused on Olympi
 Updated 2026-09-03 against the week-8 test. **Only the two squats moved.** Week 8's
 menu was Block-1 shaped — hang and power variants — while Block 2's snatch and
 C&J loads are percentages of the lift *from the floor*, so the test could not set
-those two maxes. A floor snatch single and a floor clean single are still owed.
-Push press and clean pull were not tested at all. Back squat moved again 2026-10-01 (130 → 137) after two logged singles; the same day the athlete chose climbing singles to the heaviest-for-today (Pavlukhin) over Block 2's 3–5-rep cap for weeks 13–15 — Block 2 doc, Judgment Ledger item 16. Live values: `docs/src/program.js::TRAINING_MAX`.
+those two maxes (week 16 finally tested both from the floor — see below).
+Push press and clean pull were not tested at all. Back squat moved again 2026-10-01 (130 → 137) after two logged singles; the same day the athlete chose climbing singles to the heaviest-for-today (Pavlukhin) over Block 2's 3–5-rep cap for weeks 13–15 — Block 2 doc, Judgment Ledger item 16. Week-16 test (Sat 2026-10-24) moved snatch 63→70, C&J 72→85, front squat 115→120, and set clean 85 / snatch balance 70 (updated 2026-10-25) — which already meets Block 3's end-of-block snatch (60–65) and C&J (80) goals. Live values: `docs/src/program.js::TRAINING_MAX`.
 
 ---
 

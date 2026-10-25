@@ -223,19 +223,22 @@ const PROGRAM_B1 = [
 //                     The week-8 test itself only matched 125.
 //   pushPress 65    - NOT tested.
 //   cleanPull 120   - NOT tested.
+// Updated 2026-10-25 against the week-16 test (wk16 d4, Sat 2026-10-24, logged
+// sets; athlete confirmed every top single as made): snatch 63→70, cleanAndJerk
+// 72→85, frontSquat 115→120, snatchBalance 60→70. clean 80→85 is a floor: the
+// clean was not tested alone, but an 85 C&J means an 85 clean.
 const TRAINING_MAX = {
-  snatch: 63,
-  cleanAndJerk: 72,
-  frontSquat: 115,
+  snatch: 70,
+  cleanAndJerk: 85,
+  frontSquat: 120,
   backSquat: 137,
   pushPress: 65,
   cleanPull: 120,
-  // Block 3 additions (2026-10-17). Initial values, replaced after the week-16
-  // test. clean: Block 3 writes clean pulls and positional/power cleans as a %
-  // of the clean, which is ahead of the C&J (Edit 11). snatchBalance: the
-  // week-16 d4 test target, a [JUDGMENT] estimate until that test logs a max.
-  clean: 80,
-  snatchBalance: 60,
+  // Block 3 additions (2026-10-17). clean: Block 3 writes clean pulls and
+  // positional/power cleans as a % of the clean, which is ahead of the C&J
+  // (Edit 11). snatchBalance: set by the week-16 d4 test.
+  clean: 85,
+  snatchBalance: 70,
 };
 
 // Test-day ladder, shared by every test:true card (week 16, and Block 3's

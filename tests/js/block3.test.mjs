@@ -25,8 +25,8 @@ const P = loadProgram();
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 
 test("clean and snatchBalance TMs", () => {
-  assert.equal(P.TRAINING_MAX.clean, 80);
-  assert.equal(P.TRAINING_MAX.snatchBalance, 60);
+  assert.equal(P.TRAINING_MAX.clean, 85);
+  assert.equal(P.TRAINING_MAX.snatchBalance, 70);
 });
 
 test("ladder lives in program.js", () => {
@@ -129,10 +129,10 @@ test("exact loads match the source percentages", () => {
 });
 
 test("a TM change propagates to Block 3 loads", () => {
-  const P2 = loadProgram(SRC.replace("snatch: 63", "snatch: 70"));
+  const P2 = loadProgram(SRC.replace("snatch: 70", "snatch: 75"));
   const sn = P2.BLOCK3_EXERCISES[18].d1.find(e => e.id === "snatch");
   assert.ok(sn.l1.startsWith(String(P2.tm("snatch", 0.80))), sn.l1);
-  assert.equal(P2.tm("snatch", 0.80), 56);
+  assert.equal(P2.tm("snatch", 0.80), 60);
 });
 
 // ── Task 3: transition weeks, test days, catalog ──────────────────────────────
