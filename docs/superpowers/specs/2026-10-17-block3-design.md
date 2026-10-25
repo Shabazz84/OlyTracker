@@ -56,10 +56,12 @@ Athlete-stated targets for the end of Block 3 (week-23 Saturday test):
 
 | Lift | Now | Target |
 |---|---|---|
-| Snatch from the floor | TM 63 (floor never retested since 55 in Nov 2025) | 60–65 |
-| Clean & jerk | TM 72 (best clean 80, best jerk 72.5) | 80 — i.e. a jerk of 80 |
+| Snatch from the floor | TM 63 (floor never retested since 55 in Nov 2025) | ~~60–65~~ → **75** |
+| Clean & jerk | TM 72 (best clean 80, best jerk 72.5) | ~~80 — i.e. a jerk of 80~~ → **90** |
 | Back squat | 137 | 140 |
 | Front squat | 115 | 125 |
+
+**Revised 2026-10-25.** The week-16 test (Sat 2026-10-24) made snatch 70 and C&J 85 — both original goals beaten before Block 3 started. The athlete chose snatch 75 · C&J 90 (+5 kg each over the block). Back squat 140 and front squat 125 (test: 120) are unchanged.
 
 These replace the current Block 3 goals in `program.js` (the `b3_atw`
 "ATW risen 4%" set and the `PROGRAM_OUTLINE` week 17–24 rows).

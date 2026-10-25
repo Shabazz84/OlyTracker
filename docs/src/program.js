@@ -764,11 +764,11 @@ const BLOCKS = [
   },
   {
     id:3, label:"BLOCK 3", name:"Strength — One Program, Adapted", weeks:"8 wks (17–24)",
-    color:"#c94f3a", goal:"Snatch 60–65 from the floor · C&J 80 · back squat 140 · front squat 125 (week-23 test)",
+    color:"#c94f3a", goal:"Snatch 75 · C&J 90 · back squat 140 · front squat 125 (week-23 test)",
     phases:["Wk 17: easy re-entry after the fast (Wed/Thu/Sat)","Wks 18–20: wave 1 — singles 80 → 90 → 95%, Saturday maxes wk 20","Wks 21–23: wave 2 — same wave, block test Sat wk 23","Wk 24: transition into Block 4"],
     advancement:[
       {id:"b3_test",  text:"Wk 23 tested: snatch, C&J, back squat, front squat"},
-      {id:"b3_goals", text:"Goals met: snatch 60–65 · C&J 80 · back squat 140 · front squat 125"},
+      {id:"b3_goals", text:"Goals met: snatch 75 · C&J 90 · back squat 140 · front squat 125"},
       {id:"b3_weeks", text:"8 weeks completed (17–24)"},
     ],
   },
