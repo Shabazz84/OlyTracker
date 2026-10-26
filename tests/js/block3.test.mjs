@@ -8,7 +8,9 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const SRC = readFileSync(new URL("../../docs/src/program.js", import.meta.url), "utf8");
-const APP = readFileSync(new URL("../../docs/src/app.jsx", import.meta.url), "utf8");
+// LF-normalised: tests slice functions out of the source at a "}" line, and a
+// Windows checkout (core.autocrlf) gives app.jsx CRLF line endings.
+const APP = readFileSync(new URL("../../docs/src/app.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 
 // Top-level const/function declarations are not context properties, so the
 // script's last expression hands them back explicitly.
