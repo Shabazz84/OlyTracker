@@ -512,9 +512,10 @@ const B3_JERK    = " · empty-bar split jerks any day as warm-up";              
 const B3_FULL        = " — every catch in a full squat";                          // Edit 13
 const B3_HIGH_BLOCKS = " · blocks at mid-thigh or higher";                        // Edit 13
 const B3_SB_CUE      = " · slow dip, minimal leg drive, punch under fast, hold the bottom 2–3 s every rep"; // Edit 14
-const B3_OHS_PAUSE   = " · hold the bottom of each overhead squat 2–3 s";         // Edit 14
+const B3_OHS_PAUSE   = " · hold the bottom of each overhead squat two to three seconds";         // Edit 14
 const B3_ARMS        = " — arms long until the legs finish";                      // Edit 16
-const B3_SEG         = " — segment: pause 2 s just below the knee and 2 s at mid-thigh, shoulders over the bar, arms long";
+// Copy after the kg carries no digits: generateWeights averages the first two numbers in l1.
+const B3_SEG         = " — segment: pause two seconds just below the knee and two at mid-thigh, shoulders over the bar, arms long";
 // Edit 16 — the Thursday pull becomes a segment deadlift at the same sets × reps × %.
 const b3Seg = (grip, lift, sets, reps, p) =>
   b3e(grip === 'snatch' ? 'snatch_deadlift' : 'clean_deadlift', sets, reps, kg(lift, p) + B3_SEG);
@@ -527,10 +528,12 @@ const b3Sldl = (sets, reps) => b3e('stiff_legged_deadlift', sets, reps, '70–80
 // A ceiling less than one 2.5 kg jump above the start is a fixed weight.
 const B3_LOW_START = { snatch: 45, cleanAndJerk: 55, clean: 55 };
 const B3_LOW_NOTE = "Climb from the start weight in 2–3 kg jumps — warm-up, not logged. A single counts only if caught at or below parallel. Stop at the first high catch or at the ceiling, then do every work set at the last weight you caught low. Log only low catches. Film from the side.";
+const B3_FIXED_NOTE = "One weight today — no climb. A single counts only if caught at or below parallel. Log only low catches. Film from the side.";
 function b3Low(id, lift, sets, p, suffix = '', reps = '1') {
   const start = B3_LOW_START[lift], ceil = tm(lift, p);
-  const load = ceil - start >= 2.5 ? `${start}–${ceil}` : `${ceil}`;
-  return b3e(id, sets, reps, `${load} kg — low catches only${suffix}`, {note: B3_LOW_NOTE});
+  const climb = ceil - start >= 2.5;
+  return b3e(id, sets, reps, `${climb ? `${start}–${ceil}` : ceil} kg — low catches only${suffix}`,
+             {note: climb ? B3_LOW_NOTE : B3_FIXED_NOTE});
 }
 const b3Sn  = (sets, p) => b3Low('snatch', 'snatch', sets, p);
 const b3Cj  = (sets, p) => b3Low('clean_and_jerk', 'cleanAndJerk', sets, p, B3_SJ);

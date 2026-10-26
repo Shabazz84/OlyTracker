@@ -23,7 +23,7 @@ call in the design spec (Edit 15).
 
 ### Clean Deadlift — `clean_deadlift` (Edit 16: segment deadlift)
 
-1. *Arms bending early is mostly a strength problem: getting the bar to mid/high thigh with the shoulders still over it. Segment deadlifts build it.* (Everett)
+1. *Arms bending early is probably a strength problem too: getting the bar to mid/high thigh with the shoulders still over it. Segment deadlifts build it.* (Everett)
    - "Regarding the early arm bend, it's probably also a strength issue, although a different one - the inability to get the bar to the mid to high-thigh level while keeping the shoulders over it. Halting deadlifts or segment deadlifts are a big help" [E104.7] — flagged passage; speaker checked: Greg Everett's signed reply.
 2. *Pause at mid-thigh, where the second pull starts: shins vertical, shoulders slightly in front of the bar, weight not back on the heels.* (Everett)
    - **Transfer** from the snatch segment deadlift: "Make the top pause position for both mid-thigh—the point at which you’ll ideally initiate the final upward explosion (second pull). In this position, your shins should be vertical, shoulders at least slightly in front of the bar" [E105.8]

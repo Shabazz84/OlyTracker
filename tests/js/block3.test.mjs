@@ -336,7 +336,7 @@ test("positional lifts are caught in a full squat", () => {
 test("every snatch balance and overhead squat carries the pause", () => {
   for (const w of ALL) for (const d of daysOf(w)) for (const e of day(w, d)) {
     if (e.id === "snatch_balance") assert.match(e.l1, /hold the bottom 2–3 s every rep/, `w${w} ${d}`);
-    if (e.id === "overhead_squat" || e.id === "snatch_ohs_complex") assert.match(e.l1, /hold the bottom of each overhead squat 2–3 s/, `w${w} ${d} ${e.id}`);
+    if (e.id === "overhead_squat" || e.id === "snatch_ohs_complex") assert.match(e.l1, /hold the bottom of each overhead squat two to three seconds/, `w${w} ${d} ${e.id}`);
   }
 });
 
@@ -378,4 +378,42 @@ test("week 20 banner and load line call Saturday a checkpoint, not maxes", () =>
   assert.match(w20.focus, /checkpoint/i);
   assert.doesNotMatch(w20.load, /MAX/);
   assert.match(P.weekPlan(23).focus, /maxes/i);
+});
+
+// ── Final-review fixes (catch-depth) ──────────────────────────────────────────
+const gwOf = app => {
+  const s = app.indexOf("function generateWeights"), e = app.indexOf("\n}\n", s) + 3;
+  return vm.runInContext(app.slice(s, e) + ";generateWeights", vm.createContext({}));
+};
+// Every card whose load leads with kg must offer that weight (and both ends of a
+// range) — at today's TMs and after a TM raise (a week-24 re-base).
+test("dropdown offers every prescribed weight, at today's and at raised TMs", () => {
+  const gw = gwOf(APP), r25 = x => Math.round(x / 2.5) * 2.5;
+  const variants = [SRC, SRC.replace("snatch: 70", "snatch: 80"), SRC.replace("cleanAndJerk: 85", "cleanAndJerk: 95")];
+  for (const src of variants) {
+    const E2 = loadProgram(src).BLOCK3_EXERCISES;
+    for (const w of ALL) for (const d of Object.keys(E2[w])) for (const x of E2[w][d]) {
+      if (x.test || !/^\d/.test(x.l1) || /^\d+ ?(sec|min)/.test(x.l1)) continue;
+      const m = x.l1.match(/^(\d+(?:\.\d+)?)(?:–(\d+(?:\.\d+)?))? kg/);
+      if (!m) continue;
+      const ws = gw(x.l1).weights;
+      for (const v of [m[1], m[2]].filter(Boolean))
+        assert.ok(ws.includes(r25(+v)), `w${w} ${d} ${x.id}: "${x.l1}" → ${ws[0]}..${ws.at(-1)} lacks ${r25(+v)}`);
+    }
+  }
+});
+
+test("fixed-weight low-catch cards carry a no-climb note", () => {
+  for (const [w, d, id] of [[17, "d3", "snatch_ohs_complex"], [17, "d4", "clean_fs_jerk_complex"], [24, "d1", "snatch"], [24, "d1", "clean_and_jerk"]]) {
+    const e = find(w, d, id);
+    assert.doesNotMatch(e.note, /Climb from the start/, `w${w} ${d} ${id}`);
+    assert.match(e.note, /caught at or below parallel/, `w${w} ${d} ${id}`);
+  }
+  assert.match(find(18, "d1", "snatch").note, /Climb from the start/);
+});
+
+test("clean_deadlift cue keeps the source's hedge", () => {
+  const line = APP.split("\n").find(l => /^\s*clean_deadlift:/.test(l)) + APP.split("\n")[APP.split("\n").findIndex(l => /^\s*clean_deadlift:/.test(l)) + 1];
+  assert.match(line, /probably/);
+  assert.doesNotMatch(line, /mostly a strength problem/);
 });

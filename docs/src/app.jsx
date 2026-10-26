@@ -170,7 +170,7 @@ const EXERCISE_CATALOG = {
   tempo_clean:            { id:'tempo_clean',            name:'Tempo Clean',                 type:'cj' },
   deficit_clean:          { id:'deficit_clean',          name:'Deficit Clean',               type:'cj' },
   clean_deadlift:         { id:'clean_deadlift',         name:'Clean Deadlift',              type:'cj',
-    desc:"Arms bending early is mostly a strength problem: getting the bar to mid/high thigh with the shoulders still over it. Segment deadlifts build it. (Everett)\nPause at mid-thigh, where the second pull starts: shins vertical, shoulders slightly in front of the bar, weight not back on the heels. (Everett)" },
+    desc:"Arms bending early is probably a strength problem too: getting the bar to mid/high thigh with the shoulders still over it. Segment deadlifts build it. (Everett)\nPause at mid-thigh, where the second pull starts: shins vertical, shoulders slightly in front of the bar, weight not back on the heels. (Everett)" },
   clean_pull_from_blocks: { id:'clean_pull_from_blocks', name:'Clean Pull from Blocks',      type:'cj' },
   clean_high_pull:        { id:'clean_high_pull',        name:'Clean High Pull',             type:'cj' },
   // ── Jerk variations ───────────────────────────────────────────────────────
@@ -470,8 +470,16 @@ function generateWeights(loadStr) {
   } else {
     base = parseFloat(nums[0]);
   }
-  const min = Math.max(5, Math.round((base * 0.80) / 2.5) * 2.5);
-  const max = Math.round((base * 1.30) / 2.5) * 2.5;
+  let min = Math.max(5, Math.round((base * 0.80) / 2.5) * 2.5);
+  let max = Math.round((base * 1.30) / 2.5) * 2.5;
+  // A load that leads with a range ("45–71.5 kg") must offer both ends: the
+  // midpoint spread alone drops the start once the ceiling climbs (Block 3
+  // low-catch cards). Only ever widens the list.
+  const range = loadStr.match(/^(\d+(?:\.\d+)?)–(\d+(?:\.\d+)?)/);
+  if (range) {
+    min = Math.max(5, Math.min(min, Math.round(parseFloat(range[1]) / 2.5) * 2.5));
+    max = Math.max(max, Math.round(parseFloat(range[2]) / 2.5) * 2.5);
+  }
   const weights = [];
   for (let w = min; w <= max; w = Math.round((w + 2.5) * 10) / 10) {
     weights.push(w);
