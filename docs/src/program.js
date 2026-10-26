@@ -510,8 +510,18 @@ const b3Trunk = () => b3e('trunk_static_strength', 3, 'varies', 'Bodyweight'); /
 const b3PushPress = () => b3e('push_press', 3, '3', `${kgr('pushPress', 0.60, 0.70)} — add weight weekly only while it stays fast`); // Edit 6 (Tue)
 // [JUDGMENT] load — source gives no %; basis: Block 2's RDL at 75–85 kg, a touch lower for straight legs.
 const b3Sldl = (sets, reps) => b3e('stiff_legged_deadlift', sets, reps, '70–80 kg — end of session');
-const b3Sn  = (sets, p) => b3e('snatch', sets, '1', kg('snatch', p));
-const b3Cj  = (sets, p) => b3e('clean_and_jerk', sets, '1', kg('cleanAndJerk', p) + B3_SJ);
+// Edit 12 — low-catch rule. The card's % is a ceiling, not a target: climb from
+// the start weight, stop at the first high catch, work at the last low catch.
+// A ceiling less than one 2.5 kg jump above the start is a fixed weight.
+const B3_LOW_START = { snatch: 45, cleanAndJerk: 55, clean: 55 };
+const B3_LOW_NOTE = "Climb from the start weight in 2–3 kg jumps — warm-up, not logged. A single counts only if caught at or below parallel. Stop at the first high catch or at the ceiling, then do every work set at the last weight you caught low. Log only low catches. Film from the side.";
+function b3Low(id, lift, sets, p, suffix = '', reps = '1') {
+  const start = B3_LOW_START[lift], ceil = tm(lift, p);
+  const load = ceil - start >= 2.5 ? `${start}–${ceil}` : `${ceil}`;
+  return b3e(id, sets, reps, `${load} kg — low catches only${suffix}`, {note: B3_LOW_NOTE});
+}
+const b3Sn  = (sets, p) => b3Low('snatch', 'snatch', sets, p);
+const b3Cj  = (sets, p) => b3Low('clean_and_jerk', 'cleanAndJerk', sets, p, B3_SJ);
 // [JUDGMENT] load — pause back squat to an N-rep max has no %; 3RM band 70–80%, 2RM 75–85% of back squat TM.
 const b3PauseBs = reps => reps === 3
   ? b3e('pause_back_squat', '4–6', '3', `${kgr('backSquat', 0.70, 0.80)} — work up to today's 3-rep max, 3-sec pause`)
@@ -538,11 +548,11 @@ const BLOCK3_EXERCISES = {
     d1: [b3e('back_squat', 4, '5', `${kgr('backSquat', 0.55, 0.70)} — ramp, one set at each step`), // src d2, Edit 8: reps capped at 5
          b3e('strict_press', 3, '8', '40–45 kg'),     // src d2 — [JUDGMENT] load; basis: overhead press best 62 × 2
          b3e('barbell_row', 3, '8', '50–60 kg')],     // src d2 — [JUDGMENT] load; no row on file, start conservative
-    d3: [b3e('snatch_ohs_complex', 5, '1+2', kg('snatch', 0.60)),   // src d4
+    d3: [b3Low('snatch_ohs_complex', 'snatch', 5, 0.60, '', '1+2'),  // src d4, Edit 12
          b3e('snatch_pull', 3, '3', kg('snatch', 0.80)),           // src d4
          b3e('snatch_push_press', 3, '5', '40–45 kg'),             // src d4 — [JUDGMENT] load; basis: Block 2 wk 14 at 50 × 5
          b3e('plank', 2, '1 min', 'Bodyweight')],                  // src d4
-    d4: [b3e('clean_fs_jerk_complex', 5, '1+2+1', kg('clean', 0.60) + B3_SJ),  // src d6
+    d4: [b3Low('clean_fs_jerk_complex', 'clean', 5, 0.60, B3_SJ, '1+2+1'),  // src d6, Edit 12
          b3e('front_squat', 3, '5 → 3', `${kgr('frontSquat', 0.60, 0.70)} — ramp`), // src d6
          b3GoodMorning('8')],                                                  // src d6; row conditioning dropped (Edit 6)
   },
@@ -582,8 +592,9 @@ const BLOCK3_EXERCISES = {
          b3Fs(2, 1, 0.95),                                              // src d25
          b3e('ab_wheel', 3, '15', 'Bodyweight')],                       // src d24
     // src d27 — maxes in priority order (last tested = least trustworthy).
-    d4: [b3Test('snatch', 'Snatch', TRAINING_MAX.snatch),
-         b3Test('clean_and_jerk', 'Clean & Jerk', TRAINING_MAX.cleanAndJerk),
+    // Edit 17 — snatch and C&J are a low-catch checkpoint, not a max.
+    d4: [b3Low('snatch', 'snatch', 1, 0.95, ' — heaviest low catch today'),
+         b3Low('clean_and_jerk', 'cleanAndJerk', 1, 0.95, B3_SJ + ' — heaviest low catch today'),
          b3Test('back_squat', 'Back Squat', TRAINING_MAX.backSquat),
          b3Sldl(3, '5')],                                               // src sit-ups dropped — SLDL is the one accessory (Edit 6)
   },
@@ -613,12 +624,10 @@ const BLOCK3_EXERCISES = {
   },
   // Cycle week 6 — src d43, d44, d45, d46, d48 (block test Saturday)
   23: {
-    // src d44/d46 give ranges: aim inside, keep it lighter if the day calls for it.
-    d1: [b3e('snatch', 1, '1', `${kgr('snatch', 0.90, 0.95)} — one single in the range`),
-         b3e('clean_and_jerk', 1, '1', `${kgr('cleanAndJerk', 0.90, 0.95)} — one single in the range${B3_SJ}`),
+    // src d44/d46 give ranges; Edit 12 — the top of each range is the ceiling.
+    d1: [b3Sn(1, 0.95), b3Cj(1, 0.95),
          b3e('back_squat', 5, '1', kg('backSquat', 0.90)), b3Trunk()],  // src d44
-    d2: [b3e('snatch', 1, '1', `${kgr('snatch', 0.85, 0.90)} — one single in the range`),
-         b3e('clean_and_jerk', 1, '1', `${kgr('cleanAndJerk', 0.85, 0.90)} — one single in the range${B3_SJ}`),
+    d2: [b3Sn(1, 0.90), b3Cj(1, 0.90),
          b3PushPress()],                                                // src d46
     d3: [b3e('power_clean', 5, '2', kg('clean', 0.75)),                 // src d45
          b3e('clean_pull', 3, '3', kg('clean', 0.95)),                  // src d45
@@ -627,8 +636,8 @@ const BLOCK3_EXERCISES = {
          b3Fs(2, 1, 0.95),                                              // src d46
          b3Trunk()],                                                    // Edit 7 — src d45 finisher is flexion/side work
     // src d48 — block test; front squat added fourth (Edit 10).
-    d4: [b3Test('snatch', 'Snatch', TRAINING_MAX.snatch),
-         b3Test('clean_and_jerk', 'Clean & Jerk', TRAINING_MAX.cleanAndJerk),
+    d4: [b3Test('snatch', 'Snatch — low catches only', TRAINING_MAX.snatch),          // Edit 17
+         b3Test('clean_and_jerk', 'Clean & Jerk — low catches only', TRAINING_MAX.cleanAndJerk),
          b3Test('back_squat', 'Back Squat', TRAINING_MAX.backSquat),
          b3Test('front_squat', 'Front Squat', TRAINING_MAX.frontSquat),
          b3Sldl(3, '5')],
@@ -646,8 +655,8 @@ const BLOCK3_EXERCISES = {
     d3: [b3e('split_jerk_from_rack', 3, '1', kg('cleanAndJerk', 0.70) + B3_JERK), // src d53, Edit 5
          b3e('two_position_snatch', 3, '2 positions', kg('snatch', 0.60)),
          b3e('two_position_clean', 3, '2 positions', kg('clean', 0.60))],
-    d4: [b3Heavy('snatch', 'snatch'),                                   // src d55
-         b3Heavy('clean_and_jerk', 'cleanAndJerk', B3_SJ),
+    d4: [b3Low('snatch', 'snatch', 1, 0.95, ' — heaviest low catch today'),          // src d55, Edit 12
+         b3Low('clean_and_jerk', 'cleanAndJerk', 1, 0.95, B3_SJ + ' — heaviest low catch today'),
          b3Heavy('front_squat', 'frontSquat'),
          b3GoodMorning('10')],                                          // src plank dropped — one accessory (Edit 6)
   },

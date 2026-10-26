@@ -113,13 +113,15 @@ test("l1 leads with kg (weeks 18-23)", () => {
 
 test("exact loads match the source percentages", () => {
   const sn = find(18, "d1", "snatch");
-  assert.ok(sn.l1.startsWith(String(P.tm("snatch", 0.80))), sn.l1);
+  assert.equal(sn.l1, `45–${P.tm("snatch", 0.80)} kg — low catches only`);
   assert.equal(sn.sets, 5); assert.equal(sn.reps, "1");
+  assert.match(sn.note, /caught at or below parallel/);
+  assert.equal(find(18, "d1", "clean_and_jerk").l1, `55–${P.tm("cleanAndJerk", 0.80)} kg — low catches only — split jerk`);
   const bs = find(18, "d1", "back_squat");
   assert.ok(bs.l1.startsWith(String(P.tm("backSquat", 0.75))), bs.l1);
   assert.equal(bs.sets, 5); assert.equal(bs.reps, "5");
   const sn19 = find(19, "d1", "snatch");
-  assert.ok(sn19.l1.startsWith(String(P.tm("snatch", 0.90))), sn19.l1);
+  assert.equal(sn19.l1, `45–${P.tm("snatch", 0.90)} kg — low catches only`);
   assert.equal(sn19.sets, 3);
   const fs = find(18, "d3", "front_squat");
   assert.ok(fs.l1.startsWith(String(P.tm("frontSquat", 0.85))), fs.l1);
@@ -130,8 +132,7 @@ test("exact loads match the source percentages", () => {
 
 test("a TM change propagates to Block 3 loads", () => {
   const P2 = loadProgram(SRC.replace("snatch: 70", "snatch: 75"));
-  const sn = P2.BLOCK3_EXERCISES[18].d1.find(e => e.id === "snatch");
-  assert.ok(sn.l1.startsWith(String(P2.tm("snatch", 0.80))), sn.l1);
+  assert.equal(P2.BLOCK3_EXERCISES[18].d1.find(e => e.id === "snatch").l1, "45–60 kg — low catches only");
   assert.equal(P2.tm("snatch", 0.80), 60);
 });
 
@@ -148,14 +149,6 @@ test("card limit and l1 rules hold for every Block 3 week", () => {
       for (const e of day(w, d)) if (!e.test) checkL1(w, d, e);
     }
   }
-});
-
-test("week 20 Saturday tests snatch, C&J, back squat, then SLDL", () => {
-  const d4 = day(20, "d4");
-  assert.deepEqual([...d4.filter(e => e.test).map(e => e.id)], ["snatch", "clean_and_jerk", "back_squat"]);
-  const firstNonTest = d4.findIndex(e => !e.test);
-  assert.equal(d4[firstNonTest].id, "stiff_legged_deadlift");
-  assert.ok(d4.slice(firstNonTest).every(e => !e.test), "test cards come first");
 });
 
 test("week 23 Saturday tests four lifts, front squat last", () => {
@@ -256,4 +249,64 @@ test("remapDayIdx keeps the selected day id across weeks", () => {
   assert.equal(P.remapDayIdx(three, 1, four), 2);   // wk17 Thu -> wk18 Thu
   assert.equal(P.remapDayIdx(four, 1, three), 0);   // Tue has no wk17 twin -> first day
   assert.equal(P.remapDayIdx(["d1","d2","d3","d4","d5"], 4, four), 0); // summer d5 -> first day
+});
+
+// ── Catch-depth correction (docs/superpowers/specs/2026-10-25-block3-catch-depth-design.md) ──
+test("ceiling under start + 2.5 drops the climb", () => {
+  // wk17 Thu complex: 60% of 70 = 42 < 45; wk24 Mon snatch: 65% = 45.5
+  assert.match(find(17, "d3", "snatch_ohs_complex").l1, /^42 kg — low catches only/);
+  assert.match(find(24, "d1", "snatch").l1, /^45\.5 kg — low catches only/);
+  assert.match(find(24, "d1", "clean_and_jerk").l1, /^51 kg — low catches only/);
+  assert.match(find(17, "d4", "clean_fs_jerk_complex").l1, /^51 kg — low catches only/);
+  const P3 = loadProgram(SRC.replace("snatch: 70", "snatch: 55"));
+  for (const w of [18, 19, 21, 22]) {
+    const l1 = P3.BLOCK3_EXERCISES[w].d1.find(e => e.id === "snatch").l1;
+    const [a, b] = (l1.match(/^(\d+(?:\.\d+)?)–(\d+(?:\.\d+)?)/) || []).slice(1).map(Number);
+    assert.ok(!(a >= b), `w${w} backwards range: ${l1}`);
+  }
+});
+
+test("every wave-week snatch / C&J is a low-catch card", () => {
+  for (const w of WAVE) for (const d of ["d1", "d2", "d4"]) for (const id of ["snatch", "clean_and_jerk"]) {
+    if (w === 23 && d === "d4") continue; // test card, checked below
+    const e = find(w, d, id);
+    assert.ok(e && !e.test, `w${w} ${d} ${id}`);
+    assert.match(e.l1, /low catches only/, `w${w} ${d} ${id}`);
+  }
+});
+
+test("week 20 Saturday: low-catch checkpoint for the lifts, back squat max", () => {
+  const d4 = day(20, "d4");
+  assert.deepEqual([...d4.filter(e => e.test).map(e => e.id)], ["back_squat"]);
+  for (const id of ["snatch", "clean_and_jerk"]) {
+    const e = d4.find(x => x.id === id);
+    assert.equal(e.sets, 1);
+    assert.match(e.l1, new RegExp(`–${P.tm(TM_KEY[id], 0.95)} kg`));
+  }
+});
+
+test("week 23 test labels say only low catches count", () => {
+  for (const id of ["snatch", "clean_and_jerk"])
+    assert.match(day(23, "d4").find(e => e.id === id).label, /low catches only/);
+});
+
+test("week 24 Saturday snatch / C&J: one single, ceiling 95%", () => {
+  for (const id of ["snatch", "clean_and_jerk"]) {
+    const e = find(24, "d4", id);
+    assert.equal(e.sets, 1);
+    assert.match(e.l1, new RegExp(`–${P.tm(TM_KEY[id], 0.95)} kg — low catches only`));
+  }
+});
+
+// Review Focus 1 — evaluate app.jsx's generateWeights and check both ends are offered.
+test("weight dropdown spans start and ceiling for every low-catch card", () => {
+  const s = APP.indexOf("function generateWeights"), e = APP.indexOf("\n}\n", s) + 3;
+  const gw = vm.runInContext(APP.slice(s, e) + ";generateWeights", vm.createContext({}));
+  const r25 = x => Math.round(x / 2.5) * 2.5;
+  for (const w of ALL) for (const d of daysOf(w)) for (const x of day(w, d)) {
+    const m = !x.test && x.l1.match(/^(\d+(?:\.\d+)?)–(\d+(?:\.\d+)?) kg — low catches only/);
+    if (!m) continue;
+    const ws = gw(x.l1).weights;
+    assert.ok(ws.includes(r25(+m[1])) && ws.includes(r25(+m[2])), `w${w} ${d} ${x.id}: ${x.l1} → ${ws[0]}..${ws.at(-1)}`);
+  }
 });
