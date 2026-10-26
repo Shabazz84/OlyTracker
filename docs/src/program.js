@@ -421,6 +421,8 @@ const PROGRAM_B2 = [
 const B3_SRC = "Spine: Catalyst Athletics' General Cycle (Greg Everett) — catalystathletics.com/olympic-weightlifting-training-program/34/General-Cycle — adapted to Mon/Tue/Thu/Sat; every change is in the Block 3 design's Edit Ledger.";
 // Edit 18 — catch depth and arm bend are judged on video.
 const B3_FILM = "Film snatches and cleans from the side — catch depth and arm bend are judged on video, not by feel. ";
+// Edit 21 — same article: warm up in the bottom position before snatching.
+const B3_WARM = "Warm up with overhead squats and snatch balances — a few light sets, holding the bottom of each rep. ";
 const B3_THU_NOTE = "Post-shift day. Front squat % is a ceiling, not a target: stop at the first grinding rep — that week's top set is whatever was made cleanly. Empty-bar split jerks any day, as warm-up.";
 
 // Per cycle week n (1–6): the classic-lift singles for Mon / Tue / Sat, the
@@ -452,16 +454,16 @@ function b3WaveWeek(week, phase) {
       : "") + B3_SRC,
     days:[
       {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:`Snatch + C&J — low catches only, ceiling ${mon} ${w.single}`,load: w.range ? band("snatch", 0.90, 0.95) : at("snatch", w.mon),
-       secondary:`Back squat ${w.bs} · static trunk`,notes:"Every C&J ends in a split jerk."},
+       secondary:`Back squat ${w.bs} · static trunk`,notes:B3_WARM + "Every C&J ends in a split jerk."},
       {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:`Snatch + C&J — low catches only, ceiling ${tue} ${w.single}`,load: w.range ? band("snatch", 0.85, 0.90) : at("snatch", w.tue),
-       secondary:"Push press 3×3 — no squat today",notes:"Legs rest between Monday's and Thursday's squats."},
+       secondary:"Push press 3×3 — no squat today",notes:B3_WARM + "Legs rest between Monday's and Thursday's squats."},
       {id:"d3",label:"D3 Thu ⭐⭐",primary:w.thu,load:"technique day",
        secondary:`Jerk variant · snatch balance · front squat ${w.fs} · one ab card`,notes:B3_THU_NOTE},
       {id:"d4",label:"D4 Sat ⭐⭐",primary: test ? (n === 3 ? "CHECKPOINT — heaviest snatch and C&J caught low · back squat max" : "TEST — snatch, C&J, squat maxes (low catches only)")
                       : `Snatch + C&J — low catches only, ceiling ${pct(w.sat)} ${w.single}`,
        load: test ? "max" : at("snatch", w.sat),
        secondary:`${w.sat_sq} · stiff-legged deadlift`,
-       notes: test ? "Ladder each lift; a high catch ends the snatch or C&J climb. Squats: stop at form breakdown, not at the first miss." : "Paused squats: 3-sec pause in the bottom."},
+       notes: B3_WARM + (test ? "Ladder each lift; a high catch ends the snatch or C&J climb. Squats: stop at form breakdown, not at the first miss." : "Paused squats: 3-sec pause in the bottom.")},
     ],
   };
 }
@@ -474,7 +476,7 @@ const PROGRAM_B3 = [
     {id:"d1",label:"D1 Wed ⭐⭐",primary:"Back squat ramp 55–70%",load:band("backSquat",0.55,0.70),
      secondary:"Strict press 3×8 · barbell row 3×8",notes:"Wednesday: full night's sleep, shift at 7 pm — hard stop by 3 pm. Ramp sets capped at 5 reps."},
     {id:"d3",label:"D3 Thu ⭐⭐",primary:"Snatch + 2 overhead squats",load:at("snatch",0.60),
-     secondary:"Snatch pull 3×3 · snatch push press 3×5 · plank",notes:"Post-shift day; nothing here should feel hard."},
+     secondary:"Snatch pull 3×3 · snatch push press 3×5 · plank",notes:B3_WARM + "Post-shift day; nothing here should feel hard."},
     {id:"d4",label:"D4 Sat ⭐⭐",primary:"Clean + 2 front squats + jerk",load:at("clean",0.60),
      secondary:"Front squat ramp 60–70% · good morning 3×8",notes:"Last easy day; the cycle starts Monday."},
    ]},
@@ -485,13 +487,13 @@ const PROGRAM_B3 = [
    note:B3_FILM + "Lighter week between cycles; no back squat this week. " + B3_SRC,
    days:[
     {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:"Snatch 65% · C&J 60% singles",load:at("snatch",0.65),
-     secondary:"Snatch pull · snatch deadlift · front squat 65%",notes:"Every C&J ends in a split jerk."},
+     secondary:"Snatch pull · snatch deadlift · front squat 65%",notes:B3_WARM + "Every C&J ends in a split jerk."},
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"Snatch · clean + power jerk — low catches only, ceiling 70%",load:at("snatch",0.70),
-     secondary:"Overhead squat",notes:""},
+     secondary:"Overhead squat",notes:B3_WARM.trim()},
     {id:"d3",label:"D3 Thu ⭐⭐",primary:"Split jerk from rack 70%",load:at("cleanAndJerk",0.70,"C&J TM"),
      secondary:"2-position snatch · 2-position clean",notes:"Post-shift day."},
     {id:"d4",label:"D4 Sat ⭐⭐",primary:"Heavy singles — snatch, C&J, front squat",load:"heaviest clean single",
-     secondary:"Good morning 3×10 · plank",notes:"Snatch and C&J: heaviest single caught low today, not a max attempt."},
+     secondary:"Good morning 3×10 · plank",notes:B3_WARM + "Snatch and C&J: heaviest single caught low today, not a max attempt."},
    ]},
 ];
 
@@ -527,8 +529,10 @@ const b3Sldl = (sets, reps) => b3e('stiff_legged_deadlift', sets, reps, '70–80
 // the start weight, stop at the first high catch, work at the last low catch.
 // A ceiling less than one 2.5 kg jump above the start is a fixed weight.
 const B3_LOW_START = { snatch: 45, cleanAndJerk: 55, clean: 55 };
-const B3_LOW_NOTE = "Climb from the start weight in 2–3 kg jumps — warm-up, not logged. A single counts only if caught at or below parallel. Stop at the first high catch or at the ceiling, then do every work set at the last weight you caught low. Log only low catches. Film from the side.";
-const B3_FIXED_NOTE = "One weight today — no climb. A single counts only if caught at or below parallel. Log only low catches. Film from the side.";
+// Edits 19–20 — Everett, "Ask Greg: Can't Receive the Snatch Low with Heavier Weights"
+// (catalystathletics.com/article/1948): squat an unintended power catch; hold the bottom every time.
+const B3_LOW_NOTE = "Climb from the start weight in 2–3 kg jumps — warm-up, not logged. A single counts only if caught at or below parallel; caught high, ride it down into a full squat before standing — it still doesn't count. Hold the bottom two to three seconds on every catch. Stop at the first high catch or at the ceiling, then do every work set at the last weight you caught low. Log only low catches. Film from the side.";
+const B3_FIXED_NOTE = "One weight today — no climb. A single counts only if caught at or below parallel; caught high, ride it down into a full squat before standing — it still doesn't count. Hold the bottom two to three seconds on every catch. Log only low catches. Film from the side.";
 function b3Low(id, lift, sets, p, suffix = '', reps = '1') {
   const start = B3_LOW_START[lift], ceil = tm(lift, p);
   const climb = ceil - start >= 2.5;

@@ -202,6 +202,32 @@ the side; catch depth and arm bend are judged on video, not by feel.
 
 Reason: Klokov's video self-review principle (CLAUDE.md Principle 8).
 
+### Edits 19–21 — added 2026-10-25, after reading the full article (athlete-approved)
+
+The full text of Everett's "Ask Greg: Can't Receive the Snatch Low with Heavier
+Weights" (catalystathletics.com/article/1948) was found locally in the gitignored
+`transcripts/web/catalystathleticscom/`. The evidence packs held only its last
+paragraph (E106.12). It is not in a pack, so these three lines cite the article by
+name and URL, not by a checked handle.
+
+- **Edit 19 — squat a high catch down.** Both low-catch notes add: caught high,
+  ride it down into a full squat before standing (it still doesn't count). Source:
+  "The times when you do power snatch unintentionally, squat it after you receive it."
+- **Edit 20 — hold the bottom on every catch.** Both notes add: hold the bottom two
+  to three seconds on every catch. Source: "Hold the bottom position for two to
+  three seconds every time." The article is about the snatch; applying it to the
+  clean as well is *my call*, since the athlete's C&J catch has the same fault.
+- **Edit 21 — warm up in the bottom.** Every snatch day (wave-week D1/D2/D4, week 17
+  Thu, week 24 Mon/Tue/Sat) opens its day note with an overhead squat and snatch
+  balance warm-up, holding the bottom. Source: "Warm-up with overhead squats and
+  snatch balances."
+
+Not adopted from the companion article ("Arm Bend in the Snatch & Clean",
+catalystathletics.com/article/1904): "focus on arching your back forcefully" —
+conflicts with the back-pain rule (no exaggerated arch). Its clean-grip check
+(forearms vertical in the rack, hands half a fist to a fist outside the shoulders)
+is passed to the athlete as a video check, not a program change.
+
 ---
 
 ## Constraints carried from the Block 3 design

@@ -184,6 +184,9 @@ heavy single).
 | 16 | Thursday pulls (wks 18–23) become segment deadlifts at the same loads; wk 17/24 pulls keep arms long | same |
 | 17 | Week 20 Sat: heaviest low catch (checkpoint); week 23 test counts only low catches | same |
 | 18 | Film every classic day from the side | same |
+| 19 | Caught high → ride it down into a full squat before standing (still doesn't count) | same (addendum) |
+| 20 | Hold the bottom two to three seconds on every snatch and clean catch | same (addendum) |
+| 21 | Snatch days open with an overhead squat / snatch balance warm-up | same (addendum) |
 
 ### Carried over from Blocks 1–2 (outside the session cards)
 

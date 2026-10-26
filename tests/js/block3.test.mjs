@@ -419,3 +419,19 @@ test("clean_deadlift cue keeps the source's hedge", () => {
   assert.match(line, /probably/);
   assert.doesNotMatch(line, /mostly a strength problem/);
 });
+
+// ── Everett "Can't Receive the Snatch Low" follow-ups (Edits 19-21) ───────────
+test("low-catch notes: ride a high catch down, hold every bottom", () => {
+  for (const [w, d, id] of [[18, "d1", "snatch"], [18, "d1", "clean_and_jerk"], [17, "d3", "snatch_ohs_complex"], [24, "d1", "snatch"]]) {
+    const n = find(w, d, id).note;
+    assert.match(n, /ride it down into a full squat/i, `w${w} ${d} ${id}`);
+    assert.match(n, /hold the bottom two to three seconds/i, `w${w} ${d} ${id}`);
+  }
+});
+
+test("snatch days open with an overhead squat / snatch balance warm-up note", () => {
+  for (const w of WAVE) for (const i of [0, 1, 3])
+    assert.match(P.weekPlan(w).days[i].notes, /^Warm up with overhead squats and snatch balances/, `w${w} day ${i}`);
+  assert.match(P.weekPlan(17).days[1].notes, /^Warm up with overhead squats and snatch balances/);
+  for (const i of [0, 1, 3]) assert.match(P.weekPlan(24).days[i].notes, /^Warm up with overhead squats and snatch balances/, `w24 day ${i}`);
+});
