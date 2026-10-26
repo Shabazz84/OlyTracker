@@ -549,6 +549,9 @@ const b3Test = (id, label, target) =>
 // [JUDGMENT] load — "heaviest single for today" has no %; 80–95% TM band, the Block 2 back-squat-singles rule.
 const b3Heavy = (id, lift, suffix = '') => b3e(id, '3–5', '1', `${kgr(lift, 0.80, 0.95)} — heaviest clean single for today${suffix}`);
 // [JUDGMENT] load — ~55–65% of the 75 × 5 good morning on file (SEED_PRS, 2025-11-05): pattern work, not a strength set.
+// Edit 15 — light tall-lift opener, first card on the non-test classic days.
+// [JUDGMENT] load — no corpus load cited; ~30% of the snatch TM, never worked heavy.
+const b3Tall = id => b3e(id, 3, '3', '20–25 kg — never worked heavy');
 const b3GoodMorning = reps => b3e('good_morning', 3, reps, '40–50 kg — pattern only');
 
 const BLOCK3_EXERCISES = {
@@ -567,33 +570,33 @@ const BLOCK3_EXERCISES = {
   },
   // Cycle week 1 — src d8 (Mon), d9 (Tue), d10 (Wed), d11 (Thu), d13 (Sat)
   18: {
-    d1: [b3Sn(5, 0.80), b3Cj(5, 0.80),                                  // src d9
+    d1: [b3Tall('tall_snatch'), b3Sn(5, 0.80), b3Cj(5, 0.80),                                  // src d9
          b3e('back_squat', 5, '5', kg('backSquat', 0.75)), b3Trunk()],
-    d2: [b3Sn(5, 0.80), b3Cj(5, 0.80), b3PushPress()],                  // src d11, front squat moved to Thu (Edit 2)
+    d2: [b3Tall('tall_clean'), b3Sn(5, 0.80), b3Cj(5, 0.80), b3PushPress()],                  // src d11, front squat moved to Thu (Edit 2)
     d3: [b3e('three_position_snatch', 5, '3 positions', kg('snatch', 0.65) + B3_FULL), // src d8, Edit 13
          b3Seg('snatch', 'snatch', 5, '5', 0.85),                                   // src d8, Edit 16
          b3e('power_split_jerk_combo', 5, '2+1', kg('cleanAndJerk', 0.65) + B3_JERK), // src d8
          b3SbThen(3, 2, 0.75),                                                      // src d10
          b3Fs(3, 3, 0.85),                                                          // src d11
          b3e('ab_wheel', 3, '12', 'Bodyweight')],                                   // src d10, Edit 7
-    d4: [b3Sn(5, 0.80), b3Cj(5, 0.80), b3PauseBs(3), b3Sldl(3, '8')],  // src d13
+    d4: [b3Tall('tall_snatch'), b3Sn(5, 0.80), b3Cj(5, 0.80), b3PauseBs(3), b3Sldl(3, '8')],  // src d13
   },
   // Cycle week 2 — src d15, d16, d17, d18, d20
   19: {
-    d1: [b3Sn(3, 0.90), b3Cj(3, 0.90), b3e('back_squat', 3, '3', kg('backSquat', 0.85)), b3Trunk()], // src d16
-    d2: [b3Sn(3, 0.90), b3Cj(3, 0.90), b3PushPress()],                  // src d18
+    d1: [b3Tall('tall_snatch'), b3Sn(3, 0.90), b3Cj(3, 0.90), b3e('back_squat', 3, '3', kg('backSquat', 0.85)), b3Trunk()], // src d16
+    d2: [b3Tall('tall_clean'), b3Sn(3, 0.90), b3Cj(3, 0.90), b3PushPress()],                  // src d18
     d3: [b3e('clean_from_blocks', 6, '2', kg('clean', 0.65) + B3_FULL + B3_HIGH_BLOCKS), // src d17, Edit 13
          b3Seg('clean', 'clean', 5, '4', 0.90),                         // src d17, Edit 16
          b3e('power_jerk', 6, '2', kg('cleanAndJerk', 0.65) + B3_JERK), // src d15
          b3SbThen(2, 2, 0.80),                                          // src d17
          b3Fs(3, 2, 0.90),                                              // src d18
          b3Trunk()],                                                    // Edit 7 — no anti-extension work in src d15/d17
-    d4: [b3Sn(3, 0.90), b3Cj(3, 0.90), b3PauseBs(2), b3Sldl(3, '6')],  // src d20
+    d4: [b3Tall('tall_clean'), b3Sn(3, 0.90), b3Cj(3, 0.90), b3PauseBs(2), b3Sldl(3, '6')],  // src d20
   },
   // Cycle week 3 — src d22, d23, d24, d25, d27 (Saturday maxes)
   20: {
-    d1: [b3Sn(1, 0.95), b3Cj(1, 0.95), b3e('back_squat', 5, '1', kg('backSquat', 0.90)), b3Trunk()], // src d23
-    d2: [b3Sn(1, 0.90), b3Cj(1, 0.90), b3PushPress()],                  // src d25
+    d1: [b3Tall('tall_snatch'), b3Sn(1, 0.95), b3Cj(1, 0.95), b3e('back_squat', 5, '1', kg('backSquat', 0.90)), b3Trunk()], // src d23
+    d2: [b3Tall('tall_clean'), b3Sn(1, 0.90), b3Cj(1, 0.90), b3PushPress()],                  // src d25
     d3: [b3Low('snatch_from_blocks', 'snatch', 5, 0.75, B3_HIGH_BLOCKS, '2'), // src d22, Edit 13 (was power snatch)
          b3Seg('snatch', 'snatch', 3, '3', 0.95),                       // src d22, Edit 16
          b3e('split_jerk_from_rack', 5, '2', kg('cleanAndJerk', 0.75) + B3_JERK), // src d22, Edit 5
@@ -609,34 +612,34 @@ const BLOCK3_EXERCISES = {
   },
   // Cycle week 4 — src d29, d30, d31, d32, d34
   21: {
-    d1: [b3Sn(5, 0.80), b3Cj(5, 0.80), b3e('back_squat', 5, '5', kg('backSquat', 0.78)), b3Trunk()], // src d30
-    d2: [b3Sn(5, 0.80), b3Cj(5, 0.80), b3PushPress()],                  // src d32
+    d1: [b3Tall('tall_snatch'), b3Sn(5, 0.80), b3Cj(5, 0.80), b3e('back_squat', 5, '5', kg('backSquat', 0.78)), b3Trunk()], // src d30
+    d2: [b3Tall('tall_clean'), b3Sn(5, 0.80), b3Cj(5, 0.80), b3PushPress()],                  // src d32
     d3: [b3e('three_position_clean', 5, '3 positions', kg('clean', 0.70) + B3_FULL), // src d31, Edit 13
          b3Seg('clean', 'clean', 5, '5', 0.90),                                      // src d31, Edit 16
          b3e('power_split_jerk_combo', 5, '2+1', kg('cleanAndJerk', 0.70) + B3_JERK), // src d29
          b3SbThen(3, 2, 0.78),                                                       // src d31
          b3Fs(3, 3, 0.88),                                                           // src d32
          b3e('ab_wheel', 3, '14', 'Bodyweight')],                                    // src d31
-    d4: [b3Sn(5, 0.80), b3Cj(5, 0.80), b3PauseBs(3), b3Sldl(3, '6')],  // src d34
+    d4: [b3Tall('tall_clean'), b3Sn(5, 0.80), b3Cj(5, 0.80), b3PauseBs(3), b3Sldl(3, '6')],  // src d34
   },
   // Cycle week 5 — src d36, d37, d38, d39, d41
   22: {
-    d1: [b3Sn(4, 0.90), b3Cj(4, 0.90), b3e('back_squat', 3, '3', kg('backSquat', 0.88)), b3Trunk()], // src d37
-    d2: [b3Sn(4, 0.90), b3Cj(4, 0.90), b3PushPress()],                  // src d39
+    d1: [b3Tall('tall_snatch'), b3Sn(4, 0.90), b3Cj(4, 0.90), b3e('back_squat', 3, '3', kg('backSquat', 0.88)), b3Trunk()], // src d37
+    d2: [b3Tall('tall_clean'), b3Sn(4, 0.90), b3Cj(4, 0.90), b3PushPress()],                  // src d39
     d3: [b3e('snatch_from_blocks', 5, '2', kg('snatch', 0.70) + B3_FULL + B3_HIGH_BLOCKS), // src d36, Edit 13
          b3Seg('snatch', 'snatch', 5, '3', 0.95),                       // src d36, Edit 16
          b3e('power_jerk', 5, '2', kg('cleanAndJerk', 0.70) + B3_JERK), // src d36
          b3SbThen(3, 2, 0.80),                                          // src d38
          b3Fs(3, 2, 0.93),                                              // src d39
          b3e('plank', 2, 'max hold', 'Bodyweight')],                    // src d38
-    d4: [b3Sn(4, 0.90), b3Cj(4, 0.90), b3PauseBs(2), b3Sldl(3, '5')],  // src d41
+    d4: [b3Tall('tall_snatch'), b3Sn(4, 0.90), b3Cj(4, 0.90), b3PauseBs(2), b3Sldl(3, '5')],  // src d41
   },
   // Cycle week 6 — src d43, d44, d45, d46, d48 (block test Saturday)
   23: {
     // src d44/d46 give ranges; Edit 12 — the top of each range is the ceiling.
-    d1: [b3Sn(1, 0.95), b3Cj(1, 0.95),
+    d1: [b3Tall('tall_snatch'), b3Sn(1, 0.95), b3Cj(1, 0.95),
          b3e('back_squat', 5, '1', kg('backSquat', 0.90)), b3Trunk()],  // src d44
-    d2: [b3Sn(1, 0.90), b3Cj(1, 0.90),
+    d2: [b3Tall('tall_clean'), b3Sn(1, 0.90), b3Cj(1, 0.90),
          b3PushPress()],                                                // src d46
     d3: [b3Low('clean_from_blocks', 'clean', 5, 0.75, B3_HIGH_BLOCKS, '2'),   // src d45, Edit 13 (was power clean)
          b3Seg('clean', 'clean', 3, '3', 0.95),                         // src d45, Edit 16

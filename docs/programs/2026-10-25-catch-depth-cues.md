@@ -28,3 +28,15 @@ call in the design spec (Edit 15).
 2. *Pause at mid-thigh, where the second pull starts: shins vertical, shoulders slightly in front of the bar, weight not back on the heels.* (Everett)
    - **Transfer** from the snatch segment deadlift: "Make the top pause position for both mid-thigh—the point at which you’ll ideally initiate the final upward explosion (second pull). In this position, your shins should be vertical, shoulders at least slightly in front of the bar" [E105.8]
    - "weight slightly behind the middle of the foot—don’t get all the way back on your heels" [E105.8]
+
+### Tall Snatch — `tall_snatch` (Edit 15: opener)
+
+1. *One of the snatch variants that emphasize the pull under the bar.* (Everett)
+   - "You can also use some snatch variants to emphasize the pull under the bar such as high-hang snatches, tall snatches or snatches from high blocks" [E106.12]
+
+### Tall Clean — `tall_clean` (Edit 15: opener)
+
+The pack returned no clean-specific passage on the tall clean.
+
+1. *The clean version of a variant that emphasizes the pull under the bar.* (Everett)
+   - **Transfer** from the tall snatch: "use some snatch variants to emphasize the pull under the bar such as high-hang snatches, tall snatches" [E106.12]

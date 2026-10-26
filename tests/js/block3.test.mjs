@@ -349,3 +349,14 @@ test("Thursday pulls are segment deadlifts at the old pull loads", () => {
   assert.match(find(17, "d3", "snatch_pull").l1, /arms long until the legs finish/);
   assert.match(find(24, "d1", "snatch_pull").l1, /arms long until the legs finish/);
 });
+
+test("tall-lift opener first on non-test classic days", () => {
+  const want = { d1: () => "tall_snatch", d2: () => "tall_clean",
+                 d4: w => ({ 18: "tall_snatch", 22: "tall_snatch", 19: "tall_clean", 21: "tall_clean" })[w] };
+  for (const w of WAVE) for (const d of ["d1", "d2", "d4"]) {
+    const exp = want[d](w);
+    if (!exp) { assert.ok(!ids(w, d).some(i => i.startsWith("tall_")), `w${w} ${d} test day has an opener`); continue; }
+    assert.equal(ids(w, d)[0], exp, `w${w} ${d}`);
+    assert.equal(day(w, d)[0].l1, "20–25 kg — never worked heavy");
+  }
+});
