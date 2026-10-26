@@ -27,7 +27,7 @@ const endsWithSource = line =>
 
 test("the catalog evaluated", () => {
   assert.ok(Object.keys(CATALOG).length > 100);
-  assert.ok(block3Ids.length > 30);
+  assert.ok(block3Ids.length >= 25); // smoke check that the program evaluated; 30 ids after the catch-depth edits
 });
 
 test("every Block 3 exercise has a cue", () => {

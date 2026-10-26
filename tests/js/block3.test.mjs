@@ -91,8 +91,8 @@ test("squat placement: Mon back, Thu front, Sat paused back, none Tue", () => {
 test("thursday alternation: snatch weeks 18/20/22, clean weeks 19/21/23", () => {
   for (const w of WAVE) {
     const snatchWeek = (w - 17) % 2 === 1;
-    assert.equal(ids(w, "d3").includes("snatch_pull"), snatchWeek, `w${w} snatch_pull`);
-    assert.equal(ids(w, "d3").includes("clean_pull"), !snatchWeek, `w${w} clean_pull`);
+    assert.equal(ids(w, "d3").includes("snatch_deadlift"), snatchWeek, `w${w} snatch_deadlift`);
+    assert.equal(ids(w, "d3").includes("clean_deadlift"), !snatchWeek, `w${w} clean_deadlift`);
     assert.ok(ids(w, "d3").includes("snatch_balance"), `w${w} snatch_balance`);
     const jerks = ids(w, "d3").filter(i => ["split_jerk_from_rack", "power_jerk", "power_split_jerk_combo"].includes(i));
     assert.equal(jerks.length, 1, `w${w} jerk variants: ${jerks}`);
@@ -126,7 +126,7 @@ test("exact loads match the source percentages", () => {
   const fs = find(18, "d3", "front_squat");
   assert.ok(fs.l1.startsWith(String(P.tm("frontSquat", 0.85))), fs.l1);
   assert.ok(fs.l1.endsWith("stop at the first grinding rep"), fs.l1);
-  const cp = find(19, "d3", "clean_pull");
+  const cp = find(19, "d3", "clean_deadlift");
   assert.ok(cp.l1.startsWith(String(P.tm("clean", 0.90))), cp.l1);
 });
 
@@ -309,4 +309,43 @@ test("weight dropdown spans start and ceiling for every low-catch card", () => {
     const ws = gw(x.l1).weights;
     assert.ok(ws.includes(r25(+m[1])) && ws.includes(r25(+m[2])), `w${w} ${d} ${x.id}: ${x.l1} → ${ws[0]}..${ws.at(-1)}`);
   }
+});
+
+test("no power snatch or power clean anywhere in weeks 17-24", () => {
+  const banned = ["power_snatch", "power_clean", "power_clean_power_jerk"];
+  for (const w of ALL) for (const d of daysOf(w))
+    assert.ok(!ids(w, d).some(i => banned.includes(i)), `w${w} ${d}: ${ids(w, d)}`);
+});
+
+test("power swaps: high-block lifts on Thursday, full lifts in week 24", () => {
+  const sfb = find(20, "d3", "snatch_from_blocks");
+  assert.equal(sfb.sets, 5); assert.equal(sfb.reps, "2");
+  assert.match(sfb.l1, new RegExp(`^45–${P.tm("snatch", 0.75)} kg — low catches only.*mid-thigh or higher`));
+  assert.match(find(23, "d3", "clean_from_blocks").l1, new RegExp(`^55–${P.tm("clean", 0.75)} kg — low catches only.*mid-thigh or higher`));
+  assert.match(find(24, "d2", "snatch").l1, new RegExp(`^45–${P.tm("snatch", 0.70)} kg — low catches only`));
+  const cj = find(24, "d2", "clean_and_jerk");
+  assert.equal(cj.reps, "1+1"); assert.match(cj.l1, /power jerk/);
+});
+
+test("positional lifts are caught in a full squat", () => {
+  const pos = ["three_position_snatch", "three_position_clean", "snatch_from_blocks", "clean_from_blocks", "two_position_snatch", "two_position_clean"];
+  for (const w of ALL) for (const d of daysOf(w)) for (const e of day(w, d))
+    if (pos.includes(e.id) && !/low catches only/.test(e.l1)) assert.match(e.l1, /every catch in a full squat/, `w${w} ${d} ${e.id}`);
+});
+
+test("every snatch balance and overhead squat carries the pause", () => {
+  for (const w of ALL) for (const d of daysOf(w)) for (const e of day(w, d)) {
+    if (e.id === "snatch_balance") assert.match(e.l1, /hold the bottom 2–3 s every rep/, `w${w} ${d}`);
+    if (e.id === "overhead_squat" || e.id === "snatch_ohs_complex") assert.match(e.l1, /hold the bottom of each overhead squat 2–3 s/, `w${w} ${d} ${e.id}`);
+  }
+});
+
+test("Thursday pulls are segment deadlifts at the old pull loads", () => {
+  assert.equal(find(18, "d3", "snatch_deadlift").l1.split(" ")[0], String(P.tm("snatch", 0.85)));
+  const cd = find(19, "d3", "clean_deadlift");
+  assert.equal(cd.sets, 5); assert.equal(cd.reps, "4");
+  assert.ok(cd.l1.startsWith(String(P.tm("clean", 0.90))), cd.l1);
+  for (const w of WAVE) assert.ok(!ids(w, "d3").some(i => i === "snatch_pull" || i === "clean_pull"), `w${w}`);
+  assert.match(find(17, "d3", "snatch_pull").l1, /arms long until the legs finish/);
+  assert.match(find(24, "d1", "snatch_pull").l1, /arms long until the legs finish/);
 });

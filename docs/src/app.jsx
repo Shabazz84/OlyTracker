@@ -167,7 +167,8 @@ const EXERCISE_CATALOG = {
   pause_clean:            { id:'pause_clean',            name:'Pause Clean',                 type:'cj' },
   tempo_clean:            { id:'tempo_clean',            name:'Tempo Clean',                 type:'cj' },
   deficit_clean:          { id:'deficit_clean',          name:'Deficit Clean',               type:'cj' },
-  clean_deadlift:         { id:'clean_deadlift',         name:'Clean Deadlift',              type:'cj' },
+  clean_deadlift:         { id:'clean_deadlift',         name:'Clean Deadlift',              type:'cj',
+    desc:"Arms bending early is mostly a strength problem: getting the bar to mid/high thigh with the shoulders still over it. Segment deadlifts build it. (Everett)\nPause at mid-thigh, where the second pull starts: shins vertical, shoulders slightly in front of the bar, weight not back on the heels. (Everett)" },
   clean_pull_from_blocks: { id:'clean_pull_from_blocks', name:'Clean Pull from Blocks',      type:'cj' },
   clean_high_pull:        { id:'clean_high_pull',        name:'Clean High Pull',             type:'cj' },
   // ── Jerk variations ───────────────────────────────────────────────────────
