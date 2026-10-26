@@ -419,6 +419,8 @@ const PROGRAM_B2 = [
 // from it is a numbered Edit in docs/superpowers/specs/2026-10-17-block3-design.md.
 // Per-exercise cards are BLOCK3_EXERCISES (below); these are the week plans.
 const B3_SRC = "Spine: Catalyst Athletics' General Cycle (Greg Everett) — catalystathletics.com/olympic-weightlifting-training-program/34/General-Cycle — adapted to Mon/Tue/Thu/Sat; every change is in the Block 3 design's Edit Ledger.";
+// Edit 18 — catch depth and arm bend are judged on video.
+const B3_FILM = "Film snatches and cleans from the side — catch depth and arm bend are judged on video, not by feel. ";
 const B3_THU_NOTE = "Post-shift day. Front squat % is a ceiling, not a target: stop at the first grinding rep — that week's top set is whatever was made cleanly. Empty-bar split jerks any day, as warm-up.";
 
 // Per cycle week n (1–6): the classic-lift singles for Mon / Tue / Sat, the
@@ -426,12 +428,12 @@ const B3_THU_NOTE = "Post-shift day. Front squat % is a ceiling, not a target: s
 // sets×reps — the order every card uses (the source writes reps first).
 const B3_WAVE = [
   null,
-  {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"75% 5×5", fs:"85% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position snatch + snatch pull"},
-  {mon:0.90, tue:0.90, sat:0.90, single:"× 3", bs:"85% 3×3", fs:"90% 3×2", sat_sq:"Pause back squat — 2-rep max", thu:"Clean from blocks + clean pull"},
-  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 5×1", fs:"95% 2×1", sat_sq:"Back squat — MAX",             thu:"Power snatch + snatch pull"},
-  {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"78% 5×5", fs:"88% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position clean + clean pull"},
-  {mon:0.90, tue:0.90, sat:0.90, single:"× 4", bs:"88% 3×3", fs:"93% 3×2", sat_sq:"Pause back squat — 2-rep max", thu:"Snatch from blocks + snatch pull"},
-  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 5×1", fs:"95% 2×1", sat_sq:"Back squat + front squat — MAX", thu:"Power clean + clean pull", range:true},
+  {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"75% 5×5", fs:"85% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position snatch + snatch segment deadlift"},
+  {mon:0.90, tue:0.90, sat:0.90, single:"× 3", bs:"85% 3×3", fs:"90% 3×2", sat_sq:"Pause back squat — 2-rep max", thu:"Clean from high blocks + clean segment deadlift"},
+  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 5×1", fs:"95% 2×1", sat_sq:"Back squat — MAX",             thu:"Snatch from high blocks + snatch segment deadlift"},
+  {mon:0.80, tue:0.80, sat:0.80, single:"× 5", bs:"78% 5×5", fs:"88% 3×3", sat_sq:"Pause back squat — 3-rep max", thu:"3-position clean + clean segment deadlift"},
+  {mon:0.90, tue:0.90, sat:0.90, single:"× 4", bs:"88% 3×3", fs:"93% 3×2", sat_sq:"Pause back squat — 2-rep max", thu:"Snatch from high blocks + snatch segment deadlift"},
+  {mon:0.95, tue:0.90, sat:null, single:"× 1", bs:"90% 5×1", fs:"95% 2×1", sat_sq:"Back squat + front squat — MAX", thu:"Clean from high blocks + clean segment deadlift", range:true},
 ];
 
 function b3WaveWeek(week, phase) {
@@ -442,23 +444,24 @@ function b3WaveWeek(week, phase) {
   const mon = w.range ? "90–95%" : pct(w.mon), tue = w.range ? "85–90%" : pct(w.tue);
   return {
     week, phase,
-    load:`Mon ${mon} · Tue ${tue} · Sat ${test ? "MAX" : pct(w.sat)}`,
-    focus: test ? `Cycle week ${n} — Saturday maxes` : `Cycle week ${n}`,
-    note: (test ? "Saturday: snatch, C&J, back squat" + (n === 6 ? ", front squat" : "") +
-      " to a max, in that order — the last lift tested is the least trustworthy number of the day. " +
-      (n === 3 ? "Training maxes stay fixed through weeks 18–23; this is a checkpoint, not a re-base. "
-               : "This is the Block 3 test — these maxes set Block 4's training maxes. ") : "") + B3_SRC,
+    load:`Mon ${mon} · Tue ${tue} · Sat ${test ? (n === 3 ? "checkpoint" : "MAX") : pct(w.sat)}`,
+    focus: test ? (n === 3 ? `Cycle week ${n} — Saturday checkpoint` : `Cycle week ${n} — Saturday maxes`) : `Cycle week ${n}`, // Edit 17
+    note: B3_FILM + (test ? (n === 3
+        ? "Saturday checkpoint: the heaviest snatch and C&J caught low today, then back squat to a max. Training maxes stay fixed through weeks 18–23; this is a checkpoint, not a re-base. "
+        : "Saturday: snatch, C&J, back squat, front squat to a max, in that order — the last lift tested is the least trustworthy number of the day. Only low catches count: stop the climb at the first high catch. This is the Block 3 test — these maxes set Block 4's training maxes. ")
+      : "") + B3_SRC,
     days:[
-      {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:`Snatch + C&J singles ${mon} ${w.single}`,load: w.range ? band("snatch", 0.90, 0.95) : at("snatch", w.mon),
+      {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:`Snatch + C&J — low catches only, ceiling ${mon} ${w.single}`,load: w.range ? band("snatch", 0.90, 0.95) : at("snatch", w.mon),
        secondary:`Back squat ${w.bs} · static trunk`,notes:"Every C&J ends in a split jerk."},
-      {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:`Snatch + C&J singles ${tue} ${w.single}`,load: w.range ? band("snatch", 0.85, 0.90) : at("snatch", w.tue),
+      {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:`Snatch + C&J — low catches only, ceiling ${tue} ${w.single}`,load: w.range ? band("snatch", 0.85, 0.90) : at("snatch", w.tue),
        secondary:"Push press 3×3 — no squat today",notes:"Legs rest between Monday's and Thursday's squats."},
       {id:"d3",label:"D3 Thu ⭐⭐",primary:w.thu,load:"technique day",
        secondary:`Jerk variant · snatch balance · front squat ${w.fs} · one ab card`,notes:B3_THU_NOTE},
-      {id:"d4",label:"D4 Sat ⭐⭐",primary: test ? "TEST — snatch, C&J, squat maxes" : `Snatch + C&J singles ${pct(w.sat)} ${w.single}`,
+      {id:"d4",label:"D4 Sat ⭐⭐",primary: test ? (n === 3 ? "CHECKPOINT — heaviest snatch and C&J caught low · back squat max" : "TEST — snatch, C&J, squat maxes (low catches only)")
+                      : `Snatch + C&J — low catches only, ceiling ${pct(w.sat)} ${w.single}`,
        load: test ? "max" : at("snatch", w.sat),
        secondary:`${w.sat_sq} · stiff-legged deadlift`,
-       notes: test ? "Ladder each lift to a max; stop at form breakdown, not at the first miss." : "Paused squats: 3-sec pause in the bottom."},
+       notes: test ? "Ladder each lift; a high catch ends the snatch or C&J climb. Squats: stop at form breakdown, not at the first miss." : "Paused squats: 3-sec pause in the bottom."},
     ],
   };
 }
@@ -466,7 +469,7 @@ function b3WaveWeek(week, phase) {
 const PROGRAM_B3 = [
   {week:17, phase:"Transition", load:"60% · three sessions",
    focus:"Easy re-entry after the 72-hour fast",
-   note:"Mon/Tue are fasting days — no session. Three easy sessions, Wed/Thu/Sat. " + B3_SRC,
+   note:B3_FILM + "Mon/Tue are fasting days — no session. Three easy sessions, Wed/Thu/Sat. " + B3_SRC,
    days:[
     {id:"d1",label:"D1 Wed ⭐⭐",primary:"Back squat ramp 55–70%",load:band("backSquat",0.55,0.70),
      secondary:"Strict press 3×8 · barbell row 3×8",notes:"Wednesday: full night's sleep, shift at 7 pm — hard stop by 3 pm. Ramp sets capped at 5 reps."},
@@ -479,16 +482,16 @@ const PROGRAM_B3 = [
   b3WaveWeek(21, "Wave 2"), b3WaveWeek(22, "Wave 2"), b3WaveWeek(23, "Wave 2"),
   {week:24, phase:"Transition", load:"60–70% · heavy singles Sat",
    focus:"Transition into Block 4",
-   note:"Lighter week between cycles; no back squat this week. " + B3_SRC,
+   note:B3_FILM + "Lighter week between cycles; no back squat this week. " + B3_SRC,
    days:[
     {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:"Snatch 65% · C&J 60% singles",load:at("snatch",0.65),
      secondary:"Snatch pull · snatch deadlift · front squat 65%",notes:"Every C&J ends in a split jerk."},
-    {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"Power snatch · power clean + power jerk 70%",load:at("snatch",0.70),
+    {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"Snatch · clean + power jerk — low catches only, ceiling 70%",load:at("snatch",0.70),
      secondary:"Overhead squat",notes:""},
     {id:"d3",label:"D3 Thu ⭐⭐",primary:"Split jerk from rack 70%",load:at("cleanAndJerk",0.70,"C&J TM"),
      secondary:"2-position snatch · 2-position clean",notes:"Post-shift day."},
     {id:"d4",label:"D4 Sat ⭐⭐",primary:"Heavy singles — snatch, C&J, front squat",load:"heaviest clean single",
-     secondary:"Good morning 3×10 · plank",notes:"Heaviest clean single for today, not a max attempt."},
+     secondary:"Good morning 3×10 · plank",notes:"Snatch and C&J: heaviest single caught low today, not a max attempt."},
    ]},
 ];
 
@@ -785,11 +788,11 @@ const BLOCKS = [
   },
   {
     id:3, label:"BLOCK 3", name:"Strength — One Program, Adapted", weeks:"8 wks (17–24)",
-    color:"#c94f3a", goal:"Snatch 75 · C&J 90 · back squat 140 · front squat 125 (week-23 test)",
+    color:"#c94f3a", goal:"Snatch 70 · C&J 85 caught low · back squat 140 · front squat 125 (week-23 test)",
     phases:["Wk 17: easy re-entry after the fast (Wed/Thu/Sat)","Wks 18–20: wave 1 — singles 80 → 90 → 95%, Saturday maxes wk 20","Wks 21–23: wave 2 — same wave, block test Sat wk 23","Wk 24: transition into Block 4"],
     advancement:[
       {id:"b3_test",  text:"Wk 23 tested: snatch, C&J, back squat, front squat"},
-      {id:"b3_goals", text:"Goals met: snatch 75 · C&J 90 · back squat 140 · front squat 125"},
+      {id:"b3_goals", text:"Goals met: snatch 70 · C&J 85 caught low · back squat 140 · front squat 125"},
       {id:"b3_weeks", text:"8 weeks completed (17–24)"},
     ],
   },

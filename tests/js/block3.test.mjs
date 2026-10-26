@@ -360,3 +360,22 @@ test("tall-lift opener first on non-test classic days", () => {
     assert.equal(day(w, d)[0].l1, "20–25 kg — never worked heavy");
   }
 });
+
+test("week plans: film note every week, low-catch wording on classic days", () => {
+  for (const w of ALL) assert.match(P.PROGRAM_B3[w - 17].note, /[Ff]ilm snatches and cleans from the side/, `w${w}`);
+  assert.match(P.weekPlan(18).days[0].primary, /low catches only/);
+  assert.match(P.weekPlan(20).days[3].primary, /caught low/);
+});
+
+test("goal strings: 70 / 85 caught low", () => {
+  assert.match(SRC, /goal:"Snatch 70 · C&J 85 caught low · back squat 140 · front squat 125 \(week-23 test\)"/);
+  assert.match(SRC, /text:"Goals met: snatch 70 · C&J 85 caught low · back squat 140 · front squat 125"/);
+});
+
+test("week 20 banner and load line call Saturday a checkpoint, not maxes", () => {
+  const w20 = P.weekPlan(20);
+  assert.doesNotMatch(w20.focus, /maxes/i);
+  assert.match(w20.focus, /checkpoint/i);
+  assert.doesNotMatch(w20.load, /MAX/);
+  assert.match(P.weekPlan(23).focus, /maxes/i);
+});

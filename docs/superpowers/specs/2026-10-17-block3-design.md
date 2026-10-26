@@ -56,12 +56,14 @@ Athlete-stated targets for the end of Block 3 (week-23 Saturday test):
 
 | Lift | Now | Target |
 |---|---|---|
-| Snatch from the floor | TM 63 (floor never retested since 55 in Nov 2025) | ~~60–65~~ → **75** |
-| Clean & jerk | TM 72 (best clean 80, best jerk 72.5) | ~~80 — i.e. a jerk of 80~~ → **90** |
+| Snatch from the floor | TM 63 (floor never retested since 55 in Nov 2025) | ~~60–65~~ → ~~75~~ → **70 caught low** |
+| Clean & jerk | TM 72 (best clean 80, best jerk 72.5) | ~~80 — i.e. a jerk of 80~~ → ~~90~~ → **85 caught low** |
 | Back squat | 137 | 140 |
 | Front squat | 115 | 125 |
 
 **Revised 2026-10-25.** The week-16 test (Sat 2026-10-24) made snatch 70 and C&J 85 — both original goals beaten before Block 3 started. The athlete chose snatch 75 · C&J 90 (+5 kg each over the block). Back squat 140 and front squat 125 (test: 120) are unchanged.
+
+**Revised again 2026-10-25.** The athlete reported both test lifts were caught high — by choice, from fear of the bottom above ~50 snatch / 60 C&J — with early arm bend at every weight. The goal is now 70 / 85 *caught in a full squat*; see Edits 12–18 and `2026-10-25-block3-catch-depth-design.md`.
 
 These replace the current Block 3 goals in `program.js` (the `b3_atw`
 "ATW risen 4%" set and the `PROGRAM_OUTLINE` week 17–24 rows).
@@ -175,6 +177,13 @@ heavy single).
 | 9 | Week 17 Mon/Tue sessions removed; source transition Tuesday moved to Wednesday | 72-h fast |
 | 10 | Week 23 test adds front squat (fourth) | athlete goal 125 |
 | 11 | Clean pulls and clean-percentage work use a **clean** max (best clean 80), not the C&J TM | clean is ahead of the C&J; the source writes pulls as % of the clean |
+| 12 | **Low-catch rule** on every full snatch, clean and C&J: climb from 45 / 55 kg, the % is a ceiling, work sets at the last low catch | see `2026-10-25-block3-catch-depth-design.md` |
+| 13 | No power snatch / power clean: high-block or full lifts instead; positional lifts caught in a full squat | same |
+| 14 | Snatch balance and overhead squat: slow dip, minimal leg drive, 2–3 s pause in the bottom | same |
+| 15 | Tall snatch / tall clean opener on non-test classic days | same |
+| 16 | Thursday pulls (wks 18–23) become segment deadlifts at the same loads; wk 17/24 pulls keep arms long | same |
+| 17 | Week 20 Sat: heaviest low catch (checkpoint); week 23 test counts only low catches | same |
+| 18 | Film every classic day from the side | same |
 
 ### Carried over from Blocks 1–2 (outside the session cards)
 
