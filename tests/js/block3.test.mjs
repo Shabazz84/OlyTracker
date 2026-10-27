@@ -118,7 +118,7 @@ test("exact loads match the source percentages", () => {
   assert.equal(sn.l1, `45–${P.tm("snatch", 0.80)} kg — low catches only`);
   assert.equal(sn.sets, 5); assert.equal(sn.reps, "1");
   assert.match(sn.note, /caught at or below parallel/);
-  assert.equal(find(18, "d1", "clean_and_jerk").l1, `55–${P.tm("cleanAndJerk", 0.80)} kg — low catches only — split jerk`);
+  assert.equal(find(18, "d1", "clean_front_squat_jerk").l1, `55–${P.tm("cleanAndJerk", 0.80)} kg — low catches only — split jerk`);
   const bs = find(18, "d1", "back_squat");
   assert.ok(bs.l1.startsWith(String(P.tm("backSquat", 0.75))), bs.l1);
   assert.equal(bs.sets, 5); assert.equal(bs.reps, "5");
@@ -258,7 +258,7 @@ test("ceiling under start + 2.5 drops the climb", () => {
   // wk17 Thu complex: 60% of 70 = 42 < 45; wk24 Mon snatch: 65% = 45.5
   assert.match(find(17, "d3", "snatch_ohs_complex").l1, /^42 kg — low catches only/);
   assert.match(find(24, "d1", "snatch").l1, /^45\.5 kg — low catches only/);
-  assert.match(find(24, "d1", "clean_and_jerk").l1, /^51 kg — low catches only/);
+  assert.match(find(24, "d1", "clean_front_squat_jerk").l1, /^51 kg — low catches only/);
   assert.match(find(17, "d4", "clean_fs_jerk_complex").l1, /^51 kg — low catches only/);
   const P3 = loadProgram(SRC.replace("snatch: 70", "snatch: 55"));
   for (const w of [18, 19, 21, 22]) {
@@ -268,8 +268,11 @@ test("ceiling under start + 2.5 drops the climb", () => {
   }
 });
 
+// Edit 25: training C&J cards are clean + front squat + jerk; the week-20
+// checkpoint and the week-23 test stay a plain C&J.
+const cjId = (w, d) => d === "d4" && (w === 20 || w === 23) ? "clean_and_jerk" : "clean_front_squat_jerk";
 test("every wave-week snatch / C&J is a low-catch card", () => {
-  for (const w of WAVE) for (const d of ["d1", "d2", "d4"]) for (const id of ["snatch", "clean_and_jerk"]) {
+  for (const w of WAVE) for (const d of ["d1", "d2", "d4"]) for (const id of ["snatch", cjId(w, d)]) {
     if (w === 23 && d === "d4") continue; // test card, checked below
     const e = find(w, d, id);
     assert.ok(e && !e.test, `w${w} ${d} ${id}`);
@@ -325,8 +328,8 @@ test("power swaps: high-block lifts on Thursday, full lifts in week 24", () => {
   assert.match(sfb.l1, new RegExp(`^45–${P.tm("snatch", 0.75)} kg — low catches only.*mid-thigh or higher`));
   assert.match(find(23, "d3", "clean_from_blocks").l1, new RegExp(`^55–${P.tm("clean", 0.75)} kg — low catches only.*mid-thigh or higher`));
   assert.match(find(24, "d2", "snatch").l1, new RegExp(`^45–${P.tm("snatch", 0.70)} kg — low catches only`));
-  const cj = find(24, "d2", "clean_and_jerk");
-  assert.equal(cj.reps, "1+1"); assert.match(cj.l1, /power jerk/);
+  const cj = find(24, "d2", "clean_front_squat_jerk");
+  assert.equal(cj.reps, "1+1+1"); assert.match(cj.l1, /power jerk/);
 });
 
 test("positional lifts are caught in a full squat", () => {
@@ -348,8 +351,8 @@ test("Thursday pulls are segment deadlifts at the old pull loads", () => {
   assert.equal(cd.sets, 5); assert.equal(cd.reps, "4");
   assert.ok(cd.l1.startsWith(String(P.tm("clean", 0.90))), cd.l1);
   for (const w of WAVE) assert.ok(!ids(w, "d3").some(i => i === "snatch_pull" || i === "clean_pull"), `w${w}`);
-  assert.match(find(17, "d3", "snatch_pull").l1, /arms long until the legs finish/);
-  assert.match(find(24, "d1", "snatch_pull").l1, /arms long until the legs finish/);
+  assert.match(find(17, "d3", "snatch_pull").l1, /until the legs finish/);
+  assert.match(find(24, "d1", "snatch_pull").l1, /until the legs finish/);
 });
 
 test("tall-lift opener first on non-test classic days", () => {
@@ -406,7 +409,7 @@ test("dropdown offers every prescribed weight, at today's and at raised TMs", ()
 });
 
 test("fixed-weight low-catch cards carry a no-climb note", () => {
-  for (const [w, d, id] of [[17, "d3", "snatch_ohs_complex"], [17, "d4", "clean_fs_jerk_complex"], [24, "d1", "snatch"], [24, "d1", "clean_and_jerk"]]) {
+  for (const [w, d, id] of [[17, "d3", "snatch_ohs_complex"], [17, "d4", "clean_fs_jerk_complex"], [24, "d1", "snatch"], [24, "d1", "clean_front_squat_jerk"]]) {
     const e = find(w, d, id);
     assert.doesNotMatch(e.note, /Climb from the start/, `w${w} ${d} ${id}`);
     assert.match(e.note, /caught at or below parallel/, `w${w} ${d} ${id}`);
@@ -422,7 +425,7 @@ test("clean_deadlift cue keeps the source's hedge", () => {
 
 // ── Everett "Can't Receive the Snatch Low" follow-ups (Edits 19-21) ───────────
 test("low-catch notes: ride a high catch down, hold every bottom", () => {
-  for (const [w, d, id] of [[18, "d1", "snatch"], [18, "d1", "clean_and_jerk"], [17, "d3", "snatch_ohs_complex"], [24, "d1", "snatch"]]) {
+  for (const [w, d, id] of [[18, "d1", "snatch"], [18, "d1", "clean_front_squat_jerk"], [17, "d3", "snatch_ohs_complex"], [24, "d1", "snatch"]]) {
     const n = find(w, d, id).note;
     assert.match(n, /ride it down into a full squat/i, `w${w} ${d} ${id}`);
     assert.match(n, /hold the bottom two to three seconds/i, `w${w} ${d} ${id}`);
@@ -434,4 +437,38 @@ test("snatch days open with an overhead squat / snatch balance warm-up note", ()
     assert.match(P.weekPlan(w).days[i].notes, /^Warm up with overhead squats and snatch balances/, `w${w} day ${i}`);
   assert.match(P.weekPlan(17).days[1].notes, /^Warm up with overhead squats and snatch balances/);
   for (const i of [0, 1, 3]) assert.match(P.weekPlan(24).days[i].notes, /^Warm up with overhead squats and snatch balances/, `w24 day ${i}`);
+});
+
+// ── Corpus re-query 2026-10-26: Everett articles 2068, 2108, 2124, 2058 (Edits 22-25) ──
+test("Edit 22: low-catch notes ask for a full pull and one continuous squat", () => {
+  for (const [w, d, id] of [[18, "d1", "snatch"], [18, "d1", "clean_front_squat_jerk"], [17, "d3", "snatch_ohs_complex"], [24, "d1", "snatch"]]) {
+    const n = find(w, d, id).note;
+    assert.match(n, /never pull softer to catch lower/i, `w${w} ${d} ${id}`);
+    assert.match(n, /keep sitting to the bottom in one motion/i, `w${w} ${d} ${id}`);
+    assert.match(n, /stopping in a power position doesn't count/i, `w${w} ${d} ${id}`);
+  }
+});
+
+test("Edit 23: arm cues say long and loose, not locked", () => {
+  for (const [w, d, id] of [[17, "d3", "snatch_pull"], [24, "d1", "snatch_pull"], [18, "d3", "snatch_deadlift"], [19, "d3", "clean_deadlift"]])
+    assert.match(find(w, d, id).l1, /arms long and loose, not locked/, `w${w} ${d} ${id}`);
+});
+
+test("Edit 24: the climb goes in waves; a fixed weight has no climb", () => {
+  assert.match(find(18, "d1", "snatch").note, /in waves: two jumps up, one back/);
+  assert.doesNotMatch(find(24, "d1", "snatch").note, /waves/);
+});
+
+test("Edit 25: training C&J cards are clean + front squat + jerk", () => {
+  for (const w of [...WAVE, 24]) for (const d of daysOf(w)) {
+    if (d === "d3" || (d === "d4" && [20, 23, 24].includes(w))) continue;
+    assert.ok(!ids(w, d).includes("clean_and_jerk"), `w${w} ${d}: ${ids(w, d)}`);
+    const e = find(w, d, "clean_front_squat_jerk");
+    assert.ok(e, `w${w} ${d}: ${ids(w, d)}`);
+    assert.equal(e.reps, "1+1+1", `w${w} ${d}`);
+  }
+  assert.match(find(18, "d1", "clean_front_squat_jerk").l1, /low catches only — split jerk$/);
+  for (const [w, d] of [[20, "d4"], [23, "d4"], [24, "d4"]])
+    assert.ok(ids(w, d).includes("clean_and_jerk"), `w${w} ${d} keeps the plain C&J`);
+  for (const w of [18, 24]) assert.match(P.weekPlan(w).days[0].notes, /clean \+ front squat \+ split jerk/, `w${w}`);
 });

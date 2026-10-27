@@ -228,6 +228,51 @@ conflicts with the back-pain rule (no exaggerated arch). Its clean-grip check
 (forearms vertical in the rack, hands half a fist to a fist outside the shoulders)
 is passed to the athlete as a video check, not a program change.
 
+### Edits 22–25 — added 2026-10-26, after the corpus came back online (athlete-approved)
+
+With the Z840 back, ten `python main.py ask` queries on early arm bend, high
+catches and fear of the bottom surfaced four Everett articles not read for
+Edits 12–21. Their full text was read locally (`transcripts/web/catalystathleticscom/`,
+gitignored). None contradicts Edits 12–21 except where Edit 22 now refines the
+low-catch rule. The athlete approved all four ("Add all").
+
+- **Edit 22 — full pull, one continuous squat.** "Ask Greg: Should Snatches Be
+  Received as High or Low as Possible?" (catalystathletics.com/article/2068): the
+  only way to catch lower at the same weight is to put less into the second pull,
+  which Everett calls a bad habit; he wants the bar fixed overhead early while the
+  lifter keeps squatting to the bottom. Edit 12's rule, read literally at 45–50 kg,
+  could teach a softer pull. Both low-catch notes now say: pull all the way, never
+  pull softer to catch lower; fixing the bar early and sitting to the bottom in one
+  motion counts as a low catch; stopping in a power position doesn't count, even if
+  ridden down afterwards (Edit 19 kept). **Transfer:** the article is about the
+  snatch; the notes apply the same rule to the clean ("overhead or in the rack").
+- **Edit 23 — arms long and loose, not locked.** "Don't Lock Your Elbows in the
+  Pull" (article 2108): locking the elbows to avoid early bend is a common
+  overcorrection that swings the bar forward; the arms should be straight only
+  because they are not bent. Edit 16's "arms long" (snatch pull wks 17/24, every
+  segment deadlift) becomes "arms long and loose, not locked". Article 1904's
+  "elbows loose" agrees.
+- **Edit 24 — climb in waves.** "Ask Greg: Getting Over Fear in the Snatch"
+  (article 2124): approach the weight where fear starts in progressively rising
+  waves rather than a straight line. The low-catch climb is now two jumps up, one
+  back, then up again; the stop-at-the-first-high-catch rule is unchanged. Fixed-
+  weight cards have no climb and no wave.
+- **Edit 25 — clean + front squat + jerk.** "How to Fix Powering More Than You
+  Squat" (article 2058) lists a front squat added to every clean or C&J set among
+  its general corrections. Every training C&J card (wave-week D1/D2/D4, week 24
+  Mon/Tue) becomes `clean_front_squat_jerk`, reps 1+1+1, same start / ceiling.
+  **My call:** the week-20 checkpoint, the week-23 test and the week-24 Saturday
+  heavy single stay a plain `clean_and_jerk` — they measure the lift, and those ids
+  feed PR history. The new catalog entry reuses the two cited cues of
+  `clean_fs_jerk_complex`, singular (provenance: `docs/programs/2026-10-25-catch-depth-cues.md`).
+
+Confirmed, no change: article 2058 also asks for no power variations, high-block
+lifts in their place, tall snatch / clean, squatting any inadvertent power catch
+and holding snatches in the bottom — all already shipped (Edits 13, 15, 19, 20). It
+gives 3–5 s for the snatch hold; the cards keep article 1948's 2–3 s. An Everett
+comment reply (article 1718) says the same: stop power snatching, squat
+everything, hold the bottom.
+
 ---
 
 ## Constraints carried from the Block 3 design

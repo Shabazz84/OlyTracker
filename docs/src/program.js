@@ -454,7 +454,7 @@ function b3WaveWeek(week, phase) {
       : "") + B3_SRC,
     days:[
       {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:`Snatch + C&J — low catches only, ceiling ${mon} ${w.single}`,load: w.range ? band("snatch", 0.90, 0.95) : at("snatch", w.mon),
-       secondary:`Back squat ${w.bs} · static trunk`,notes:B3_WARM + "Every C&J ends in a split jerk."},
+       secondary:`Back squat ${w.bs} · static trunk`,notes:B3_WARM + "Every C&J is clean + front squat + split jerk."},
       {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:`Snatch + C&J — low catches only, ceiling ${tue} ${w.single}`,load: w.range ? band("snatch", 0.85, 0.90) : at("snatch", w.tue),
        secondary:"Push press 3×3 — no squat today",notes:B3_WARM + "Legs rest between Monday's and Thursday's squats."},
       {id:"d3",label:"D3 Thu ⭐⭐",primary:w.thu,load:"technique day",
@@ -487,7 +487,7 @@ const PROGRAM_B3 = [
    note:B3_FILM + "Lighter week between cycles; no back squat this week. " + B3_SRC,
    days:[
     {id:"d1",label:"D1 Mon ⭐⭐⭐",primary:"Snatch 65% · C&J 60% singles",load:at("snatch",0.65),
-     secondary:"Snatch pull · snatch deadlift · front squat 65%",notes:B3_WARM + "Every C&J ends in a split jerk."},
+     secondary:"Snatch pull · snatch deadlift · front squat 65%",notes:B3_WARM + "Every C&J is clean + front squat + split jerk."},
     {id:"d2",label:"D2 Tue ⭐⭐⭐",primary:"Snatch · clean + power jerk — low catches only, ceiling 70%",load:at("snatch",0.70),
      secondary:"Overhead squat",notes:B3_WARM.trim()},
     {id:"d3",label:"D3 Thu ⭐⭐",primary:"Split jerk from rack 70%",load:at("cleanAndJerk",0.70,"C&J TM"),
@@ -515,9 +515,10 @@ const B3_FULL        = " — every catch in a full squat";                      
 const B3_HIGH_BLOCKS = " · blocks at mid-thigh or higher";                        // Edit 13
 const B3_SB_CUE      = " · slow dip, minimal leg drive, punch under fast, hold the bottom 2–3 s every rep"; // Edit 14
 const B3_OHS_PAUSE   = " · hold the bottom of each overhead squat two to three seconds";         // Edit 14
-const B3_ARMS        = " — arms long until the legs finish";                      // Edit 16
+// Edit 23 — Everett, "Don't Lock Your Elbows in the Pull" (article 2108): straight because not bent, never locked.
+const B3_ARMS        = " — arms long and loose, not locked, until the legs finish"; // Edits 16, 23
 // Copy after the kg carries no digits: generateWeights averages the first two numbers in l1.
-const B3_SEG         = " — segment: pause two seconds just below the knee and two at mid-thigh, shoulders over the bar, arms long";
+const B3_SEG         = " — segment: pause two seconds just below the knee and two at mid-thigh, shoulders over the bar, arms long and loose, not locked";
 // Edit 16 — the Thursday pull becomes a segment deadlift at the same sets × reps × %.
 const b3Seg = (grip, lift, sets, reps, p) =>
   b3e(grip === 'snatch' ? 'snatch_deadlift' : 'clean_deadlift', sets, reps, kg(lift, p) + B3_SEG);
@@ -531,8 +532,13 @@ const b3Sldl = (sets, reps) => b3e('stiff_legged_deadlift', sets, reps, '70–80
 const B3_LOW_START = { snatch: 45, cleanAndJerk: 55, clean: 55 };
 // Edits 19–20 — Everett, "Ask Greg: Can't Receive the Snatch Low with Heavier Weights"
 // (catalystathletics.com/article/1948): squat an unintended power catch; hold the bottom every time.
-const B3_LOW_NOTE = "Climb from the start weight in 2–3 kg jumps — warm-up, not logged. A single counts only if caught at or below parallel; caught high, ride it down into a full squat before standing — it still doesn't count. Hold the bottom two to three seconds on every catch. Stop at the first high catch or at the ceiling, then do every work set at the last weight you caught low. Log only low catches. Film from the side.";
-const B3_FIXED_NOTE = "One weight today — no climb. A single counts only if caught at or below parallel; caught high, ride it down into a full squat before standing — it still doesn't count. Hold the bottom two to three seconds on every catch. Log only low catches. Film from the side.";
+// Edit 22 — Everett, "Should Snatches Be Received as High or Low as Possible?" (article 2068):
+// catching lower by pulling less builds a bad habit; fix the bar early and keep squatting down.
+const B3_CATCH_RULE = "A single counts only if caught at or below parallel. Pull all the way every rep — never pull softer to catch lower. Fix the bar overhead or in the rack as soon as you meet it and keep sitting to the bottom in one motion: that counts as a low catch. Stopping in a power position doesn't count, even if you then ride it down into a full squat before standing. Hold the bottom two to three seconds on every catch.";
+// Edit 24 — Everett, "Getting Over Fear in the Snatch" (article 2124): sneak up on the threshold in waves.
+const B3_LOW_NOTE = "Climb from the start weight in waves: two jumps up, one back, then up again, 2–3 kg a jump — warm-up, not logged. " + B3_CATCH_RULE +
+  " Stop at the first high catch or at the ceiling, then do every work set at the last weight you caught low. Log only low catches. Film from the side.";
+const B3_FIXED_NOTE = "One weight today — no climb. " + B3_CATCH_RULE + " Log only low catches. Film from the side.";
 function b3Low(id, lift, sets, p, suffix = '', reps = '1') {
   const start = B3_LOW_START[lift], ceil = tm(lift, p);
   const climb = ceil - start >= 2.5;
@@ -540,7 +546,9 @@ function b3Low(id, lift, sets, p, suffix = '', reps = '1') {
              {note: climb ? B3_LOW_NOTE : B3_FIXED_NOTE});
 }
 const b3Sn  = (sets, p) => b3Low('snatch', 'snatch', sets, p);
-const b3Cj  = (sets, p) => b3Low('clean_and_jerk', 'cleanAndJerk', sets, p, B3_SJ);
+// Edit 25 — Everett, "How to Fix Powering More Than You Squat" (article 2058): a front squat in every
+// clean or C&J set. Training cards only; the wk20 checkpoint and wk23 test stay a plain C&J.
+const b3Cj  = (sets, p) => b3Low('clean_front_squat_jerk', 'cleanAndJerk', sets, p, B3_SJ, '1+1+1');
 // [JUDGMENT] load — pause back squat to an N-rep max has no %; 3RM band 70–80%, 2RM 75–85% of back squat TM.
 const b3PauseBs = reps => reps === 3
   ? b3e('pause_back_squat', '4–6', '3', `${kgr('backSquat', 0.70, 0.80)} — work up to today's 3-rep max, 3-sec pause`)
@@ -671,7 +679,7 @@ const BLOCK3_EXERCISES = {
          b3e('snatch_deadlift', 3, '3', kg('snatch', 0.90)),
          b3e('front_squat', 3, '4', kg('frontSquat', 0.65))],
     d2: [b3Low('snatch', 'snatch', 3, 0.70),                            // src d51, Edit 13 (was power snatch)
-         b3Low('clean_and_jerk', 'clean', 3, 0.70, ' — power jerk', '1+1'), // Edit 13 (was power clean + power jerk)
+         b3Low('clean_front_squat_jerk', 'clean', 3, 0.70, ' — power jerk', '1+1+1'), // Edits 13, 25 (was power clean + power jerk)
          // [JUDGMENT] load — no OHS TM; % of the 72 kg week-8 OHS test.
          b3e('overhead_squat', 3, '1 → 3', `${Math.round(72 * 0.60 * 2) / 2}–${Math.round(72 * 0.70 * 2) / 2} kg — one single at the top, then two triples lower${B3_OHS_PAUSE}`)], // Edit 14
     d3: [b3e('split_jerk_from_rack', 3, '1', kg('cleanAndJerk', 0.70) + B3_JERK), // src d53, Edit 5

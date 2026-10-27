@@ -40,3 +40,16 @@ The pack returned no clean-specific passage on the tall clean.
 
 1. *The clean version of a variant that emphasizes the pull under the bar.* (Everett)
    - **Transfer** from the tall snatch: "use some snatch variants to emphasize the pull under the bar such as high-hang snatches, tall snatches" [E106.12]
+
+### Clean + Front Squat + Jerk — `clean_front_squat_jerk` (Edit 25, added 2026-10-26)
+
+The two lines of `clean_fs_jerk_complex` (`docs/programs/2026-10-18-block3-cues.md`),
+made singular: the passages are about the front squat before the jerk, not about
+how many.
+
+1. *After the front squat, stand tall: straight, braced torso before the dip, not an over-arched one.* (Sika)
+   - "i feel like i'm a little bit too arched before i get into the jerk" [E114.7]
+   - "everything locked down sit like this nice and straight" [E114.7]
+2. *The front squat makes the jerk harder, so keep its dip and drive vertical anyway.* (Sika · Everett)
+   - Sika: "that front squat before the jerk makes it hard to make your legs makes it hard for you to change that direction" [E114.7]
+   - Everett: "it needs to be straight down, straight up and complete" [E115.5]

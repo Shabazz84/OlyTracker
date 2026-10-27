@@ -294,6 +294,8 @@ const EXERCISE_CATALOG = {
     desc:"After the snatch, keep the bar locked and still for both squats: shoulder blades squeezed up and together, bar over the back of the neck. (Everett)\nOverhead squats straight after the snatch train you to lock the bar out harder in the bottom. (Sika)" },
   clean_fs_jerk_complex:   { id:'clean_fs_jerk_complex',   name:'Clean + 2 Front Squats + Jerk',  type:'cj',
     desc:"After the front squats, stand tall: straight, braced torso before the dip, not an over-arched one. (Sika)\nThe front squats make the jerk harder, so keep its dip and drive vertical anyway. (Sika · Everett)" },
+  clean_front_squat_jerk:  { id:'clean_front_squat_jerk',  name:'Clean + Front Squat + Jerk',     type:'cj',
+    desc:"After the front squat, stand tall: straight, braced torso before the dip, not an over-arched one. (Sika)\nThe front squat makes the jerk harder, so keep its dip and drive vertical anyway. (Sika · Everett)" },
   power_clean_power_jerk:  { id:'power_clean_power_jerk',  name:'Power Clean + Power Jerk',       type:'cj',
     desc:"Before the dip: knees unlocked, quads tight, full breath. Dipping from locked knees shifts you forward. (Everett)\nDip at a speed that keeps the bar on your shoulders, then drive straight up. (Everett)\nCatch in your squat stance, thighs above parallel, bar pushed back over the back of the neck. (Everett)" },
   two_position_snatch:     { id:'two_position_snatch',     name:'2-Position Snatch',              type:'snatch',
@@ -3301,7 +3303,7 @@ function OlyTracker() {
                 BLOCK {_headerBlk.block} · {BLOCKS[_headerBlk.block-1].name.toUpperCase()} · {_headerBlk.end-_headerBlk.start+1} WEEKS
               </div>
               <div style={{fontSize:8,color:"var(--text3)",letterSpacing:1.5,fontFamily:"'DM Mono',monospace",marginTop:2,opacity:0.6}}>
-                PROGRAM v3.20.1 · 2026-10-25
+                PROGRAM v3.21.0 · 2026-10-26
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>

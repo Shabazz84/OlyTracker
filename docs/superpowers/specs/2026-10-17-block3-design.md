@@ -187,6 +187,10 @@ heavy single).
 | 19 | Caught high → ride it down into a full squat before standing (still doesn't count) | same (addendum) |
 | 20 | Hold the bottom two to three seconds on every snatch and clean catch | same (addendum) |
 | 21 | Snatch days open with an overhead squat / snatch balance warm-up | same (addendum) |
+| 22 | Low-catch notes: pull all the way, never softer to catch lower; fix the bar early and sit to the bottom in one motion counts; stopping in a power position doesn't | same (addendum 22–25) |
+| 23 | Arm cue becomes "arms long and loose, not locked" | same (addendum 22–25) |
+| 24 | Low-catch climb goes in waves: two jumps up, one back | same (addendum 22–25) |
+| 25 | Training C&J cards become clean + front squat + jerk; checkpoint, test and wk-24 Sat stay a plain C&J | same (addendum 22–25) |
 
 ### Carried over from Blocks 1–2 (outside the session cards)
 
